@@ -55,7 +55,12 @@ Title=Python %s Documentation
 index.html
 '''
 
-sub = '<sub name="%s" link="%s">'
+object_sitemap = ''' 
+    <LI> <OBJECT type="text/sitemap">
+        <param name="Local" value="%s">
+        <param name="Name" value="%s">
+        </OBJECT>
+'''
 
 # Library Doc list of tuples: 
 # each 'book' : ( Dir, Title, First page, Content page, Index page)
@@ -154,7 +159,7 @@ class AlmostNullWriter(formatter.NullWriter) :
 
 
 class HelpHtmlParser(htmllib.HTMLParser) :
-    indent = 1  # number of tabs for pretty printing of files
+    indent = 0  # number of tabs for pretty printing of files
     ft = None   # output file
     path = None # relative path
     proc = 0    # if true I process, if false I skip 
@@ -168,20 +173,24 @@ class HelpHtmlParser(htmllib.HTMLParser) :
 
     def finish_group(self) :
         self.indent = self.indent - 1
-        if self.proc and self.indent == 1 :
+        if self.proc and self.indent == 0 :
             # if processing and back to root, then stop
             self.proc = 0
 
     def anchor_bgn(self, href, name, type) :
         if self.proc :
             self.formatter.writer.savedliteral = ''
-            self.ft.write('\t' * self.indent + '<sub link="' + self.path + '/' + href + '"')
+            self.ft.write('<OBJECT type="text/sitemap">\n')
+            self.ft.write('\t' * self.indent + \
+                '\t<param name="Local" value="' + self.path + \
+                '/' + href + '">\n')
 
     def anchor_end(self) :
         if self.proc :
-            name = self.formatter.writer.savedliteral
-            name = string.replace(name, '&', '&amp;')
-            self.ft.write(' name="' + name + '">\n')
+            self.ft.write('\t' * self.indent + \
+                '\t<param name="Name" value="' + \
+                self.formatter.writer.savedliteral + '">\n')
+            self.ft.write('\t' * self.indent + '\t</OBJECT>\n' )
     
     def start_dl(self, atr_val) :
         self.begin_group()
@@ -189,48 +198,36 @@ class HelpHtmlParser(htmllib.HTMLParser) :
     def end_dl(self) :
         self.finish_group()
 
+    def do_dt(self, atr_val) :
+        # no trailing newline on pourpose! 
+        self.ft.write("\t" * self.indent + "<LI>")
+
 
 class IdxHlpHtmlParser(HelpHtmlParser) :
-    def anchor_bgn(self, href, name, type) :
-        if self.proc :
-            self.formatter.writer.savedliteral = ''
-            self.ft.write('\t<function link="' + self.path + '/' + href + '"')
-
-    def anchor_end(self) :
-        if self.proc :
-            import string
-            name = self.formatter.writer.savedliteral
-            name = string.replace(name, '&', '&amp;')
-            self.ft.write(' name="' + name + '"/>\n')
-   
+    # nothing special here, seems enough with parent class
+    pass
 
 class TocHlpHtmlParser(HelpHtmlParser) :
-    flag = 0
 
     def start_dl(self, atr_val) :
         self.begin_group()
-        self.flag = 0
+        self.ft.write('\t' * self.indent + '<UL>\n')
 
     def end_dl(self) :
-        if self.flag:
-            self.ft.write('\t' * self.indent + '</sub>\n')
         self.finish_group()
-        self.flag = 1
+        self.ft.write('</UL>\n')
 
     def start_ul(self, atr_val) :
         self.begin_group()
-        self.flag = 0
+        self.ft.write('\t' * self.indent + '<UL>\n')
 
     def end_ul(self) :
-        if self.flag:
-            self.ft.write('\t' * self.indent + '</sub>\n')
         self.finish_group()
-        self.flag = 1
+        self.ft.write('</UL>\n')
 
     def do_li(self, atr_val) :
-        if self.flag:
-            self.ft.write('\t' * self.indent + '</sub>\n')
-        self.flag = 1
+        # no trailing newline on purpose! 
+        self.ft.write("\t" * self.indent + "<LI>")
 
 
 def index(path, archivo, output) :
@@ -254,24 +251,32 @@ def content(path, archivo, output) :
 
 
 def do_index(library, output) :
-    output.write('<functions>\n')
+    output.write('<UL>\n')
     for book in library :
         print '\t', book[2]
         if book[4] :
             index(book[0], book[4], output)
-    output.write('</functions>\n')
+    output.write('</UL>\n')
 
 
 def do_content(library, output) :
-    output.write('<chapters>\n')
+    output.write('<UL>\n')
     for book in library :
         print '\t', book[2]
-        output.write('\t<sub name="%s" link="%s">\n' % (book[1], book[0]+"/"+book[2]))
+        output.write(object_sitemap % (book[0]+"/"+book[2], book[1]))
         if book[3] :
             content(book[0], book[3], output)
-        output.write('\t</sub>\n')
-    output.write('</chapters>\n')
+    output.write('</UL>\n')
 
+
+
+def do_project( library, output, arch, version) :
+    output.write( project_template % \
+            (arch, arch, arch, arch, version, arch, version, arch, arch) )
+    for book in library :
+        for page in os.listdir(book[0]) :
+            if page[string.rfind(page, '.'):] == '.html' :
+                output.write(book[0]+ '\\' + page + '\n')
 
 
 def openfile(file) :
@@ -312,20 +317,23 @@ def do_it(args = None) :
     library = supported_libraries[ version ]
     #print version, library
     
-    f = openfile(arch + '.devhelp')
-    f.write('<?xml version="1.0"?>\n\n')
-    f.write('<book title="Python Documentation" name="python" version="%s" base="http://www.python.org/doc/%s/" link="index.html">\n\n' % (version, version))
+    if not (('-p','') in optlist) :
+        f = openfile(arch + '.hhp')
+        print "Building Project..."
+        do_project(library, f, arch, version)
+        f.close()
 
     if not (('-c','') in optlist) :
+        f = openfile(arch + '.hhc')
         print "Building Table of Content..."
         do_content(library, f)
+        f.close()
 
     if not (('-k','') in optlist) :
+        f = openfile(arch + '.hhk')
         print "Building Index..."
         do_index(library, f)
-
-    f.write('</book>\n')
-    f.close()
+        f.close()
 
 if __name__ == '__main__' :
     do_it()
