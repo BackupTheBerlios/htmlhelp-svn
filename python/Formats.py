@@ -3,7 +3,7 @@
 
 from __future__ import generators
 
-import Book, DevHelp#, MSHH, HTB
+import Book, DevHelp, MSHH, HTB
 
 
 

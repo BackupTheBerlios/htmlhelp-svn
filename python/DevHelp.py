@@ -49,7 +49,7 @@ class SpecParser:
 
 	def start_function(self, name, link, **dummy):
 		entry = Book.IndexEntry(name, self.translate_link(link))
-		self.book.index.append(entry)
+		self.book.index.children.append(entry)
 		
 	def handle_element_start(self, name, attributes):
 		method = 'start_' + name

@@ -1,10 +1,10 @@
 """wxWindows' HTML Help."""
 
 
-import MSHH, Archive
+import Book, MSHH, Archive
 
 
-class HTBBook(mshh.MSHHBook):
+class HTBBook(MSHH.MSHHBook):
 	"""wxWindows HTML Help Book."""
 
 	def __init__(self, path):
@@ -12,21 +12,21 @@ class HTBBook(mshh.MSHHBook):
 		
 		names = filter(
 				lambda name: name[-4:].lower() == '.hhp',
-				self.zip.namelist())
+				archive.list())
 
 		# FIXME: Actually the HTB format allows more than one project inside a zip
-		assert len(names == 1)
+		assert len(names) == 1
 		hhp = names[0]
 
-		MSHHBook.__init__(self, archive, hhp)
+		MSHH.MSHHBook.__init__(self, archive, hhp)
 
 
 class HTBFactory(Book.Factory):
 
-	def __apply__(self, path):
+	def __call__(self, path):
 		if self.extension(path).lower() in ('htb', 'zip'):
-			return RawMSHHBook(path)
+			return HTBBook(path)
 
 		raise Book.InvalidBookError
 
-factory = MSHHFactory()
+factory = HTBFactory()

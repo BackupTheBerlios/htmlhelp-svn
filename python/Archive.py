@@ -3,6 +3,11 @@
 
 import os, os.path, zipfile
 
+try:
+	from cStringIO import StringIO
+except ImportError:
+	from StringIO import StringIO
+
 
 class Archive(object):
 

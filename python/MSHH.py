@@ -29,7 +29,7 @@ class HHCParser(HTMLParser.HTMLParser):
 			self.node = None
 		elif tag == 'object':
 			if attrs['type'] == 'text/sitemap':
-				self.node = Book.ContentsNode(None, None)
+				self.node = Book.ContentsEntry(None, None)
 			else:
 				self.node = None
 		elif tag == 'param':
@@ -44,7 +44,7 @@ class HHCParser(HTMLParser.HTMLParser):
 			self.contents_stack.pop()
 		elif tag == 'object':
 			if self.node:
-				self.contents_stack[-1].childs.append(self.node)
+				self.contents_stack[-1].children.append(self.node)
 
 	def parse(self, fp):
 		self.feed(fp.read())
@@ -62,19 +62,19 @@ class HHKParser(HTMLParser.HTMLParser):
 		attrs = dict(attrs)
 		if tag == 'object':
 			if attrs['type'] == 'text/sitemap':
-				self.entry = Book.IndexEntry(None, None)
+				self.entry = Book.IndexEntry(None)
 		elif tag == 'param':
 			if self.entry:
 				if attrs['name'] == 'Name':
-					if self.entry.term is None:
-						self.entry.term = attrs['value'].strip()
+					if self.entry.name is None:
+						self.entry.name = attrs['value'].strip()
 				elif attrs['name'] == 'Local':
-					self.entry.link = attrs['value']
+					self.entry.links.append(attrs['value'])
 	
 	def handle_endtag(self, tag):
 		if tag == 'object':
 			if self.entry:
-				self.book.index.append(self.entry)
+				self.book.index.children.append(self.entry)
 				self.entry = None
 
 	def parse(self, fp):
@@ -97,7 +97,6 @@ class HHPParser:
 		self.section = name
 	
 	def handle_option(self, name, value):
-		print name+'='+ value
 		if self.section == 'OPTIONS':
 			if name == 'Contents file':
 				parser = HHCParser(self.book)
@@ -106,9 +105,9 @@ class HHPParser:
 				parser = HHKParser(self.book)
 				parser.parse(self.book.resource(value))
 			elif name == 'Title':
-				self.book.title = value
+				self.book.contents.name = value
 			elif name == 'Default topic':
-				self.book.default = value
+				self.book.contents.link = value
 	
 	def handle_line(self, line):
 		pass
@@ -157,7 +156,7 @@ class MSHHBook(Book.Book):
 	"""Microsoft HTML Help."""
 
 	def __init__(self, archive, hhp):
-		Book.Book.__init__(self)
+		Book.Book.__init__(self, archive)
 
 		parser = HHPParser(self)
 		parser.parse(archive.open(hhp))
