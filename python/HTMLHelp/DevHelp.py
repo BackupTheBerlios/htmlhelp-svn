@@ -75,7 +75,7 @@ class SpecParser:
 		parser.ParseFile(fp)
 
 
-class DevHelpBook(Book.Book):
+class DevhelpBook(Book.Book):
 
 	def __init__(self, archive, spec):
 		Book.Book.__init__(self, archive)
@@ -84,7 +84,7 @@ class DevHelpBook(Book.Book):
 		parser.parse(archive[spec])
 	
 	
-class RawDevHelpFilterArchive(Archive.Archive):
+class RawDevhelpFilterArchive(Archive.Archive):
 	
 	def filter(self, path):
 		if not path.endswidth('.devhelp'):
@@ -95,18 +95,18 @@ class RawDevHelpFilterArchive(Archive.Archive):
 	translate = filter
 
 
-class RawDevHelpBook(DevHelpBook):
+class RawDevhelpBook(DevhelpBook):
 
 	def __init__(self, path):
 		basedir, spec = os.path.split(os.path.abspath(path))
 		archive = Archive.DirArchive(basedir)
 		
-		DevHelpBook.__init__(self, archive, spec)
+		DevhelpBook.__init__(self, archive, spec)
 
-		self.archive = RawDevHelpFilterArchive(archive)
+		self.archive = RawDevhelpFilterArchive(archive)
 
 
-class TgzDevHelpFilterArchive(Archive.FilterArchive):
+class TgzDevhelpFilterArchive(Archive.FilterArchive):
 
 	def filter(self, path):
 		if path[:5] == 'book/':
@@ -118,15 +118,15 @@ class TgzDevHelpFilterArchive(Archive.FilterArchive):
 		return 'book/' + path
 
 
-class TgzDevHelpBook(DevHelpBook):
+class TgzDevhelpBook(DevhelpBook):
 	"""A DevHelp book in a .tgz tarball."""
 
 	def __init__(self, path):
 		archive = Archive.TarArchive(path)
 
-		DevHelpBook.__init__(self, archive, 'book.devhelp')
+		DevhelpBook.__init__(self, archive, 'book.devhelp')
 	
-		self.archive = TgzDevHelpFilterArchive(archive)
+		self.archive = TgzDevhelpFilterArchive(archive)
 
 
 def factory(path):
@@ -134,14 +134,14 @@ def factory(path):
 	
 	root, ext = os.path.splitext(path)
 	if ext == '.devhelp':
-		return RawDevHelpBook(path)
+		return RawDevhelpBook(path)
 	elif ext == '.tgz':
-		return TgzDevHelpBook(path)
+		return TgzDevhelpBook(path)
 	else:
 		raise ValueError, 'unknown DevHelp book extension \'%s\'' % ext
 
 
-class DevHelpCatalog(Catalog.Catalog):
+class DevhelpCatalog(Catalog.Catalog):
 
 	def __init__(self):
 		Catalog.Catalog.__init__(self)
@@ -160,7 +160,7 @@ class DevHelpCatalog(Catalog.Catalog):
 				for name in os.listdir(dir):
 					path = os.path.join(dir, name, name + '.devhelp')
 					if os.path.isfile(path):
-						yield Catalog.CatalogEntry(name, RawDevHelpBook, path)
+						yield Catalog.CatalogEntry(name, RawDevhelpBook, path)
 		raise StopIteration
 
-catalog = DevHelpCatalog()
+catalog = DevhelpCatalog()

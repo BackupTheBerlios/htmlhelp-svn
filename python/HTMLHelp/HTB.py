@@ -8,7 +8,7 @@ import Book
 import MSHH
 
 
-class HTBBook(MSHH.MSHHBook):
+class HtbBook(MSHH.MshhBook):
 	"""wxWindows HTML Help Book."""
 
 	def __init__(self, path):
@@ -22,14 +22,14 @@ class HTBBook(MSHH.MSHHBook):
 		assert len(names) == 1
 		hhp = names[0]
 
-		MSHH.MSHHBook.__init__(self, archive, hhp)
+		MSHH.MshhBook.__init__(self, archive, hhp)
 	
-		self.archive = MSHH.MSHHFilterArchive(archive)
+		self.archive = MSHH.MshhFilterArchive(archive)
 
 
 def factory(path):
 	root, ext = os.path.splitext(path)
 	if ext.lower() in ('.htb', '.zip'):
-		return HTBBook(path)
+		return HtbBook(path)
 	else:
 		raise ValueError, 'unknown HTB extension \'%s\'' % ext

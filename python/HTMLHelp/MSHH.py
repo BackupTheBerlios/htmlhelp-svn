@@ -167,7 +167,7 @@ class HHPParser:
 				self.handle_line(line)
 
 
-class MSHHFilterArchive(Archive.FilterArchive):
+class MshhFilterArchive(Archive.FilterArchive):
 
 	def filter(self, path):
 		if path[-4:].lower() not in ('.hhp', '.hhc', '.hhk'):
@@ -178,7 +178,7 @@ class MSHHFilterArchive(Archive.FilterArchive):
 	translate = filter
 
 
-class MSHHBook(Book.Book):
+class MshhBook(Book.Book):
 	"""Microsoft HTML Help Book."""
 
 	def __init__(self, archive, hhp):
@@ -188,14 +188,14 @@ class MSHHBook(Book.Book):
 		parser.parse(archive[hhp])
 	
 
-class RawMSHHBook(MSHHBook):
+class RawMshhBook(MshhBook):
 	"""Uncompressed HTML Help Book."""
 
 	def __init__(self, path):
 		basedir, hhp = os.path.split(os.path.abspath(path))
 		archive = Archive.DirArchive(basedir)
 		
-		MSHHBook.__init__(self, archive, hhp)
+		MshhBook.__init__(self, archive, hhp)
 
 		self.archive = FilterArchive(archive)
 
@@ -203,6 +203,6 @@ class RawMSHHBook(MSHHBook):
 def factory(path):
 	root, ext = os.path.splitext(path)
 	if ext.lower() == '.hhp':
-		return RawMSHHBook(path)
+		return RawMshhBook(path)
 	else:
 		raise ValueError, 'not a HTML Help Project file'
