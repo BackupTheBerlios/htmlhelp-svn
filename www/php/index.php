@@ -15,7 +15,7 @@
 
 	echo '<frameset rows="80,*">';
 	echo '<frame src="menu.php?book_id=' . $book_id . '" name="menu" frameborder="0" scrolling="no" noresize="noresize"/>';
-	echo '<frameset rows="*" cols="256,*">';
+	echo '<frameset rows="*" cols="*,3*">';
 	if($book_id)
 	{
 		echo '<frame src="toc.php?book_id=' . $book_id . '" name="navigation" frameborder="0"/>';
