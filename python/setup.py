@@ -1,12 +1,19 @@
 #!/usr/bin/python
 # -*- coding: iso8859-1 -*-
 
+import sys
 from distutils.core import setup, Extension
- 
-chmlib = Extension(
-	'_chmlib', 
-	sources = ['chmlib.i'],
-	libraries = ['chm'])
+
+py_modules = []
+ext_modules = []
+
+if not sys.platform.startswith('win'):
+	chmlib = Extension(
+		'_chmlib', 
+		sources = ['chmlib.i'],
+		libraries = ['chm'])
+	py_modules.append('chmlib')
+	ext_modules.append(chmlib)
 
 setup(
 	name = "PyHTMLHelp",
@@ -16,8 +23,8 @@ setup(
 	author_email = 'jrfonseca@users.berlios.de',
 	url = 'http://htmlhelp.berlios.de/',
 	packages = ['HTMLHelp'],
-	py_modules = ['chmlib'],
-	ext_modules = [chmlib],
+	py_modules = py_modules,
+	ext_modules = ext_modules,
 	scripts = [
 		'scripts/hhconvert',
 		'scripts/hhsqldump'])
