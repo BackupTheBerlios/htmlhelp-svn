@@ -12,7 +12,7 @@
 	$db = mysql_connect($db_server, $db_username, $db_password);
 	mysql_select_db($db_database, $db);
 
-	$pages = mysql_query("SELECT `book_id`, `path`, `content` FROM `pages` WHERE `book_id`=$book_id AND `path`='$path'", $db);
+	$pages = mysql_query(sprintf('SELECT `book_id`, `path`, `content` FROM `pages` WHERE `book_id`=%d AND `path`="%s"', $book_id, mysql_escape_string($path)), $db);
 	$page = mysql_fetch_object($pages);
 	$content = $page->content;
 	
@@ -32,5 +32,6 @@
 	$content_type = _mime_content_type($path);
 	
 	header('Content-Type: ' . $content_type);
+
 	echo $content;
 ?>

@@ -1,33 +1,23 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-	<?php
-		include 'config.inc.php'; 
+<?php
+	include 'config.inc.php';
+	include 'book.inc.php';
 
-		$db = mysql_connect($db_server, $db_username, $db_password);
-		mysql_select_db($db_database, $db);
-	?>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-		<?php
-			$books = mysql_query("SELECT * FROM `books` WHERE `id`=$book_id", $db);
-			$book = mysql_fetch_object($books);
+	$title = $book->title . ' contents';
 
-			echo '<title>' . $book->title . ' table of contents</title>';
-			echo '<link href="' . $css .'" type="text/css" rel="stylesheet"/>';
-		?>
-	</head>
+	include 'header.inc.php';
+?>
 	<body id="toc" class="sidebar">
 		<?php
 			function walk_toc($parent_number)
 			{
-				global $db, $book_id;
+				global $db, $book;
 
 				echo '<ul>';
-				$entries = mysql_query("SELECT * FROM `toc` WHERE `book_id`=$book_id AND `parent_number`=$parent_number ORDER BY number", $db);
+				$entries = mysql_query(sprintf('SELECT * FROM `toc` WHERE `book_id`=%d AND `parent_number`=%d ORDER BY number', $book->id, $parent_number), $db);
 				while($entry = mysql_fetch_object($entries))
 				{
 					echo '<li>';
-					echo '<a href="page.php/' . $book_id . '/' . $entry->path . '#' . $entry->anchor . '" target="main">' . $entry->name . '</a>';
+					echo '<a href="page.php/' . $book->id . '/' . $entry->path . '#' . $entry->anchor . '" target="main">' . htmlentities($entry->name, ENT_NOQUOTES, 'UTF-8') . '</a>';
 					walk_toc($entry->number);
 					echo "</li>";
 				}
@@ -37,4 +27,6 @@
 			walk_toc(0);
 		?>
 	</body>
-</html>
+<?php
+	include 'footer.inc.php';
+?>
