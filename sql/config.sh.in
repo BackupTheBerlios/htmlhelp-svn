@@ -1,0 +1,5 @@
+# config.sh.in - configureation
+
+MYSQL=mysql
+
+DATABASE=htmlhelp

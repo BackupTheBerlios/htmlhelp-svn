@@ -1,7 +1,9 @@
-# Do:
+# delete.sql - delete a book from the database
 #   
+# Usage:
+#
 #  $ mysql
-#  > SET @book_id=...;
+#  > SET @book_id=1234;
 #  > source delete.sql;
 
 DELETE FROM `book` WHERE `id`=@book_id;
