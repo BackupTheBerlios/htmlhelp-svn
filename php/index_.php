@@ -10,7 +10,7 @@
 <html>
 <head>
 	<link href="style.css" type="text/css" rel="stylesheet" />
-	<title><?php echo $book->title;?> table of contents</title>
+	<title><?php echo $book->title;?> index</title>
 </head>
 <body class="index">
 	<?php
