@@ -1,0 +1,19 @@
+#!/bin/sh
+
+for CATEGORY
+do
+	find $CATEGORY -type d -not -name CVS -not -name .svn -mindepth 1 -maxdepth 1 | while read PACKAGE
+	do
+		cat > $PACKAGE/.cvsignore << EOF
+cookies
+download
+work
+EOF
+		
+		if [ -d $PACKAGE/.svn ] 
+		then
+			svn ps -F $PACKAGE/.cvsignore svn:ignore $PACKAGE
+		fi
+		
+	done
+done
