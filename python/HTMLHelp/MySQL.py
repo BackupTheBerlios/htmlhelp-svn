@@ -116,6 +116,8 @@ def split_link(link):
 	
 
 def dump(book):
+	# TODO: allow to specity the output fike
+
 	dump_book(book)
 
 
@@ -194,24 +196,4 @@ def dump_archive(book):
 		sys.stdout.write('INSERT INTO `page` (book_id, path, content, title, body) VALUES\n')
 		sys.stdout.write(' (' + ',\n  '.join(quote(literal('@book_id'), path, content, title, body)) + ')')
 		sys.stdout.write(';\n')
-	
 
-
-#######################################################################
-# Main program
-
-
-def main():
-	from Formats import factory
-	
-	for arg in sys.argv[1:]:
-		try:
-			book = factory(arg)
-		except:
-			raise
-
-		dump(book)
-
-
-if __name__ == '__main__':
-	main()

@@ -9,12 +9,13 @@ chmlib = Extension(
 	libraries = ['chm'])
 
 setup(
-	name = "HTMLHelp",
+	name = "PyHTMLHelp",
 	version = "0.1",
-	description = 'HTML Help Python API',
+	description = 'HTML Help Books Python API',
 	author = 'José Fonseca',
 	author_email = 'jrfonseca@users.berlios.de',
 	url = 'http://htmlhelp.berlios.de/',
 	packages = ['HTMLHelp'],
 	py_modules = ['chmlib'],
-	ext_modules = [chmlib])
+	ext_modules = [chmlib],
+	scripts = ['scripts/hhsqldump'])

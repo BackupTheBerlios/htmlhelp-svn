@@ -16,6 +16,8 @@ def normalize_space(s):
 _html_entity_re = re.compile(r'&(?:([a-zA-Z][-.a-zA-Z0-9]*)|#(?:([0-9]+)|[xX]([0-9a-fA-F]+)));?')
 
 def html_entity_decode(s, encoding = 'iso-8859-1'):
+	"""Decode HTML entities in a string into Unicode."""
+	
 	r = []
 
 	p = 0
@@ -50,6 +52,7 @@ _html_body_re = re.compile(r'<body(?:\s.*?)?>(.*?)</body>', re.IGNORECASE | re.D
 _html_tag_re = re.compile(r'<.*?>', re.DOTALL)
 
 def extract_html(content):
+	"""Extract the plaintext title and body of a HTML document."""
 
 	mo = _html_title_re.search(content)
 	if mo:
@@ -67,6 +70,8 @@ def extract_html(content):
 
 
 def guess_type(path):
+	"""Guess the document content-type from the path."""
+
 	base, ext = posixpath.splitext(path)
 	if ext in mimetypes.types_map:
 		return mimetypes.types_map[ext]
@@ -75,7 +80,8 @@ def guess_type(path):
 	
 
 def extract(path, content):
-	"""Extract the title and body of a document in plaintext."""
+	"""Extract the title and body of a document in plaintext by guessing the
+	content-type from the path."""
 
 	type = guess_type(path)
 

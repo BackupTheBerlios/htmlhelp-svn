@@ -1,0 +1,23 @@
+#!/usr/bin/python
+
+"""Dump a HTML Help book into a SQL language file."""
+
+
+import sys
+
+from HTMLHelp.MySQL import dump
+from HTMLHelp.Formats import factory
+
+
+def main():
+	for arg in sys.argv[1:]:
+		try:
+			book = factory(arg)
+		except:
+			raise
+
+		dump(book)
+
+
+if __name__ == '__main__':
+	main()
