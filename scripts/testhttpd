@@ -44,18 +44,34 @@ class MyRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
 		CGIHTTPServer.CGIHTTPRequestHandler.do_POST(self)
 		
 	def redirect_path(self):
-		path = self.translate_path(self.path)
-		if os.path.isdir(path):
+		path = self.path
+		i = path.rfind('?')
+		if i >= 0:
+			path, query = path[:i], path[i:]
+		else:
+			query = ''
+
+		head, tail = path, ''
+		temp = self.translate_path(head)
+		while not os.path.exists(temp):
+			i = head.rfind('/')
+			if i < 0:
+				break
+			head, tail = head[:i], head[i:] + tail
+			temp = self.translate_path(head)
+
+		if os.path.isdir(temp):
 			for index in self.indices:
-				if os.path.exists(os.path.join(path, index)):
-					path = os.path.join(path, index)
-					self.path = posixpath.join(self.path, index)
+				if os.path.exists(os.path.join(temp, index)):
+					head = posixpath.join(head, index)
 					break
 
-		ctype = self.guess_type(self.path)
+		ctype = self.guess_type(head)
 		if ctype in self.actions:
 			os.environ['REDIRECT_STATUS'] = '200'			
-			self.path = self.actions[ctype] + self.path
+			head = self.actions[ctype] + head
+
+		self.path = head + tail + query
 
 	def translate_path(self, path):
 		path = posixpath.normpath(urllib.unquote(path))
