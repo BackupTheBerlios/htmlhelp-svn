@@ -1,8 +1,6 @@
 GARNAME = Numeric
 
-DEVHELP_EXTRA_TARGETS = $(WORKDIR)/$(GARNAME).tgz
-CHM_EXTRA_TARGETS = $(WORKDIR)/$(GARNAME).chm
-HTB_EXTRA_TARGETS = $(WORKDIR)/$(GARNAME).htb
+BOOKS = $(WORKDIR)/$(GARNAME).devhelp $(WORKDIR)/$(GARNAME).mshh
 
 include ../../gar.mk
 
@@ -12,14 +10,17 @@ $(WORKDIR)/www.pfdubois.com/numpy/html2:
 	cd $(WORKDIR) && wget -r -np http://www.pfdubois.com/numpy/html2/numpy.html
 	patch -i $(FILEDIR)/numpy.css.patch $(WORKDIR)/www.pfdubois.com/numpy/html2/numpy.css
 
-$(WORKDIR)/devhelp.$(GARNAME): $(FILEDIR)/book.devhelp $(WORKDIR)/www.pfdubois.com/numpy/html2
-	rm -rf $@
-	mkdir -p $@
-	cp -a $(FILEDIR)/book.devhelp $@
-	cp -a $(WORKDIR)/www.pfdubois.com/numpy/html2 $@/book
+$(WORKDIR)/$(GARNAME).devhelp: $(WORKDIR)/www.pfdubois.com/numpy/html2
+	rm -rf $@d
+	mkdir -p $@d
+	cp -a $(FILEDIR)/book.devhelp $@d
+	cp -a $(WORKDIR)/www.pfdubois.com/numpy/html2 $@d/book
+	touch $@
 
-$(WORKDIR)/htmlhelp.$(GARNAME): $(FILEDIR)/Numeric.hhp $(FILEDIR)/Numeric.hhc $(WORKDIR)/www.pfdubois.com/numpy/html2
-	rm -rf $@
-	cp -a $(WORKDIR)/www.pfdubois.com/numpy/html2 $@
-	cp -a $(FILEDIR)/Numeric.hhc $@
-	cp -a $(FILEDIR)/Numeric.hhp $@
+$(WORKDIR)/$(GARNAME).mshh: $(WORKDIR)/www.pfdubois.com/numpy/html2
+	rm -rf $@d
+	cp -a $(WORKDIR)/www.pfdubois.com/numpy/html2 $@d
+	cp -a $(FILEDIR)/Numeric.hhp $@d
+	cp -a $(FILEDIR)/Numeric.hhc $@d
+	cp -a $(FILEDIR)/Numeric.hhk $@d
+	touch $@
