@@ -1,0 +1,20 @@
+diff --speed-large-files --minimal -Nru tmp/gcc-3.3.2/libstdc++-v3/docs/doxygen/user.cfg.in work/main.d/gcc-3.3.2/libstdc++-v3/docs/doxygen/user.cfg.in
+--- tmp/gcc-3.3.2/libstdc++-v3/docs/doxygen/user.cfg.in	2003-06-25 21:37:09.000000000 +0100
++++ work/main.d/gcc-3.3.2/libstdc++-v3/docs/doxygen/user.cfg.in	2003-11-03 14:27:18.000000000 +0000
+@@ -548,14 +548,14 @@
+ # Microsoft HTML help workshop to generate a compressed HTML help file (.chm) 
+ # of the generated HTML documentation.
+ 
+-GENERATE_HTMLHELP      = NO
++GENERATE_HTMLHELP      = YES
+ 
+ # If the GENERATE_HTMLHELP tag is set to YES, the CHM_FILE tag can 
+ # be used to specify the file name of the resulting .chm file. You 
+ # can add a path in front of the file if the result should not be 
+ # written to the html output dir.
+ 
+-CHM_FILE               = 
++CHM_FILE               = libstdc++.chm
+ 
+ # If the GENERATE_HTMLHELP tag is set to YES, the HHC_LOCATION tag can 
+ # be used to specify the location (absolute path including file name) of 

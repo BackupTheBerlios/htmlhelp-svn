@@ -1,5 +1,5 @@
 GARNAME = gawk
-GARVERSION = 3.1.2
+GARVERSION = 3.1.3
 MASTER_SITES = ftp://ftp.gnu.org/pub/gnu/$(GARNAME)/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
 

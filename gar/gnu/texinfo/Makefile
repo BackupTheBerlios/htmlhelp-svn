@@ -1,5 +1,5 @@
 GARNAME = texinfo
-GARVERSION = 4.5
+GARVERSION = 4.6
 MASTER_SITES = ftp://ftp.gnu.org/pub/gnu/$(GARNAME)/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
 

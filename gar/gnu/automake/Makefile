@@ -1,5 +1,5 @@
 GARNAME = automake
-GARVERSION = 1.7.2
+GARVERSION = 1.7.8
 MASTER_SITES = ftp://ftp.gnu.org/pub/gnu/$(GARNAME)/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
 

@@ -1,2 +1,3 @@
-2d72df1e1dd599dbdf3835b7c2951860  download/glibc-2.3.2.tar.gz
-993efdb74f75990f4a5cb6f7e69c40b4  download/glibc-linuxthreads-2.3.2.tar.gz
+ede969aad568f48083e413384f20753c  download/glibc-2.3.2.tar.bz2
+894b8969cfbdf787c73e139782167607  download/glibc-linuxthreads-2.3.2.tar.bz2
+8d2f70ef8f250f692c75703c744d3e54  download/gar-base.diff

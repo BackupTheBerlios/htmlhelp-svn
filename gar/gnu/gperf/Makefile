@@ -1,5 +1,5 @@
 GARNAME = gperf
-GARVERSION = 2.7.2
+GARVERSION = 3.0.1
 MASTER_SITES = ftp://ftp.gnu.org/pub/gnu/$(GARNAME)/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
 

@@ -1,16 +1,15 @@
 GARNAME = binutils
-GARVERSION = 2.13.2.1
+GARVERSION = 2.14
 MASTER_SITES = \
 	ftp://ftp.gnu.org/gnu/$(GARNAME)/ \
 	ftp://ftp.kernel.org/pub/linux/devel/$(GARNAME)/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
 
-#CONFIGURE_SCRIPTS = \
+CONFIGURE_SCRIPTS = \
 	$(WORKSRC)/bfd/configure \
+	$(WORKSRC)/binutils/configure \
 	$(WORKSRC)/gas/configure \
 	$(WORKSRC)/ld/configure
-CONFIGURE_SCRIPTS = \
-	$(WORKSRC)/configure
 BUILD_SCRIPTS = \
 	$(WORKSRC)/bfd/doc/Makefile \
 	$(WORKSRC)/binutils/doc/Makefile \
@@ -30,10 +29,9 @@ NODIST_BOOKS = \
 
 include ../../gar.mk
 
-MAKEINFO_FLAGS += -I ../bfd/doc
+MAKEINFO_FLAGS += -I ../../bfd/doc -I ../bfd/doc
 
 build-$(WORKSRC)/bfd/doc/Makefile: BUILD_ARGS = bfd.info
 build-$(WORKSRC)/binutils/doc/Makefile: BUILD_ARGS = binutils.info
+build-$(WORKSRC)/gas/doc/Makefile: BUILD_ARGS = as.info
 build-$(WORKSRC)/ld/Makefile: BUILD_ARGS = ld.info
-
-

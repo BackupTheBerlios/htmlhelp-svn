@@ -1,12 +1,16 @@
 GARNAME = gcc
-GARVERSION = 3.2.3
+GARVERSION = 3.3.2
 MASTER_SITES = \
+	ftp://ftp.gnu.org/pub/gnu/$(GARNAME)/releases/$(GARNAME)-$(GARVERSION)/ \
 	ftp://gcc.gnu.org/pub/$(GARNAME)/releases/$(GARNAME)-$(GARVERSION)/ \
 	ftp://sources.redhat.com/pub/$(GARNAME)/releases/$(GARNAME)-$(GARVERSION)/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
+PATCHFILES = gar-base.diff
 
-CONFIGURE_SCRIPTS = \
-	$(WORKSRC)/gcc/configure
+CONFIGURE_SCRIPTS = $(WORKSRC)/gcc/configure $(WORKSRC)/libstdc++-v3/configure
+
+BUILD_SCRIPTS = $(WORKSRC)/libstdc++-v3/Makefile
+BUILD_ARGS = doxygen
 
 BOOKS = \
 	$(WORKSRC)/gcc/doc/cpp.texi \
@@ -17,12 +21,11 @@ BOOKS = \
 	$(WORKSRC)/gcc/java/gcj.texi \
 	$(WORKSRC)/gcc/ada/gnat_ug_unx.texi \
 	$(WORKSRC)/gcc/ada/gnat_rm.texi \
-	$(WORKSRC)/gcc/ada/gnat-style.texi
+	$(WORKSRC)/gcc/ada/gnat-style.texi \
+	$(WORKSRC)/libstdc++-v3/docs/doxygen/libstdc++.mshh
 
 NODIST_BOOKS = \
 	$(WORKSRC)/libiberty/libiberty.texi
-
-CHM_EXTRA_TARGETS = $(WORKDIR)/html_user/libstdc++.chm
 
 include ../../gar.mk
 
@@ -32,24 +35,6 @@ MAKEINFO_FLAGS += -I ../doc/include
 $(WORKSRC)/gcc/ada/gnat_ug_unx.texi:
 	$(MAKE) -C $(@D) doctools/xgnatug $(@F)
 
-
-# NOTE: The libstdc++ book can't be generated under libstcd++-v3 directory
-# because WINE or HHC has problems opening files under there.
-$(WORKSRC)/libstdc++-v3/docs/doxygen/user.cfg: $(WORKSRC)/libstdc++-v3/docs/doxygen/user.cfg.in
-	sed \
-		-e "s=@outdir@=../..=" \
-		-e "s=@srcdir@=.=" \
-		-e "s=@html_output_dir@=html_user=" \
-		-e "s=@enabled_sections@==" \
-		-e "s=@do_html@=YES=" \
-		-e "s=@do_man@=NO=" \
-		-e "/GENERATE_HTMLHELP/s=NO=YES=" \
-		-e "/CHM_FILE/s=$$=libstdc++.chm=" \
-		$< > $@
-
-$(WORKDIR)/html_user/index.hhp: $(WORKSRC)/libstdc++-v3/docs/doxygen/user.cfg
-	cd $(WORKSRC)/libstdc++-v3 && doxygen docs/doxygen/user.cfg
-
-$(WORKDIR)/html_user/libstdc++.chm: $(WORKDIR)/html_user/index.hhp
-	cd $(<D) && $(HHC) $(<F)
-
+$(WORKSRC)/libstdc++-v3/docs/doxygen/libstdc++.mshh:
+	ln -sf html_user $@d
+	@touch $@

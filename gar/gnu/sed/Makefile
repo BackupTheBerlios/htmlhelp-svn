@@ -1,5 +1,5 @@
 GARNAME = sed
-GARVERSION = 4.0.7
+GARVERSION = 4.0.8
 MASTER_SITES = ftp://ftp.gnu.org/pub/gnu/$(GARNAME)/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
 
