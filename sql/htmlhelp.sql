@@ -20,7 +20,7 @@ CREATE TABLE `books` (
   `id` smallint(11) unsigned NOT NULL auto_increment,
   `title` tinytext NOT NULL,
   `default_path` varchar(255) binary NOT NULL default '',
-  `default_anchor` varchar(31) binary NOT NULL default '',
+  `default_anchor` varchar(255) binary NOT NULL default '',
   PRIMARY KEY  (`id`),
   KEY `title` (`title`(7))
 ) TYPE=MyISAM AUTO_INCREMENT=3 ;
@@ -48,7 +48,7 @@ CREATE TABLE `index` (
 CREATE TABLE `index_links` (
   `index_id` mediumint(11) NOT NULL default '0',
   `path` varchar(255) binary NOT NULL default '',
-  `anchor` varchar(31) binary NOT NULL default '',
+  `anchor` varchar(255) binary NOT NULL default '',
   KEY `index_id` (`index_id`)
 ) TYPE=MyISAM;
 
@@ -80,7 +80,7 @@ CREATE TABLE `toc` (
   `number` smallint(11) unsigned NOT NULL default '0',
   `name` text NOT NULL,
   `path` varchar(255) binary NOT NULL default '',
-  `anchor` varchar(31) binary NOT NULL default '',
+  `anchor` varchar(255) binary NOT NULL default '',
   PRIMARY KEY  (`book_id`,`parent_number`,`number`),
-  UNIQUE KEY `link` (`book_id`,`path`,`anchor`)
+  INDEX `link` (`book_id`,`path`(31),`anchor`(7))
 ) TYPE=MyISAM;
