@@ -8,6 +8,7 @@ import os.path
 import urlparse
 import xml.parsers.expat
 import tarfile
+import time
 
 try:
 	from cStringIO import StringIO
@@ -22,7 +23,9 @@ import Catalog
 #######################################################################
 # DevHelp XML spec parsing/formatting
 #
-# See http://cvs.gnome.org/lxr/source/devhelp/dtd/devhelp-1.dtd
+# For format description see:
+# - http://cvs.gnome.org/lxr/source/devhelp/dtd/devhelp-1.dtd
+# - http://cvs.gnome.org/lxr/source/devhelp/README
 
 
 class SpecParser:
@@ -134,11 +137,11 @@ class SpecFormatter:
 
 	def chapter(self, parent):
 		for child in parent:
-			self.fp.write('<chapter name="%s" link="%s"' % (self.escape(child.name), self.escape(child.link)))
+			self.fp.write('<sub name="%s" link="%s"' % (self.escape(child.name), self.escape(child.link)))
 			if len(child):
 				self.fp.write('>\n')
 				self.chapter(child)
-				self.fp.write('</chapter>\n')
+				self.fp.write('</sub>\n')
 			else:
 				self.fp.write('/>\n')
 
@@ -264,6 +267,8 @@ def _addfile(tar, name, fp):
 	fp.seek(0, 2)
 	tarinfo.size = fp.tell()
 	fp.seek(0)
+	
+	tarinfo.mtime = time.time()
 	
 	tar.addfile(tarinfo, fp)
 	
