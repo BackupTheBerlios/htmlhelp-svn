@@ -2,8 +2,11 @@
 
 
 import sys
+import os
 import os.path
 import struct
+import tempfile
+import shutil
 
 try:
 	from cStringIO import StringIO
@@ -193,4 +196,53 @@ def read(path):
 		return read_chm(path)
 	else:
 		raise ValueError, 'not a CHM file'
+
+
+#######################################################################
+# Writers
+
+
+def write_chm(book, path, name = None):
+	if not sys.platform.startswith('win'):
+		raise ValueError, 'Only supported on Windows platform'
+	
+	dir = tempfile.mkdtemp()
+	
+	if name is None:
+		# TODO: choose a better default here
+		name = 'book'
+		
+	formatter = MSHH.Formatter(book, name)
+	
+	hhp_name = os.path.join(dir, name + '.hhp')
+	fp = file(hhp_name, 'wt')
+	formatter.write_hhp(fp)
+	fp.close()
+	
+	fp = file(os.path.join(dir, name + '.hhc'), 'wt')
+	formatter.write_hhc(fp)
+	fp.close()
+	
+	fp = file(os.path.join(dir, name + '.hhk'), 'wt')
+	formatter.write_hhk(fp)
+	fp.close()
+	
+	for pname in book.archive:
+		# FIXME: make parent dirs
+		fp = file(os.path.join(dir, pname), 'wb')
+		fp.write(book.archive[pname].read())
+		fp.close()
+
+	os.spawnl(os.P_WAIT, 'C:\\Program Files\\HTML Help Workshop\\hhc.exe', 'hhc.exe', hhp_name)
+
+	shutil.move(os.path.join(dir, name + '.chm'), path)
+	
+	shutil.rmtree(dir)
+
+
+def write(book, path, name=None):
+	if not path.endswith('.chm'):
+		raise ValueError
+	write_chm(book, path, name)
+
 
