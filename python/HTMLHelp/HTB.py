@@ -2,7 +2,10 @@
 
 
 import os.path
-import Book, MSHH, Archive
+
+import Archive
+import Book
+import MSHH
 
 
 class HTBBook(MSHH.MSHHBook):
@@ -13,7 +16,7 @@ class HTBBook(MSHH.MSHHBook):
 		
 		names = filter(
 				lambda name: name[-4:].lower() == '.hhp',
-				archive.list())
+				archive.keys())
 
 		# FIXME: Actually the HTB format allows more than one project inside a zip
 		assert len(names) == 1
@@ -21,10 +24,7 @@ class HTBBook(MSHH.MSHHBook):
 
 		MSHH.MSHHBook.__init__(self, archive, hhp)
 	
-	def list(self):
-		return filter(
-				lambda name: name[-4:].lower() not in ('.hhp', '.hhc', '.hhk'),
-				self.archive.list())
+		self.archive = MSHH.MSHHFilterArchive(archive)
 
 
 def factory(path):
@@ -32,4 +32,4 @@ def factory(path):
 	if ext.lower() in ('.htb', '.zip'):
 		return HTBBook(path)
 	else:
-		raise Book.InvalidBookError, 'unknown HTB extension \'%s\'' % ext
+		raise ValueError, 'unknown HTB extension \'%s\'' % ext

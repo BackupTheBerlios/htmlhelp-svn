@@ -1,9 +1,13 @@
 """Microsoft HTML Help."""
 
 
-import os, re, sys, HTMLParser
+import os
+import re
+import sys
+import HTMLParser
 
-import Book, Archive
+import Archive
+import Book
 
 
 class MSHTMLParser(HTMLParser.HTMLParser):
@@ -111,10 +115,10 @@ class HHPParser:
 		if self.section == 'OPTIONS':
 			if name == 'Contents file':
 				parser = HHCParser(self.book)
-				parser.parse(self.book.resource(value))
+				parser.parse(self.book.archive[value])
 			elif name == 'Index file':
 				parser = HHKParser(self.book)
-				parser.parse(self.book.resource(value))
+				parser.parse(self.book.archive[value])
 			elif name == 'Title':
 				self.book.contents.name = value
 			elif name == 'Default topic':
@@ -163,17 +167,34 @@ class HHPParser:
 				self.handle_line(line)
 
 
+class MSHHFilterArchive(Archive.Archive):
+	"""Archive proxy which hides unwanted files from the client."""
+
+	def __init__(self, archive):
+		self.archive = archive
+		
+	def __iter__(self):
+		for path in self.archive:
+			if path[-4:].lower() not in ('.hhp', '.hhc', '.hhk'):
+				yield path
+		raise StopIteration
+
+	def __getitem__(self, path):
+		return self.archive[path]
+
+
 class MSHHBook(Book.Book):
-	"""Microsoft HTML Help."""
+	"""Microsoft HTML Help Book."""
 
 	def __init__(self, archive, hhp):
 		Book.Book.__init__(self, archive)
 
 		parser = HHPParser(self)
-		parser.parse(archive.open(hhp))
+		parser.parse(archive[hhp])
 	
 
 class RawMSHHBook(MSHHBook):
+	"""Uncompressed HTML Help Book."""
 
 	def __init__(self, path):
 		basedir, hhp = os.path.split(os.path.abspath(path))
@@ -181,10 +202,12 @@ class RawMSHHBook(MSHHBook):
 		
 		MSHHBook.__init__(self, archive, hhp)
 
+		self.archive = FilterArchive(archive)
+
 
 def factory(path):
 	root, ext = os.path.splitext(path)
 	if ext.lower() == '.hhp':
 		return RawMSHHBook(path)
 	else:
-		raise Book.InvalidBookError, 'not a HTML Help Project file'
+		raise ValueError, 'not a HTML Help Project file'

@@ -1,9 +1,11 @@
-"""Archive interface."""
+"""Archive interfaces.
+
+An archive is a collection of files, identified by their names."""
 
 
-import os, os.path, zipfile, tarfile
-import Error
-
+import os.path
+import zipfile
+import tarfile
 
 try:
 	from cStringIO import StringIO
@@ -11,102 +13,149 @@ except ImportError:
 	from StringIO import StringIO
 
 
-class ArchiveError(Error.Error):
-	"""Base archive exception class."""
-
-	pass
-
-
-class InvalidArchiveError(ArchiveError):
-	"""Attempt to open an invalid archive."""
-	
-	pass
-
-
-class MissingMemberError(ArchiveError):
-	"""Attempt to get a non-existing member,"""
-
-	pass
-
-
 class Archive(object):
-	"""A dictionary-like view of a file archive."""
+	"""Presents a dictionary-like view (so far read-only) of a file archive,
+	where the keys are file names and the values are file-like objects."""
+
+	def __contains__(self, path):
+		"""Whether a member with the given path is in the archive"""
+
+		for _path in self:
+			if _path == path:
+				return True
+		return False
 
 	def __iter__(self):
-		return iter(self.list)
+		"""Iterate over the member file names.
+		
+		Must be overrided by derived classes."""
+		
+		return self.iterkeys()
+
+	def __len__(self):
+		count = 0
+		for path in self:
+			count += 1
+		return count
 
 	def __getitem__(self, path):
-		return self.open(path)
+		"""Get a file-like object for a member in the archive.
+		
+		Must be overrided by derived classes."""
 
-	def list(self):
+		raise NotImplementedError
+
+	def __str__(self):
+		return str(self.keys())
+		
+	def has_key(self, path):
+		"""Whether a member with the given path is in the archive."""
+
+		return path in self.keys()
+
+	def iterkeys(self):
+		"""Iterate over the member file names."""
+		
+		return iter(self.keys())
+
+	def keys(self):
 		"""List archive contents."""
 		
-		raise NotImplementedError
-		
-	def open(self, path):
+		return list(iter(self))
+	
+	def get(self, path, default = None):
 		"""Get a file-like object for a member in the archive."""
+		
+		try:
+			return self[path]
+		except KeyError:
+			return default
 
-		raise NotImplementedError
+
+class EmptyArchive(Archive):
+	"""Empty archive."""
+
+	def __contains__(self, path):
+		return False
+		
+	def __iter__(self):
+		raise StopIteration
+
+	def __getitem__(self, path):
+		raise KeyError
 
 
 class DirArchive(Archive):
-	"""Plain directory."""
+	"""Plain directory archive."""
 
 	def __init__(self, path):
+		if not os.path.isdir(path):
+			raise ValueError, '\'%s\' is not a directory' % path
+
 		self.dir = os.path.abspath(path)
 
-	def _walkdir(self, head = ''):
-		result = []
+	def __contains__(self, path):
+		return os.path.isfile(os.path.join(self.dir, path))
+		
+	def __iter__(self):
+		return self.iterdir()
+
+	def __getitem__(self, path):
+		path = os.path.join(self.dir, path)
+		try:
+			return file(path, 'rb')
+		except IOError:
+			raise KeyError, 'could not open \'%s\'' % path
+	
+	def iterdir(self, head = ''):
 		abshead = os.path.join(self.dir, head)
 		for tail in os.listdir(abshead):
 			path = os.path.join(head, tail)
 			abspath = os.path.join(abshead,tail)
 			if os.path.isdir(abspath):
-				result.extend(self._walkdir(path))
+				for path in self.iterdir(path):
+					yield path
 			elif os.path.isfile(abspath):
-				result.append(path)
-		return result
-		
-	def list(self):
-		return self._walkdir()
-
-	def open(self, path):
-		path = os.path.join(self.dir, path)
-		try:
-			return file(path, 'rb')
-		except IOError:
-			raise MissingMemberError, 'could not open \'%s\'' % path
+				yield path
+		raise StopIteration
 
 
 class ZipArchive(Archive):
 	"""ZIP archive."""
 
 	def __init__(self, path):
-		self.zip = zipfile.ZipFile(path, "r")
+		try:
+			self.zip = zipfile.ZipFile(path, "r")
+		except zipfile.BadZipfile, msg:
+			raise ValueError, msg
+		except IOError, msg:
+			raise ValueError, msg
 
-	def list(self):
+	def __contains__(self, path):
+		return bool(self.zip.getinfo(path))
+
+	def __iter__(self):
+		return iter(self.keys())
+	
+	def __getitem__(self, path):
+		return StringIO(self.zip.read(path))
+
+	def keys(self):
 		return self.zip.namelist()
 
-	def open(self, path):
-		fp = StringIO()
-		fp.write(self.zip.read(path))
-		fp.seek(0)
-		return fp
-	
 
 class TarArchive(Archive):
-	"""TAR archive."""
+	"""TAR-ball archive."""
 
 	def __init__(self, path):
 		self.tar = tarfile.open(path, 'r')
 
-	def list(self):
-		result = []
+	def __iter__(self):
 		for member in self.tar.getmembers():
 			if member.isfile():
-				result.append(member.name)
-		return result
+				yield member.name
+		raise StopIteration
 
-	def open(self, path):
+	def __getitem__(self, path):
 		return self.tar.extractfile(path)
 

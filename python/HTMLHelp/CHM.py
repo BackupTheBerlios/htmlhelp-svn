@@ -21,17 +21,10 @@ class ChmArchive(Archive.Archive):
 	def __del__(self):
 		chmlib.chm_close(self.chm)
 	
-	def _enumerate(self, chm, ui, result):
-		result.append(ui.path)
-		
-		return chmlib.CHM_ENUMERATOR_CONTINUE
+	def __contains__(self, path):
+		return path in self.keys()
 
-	def list(self):
-		result = []
-		chmlib.chm_enumerate(self.chm, chmlib.CHM_ENUMERATE_NORMAL | chmlib.CHM_ENUMERATE_FILES, self._enumerate, result)
-		return result
-	
-	def open(self, path):
+	def __getitem__(self, path):
 		ui = chmlib.chm_resolve_object(self.chm, path)
 
 		fp = StringIO()
@@ -50,15 +43,28 @@ class ChmArchive(Archive.Archive):
 		fp.seek(0)
 		return fp
 
+	def __iter__(self):
+		return iter(self.keys())
+		
+	def keys(self):
+		result = []
+		chmlib.chm_enumerate(self.chm, chmlib.CHM_ENUMERATE_NORMAL | chmlib.CHM_ENUMERATE_FILES, self.enumerate, result)
+		return result
+	
+	def enumerate(self, chm, ui, result):
+		result.append(ui.path)
+		
+		return chmlib.CHM_ENUMERATOR_CONTINUE
+
 
 class SystemParser:
 
 	def __init__(self, book):
 		self.book = book
 	
-		self.parse(book.archive.open('/#SYSTEM'))
+		self.parse(self.book.archive['/#SYSTEM'])
 		
-	def _read(self, fp, fmt):
+	def read(self, fp, fmt):
 		fmt = '<' + fmt
 		size = struct.calcsize(fmt)
 		data = fp.read(size)
@@ -67,13 +73,13 @@ class SystemParser:
 		return struct.unpack(fmt, data)
 	
 	def parse(self, fp):
-		version, = self._read(fp, 'L')
+		version, = self.read(fp, 'L')
 
 		try:
 			while 1:
-				code, length = self._read(fp, 'HH')
-				data, = self._read(fp, '%ds' % length)
-				data.rstrip('\0')
+				code, length = self.read(fp, 'HH')
+				data, = self.read(fp, '%ds' % length)
+				data = data.rstrip('\0')
 				self.handle_entry(code, data)
 		except IOError:
 			pass
@@ -81,17 +87,35 @@ class SystemParser:
 	def handle_entry(self, code, data):
 		if code == 0:
 			parser = MSHH.HHCParser(self)
-			parser.parse(archive.open(data))
+			parser.parse(self.book.archive[data])
 		elif code == 1:
 			parser = MSHH.HHKParser(self)
-			parser.parse(archive.open(data))
+			parser.parse(self.book.archive[data])
 		elif code == 2:
 			self.book.contents.link = data
 		elif code == 3:
 			self.book.contents.name = data
 		
 
+class ChmFilterArchive(Archive.Archive):
+	"""Archive proxy which hides unwanted files from the client and translates
+	the paths."""
+
+	def __init__(self, archive):
+		self.archive = archive
+		
+	def __iter__(self):
+		for path in self.archive:
+			if path[:1] == '/' and not (path.lower().endswith('.hhc') or path.lower().endswith('.hhk')):
+				yield path[1:]
+		raise StopIteration
+
+	def __getitem__(self, path):
+		return self.archive['/' + path]
+
+
 class ChmBook(Book.Book):
+	"""Microsoft Compiled HTML Help (CHM) book."""
 
 	def __init__(self, path):
 		archive = ChmArchive(path)
@@ -100,23 +124,15 @@ class ChmBook(Book.Book):
 
 		SystemParser(self)
 		
-		for name in self.archive.list():
+		for name in archive:
 			if name.lower().endswith('.hhc') and not len(self.contents):
 				parser = MSHH.HHCParser(self)
-				parser.parse(archive.open(name))
+				parser.parse(archive[name])
 			elif name.lower().endswith('.hhk') and not len(self.index):
 				parser = MSHH.HHKParser(self)
-				parser.parse(archive.open(name))
+				parser.parse(archive[name])
 
-	def list(self):
-		result = []
-		for name in self.archive.list():
-			if name[:1] == '/' and not (name.lower().endswith('.hhc') or name.lower().endswith('.hhk')):
-				result.append(name[1:])
-		return result
-
-	def resource(self, path):
-		return self.archive.open('/' + path)
+		self.archive = ChmFilterArchive(archive)
 
 
 def factory(path):
@@ -124,7 +140,7 @@ def factory(path):
 	if ext.lower() == '.chm':
 		return ChmBook(path)
 	else:
-		raise Book.InvalidBookError, 'not a CHM file'
+		raise ValueError, 'not a CHM file'
 
 
 #######################################################################
@@ -136,7 +152,7 @@ def test():
 
 	for arg in sys.argv[1:]:
 		book = ChmBook(arg)
-		print book.list()
+		print book.archive.keys()
 		print book.contents
 		print book.index
 	

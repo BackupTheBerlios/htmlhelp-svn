@@ -272,9 +272,8 @@ def dump_index(book):
 
 
 def dump_archive(book):
-	paths = book.list()
-	for path in paths:
-		content = book.resource(path).read()
+	for path in book.archive:
+		content = book.archive[path].read()
 		title, body = extract(path, content)
 		
 		sys.stdout.write('INSERT INTO `page` (book_id, path, content, title, body) VALUES\n')

@@ -3,8 +3,14 @@
 See http://www.imendio.com/projects/devhelp/ for more information about DevHelp."""
 
 
-import os, os.path, urlparse, xml.parsers.expat
-import Book, Archive, Catalog
+import os
+import os.path
+import urlparse
+import xml.parsers.expat
+
+import Archive
+import Book
+import Catalog
 
 
 class SpecParser:
@@ -75,9 +81,22 @@ class DevHelpBook(Book.Book):
 		Book.Book.__init__(self, archive)
 
 		parser = SpecParser(self)
-		parser.parse(archive.open(spec))
+		parser.parse(archive[spec])
 	
 	
+class RawDevHelpFilterArchive(Archive.Archive):
+	"""Archive proxy which hides unwanted files from the client."""
+
+	def __init__(self, archive):
+		self.archive = archive
+		
+	def __iter__(self):
+		for path in self.archive:
+			if not path.endswidth('.devhelp'):
+				yield path
+		raise StopIteration
+
+
 class RawDevHelpBook(DevHelpBook):
 
 	def __init__(self, path):
@@ -85,6 +104,23 @@ class RawDevHelpBook(DevHelpBook):
 		archive = Archive.DirArchive(basedir)
 		
 		DevHelpBook.__init__(self, archive, spec)
+
+		self.archive = RawDevHelpFilterArchive(archive)
+
+class TgzDevHelpFilterArchive(Archive.Archive):
+	"""Archive proxy which hides unwanted files from the client."""
+
+	def __init__(self, archive):
+		self.archive = archive
+		
+	def __iter__(self):
+		for path in self.archive:
+			if path.startswith('book/'):
+				yield path[5:]
+		raise StopIteration
+
+	def __getitem__(self, path):
+		return self.archive['book/' + path]
 
 
 class TgzDevHelpBook(DevHelpBook):
@@ -95,15 +131,7 @@ class TgzDevHelpBook(DevHelpBook):
 
 		DevHelpBook.__init__(self, archive, 'book.devhelp')
 	
-	def list(self):
-		result = []
-		for name in self.archive.list():
-			if name.startswith('book/'):
-				result.append(name[5:])
-		return result
-		
-	def resource(self, path):
-		return self.archive.open('book/' + path)
+		self.archive = TgzDevHelpFilterArchive(archive)
 
 
 def factory(path):
@@ -115,17 +143,9 @@ def factory(path):
 	elif ext == '.tgz':
 		return TgzDevHelpBook(path)
 	else:
-		raise Book.InvalidBookError, 'unknown DevHelp book extension \'%s\'' % ext
+		raise ValueError, 'unknown DevHelp book extension \'%s\'' % ext
 
 
-def DevHelpCatalogIterator(self):
-	for dir in self.path:
-		if os.path.isdir(dir):
-			for name in os.listdir(dir):
-				path = os.path.join(dir, name, name + '.devhelp')
-				if os.path.isfile(path):
-					yield Catalog.CatalogEntry(name, RawDevHelpBook, path)
-					
 class DevHelpCatalog(Catalog.Catalog):
 
 	def __init__(self):
@@ -140,7 +160,12 @@ class DevHelpCatalog(Catalog.Catalog):
 		self.path.append('/usr/local/share/gtk-doc/html')
 	
 	def __iter__(self):
-
-		return DevHelpCatalogIterator(self)
+		for dir in self.path:
+			if os.path.isdir(dir):
+				for name in os.listdir(dir):
+					path = os.path.join(dir, name, name + '.devhelp')
+					if os.path.isfile(path):
+						yield Catalog.CatalogEntry(name, RawDevHelpBook, path)
+		raise StopIteration
 
 catalog = DevHelpCatalog()

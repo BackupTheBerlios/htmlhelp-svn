@@ -1,7 +1,10 @@
 """Generic interface to all formats."""
 
 
-import Book, DevHelp, MSHH, HTB, CHM
+import DevHelp
+import MSHH
+import HTB
+import CHM
 
 
 _factories = [
@@ -14,7 +17,7 @@ def factory(path):
 	for factory in _factories:
 		try:
 			return factory(path)
-		except Book.InvalidBookError:
+		except ValueError:
 			pass
 
-	raise Book.InvalidBookError('could not find an appropriate factory to open book %s' % path)
+	raise ValueError, 'could not find an appropriate factory to open book %s' % path
