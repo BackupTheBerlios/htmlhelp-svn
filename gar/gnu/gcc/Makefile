@@ -5,6 +5,9 @@ MASTER_SITES = \
 	ftp://sources.redhat.com/pub/$(GARNAME)/releases/$(GARNAME)-$(GARVERSION)/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
 
+CONFIGURE_SCRIPTS = \
+	$(WORKSRC)/gcc/configure
+
 BOOKS = \
 	$(WORKSRC)/gcc/doc/cpp.texi \
 	$(WORKSRC)/gcc/doc/cppinternals.texi \
@@ -12,7 +15,7 @@ BOOKS = \
 	$(WORKSRC)/gcc/doc/gccint.texi \
 	$(WORKSRC)/gcc/f/g77.texi \
 	$(WORKSRC)/gcc/java/gcj.texi \
-	$(WORKSRC)/gcc/ada/gnat_ug.texi \
+	$(WORKSRC)/gcc/ada/gnat_ug_unx.texi \
 	$(WORKSRC)/gcc/ada/gnat_rm.texi \
 	$(WORKSRC)/gcc/ada/gnat-style.texi
 
@@ -25,6 +28,10 @@ include ../../gar.mk
 
 MAKEINFO_FLAGS += --force
 MAKEINFO_FLAGS += -I ../doc/include
+
+$(WORKSRC)/gcc/ada/gnat_ug_unx.texi:
+	$(MAKE) -C $(@D) doctools/xgnatug $(@F)
+
 
 # NOTE: The libstdc++ book can't be generated under libstcd++-v3 directory
 # because WINE or HHC has problems opening files under there.
@@ -45,3 +52,4 @@ $(WORKDIR)/html_user/index.hhp: $(WORKSRC)/libstdc++-v3/docs/doxygen/user.cfg
 
 $(WORKDIR)/html_user/libstdc++.chm: $(WORKDIR)/html_user/index.hhp
 	cd $(<D) && $(HHC) $(<F)
+
