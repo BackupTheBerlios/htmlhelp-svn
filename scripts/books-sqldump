@@ -1,0 +1,9 @@
+#!/bin/sh
+
+for FILE
+do
+	EXTENSION=${FILE##*.}
+	BASENAME=`basename "$FILE" ".$EXTENSION"`
+
+	python ~/projects/htmlhelp/python/HTMLHelp/MySQL.py $FILE > ~/projects/htmlhelp/books/$BASENAME.sql
+done
