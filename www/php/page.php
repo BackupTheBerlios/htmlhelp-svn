@@ -6,7 +6,7 @@
 	// option in php.ini must be set.
 
 	$book_id = '';
-	$path = $PATH_INFO;
+	$path = $_SERVER['PATH_INFO'];
 	while(!$book_id and $path)
 		list($book_id, $path) = explode('/', $path, 2);
 	$book_id = intval($book_id);
@@ -30,6 +30,7 @@
 	$content_type = _mime_content_type($path);
 	
 	header('Content-Type: ' . $content_type);
+	header('Content-Length: ' . strlen($content));
 
 	echo $content;
 ?>
