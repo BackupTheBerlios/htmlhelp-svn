@@ -1,0 +1,97 @@
+There is a problem with the old and new GNAT Userguide. It differs from the
+HTML version that comes with GNU GNAT Ada 95.
+
+The HTML version
+---------------------------------------------------------------
+>13.1 About gnatkr
+>
+>The default file naming rule in GNAT is that the file name
+>must be derived from the unit name. The exact default rule
+>is as follows:
+>
+>Take the unit name and replace all dots by hyphens.
+>
+>If such a replacement occurs in the second character
+>position of a name, and the first character is a, g, s, or i
+>then replace the dot by the character ~ (tilde) instead of a
+>minus.
+>
+>The reason for this exception is to avoid clashes with the
+>standard names for children of System, Ada, Interfaces, and
+>GNAT, which use the prefixes s- a- i- and g- respectively.
+---------------------------------------------------------------
+
+One of the *.Chm versions:
+---------------------------------------------------------------
+>Chapter 15. File Name Krunching Using gnatkr
+...
+>About gnatkr
+>
+>The default file naming rule in GNAT is that the file name
+>must be derived from the unit name. The exact default rule
+>is as follows:
+>
+>Take the unit name and replace all dots by hyphens.
+>
+>If such a replacement occurs in the second character
+>position of a name, and the first character is ^a, g, s, or
+>i^A, G, S, or I^ then replace the dot by the character ^~
+>(tilde)^$ (dollar sign)^ instead of a minus.
+>
+>The reason for this exception is to avoid clashes with the
+>standard names for children of System, Ada, Interfaces, and
+>GNAT, which use the prefixes ^s- a- i- and g-^S- A- I- and
+>G-^ respectively.
+---------------------------------------------------------------
+
+-- Craig Carey
+
+
+The place where I noticed the bug is:
+- Go to the CPP v3.2 book
+- Select 2. Overview
+- Scroll down to the Trigraph/Replacement sample (monospaced font)
+
+For the { and } trigraphs, there should be angles after the ??s.  The problem
+can also be found in the same book, next chapter (Tokenization) at the
+Digraph/Punctuator table.
+
+-- August Mayer
+
+
+There are some problems [with libstc++]:
+- the stream-classes aren't documented at all
+- some pages (e.g. "contents/modules/stl extensions from sgi") look strange and
+  quite right-aligned
+- the class names do not show up directly in the index (e.g. vector is only
+  visible as std::vector)
+
+The last two points are quite minor, but the missing stream documentation is
+bad. Why is it missing?
+
+-- Nicolas Weber																	
+
+
+I've found that the descriptions of string class and basic_string class
+template are missing. So is the file: <string>.
+
+To my surprise, there is a <basic_string.h> file, but there are none of the
+apropriate keywords in help viewer on index tab, like: "basic_string" or
+"string", and more: "basic_ostringstream", "basic_istringstream",
+"basic_stringbuf", and the like.  There are also missing "getline()" member and
+"getline()" function template, which is very useful, since one can make a call
+like this:
+
+  string s;  getline(cin, s);
+
+Looks like doxygen configuration problem to me. Can I ask you to take a look at
+it? You know, the string class is really useful and we want students to learn
+how to use it. Right documentation would be very appreciated.
+
+Check out this pages and compare:
+- http://gcc.gnu.org/onlinedocs/libstdc++/latest-doxygen/files.html 
+- http://gcc.gnu.org/onlinedocs/libstdc++/libstdc++-html-USERS-3.2.1/annotated.html
+
+-- Wiktor Wandachowicz
+
+
