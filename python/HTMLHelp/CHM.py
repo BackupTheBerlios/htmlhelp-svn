@@ -73,6 +73,7 @@ class SystemParser:
 			while 1:
 				code, length = self._read(fp, 'HH')
 				data, = self._read(fp, '%ds' % length)
+				data.rstrip('\0')
 				self.handle_entry(code, data)
 		except IOError:
 			pass
