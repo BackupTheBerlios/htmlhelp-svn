@@ -10,6 +10,9 @@ set -e
 . config.sh
 
 (
-	echo "SET @book_id=$1;" 
-	cat delete.sql 
+	for BOOK_ID
+	do
+		echo "SET @book_id=$BOOK_ID;" 
+		cat delete.sql 
+	done
 ) | $MYSQL $DATABASE

@@ -3,14 +3,15 @@
 #
 # Example:
 #
-#  update.sh 1234 bookdump.sql 
+#  update.sh bookdump.sql 
 
 set -e
 
 . config.sh
 
-(
-	echo "SET @book_id=$1;" 
-	cat delete.sql
-	sed -f update.sed $2
-) | $MYSQL $DATABASE
+EXIT=0
+for BOOK
+do
+	sed -f update.sed $BOOK | $MYSQL $DATABASE || EXIT=1
+done
+exit $EXIT
