@@ -330,43 +330,28 @@ def dump_contents_entries(entry, parent_number, cont = 0):
 	
 
 def dump_index(book):
-	sys.stdout.write('INSERT INTO `index` (`book_id`, `parent_id`, `term`) VALUES')
-	dump_index_entries(book.index, 0)
+	sys.stdout.write('INSERT INTO `index` (`book_id`, `term`) VALUES')
+	cont = 0
+	for entry in book.index:
+		sys.stdout.write(cont and ',\n ' or '\n ')
+		sys.stdout.write('(' + ', '.join(quote(literal('@book_id'), entry.name)) + ')')
+		cont = 1
 	sys.stdout.write(';\n')
 	
 	sys.stdout.write('SET @index_id = LAST_INSERT_ID();\n')
-	sys.stdout.write('UPDATE `index` SET `parent_id` = @index_id + `parent_id` - 1 WHERE `book_id` = @book_id AND `parent_id` != 0;\n')
 	
 	sys.stdout.write('INSERT INTO `index_links` (`index_id`, `path`, `anchor`) VALUES');
-	dump_index_links(book.index, 0)
-	sys.stdout.write(';\n')
-	
-	
-def dump_index_entries(entry, parent_id, cont = 0):
-	id = parent_id + 1
-	for subentry in entry:
-		sys.stdout.write(cont and ',\n ' or '\n ')
-		sys.stdout.write('(' + ', '.join(quote(literal('@book_id'), parent_id, subentry.name)) + ')')
-		cont = 1
-				
-		id = dump_index_links(subentry, id, cont)
-	
-	return id
-
-def dump_index_links(entry, parent_id, cont = 0):
-	id = parent_id + 1
-	for subentry in entry:
-		for	link in subentry.links:
-
+	cont = 0
+	id = 0;
+	for entry in book.index:
+		for	link in entry.links:
+			id += 1
 			path, anchor = split_link(link)
 
 			sys.stdout.write(cont and ',\n ' or '\n ')
 			sys.stdout.write('(' + ', '.join(quote(literal('@index_id + %d - 1' % id), path, anchor)) + ')')
 			cont = 1
-				
-		id = dump_index_links(subentry, id, cont)
-	
-	return id
+	sys.stdout.write(';\n')
 
 
 def dump_archive(book):

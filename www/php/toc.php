@@ -9,9 +9,9 @@
 
 	function walk_toc($book_id, $parent_number)
 	{
-		$result = mysql_query('SELECT `book_id`, `number`, `parent_number`, `name`, `path`, `anchor` FROM `toc` WHERE `book_id`=' . $book_id . ' AND `parent_number`=' . $parent_number . ' ORDER BY `number`');
+		$result = mysql_query('SELECT `book_id`, `parent_number`, `number`, `name`, `path`, `anchor` FROM `toc` WHERE `book_id`=' . $book_id . ' AND `parent_number`=' . $parent_number . ' ORDER BY `number`');
 		echo '<ul>';
-		while(list($book_id, $number, $parent_number, $name, $path, $anchor) = mysql_fetch_row($result))
+		while(list($book_id, $parent_number, $number, $name, $path, $anchor) = mysql_fetch_row($result))
 		{
 			echo '<li>';
 			echo '<a href="page.php/' . $book_id . '/' . $path . '#' . $anchor . '" target="main">' . htmlentities($name, ENT_NOQUOTES, 'UTF-8') . '</a>';

@@ -1,9 +1,9 @@
 # phpMyAdmin SQL Dump
-# version 2.5.3
+# version 2.5.4
 # http://www.phpmyadmin.net
 #
 # Host: localhost
-# Generation Time: Oct 30, 2003 at 11:18 PM
+# Generation Time: Nov 09, 2003 at 06:37 PM
 # Server version: 4.0.16
 # PHP Version: 4.3.3
 # 
@@ -22,8 +22,8 @@ CREATE TABLE `books` (
   `default_path` varchar(255) binary NOT NULL default '',
   `default_anchor` varchar(31) binary NOT NULL default '',
   PRIMARY KEY  (`id`),
-  FULLTEXT KEY `title` (`title`)
-) TYPE=MyISAM;
+  KEY `title` (`title`(7))
+) TYPE=MyISAM AUTO_INCREMENT=3 ;
 
 # --------------------------------------------------------
 
@@ -34,12 +34,10 @@ CREATE TABLE `books` (
 CREATE TABLE `index` (
   `id` mediumint(11) unsigned NOT NULL auto_increment,
   `book_id` smallint(10) unsigned NOT NULL default '0',
-  `parent_id` mediumint(11) unsigned NOT NULL default '0',
   `term` tinytext NOT NULL,
   PRIMARY KEY  (`id`),
-  KEY `parent_id` (`book_id`,`parent_id`),
-  FULLTEXT KEY `term` (`term`)
-) TYPE=MyISAM;
+  KEY `term` (`book_id`,`term`(7))
+) TYPE=MyISAM AUTO_INCREMENT=8544 ;
 
 # --------------------------------------------------------
 
@@ -78,12 +76,11 @@ CREATE TABLE `pages` (
 
 CREATE TABLE `toc` (
   `book_id` int(11) unsigned NOT NULL default '0',
-  `number` smallint(11) unsigned NOT NULL default '0',
   `parent_number` smallint(11) unsigned NOT NULL default '0',
+  `number` smallint(11) unsigned NOT NULL default '0',
   `name` text NOT NULL,
   `path` varchar(255) binary NOT NULL default '',
   `anchor` varchar(31) binary NOT NULL default '',
-  PRIMARY KEY  (`book_id`,`number`),
-  KEY `parent_number` (`book_id`,`parent_number`),
-  KEY `path` (`book_id`,`path`)
+  PRIMARY KEY  (`book_id`,`parent_number`,`number`),
+  UNIQUE KEY `link` (`book_id`,`path`,`anchor`)
 ) TYPE=MyISAM;

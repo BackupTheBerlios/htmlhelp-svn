@@ -86,7 +86,7 @@ class Contents(ContentsEntry):
 	pass
 
 
-class IndexEntry(list):
+class IndexEntry(object):
 	"""Entry in an index."""
 
 	def __init__(self, name = None, link = None):
