@@ -1,11 +1,8 @@
 #!/usr/bin/python
 
-import sys
-import os
-import formatter
-import htmllib
-import string
-import re
+
+import formatter, htmllib, os, re, sys
+
 
 hhp = ''
 hhc = ''
@@ -17,6 +14,7 @@ title = ''
 link = ''
 
 skip = 0
+
 
 class RootHHCParser(htmllib.HTMLParser):
 	done = 0
@@ -37,7 +35,7 @@ class RootHHCParser(htmllib.HTMLParser):
 				elif attributes['name'] == 'Local':
 					if not name:
 						name = attributes['value']
-						name = name[0:string.find(name, '.')] 
+						name = name[:name.find('.')] 
 					if not link:
 						link = attributes['value']
 					
@@ -89,7 +87,8 @@ class HHCParser(htmllib.HTMLParser):
 					output.write(' name="' + attributes['value'] + '"')
 				elif attributes['name'] == 'Local':
 					output.write(' link="' + attributes['value'] + '"')
-	
+
+
 class HHKParser(htmllib.HTMLParser):
 	sitemap = 0
 	name = 0
@@ -121,6 +120,7 @@ class HHKParser(htmllib.HTMLParser):
 					self.name = 1
 				elif attributes['name'] == 'Local':
 					output.write(' link="' + attributes['value'] + '"')
+
 
 def parse_hhp():
 	global hhp, hhc, hhk, link, name, output, title
@@ -199,6 +199,7 @@ def parse_hhc_root():
 		parser.feed(open(hhc).read())
 		parser.close()
 
+
 def parse_hhc():
 	global hhc, output
 	
@@ -208,6 +209,7 @@ def parse_hhc():
 		parser.feed(open(hhc).read())
 		parser.close()
 		output.write('</chapters>\n\n')
+
 
 def parse_hhk():
 	global hhk, output
