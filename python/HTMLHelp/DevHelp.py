@@ -13,11 +13,23 @@ import Book
 import Catalog
 
 
-class SpecParser:
+#######################################################################
+# DevHelp XML spec parsing/formatting
+#
+# See http://cvs.gnome.org/lxr/source/devhelp/dtd/devhelp-1.dtd
 
-	def __init__(self, book):
-		self.book = book
-		self.contents_stack = [book.contents]
+
+class SpecParser:
+	"""DevHelp spec file parser."""
+
+	def __init__(self):
+		self.contents = Book.Contents()
+		self.contents_stack = [self.contents]
+		
+		self.index = Book.Index()
+
+		self.metadata = {}
+
 		self.base = None
 		
 	def translate_link(self, link):
@@ -26,34 +38,44 @@ class SpecParser:
 		else:
 			return urlparse.urljoin(self.base, link)
 			
-	def start_book(self, name, title, link, base = None, **dummy):
+	def start_book(self, name, title, link, base = None, author = None, version = None, **dummy):
 		assert len(self.contents_stack) == 1
 
 		if base is not None:	# Must be first
 			self.base = base
 		
-		self.book.metadata['name'] = name
-		self.book.contents.name = title
-		self.book.contents.link = self.translate_link(link)
+		self.contents.name = title
+		self.contents.link = self.translate_link(link)
+
+		# Metadata
+		self.metadata['name'] = name
+		if version is not None:
+			self.metadata['version'] = version
+		if author is not None:
+			self.metadata['author'] = author
 	
 	def end_book(self):
 		assert len(self.contents_stack) == 1
-		
-	def start_sub(self, name, link, **dummy):
+	
+	def start_chapter(self, name, link, **dummy):
 		assert len(self.contents_stack) > 0
 
 		entry = Book.ContentsEntry(name, self.translate_link(link))
 		self.contents_stack[-1].append(entry)
 		self.contents_stack.append(entry)
 		
-	def end_sub(self):
+	def end_chapter(self):
 		assert len(self.contents_stack) > 1
 		
 		self.contents_stack.pop()
 
+	start_sub = start_chapter
+
+	end_sub = end_chapter
+	
 	def start_function(self, name, link, **dummy):
 		entry = Book.IndexEntry(name, self.translate_link(link))
-		self.book.index.append(entry)
+		self.index.append(entry)
 		
 	def handle_element_start(self, name, attributes):
 		method = 'start_' + name
@@ -75,35 +97,19 @@ class SpecParser:
 		parser.ParseFile(fp)
 
 
-class DevhelpBook(Book.Book):
+#######################################################################
+# Archive filters
 
-	def __init__(self, archive, spec):
-		Book.Book.__init__(self, archive)
 
-		parser = SpecParser(self)
-		parser.parse(archive[spec])
-	
-	
-class RawDevhelpFilterArchive(Archive.Archive):
+class DirDevhelpFilterArchive(Archive.FilterArchive):
 	
 	def filter(self, path):
-		if not path.endswidth('.devhelp'):
+		if not path.endswith('.devhelp'):
 			return path
 		else:
 			return None
 	
 	translate = filter
-
-
-class RawDevhelpBook(DevhelpBook):
-
-	def __init__(self, path):
-		basedir, spec = os.path.split(os.path.abspath(path))
-		archive = Archive.DirArchive(basedir)
-		
-		DevhelpBook.__init__(self, archive, spec)
-
-		self.archive = RawDevhelpFilterArchive(archive)
 
 
 class TgzDevhelpFilterArchive(Archive.FilterArchive):
@@ -118,27 +124,63 @@ class TgzDevhelpFilterArchive(Archive.FilterArchive):
 		return 'book/' + path
 
 
-class TgzDevhelpBook(DevhelpBook):
-	"""A DevHelp book in a .tgz tarball."""
+#######################################################################
+# Readers
 
-	def __init__(self, path):
-		archive = Archive.TarArchive(path)
 
-		DevhelpBook.__init__(self, archive, 'book.devhelp')
+def read_plain(path):
+	"""Read a DevHelp book on a plain directory."""
+
+	basedir, spec = os.path.split(os.path.abspath(path))
 	
-		self.archive = TgzDevhelpFilterArchive(archive)
+	archive = Archive.DirArchive(basedir)
+
+	parser = SpecParser()
+	parser.parse(file(path, 'rt'))
+
+	book = Book.Book(
+			DirDevhelpFilterArchive(archive),
+			parser.contents,
+			parser.index,
+			parser.metadata)
+
+	return book
 
 
-def factory(path):
-	"""Attempt to open a DevHelp book from the given."""
+def read_tgz(path):
+	"""A DevHelp book in a gzip'ed tarball."""
+
+	archive = Archive.TarArchive(path)
+
+	parser = SpecParser()
+	parser.parse(archive['book.devhelp'])
+
+	book = Book.Book(
+			TgzDevhelpFilterArchive(archive),
+			parser.contents,
+			parser.index,
+			parser.metadata)
+
+	return book
+	
+
+def read(path):
+	"""Attempt to open a DevHelp book from the given path."""
 	
 	root, ext = os.path.splitext(path)
 	if ext == '.devhelp':
-		return RawDevhelpBook(path)
+		return read_spec(path)
 	elif ext == '.tgz':
-		return TgzDevhelpBook(path)
+		return read_tgz(path)
 	else:
 		raise ValueError, 'unknown DevHelp book extension \'%s\'' % ext
+
+
+factory = read
+
+
+#######################################################################
+# Catalog
 
 
 class DevhelpCatalog(Catalog.Catalog):
