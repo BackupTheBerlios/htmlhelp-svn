@@ -1,25 +1,25 @@
 GARNAME = Python
-GARVERSION = 2.3
+GARVERSION = 2.3.2
 MASTER_SITES = http://www.python.org/ftp/python/doc/$(GARVERSION)/
 DISTFILES = html-$(GARVERSION).tar.bz2
 
 WORKSRC = $(WORKDIR)/Python-Docs-$(GARVERSION)
 
-DEVHELP_EXTRA_TARGETS = $(WORKDIR)/$(GARNAME).tgz
-CHM_EXTRA_TARGETS = $(WORKDIR)/$(GARNAME).chm
-HTB_EXTRA_TARGETS = $(WORKDIR)/$(GARNAME).htb
+BOOKS = $(WORKDIR)/$(GARNAME).mshh $(WORKDIR)/$(GARNAME).devhelp
 
 
 include ../../gar.mk
 
 
-$(WORKDIR)/devhelp.$(GARNAME): $(FILEDIR)/py2devhelp.py
-	rm -rf $@
-	mkdir -p $@
-	cp -a $(WORKSRC) $@/book
-	cd $@/book && python ../../../$(FILEDIR)/py2devhelp.py ../book
+$(WORKDIR)/$(GARNAME).devhelp: $(FILEDIR)/py2devhelp.py
+	rm -rf $@d
+	mkdir -p $@d
+	cp -a $(WORKSRC) $@d/book
+	cd $@d/book && python ../../../../$(FILEDIR)/py2devhelp.py ../book
+	touch $@
 
-$(WORKDIR)/htmlhelp.$(GARNAME): $(FILEDIR)/pythlp.py
-	rm -rf $@
-	cp -a $(WORKSRC) $@
-	cd $@ && python ../../$(FILEDIR)/pythlp.py $(GARNAME)
+$(WORKDIR)/$(GARNAME).mshh: $(FILEDIR)/pythlp.py
+	rm -rf $@d
+	cp -a $(WORKSRC) $@d
+	cd $@d && python ../../../$(FILEDIR)/pythlp.py $(GARNAME)
+	touch $@
