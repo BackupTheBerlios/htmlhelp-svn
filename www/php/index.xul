@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+	<script src="main.js"/>
+
+	<hbox>
+		<menulist label="Bus">
+			<menupopup>
+				<menuitem label="Car"/>
+				<menuitem label="Taxi"/>
+				<menuitem label="Bus" selected="true"/>
+				<menuitem label="Train"/>
+			</menupopup>
+		</menulist>
+		<spacer flex="1"/>
+		<label value="Search for:" control="find-text"/>
+		<textbox id="find-text"/>
+	</hbox>
+
+	<hbox flex="1">
+		<tabbox>
+			<tabs>
+				<tab label="Contents"/>
+				<tab label="Index"/>
+				<tab label="Search"/>
+			</tabs>
+
+			<tabpanels flex="1">
+			
+				<tabpanel id="contents" orient="vertical">
+					<tree flex="1" datasources="toc.rdf.php?book_id=37" ref="urn:root" onselect="doSelect(event)">
+						<treecols>
+							<treecol id="name" label="Name" primary="true" flex="1"/>
+							<treecol id="link" label="Link" flex="1"/>
+						</treecols>
+
+						<template>
+							<treechildren>
+							 <treeitem uri="rdf:*">
+								 <treerow>
+									 <treecell label="rdf:http://htmlhelp.berlios.de/rdf#name"/>
+									 <treecell label="rdf:http://htmlhelp.berlios.de/rdf#link"/>
+								 </treerow>
+							 </treeitem>
+							</treechildren>
+						</template>
+					</tree>
+				</tabpanel>
+				
+				<tabpanel id="index">
+					<listbox flex="1">
+					  <listhead>
+							<listheader label="Name"/>
+							<listheader label="Link"/>
+						</listhead>
+
+						<listcols>
+							<listcol primary="true" flex="1"/>
+							<listcol flex="1"/>
+						</listcols>
+
+						<template>
+						 <listitem uri="rdf:*">
+							 <listrow>
+								 <listcell label="rdf:http://htmlhelp.berlios.de/rdf#name"/>
+								 <listcell label="rdf:http://htmlhelp.berlios.de/rdf#link"/>
+							 </listrow>
+						 </listitem>
+						</template>
+					</listbox>
+				</tabpanel>
+				
+				<tabpanel>
+					<listbox flex="1"/>
+				</tabpanel>
+			</tabpanels>
+		</tabbox>
+		
+		<splitter collapse="before">
+			<grippy/>
+		</splitter>
+
+		<vbox flex="2">
+			<hbox>
+				<button label="Back"/>
+				<button label="Forward"/>
+				<button label="Home"/>
+				<spacer flex="1" />
+				<button label="Sync TOC"/>
+			</hbox>
+			<iframe id="body" src="/" flex="1"/>
+		</vbox>
+	</hbox>
+</window>
