@@ -12,7 +12,7 @@
 			if($query)
 			{
 				echo "<ul>";
-				$entries = mysql_query("SELECT book_id, path, title, body FROM `pages` WHERE book_id=$book_id AND MATCH (title, body) AGAINST ('$query' IN BOOLEAN MODE)", $db) or die("Query failed : " . mysql_error());
+				$entries = mysql_query("SELECT book_id, path, title, body FROM `pages` WHERE book_id=$book_id AND MATCH (title, body) AGAINST ('$query' IN BOOLEAN MODE)") or die("Query failed : " . mysql_error());
 				while($entry = mysql_fetch_object($entries))
 				{
 					echo "<li>";

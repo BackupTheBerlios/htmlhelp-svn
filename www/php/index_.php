@@ -10,14 +10,14 @@
 		<?php
 			function walk_index($parent_id)
 			{
-				global $db, $book_id;
+				global $book_id;
 
 				echo '<ul>';
-				$entries = mysql_query("SELECT * FROM `index` WHERE `book_id`=$book_id AND `parent_id`=$parent_id ORDER BY `term`", $db);
+				$entries = mysql_query("SELECT * FROM `index` WHERE `book_id`=$book_id AND `parent_id`=$parent_id ORDER BY `term`");
 				while($entry = mysql_fetch_object($entries))
 				{
 
-					$links = mysql_query("SELECT * FROM `index_links` WHERE `index_id`=$entry->id", $db);
+					$links = mysql_query("SELECT * FROM `index_links` WHERE `index_id`=$entry->id");
 					$link = mysql_fetch_object($links);
 					
 					echo '<li>';

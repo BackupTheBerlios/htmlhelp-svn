@@ -9,10 +9,10 @@
 	while(!$book_id and $path)
 		list($book_id, $path) = explode('/', $path, 2);
 	
-	$db = mysql_connect($db_server, $db_username, $db_password);
-	mysql_select_db($db_database, $db);
+	mysql_connect($db_server, $db_username, $db_password);
+	mysql_select_db($db_database);
 
-	$pages = mysql_query(sprintf('SELECT `book_id`, `path`, `content` FROM `pages` WHERE `book_id`=%d AND `path`="%s"', $book_id, mysql_escape_string($path)), $db);
+	$pages = mysql_query(sprintf('SELECT `book_id`, `path`, `content` FROM `pages` WHERE `book_id`=%d AND `path`="%s"', $book_id, mysql_escape_string($path)));
 	$page = mysql_fetch_object($pages);
 	$content = $page->content;
 	

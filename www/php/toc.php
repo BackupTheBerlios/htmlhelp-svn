@@ -10,10 +10,10 @@
 		<?php
 			function walk_toc($parent_number)
 			{
-				global $db, $book;
+				global $book;
 
 				echo '<ul>';
-				$entries = mysql_query(sprintf('SELECT * FROM `toc` WHERE `book_id`=%d AND `parent_number`=%d ORDER BY number', $book->id, $parent_number), $db);
+				$entries = mysql_query(sprintf('SELECT * FROM `toc` WHERE `book_id`=%d AND `parent_number`=%d ORDER BY number', $book->id, $parent_number));
 				while($entry = mysql_fetch_object($entries))
 				{
 					echo '<li>';

@@ -10,9 +10,9 @@
 
 		<div id="catalog">
 			<?php
-				$db = mysql_connect($db_server, $db_username, $db_password);
-				mysql_select_db($db_database, $db);
-				$books = mysql_query('SELECT `id`, `title` FROM `books`', $db);
+				mysql_connect($db_server, $db_username, $db_password);
+				mysql_select_db($db_database);
+				$books = mysql_query('SELECT `id`, `title` FROM `books`');
 				echo '<ul>';
 				while($book = mysql_fetch_object($books))
 					echo '<li><a href="book.php?book_id=' . $book->id . '">' . $book->title . '</a></li>';
