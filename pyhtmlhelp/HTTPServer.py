@@ -4,7 +4,7 @@
 import cgi, os, os.path, posixpath, sys, urllib, urlparse, SimpleHTTPServer
 SimpleHTTPServer
 
-import HTML
+import Generic, HTML
 
 
 BaseRequestHandler = SimpleHTTPServer.SimpleHTTPRequestHandler
@@ -13,7 +13,8 @@ BaseRequestHandler = SimpleHTTPServer.SimpleHTTPRequestHandler
 class MyRequestHandler(BaseRequestHandler):
 
 	root_dir = os.path.dirname(sys.argv[0])
-	html = HTML.HTML()
+	book_factory = Generic.BookFactory()
+	html = HTML.HTML(book_factory)
 	
 	def send_head(self):
 		scheme, netloc, path, query, fragment = urlparse.urlsplit(self.path)

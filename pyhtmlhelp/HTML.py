@@ -6,8 +6,6 @@ try:
 except ImportError:
 	from StringIO import StringIO
 
-import Book, DevHelp
-
 
 def rsplit(path):
 	"""Split a pathname.  Returns tuple "(head, tail)" where "tail" is
@@ -21,9 +19,6 @@ def rsplit(path):
 		else:
 			head, tail = tail, ''
 	return head, tail
-
-
-BookFactory = DevHelp.DevHelpFactory
 
 
 class HTMLError(Exception):
@@ -40,7 +35,8 @@ class HTMLError(Exception):
 
 class HTML:
 
-	book_factory = BookFactory()
+	def __init__(self, book_factory):
+		self.book_factory = book_factory
 
 	def __call__(self, path, query):
 		head, tail = rsplit(path)

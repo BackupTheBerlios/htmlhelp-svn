@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+
 if __name__ == "__main__":
 	import cgitb
 	cgitb.enable()
@@ -7,14 +8,15 @@ if __name__ == "__main__":
 
 import cgi, os, shutil, sys
 
-import HTML
+import Generic, HTML
 
 
 def main():
 	path = os.getenv('PATH_INFO', '')[1:]
 	query = cgi.parse()
 
-	html = HTML.HTML()
+	book_factory = Generic.BookFactory()
+	html = HTML.HTML(book_factory)
 	f = html(path, query)
 
 	sys.stdout.write('Content-Type: text/html\n')
