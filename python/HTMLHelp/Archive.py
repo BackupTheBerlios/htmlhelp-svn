@@ -73,7 +73,7 @@ class DirArchive(Archive):
 	def open(self, path):
 		path = os.path.join(self.dir, path)
 		try:
-			return open(path)
+			return file(path, 'rb')
 		except IOError:
 			raise MissingMemberError, 'could not open \'%s\'' % path
 
