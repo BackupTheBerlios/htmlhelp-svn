@@ -12,6 +12,8 @@
 
 	echo '<body id="search" class="sidebar">';
 
+	include 'menu.inc.php';
+
 	$book_id = intval($_GET['book_id']);
 	$query = $_GET['query'];
 	$boolean_mode = intval($_GET['boolean_mode']) && mysql_check_version('4.0.1');

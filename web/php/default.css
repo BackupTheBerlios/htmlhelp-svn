@@ -58,15 +58,10 @@ a {
 	font-size: 11px;
 }
 
-.sidebar a {
+.sidebar ul a {
 	text-decoration: none;
 	display: block;
 }
-
-.sidebar li {
-	list-style-type: none;
-}
-
 
 
 /* Lists */
@@ -77,6 +72,10 @@ ul.list {
 	padding-bottom: 1px;
 	padding-left: 2px;
 	padding-right: 2px;
+}
+
+ul.list li {
+	list-style-type: none;
 }
 
 

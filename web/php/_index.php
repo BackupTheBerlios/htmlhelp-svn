@@ -14,6 +14,8 @@
 	
 	echo '<body id="index" class="sidebar">';
 
+	include 'menu.inc.php';
+
 	echo '<form id="find" target="navigation" action="_index.php">';
 	echo  '<input type="hidden" name="book_id" value="' . $book_id .'"/>';
 	echo  '<input id="query" type="text" name="query" value="' . htmlspecialchars($query) . '"/>';

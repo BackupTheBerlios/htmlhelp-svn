@@ -6,8 +6,12 @@
 	$target = '_top';
 	include 'header.inc.php';
 	
+	$book_id = intval($_GET['book_id']);
+
 	echo '<body class="sidebar">';
 	
+	include 'menu.inc.php';
+
 	$result = mysql_query('SELECT `id`, `title` FROM `book` ORDER BY `title`');
 	if(mysql_num_rows($result))
 	{

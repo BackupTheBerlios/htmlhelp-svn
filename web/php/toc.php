@@ -11,6 +11,8 @@
 
 	echo '<body id="toc" class="sidebar">';
 
+	include 'menu.inc.php';
+	
 	function query_toc($parent_number)
 	{
 		global $book_id;
