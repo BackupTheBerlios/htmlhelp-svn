@@ -29,6 +29,7 @@
 		echo '<frame src="about.php" name="main"/>';
 	}
 	echo '</frameset>';
+	echo '<noframes>A frames-capable web browser is required.</noframes>'
 	echo '</frameset>';
 	
 	include 'footer.inc.php';
