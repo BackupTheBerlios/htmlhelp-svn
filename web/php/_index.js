@@ -1,6 +1,6 @@
 function onQueryKeypress(event, book_id)
 {
-  if(event.keyCode == 13)
+  if(event.keyCode == KeyEvent.DOM_VK_ENTER || event.keyCode == KeyEvent.DOM_VK_RETURN)
   {
     var text = event.target;
     var query = text.value;
