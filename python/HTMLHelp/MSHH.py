@@ -3,10 +3,26 @@
 
 import os, re, sys, HTMLParser
 
-import Book
+import Book, Archive
 
 
-class HHCParser(HTMLParser.HTMLParser):
+class MSHTMLParser(HTMLParser.HTMLParser):
+
+	def error(self, message):
+		lineno, offset = self.getpos()
+		sys.stderr.write(message) 
+		if self.lineno is not None:
+			sys.stderr.write(", at line %d" % lineno)
+		if self.offset is not None:
+			sys.stderr.write(", column %d" % (offset + 1))
+		sys.stderr.write('\n')
+
+	def parse(self, fp):
+		self.feed(fp.read())
+		self.close()
+
+
+class HHCParser(MSHTMLParser):
 
 	def __init__(self, book):
 		HTMLParser.HTMLParser.__init__(self)
@@ -46,11 +62,8 @@ class HHCParser(HTMLParser.HTMLParser):
 			if self.node is not None:
 				self.contents_stack[-1].append(self.node)
 
-	def parse(self, fp):
-		self.feed(fp.read())
 
-
-class HHKParser(HTMLParser.HTMLParser):
+class HHKParser(MSHTMLParser):
 
 	def __init__(self, book):
 		HTMLParser.HTMLParser.__init__(self)
@@ -76,9 +89,6 @@ class HHKParser(HTMLParser.HTMLParser):
 			if self.entry is not None:
 				self.book.index.append(self.entry)
 				self.entry = None
-
-	def parse(self, fp):
-		self.feed(fp.read())
 
 
 class HHPParser:
@@ -173,7 +183,7 @@ class RawMSHHBook(MSHHBook):
 
 class MSHHFactory(Book.Factory):
 
-	def __apply__(self, path):
+	def __call__(self, path):
 		if self.extension(path).lower() == 'hhp':
 			return RawMSHHBook(path)
 
