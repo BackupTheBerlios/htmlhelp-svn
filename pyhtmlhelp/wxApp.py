@@ -106,6 +106,7 @@ class MyFrame(wxFrame):
 			m_ContentsBox = wxTreeCtrl(panel, wxID_HTML_TREECTRL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxTR_HAS_BUTTONS | wxTR_HIDE_ROOT | wxTR_LINES_AT_ROOT)
 			self.m_ContentsBox = m_ContentsBox
 			#m_ContentsBox.AssignImageList(ContentsImageList)
+			EVT_TREE_SEL_CHANGED(self, wxID_HTML_TREECTRL, self.OnContentsSel)
 			
 			topsizer.Add(m_ContentsBox, 1, wxEXPAND | wxALL)
 
@@ -229,16 +230,24 @@ class MyFrame(wxFrame):
 		
 	def AddBook(self, node, book):
 		child = self.m_ContentsBox.AppendItem(node, book.title())
+		self.m_ContentsBox.SetPyData(child, (book, book.link()))
 		contents = book.contents()
-		self.AddContents(child, contents)
+		self.AddContents(child, book, contents)
 
-	def AddContents(self, node, contents):
+	def AddContents(self, node, book, contents):
 		for entry in contents:
 			if wxUSE_UNICODE:
 				child = self.m_ContentsBox.AppendItem(node, entry.title())
 			else:
 				child = self.m_ContentsBox.AppendItem(node, entry.title().encode('iso-8859-1', 'replace'))
-			self.AddContents(child, entry.childs())
+			self.m_ContentsBox.SetPyData(child, (book, entry.link()))
+			self.AddContents(child, book, entry.childs())
+		
+	def OnContentsSel(self, event):
+		item = event.GetItem()
+		(book, link) = self.m_ContentsBox.GetPyData(item)
+		h = book.page(link).read()
+		self.m_HtmlWin.SetPage(h)
 		
 	def OnToolbar(self, event):
 		
