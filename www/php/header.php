@@ -13,7 +13,7 @@
 	<title><?php echo $book->title;?></title>
 </head>
 <body class="menu">
-	<a href="toc.php?book_id=<?php echo $book->id;?>" target="navigation">Contents</a>
-	<a href="index_.php?book_id=<?php echo $book->id;?>" target="navigation">Index</a>
-	<a href="search.php?book_id=<?php echo $book->id;?>" target="navigation">Search</a>
+	<a href="toc.php?book_id=<?php echo $book->id;?>" target="side">Contents</a>
+	<a href="index_.php?book_id=<?php echo $book->id;?>" target="side">Index</a>
+	<a href="search.php?book_id=<?php echo $book->id;?>" target="side">Search</a>
 </body>
