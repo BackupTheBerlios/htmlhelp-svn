@@ -17,7 +17,7 @@
 			while(list($book_id, $parent_number, $number, $name, $path, $anchor) = mysql_fetch_row($result))
 			{
 				echo '<li>';
-				echo '<a href="page.php/' . $book_id . '/' . $path . ($anchor ? '#' . $anchor : '') . '">' . htmlentities($name, ENT_NOQUOTES, 'UTF-8') . '</a>';
+				echo '<a href="page.php/' . $book_id . '/' . $path . ($anchor ? '#' . $anchor : '') . '">' . htmlspecialchars($name, ENT_NOQUOTES, $encoding) . '</a>';
 				walk_toc($book_id, $number);
 				echo '</li>';
 			}

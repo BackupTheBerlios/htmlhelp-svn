@@ -6,7 +6,7 @@
 	{
 		$books = mysql_query('SELECT * FROM `book` WHERE `id`=' . $book_id);
 		$book = mysql_fetch_object($books);
-		$title = htmlentities($book->title, ENT_NOQUOTES, 'UTF-8');
+		$title = htmlspecialchars($book->title, ENT_NOQUOTES, $encoding);
 	}
 	else
 		$title = 'HTML Help Books';

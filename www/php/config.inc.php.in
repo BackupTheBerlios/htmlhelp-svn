@@ -1,5 +1,7 @@
 <?php
 	
+	$encoding = 'utf-8';
+
 	$css = '../css/default.css';
 	
 	$db_server = 'localhost';

@@ -25,7 +25,7 @@
 			{
 				echo '<ul>';
 				while(list($book_id, $name, $path, $anchor) = mysql_fetch_row($result))
-					echo '<li><a href="page.php/' . $book_id . '/' . $path . ($anchor ? '#' . $anchor : '') . '">' . htmlentities($name, ENT_NOQUOTES, 'UTF-8') . '</a></li>';
+					echo '<li><a href="page.php/' . $book_id . '/' . $path . ($anchor ? '#' . $anchor : '') . '">' . htmlspecialchars($name, ENT_NOQUOTES, $encoding) . '</a></li>';
 				echo '</ul>';
 			}
 		}
@@ -49,7 +49,7 @@
 			{
 				echo '<ul>';
 				while(list($book_id, $path, $title) = mysql_fetch_row($result))
-					echo '<li><a href="page.php/' . $book_id . '/' . $path .'">' . htmlentities($title, ENT_NOQUOTES, 'UTF-8') . '</a></li>';
+					echo '<li><a href="page.php/' . $book_id . '/' . $path .'">' . htmlspecialchars($title, ENT_NOQUOTES, $encoding) . '</a></li>';
 				echo '</ul>';
 			}
 		}
