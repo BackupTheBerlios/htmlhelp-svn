@@ -24,7 +24,7 @@ def store(book):
 
 
 #######################################################################
-# title and plaintext extraction
+# title and body plaintext extraction
 
 
 class HTMLExtractor(HTMLParser.HTMLParser):
@@ -45,7 +45,7 @@ class HTMLExtractor(HTMLParser.HTMLParser):
 		HTMLParser.HTMLParser.__init__(self)
 		
 		self.title = None
-		self.plaintext = None
+		self.body = None
 
 		self.in_title = 0
 		self.in_body = 0
@@ -63,7 +63,7 @@ class HTMLExtractor(HTMLParser.HTMLParser):
 			self.title = u''
 			self.in_title = 1
 		if tag == 'body':
-			self.plaintext = u''
+			self.body = u''
 			self.in_body = 1
 			
 		if tag == 'pre':
@@ -157,14 +157,14 @@ class HTMLExtractor(HTMLParser.HTMLParser):
 		if self.in_title:
 			self.title += text
 		if self.in_body:
-			self.plaintext += text
+			self.body += text
 
 
 def extract_html(content):
 	parser = HTMLExtractor()
 	parser.feed(content)
 
-	return parser.title, parser.plaintext
+	return parser.title, parser.body
 
 
 def guess_type(path):
@@ -176,7 +176,7 @@ def guess_type(path):
 	
 
 def extract(path, content):
-	"""Extract the title and plaintext version of a document."""
+	"""Extract the title and body of a document in plaintext."""
 
 	type = guess_type(path)
 
@@ -190,10 +190,10 @@ def extract(path, content):
 
 def test_extract():
 	for arg in sys.argv[1:]:
-		title, plaintext = extract_html(open(arg, "rt").read())
+		title, body = extract_html(open(arg, "rt").read())
 		print title.encode('latin-1', 'ignore')
 		print
-		print plaintext.encode('latin-1', 'ignore')
+		print body.encode('latin-1', 'ignore')
 		print
 		print
 
@@ -372,17 +372,18 @@ def dump_index_links(entry, parent_id, cont = 0):
 def dump_archive(archive):
 	# FIXME: collate an appropriate number of inserts in order to keep the packet
 	# size into a reasonable size...
-	
+	max_allowed_packet = 1047552
+
 	paths = archive.list()
 	for i in range(len(paths)):
 		path = paths[i]
 
 		content = archive.open(path).read()
-		title, plaintext = extract(path, content)
+		title, body = extract(path, content)
 		
 		#sys.stdout.write(i and ',\n ' or '\n ')
-		sys.stdout.write('INSERT INTO `pages` (book_id, path, content, title, plaintext) VALUES')
-		sys.stdout.write('(' + ',\n  '.join(quote(literal('@book_id'), path, content, title, plaintext)) + ')')
+		sys.stdout.write('INSERT INTO `pages` (book_id, path, content, title, body) VALUES')
+		sys.stdout.write('(' + ',\n  '.join(quote(literal('@book_id'), path, content, title, body)) + ')')
 		sys.stdout.write(';\n')
 	
 
