@@ -2,6 +2,8 @@ SHELL=/bin/bash
 
 GARCHIVEROOT = $(GARDIR)/../garchive
 
+WORKDIR = $(WORKROOTDIR)
+
 BOOKSROOT ?= $(GARDIR)/../books
 BOOKSDIR ?= $(BOOKSROOT)
 
