@@ -48,8 +48,7 @@ endif
 # DocBook XML (using XSL)
 
 XSLTPROC = xsltproc 
-XSLTPROC_FLAGS = \
-	--docbook
+XSLTPROC_FLAGS = 
 XSLTPROC_FLAGS_DEVHELP = \
 	--stringparam "devhelp.name" "$(*F)" \
 	--stringparam "devhelp.version" "$(GARVERSION)"
@@ -81,6 +80,3 @@ endif
 
 %.tgz: empty-%.tgz
 	@$(MAKECOOKIE)
-
-
-include $(GARDIR)/docbook.lib.mk

@@ -8,8 +8,8 @@ MSHH_LIB_MK := 1
 # DocBook XML (using XSL)
 
 XSLTPROC = xsltproc 
-XSLTPROC_FLAGS = \
-	--docbook
+XSLTPROC_FLAGS = 
+
 XSLTPROC_FLAGS_HTMLHELP = \
 	--stringparam "generate.toc" "" \
 	--stringparam "htmlhelp.chm" "$(*F).chm" \
@@ -27,7 +27,6 @@ XSLTPROC_FLAGS_HTMLHELP = \
 
 HTMLHELP_XSL = /usr/share/sgml/docbook/stylesheet/xsl/nwalsh/htmlhelp/htmlhelp.xsl
 
-
 %.mshh: %.xml
 	@rm -rf $@d
 	@mkdir -p $@d
@@ -35,10 +34,20 @@ HTMLHELP_XSL = /usr/share/sgml/docbook/stylesheet/xsl/nwalsh/htmlhelp/htmlhelp.x
 	$(foreach FIGURE,$(FIGURES), cp -r $(FIGURE) $@d;)
 	@touch $@
 
+
+# Texinfo (using texi2html)
+
+TEXI2HTML = ~/projects/htmlhelp/texi2html/cvs/texi2html
+TEXI2HTML_FLAGS = 
+TEXI2HTML_FLAGS_HTMLHELP = --init-file chm.init
+
+%.mshh: %.texi
+	@rm -rf $@d $*
+	cd $(<D) && $(TEXI2HTML) $(TEXI2HTML_FLAGS) $(TEXI2HTML_FLAGS_HTMLHELP) $(<F)
+	mv $* $@d
+	@touch $@
+	
+
 .PRECIOUS: %.mshh
-
-
-include $(GARDIR)/docbook.lib.mk
-
 
 endif
