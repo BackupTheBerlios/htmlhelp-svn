@@ -7,7 +7,7 @@
 
 	<hbox>
 		<menulist label="Book">
-			<menupopup datasources="books.rdf.php" ref="urn:root">
+			<menupopup datasources="books.rdf.php" ref="urn:root" oncommand="onBookCommand(event)">
 				<template>
 					<menuitem 
 						uri="rdf:*"
@@ -32,45 +32,9 @@
 
 			<tabpanels flex="1">
 			
-				<tabpanel id="contents" orient="vertical">
-					<tree flex="1" datasources="toc.rdf.php?book_id=37" ref="urn:root" seltype="single" hidecolumnpicker="true" onselect="doSelect(event)">
-						<treecols>
-							<treecol id="name" label="Title" primary="true" flex="1"/>
-						</treecols>
-
-						<template>
-							<treechildren>
-							<treeitem uri="rdf:*">
-								<treerow>
-									<treecell 
-										label="rdf:http://htmlhelp.berlios.de/rdf#name"
-										value="rdf:http://htmlhelp.berlios.de/rdf#link"/>
-								</treerow>
-							</treeitem>
-							</treechildren>
-						</template>
-					</tree>
-				</tabpanel>
+				<iframe id="toc" src="toc.xul.php" flex="1"/>
 				
-				<tabpanel id="index">
-					<listbox flex="1" datasources="index.rdf.php?book_id=37" ref="urn:root">
-						<listcols>
-							<listcol primary="true" flex="1"/>
-							<listcol flex="1"/>
-						</listcols>
-
-						<template>
-						<listitem uri="rdf:*">
-							<listrow>
-								<listcell
-									label="rdf:http://htmlhelp.berlios.de/rdf#term"
-									value="rdf:http://htmlhelp.berlios.de/rdf#href"
-									/>
-							</listrow>
-						 </listitem>
-						</template>
-					</listbox>
-				</tabpanel>
+				<iframe id="index" src="_index.xul.php" flex="1"/>
 				
 				<tabpanel>
 					<listbox flex="1"/>
@@ -90,7 +54,7 @@
 				<spacer flex="1" />
 				<button label="Sync TOC"/>
 			</hbox>
-			<iframe id="body" src="/" flex="1"/>
+			<browser id="body" name="body" src="/" flex="1"/>
 		</vbox>
 	</hbox>
 </window>
