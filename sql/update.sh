@@ -7,11 +7,11 @@
 
 set -e
 
-. config.sh
+. `dirname $0`/config.sh
 
 EXIT=0
 for BOOK
 do
-	sed -f update.sed $BOOK | $MYSQL $DATABASE || EXIT=1
+	sed -f `dirname $0`/update.sed $BOOK | $MYSQL $DATABASE || EXIT=1
 done
 exit $EXIT
