@@ -11,6 +11,14 @@
 		list($book_id, $path) = explode('/', $path, 2);
 	$book_id = intval($book_id);
 
+	if(!$path)
+	{
+		$result = mysql_query('SELECT `default_path` FROM `book` WHERE `id`=' . $book_id);
+		list($default_path) = mysql_fetch_row($result);
+		header('Location: ' . $default_path);
+		exit;
+	}
+
 	$result = mysql_query('SELECT `content` FROM `page` WHERE `book_id`=' . $book_id . ' AND `path`=\'' . mysql_escape_string($path) . '\'');
 	list($content) = mysql_fetch_row($result);
 	

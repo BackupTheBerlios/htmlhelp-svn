@@ -13,4 +13,7 @@ function onBookCommand(event)
   
   var search = document.getElementById("search");
   search.setAttribute("src", "search.xul.php?book_id=" + book_id);
+  
+  var body = document.getElementById("body");
+  body.setAttribute("src", "page.php/" + book_id + "/");
 }
