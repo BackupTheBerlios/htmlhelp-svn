@@ -16,6 +16,7 @@ XSLTPROC_FLAGS_HTMLHELP = \
 	--stringparam "htmlhelp.hhp" "$(*F).hhp" \
 	--stringparam "htmlhelp.hhc" "$(*F).hhc" \
 	--stringparam "htmlhelp.hhk" "$(*F).hhk" \
+	--param htmlhelp.hhc.show.root 0 \
 	--param htmlhelp.use.hhk 1 \
 	--param htmlhelp.autolabel 1 \
 	--param chapter.autolabel 1 \
