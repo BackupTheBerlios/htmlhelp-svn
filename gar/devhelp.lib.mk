@@ -51,7 +51,7 @@ JADE_FLAGS = \
 	-V %devhelp-name%="$*" \
 	-V %devhelp-version%="$(VERSION)"
 
-DEVHELP_DSL = $(GARDIR)/stylesheets/devhelp.dsl
+DEVHELP_DSL = $(GARDIR)/stylesheets/docbook/devhelp.dsl
 
 ifdef DSSSL
 DSSSL_ = $(WORKDIR)/devhelp.dsl
@@ -82,7 +82,7 @@ XSLTPROC_FLAGS_DEVHELP = \
 	--stringparam "devhelp.name" "$(*F)" \
 	--stringparam "devhelp.version" "$(GARVERSION)"
 
-DEVHELP_XSL = $(GARDIR)/stylesheets/devhelp.xsl
+DEVHELP_XSL = $(GARDIR)/stylesheets/docbook/devhelp.xsl
 
 ifdef DSSSL
 XSL_ = $(WORKDIR)/devhelp.xsl
