@@ -21,7 +21,7 @@
 
 	if(list($compressed, $content) = $book->page($path))
 	{
-		$content_type = mime_content_type($path);
+		$content_type = guess_type($path);
 		$accept_compressed = strpos($_SERVER["HTTP_ACCEPT_ENCODING"], 'gzip') !== false;
 		
 		if($compressed)

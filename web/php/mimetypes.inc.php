@@ -132,7 +132,7 @@
 	);
 
 	// Determine the MIME content-type from the file extension.
-	function mime_content_type($path)
+	function guess_type($path)
 	{
 		global $mime_types;
 
@@ -144,5 +144,5 @@
 			return $content_type;
 			
 		return 'application/octet-stream';
-	}	
+	}
 ?>
