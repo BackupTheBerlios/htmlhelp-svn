@@ -1,0 +1,355 @@
+<?xml version="1.0"?>
+
+<book title="Numerical Python" name="Numeric" version="22.0" link="numpy.html">
+
+<chapters>
+	<sub name="Part I: Numerical Python" link="numpy-1.html#pgfId-59427">
+		<sub name="1. Introduction" link="numpy-2.html#pgfId-78440">
+			<sub name="Where to get information and code" link="numpy-2.html#pgfId-67465"/>
+			<sub name="Acknowledgments" link="numpy-2.html#pgfId-67319"/>
+		</sub>
+		<sub name="2. Installing NumPy" link="numpy-3.html#pgfId-54827">
+			<sub name="Testing the Python installation" link="numpy-3.html#pgfId-37275"/>
+			<sub name="Testing the Numeric Python Extension Installation" link="numpy-3.html#pgfId-37281"/>
+			<sub name="Installing NumPy" link="numpy-3.html#pgfId-54827">
+				<sub name="Installing on Windows" link="numpy-3.html#pgfId-84400"/>
+				<sub name="Installing on Unix" link="numpy-3.html#pgfId-84404"/>
+			</sub>
+			<sub name="At the SourceForge..." link="numpy-3.html#pgfId-68233"/>
+		</sub>
+		<sub name="3. The NumTut package" link="numpy-4.html#pgfId-37261">
+			<sub name="Testing the NumTut package" link="numpy-4.html#pgfId-35585"/>
+			<sub name="Possible reasons for failure" link="numpy-4.html#pgfId-56796">
+				<sub name="Win32" link="numpy-4.html#pgfId-57000"/>
+				<sub name="Unix" link="numpy-4.html#pgfId-56857"/>
+			</sub>
+		</sub>
+		<sub name="4. High-Level Overview" link="numpy-5.html#pgfId-57136">
+			<sub name="Array Objects" link="numpy-5.html#pgfId-57154"/>
+			<sub name="Universal Functions" link="numpy-5.html#pgfId-57178"/>
+			<sub name="Convenience Functions" link="numpy-5.html#pgfId-60952"/>
+		</sub>
+		<sub name="5. Array Basics" link="numpy-6.html#pgfId-57315">
+			<sub name="Basics" link="numpy-6.html#pgfId-37311"/>
+			<sub name="Creating arrays from scratch" link="numpy-6.html#pgfId-35605">
+				<sub name="array() and typecodes" link="numpy-6.html#pgfId-35606"/>
+				<sub name="Multidimensional Arrays" link="numpy-6.html#pgfId-35637">
+					<sub name="resize" link="numpy-6.html#pgfId-68290"/>
+				</sub>
+			</sub>
+			<sub name="Creating arrays with values specified `on-the-fly'" link="numpy-6.html#pgfId-60291">
+				<sub name="zeros() and ones()" link="numpy-6.html#pgfId-60120"/>
+				<sub name="arrayrange()" link="numpy-6.html#pgfId-35764"/>
+				<sub name="Creating an array from a function: fromfunction()" link="numpy-6.html#pgfId-35809"/>
+				<sub name="identity()" link="numpy-6.html#pgfId-59602"/>
+			</sub>
+			<sub name="Coercion and Casting" link="numpy-6.html#pgfId-35852">
+				<sub name="Automatic Coercions and Binary Operations" link="numpy-6.html#pgfId-35854"/>
+				<sub name="Deliberate up-casting: The asarray function" link="numpy-6.html#pgfId-35864"/>
+				<sub name="The typecode value table" link="numpy-6.html#pgfId-35867"/>
+				<sub name="Consequences of silent upcasting" link="numpy-6.html#pgfId-35950"/>
+				<sub name="Saving space" link="numpy-6.html#pgfId-68241"/>
+				<sub name="Deliberate casts (potentially down): the astype method" link="numpy-6.html#pgfId-35975"/>
+			</sub>
+			<sub name="Operating on Arrays" link="numpy-6.html#pgfId-35984">
+				<sub name="Simple operations" link="numpy-6.html#pgfId-35985"/>
+				<sub name="In-place operations" link="numpy-6.html#pgfId-85860"/>
+			</sub>
+			<sub name="Getting and Setting array values" link="numpy-6.html#pgfId-36033"/>
+			<sub name="Slicing Arrays" link="numpy-6.html#pgfId-36074"/>
+		</sub>
+		<sub name="6. Ufuncs" link="numpy-7.html#pgfId-36126">
+			<sub name="What are Ufuncs?" link="numpy-7.html#pgfId-36127">
+				<sub name="Ufuncs can operate on any Python sequence" link="numpy-7.html#pgfId-36229"/>
+				<sub name="Ufuncs can take output arguments" link="numpy-7.html#pgfId-36233"/>
+				<sub name="Ufuncs have special methods" link="numpy-7.html#pgfId-36249">
+					<sub name="The reduce ufunc method" link="numpy-7.html#pgfId-36250"/>
+					<sub name="The accumulate ufunc method" link="numpy-7.html#pgfId-61704"/>
+					<sub name="The outer ufunc method" link="numpy-7.html#pgfId-61715"/>
+					<sub name="The reduceat ufunc method" link="numpy-7.html#pgfId-61737"/>
+				</sub>
+				<sub name="Ufuncs always return new arrays" link="numpy-7.html#pgfId-61739"/>
+			</sub>
+			<sub name="Which are the Ufuncs?" link="numpy-7.html#pgfId-36300">
+				<sub name="Unary Mathematical Ufuncs (take only one argument)" link="numpy-7.html#pgfId-36302"/>
+				<sub name="Binary Mathematical Ufuncs" link="numpy-7.html#pgfId-36313"/>
+				<sub name="Logical Ufuncs" link="numpy-7.html#pgfId-36315"/>
+				<sub name="Comparisons" link="numpy-7.html#pgfId-86369">
+					<sub name="The operators and the comparison functions are not exactly equivalent" link="numpy-7.html#pgfId-86430"/>
+				</sub>
+				<sub name="Ufunc shorthands" link="numpy-7.html#pgfId-36357"/>
+			</sub>
+		</sub>
+		<sub name="7. Pseudo Indices" link="numpy-8.html#pgfId-36371"/>
+		<sub name="8. Array Functions" link="numpy-9.html#pgfId-36422">
+			<sub name="take(a, indices, axis=0)" link="numpy-9.html#pgfId-36425"/>
+			<sub name="put (a, indices, values)" link="numpy-9.html#pgfId-78510"/>
+			<sub name="putmask (a, mask, values)" link="numpy-9.html#pgfId-84177"/>
+			<sub name="transpose(a, axes=None)" link="numpy-9.html#pgfId-36476"/>
+			<sub name="repeat(a, repeats, axis=0)" link="numpy-9.html#pgfId-36494"/>
+			<sub name="choose(a, (b0, ..., bn))" link="numpy-9.html#pgfId-36498"/>
+			<sub name="ravel(a)" link="numpy-9.html#pgfId-36512"/>
+			<sub name="nonzero(a)" link="numpy-9.html#pgfId-58067"/>
+			<sub name="where(condition, x, y)" link="numpy-9.html#pgfId-36518"/>
+			<sub name="compress(condition, a, axis=0)" link="numpy-9.html#pgfId-36520"/>
+			<sub name="diagonal(a, k=0, axis1=0, axis2 = 1)" link="numpy-9.html#pgfId-58163"/>
+			<sub name="trace(a, k=0)" link="numpy-9.html#pgfId-36523"/>
+			<sub name="searchsorted(a, values)" link="numpy-9.html#pgfId-36532"/>
+			<sub name="sort(a, axis=-1)" link="numpy-9.html#pgfId-66636"/>
+			<sub name="argsort(a, axis=-1)" link="numpy-9.html#pgfId-65841"/>
+			<sub name="argmax(a, axis=-1), argmin(a, axis=-1)" link="numpy-9.html#pgfId-66027"/>
+			<sub name="fromstring(string, typecode)" link="numpy-9.html#pgfId-36538"/>
+			<sub name="dot(m1, m2)" link="numpy-9.html#pgfId-36540"/>
+			<sub name="matrixmultiply(m1, m2)" link="numpy-9.html#pgfId-36542"/>
+			<sub name="clip(m, m_min, m_max)" link="numpy-9.html#pgfId-36545"/>
+			<sub name="indices(shape, typecode=None)" link="numpy-9.html#pgfId-66267"/>
+			<sub name="swapaxes(a, axis1, axis2)" link="numpy-9.html#pgfId-58407"/>
+			<sub name="concatenate((a0, a1, ... , an), axis=0)" link="numpy-9.html#pgfId-58428"/>
+			<sub name="innerproduct(a, b)" link="numpy-9.html#pgfId-58474"/>
+			<sub name="outerproduct(a,b)" link="numpy-9.html#pgfId-84301"/>
+			<sub name="array_repr()" link="numpy-9.html#pgfId-84308"/>
+			<sub name="array_str()" link="numpy-9.html#pgfId-58479"/>
+			<sub name="resize(a, new_shape)" link="numpy-9.html#pgfId-58481"/>
+			<sub name="diagonal(a, offset=0, axis1=0, axis2=1)" link="numpy-9.html#pgfId-58514"/>
+			<sub name="repeat	 (a, counts, axis=0)" link="numpy-9.html#pgfId-58523"/>
+			<sub name="convolve (a, v, mode=2)" link="numpy-9.html#pgfId-67914"/>
+			<sub name="cross_correlate (a, v, mode=0)" link="numpy-9.html#pgfId-67917"/>
+			<sub name="where (condition, x, y)" link="numpy-9.html#pgfId-67907"/>
+			<sub name="identity(n)" link="numpy-9.html#pgfId-58536"/>
+			<sub name="sum(a, index=0)" link="numpy-9.html#pgfId-58544"/>
+			<sub name="cumsum(a, index=0)" link="numpy-9.html#pgfId-58556"/>
+			<sub name="product(a, index=0)" link="numpy-9.html#pgfId-58558"/>
+			<sub name="cumproduct(a, index=0)" link="numpy-9.html#pgfId-58560"/>
+			<sub name="alltrue(a, index=0)" link="numpy-9.html#pgfId-58562"/>
+			<sub name="sometrue(a, index=0)" link="numpy-9.html#pgfId-58564"/>
+			<sub name="allclose (x, y, rtol = 1.e-5, atol = 1.e-8)" link="numpy-9.html#pgfId-86200"/>
+		</sub>
+		<sub name="9. Array Methods" link="numpy-10.html#pgfId-36552">
+			<sub name="itemsize()" link="numpy-10.html#pgfId-36554"/>
+			<sub name="iscontiguous()" link="numpy-10.html#pgfId-36565"/>
+			<sub name="typecode()" link="numpy-10.html#pgfId-36568"/>
+			<sub name="byteswapped()" link="numpy-10.html#pgfId-36576"/>
+			<sub name="tostring()" link="numpy-10.html#pgfId-36582"/>
+			<sub name="tolist()" link="numpy-10.html#pgfId-36588"/>
+		</sub>
+		<sub name="10. Array Attributes" link="numpy-11.html#pgfId-36604">
+			<sub name="flat" link="numpy-11.html#pgfId-36606"/>
+			<sub name="real" link="numpy-11.html#pgfId-36629"/>
+		</sub>
+		<sub name="11. Special Topics" link="numpy-12.html#pgfId-59071">
+			<sub name="Subclassing" link="numpy-12.html#pgfId-67984"/>
+			<sub name="Code Organization" link="numpy-12.html#pgfId-67992">
+				<sub name="Numeric.py and friends" link="numpy-12.html#pgfId-66725"/>
+				<sub name="UserArray.py" link="numpy-12.html#pgfId-66711"/>
+				<sub name="Matrix.py" link="numpy-12.html#pgfId-66719"/>
+				<sub name="Precision.py" link="numpy-12.html#pgfId-66783"/>
+				<sub name="ArrayPrinter.py" link="numpy-12.html#pgfId-66787"/>
+				<sub name="MLab.py" link="numpy-12.html#pgfId-66808">
+					<sub name="bartlett(M)" link="numpy-12.html#pgfId-66920"/>
+					<sub name="blackman(M)" link="numpy-12.html#pgfId-66922"/>
+					<sub name="corrcoef(x, y=None)" link="numpy-12.html#pgfId-66924"/>
+					<sub name="cov(m,y=None)" link="numpy-12.html#pgfId-66926"/>
+					<sub name="cumprod(m, axis=0)" link="numpy-12.html#pgfId-66928"/>
+					<sub name="cumsum(m, axis=0)" link="numpy-12.html#pgfId-66930"/>
+					<sub name="diag(v, k=0)" link="numpy-12.html#pgfId-66932"/>
+					<sub name="diff(x, n=1)" link="numpy-12.html#pgfId-66934"/>
+					<sub name="eig(m)" link="numpy-12.html#pgfId-66936"/>
+					<sub name="eye(N, M=N, k=0, typecode=None)" link="numpy-12.html#pgfId-66938"/>
+					<sub name="fliplr(m)" link="numpy-12.html#pgfId-66940"/>
+					<sub name="flipud(m)" link="numpy-12.html#pgfId-66942"/>
+					<sub name="hamming(M)" link="numpy-12.html#pgfId-66944"/>
+					<sub name="hanning(M)" link="numpy-12.html#pgfId-66946"/>
+					<sub name="kaiser(M, beta)" link="numpy-12.html#pgfId-66948"/>
+					<sub name="max(m, axis=0)" link="numpy-12.html#pgfId-66950"/>
+					<sub name="mean(m, axis=0)" link="numpy-12.html#pgfId-67179"/>
+					<sub name="median(m)" link="numpy-12.html#pgfId-66954"/>
+					<sub name="min(m, axis=0)" link="numpy-12.html#pgfId-66956"/>
+					<sub name="msort(m)" link="numpy-12.html#pgfId-66958"/>
+					<sub name="prod(m, axis=0)" link="numpy-12.html#pgfId-66960"/>
+					<sub name="ptp(m, axis = 0)" link="numpy-12.html#pgfId-66962"/>
+					<sub name="rand(d1, ..., dn)" link="numpy-12.html#pgfId-66964"/>
+					<sub name="rot90(m,k=1)" link="numpy-12.html#pgfId-67153"/>
+					<sub name="sinc(x)" link="numpy-12.html#pgfId-67155"/>
+					<sub name="squeeze(a)" link="numpy-12.html#pgfId-66970"/>
+					<sub name="std(m, axis = 0)" link="numpy-12.html#pgfId-66972"/>
+					<sub name="sum(m, axis=0)" link="numpy-12.html#pgfId-66974"/>
+					<sub name="svd(m)" link="numpy-12.html#pgfId-66976"/>
+					<sub name="trapz(y,x=None)" link="numpy-12.html#pgfId-66978"/>
+					<sub name="tri(N, M=N, k=0, typecode=None)" link="numpy-12.html#pgfId-66980"/>
+					<sub name="tril(m,k=0)" link="numpy-12.html#pgfId-66982"/>
+					<sub name="triu(m,k=0)" link="numpy-12.html#pgfId-66984"/>
+				</sub>
+			</sub>
+			<sub name="The multiarray object" link="numpy-12.html#pgfId-66811"/>
+			<sub name="Typecodes" link="numpy-12.html#pgfId-59085"/>
+			<sub name="Indexing in and out, slicing" link="numpy-12.html#pgfId-59290"/>
+			<sub name="Ellipses" link="numpy-12.html#pgfId-59320"/>
+			<sub name="NewAxis" link="numpy-12.html#pgfId-59324"/>
+			<sub name="Set-indexing and Broadcasting" link="numpy-12.html#pgfId-59327"/>
+			<sub name="Axis specifications" link="numpy-12.html#pgfId-59331"/>
+			<sub name="Textual representations of arrays" link="numpy-12.html#pgfId-59333"/>
+			<sub name="Comparisons" link="numpy-12.html#pgfId-59418"/>
+			<sub name="Storing arrays on disk" link="numpy-12.html#pgfId-67223"/>
+			<sub name="Dealing with floating point exceptions" link="numpy-12.html#pgfId-59422"/>
+		</sub>
+		<sub name="12. Writing a C extension to NumPy" link="numpy-13.html#pgfId-36640">
+			<sub name="Introduction" link="numpy-13.html#pgfId-36641"/>
+			<sub name="Preparing an extension module for NumPy arrays" link="numpy-13.html#pgfId-36646"/>
+			<sub name="Accessing NumPy arrays from C" link="numpy-13.html#pgfId-36649">
+				<sub name="Types and Internal Structure" link="numpy-13.html#pgfId-36650"/>
+				<sub name="Element data types" link="numpy-13.html#pgfId-36661"/>
+				<sub name="Contiguous arrays" link="numpy-13.html#pgfId-36717"/>
+				<sub name="Zero-dimensional arrays" link="numpy-13.html#pgfId-36719"/>
+			</sub>
+			<sub name="A simple example" link="numpy-13.html#pgfId-36721"/>
+			<sub name="Accepting input data from any sequence type" link="numpy-13.html#pgfId-36748"/>
+			<sub name="Creating NumPy arrays" link="numpy-13.html#pgfId-36783"/>
+			<sub name="Returning arrays from C functions" link="numpy-13.html#pgfId-36796"/>
+			<sub name="A less simple example" link="numpy-13.html#pgfId-36801"/>
+		</sub>
+		<sub name="13. C API Reference" link="numpy-14.html#pgfId-57398">
+			<sub name="ArrayObject C Structure and API" link="numpy-14.html#pgfId-25107">
+				<sub name="Structures" link="numpy-14.html#pgfId-57404"/>
+				<sub name="The ArrayObject API" link="numpy-14.html#pgfId-34282"/>
+				<sub name="Notes" link="numpy-14.html#pgfId-586"/>
+			</sub>
+			<sub name="UfuncObject C Structure and API" link="numpy-14.html#pgfId-587">
+				<sub name="C Structure" link="numpy-14.html#pgfId-589"/>
+				<sub name="UfuncObject C API" link="numpy-14.html#pgfId-590"/>
+			</sub>
+		</sub>
+		<sub name="14. Glossary" link="numpy-15.html#pgfId-57323"/>
+	</sub>
+	<sub name="Part II: Optional Packages" link="numpy-16.html#pgfId-304408">
+		<sub name="License and disclaimer for packages MA, RNG, Properties" link="numpy-16.html#pgfId-304744"/>
+		<sub name="15. FFT Reference" link="numpy-17.html#pgfId-304711">
+			<sub name="Python Interface" link="numpy-17.html#pgfId-302955">
+				<sub name="fft(data, n=None, axis=-1)" link="numpy-17.html#pgfId-302958"/>
+				<sub name="inverse_fft(data, n=None, axis=-1)" link="numpy-17.html#pgfId-302970"/>
+				<sub name="real_fft(data, n=None, axis=-1)" link="numpy-17.html#pgfId-302973"/>
+				<sub name="inverse_real_fft(data, n=None, axis=-1)" link="numpy-17.html#pgfId-302986"/>
+				<sub name="fft2d(data, s=None, axes=(-2,-1))" link="numpy-17.html#pgfId-302988"/>
+				<sub name="real_fft2d(data, s=None, axes=(-2,-1))" link="numpy-17.html#pgfId-302990"/>
+			</sub>
+			<sub name="C API" link="numpy-17.html#pgfId-302992"/>
+			<sub name="Compilation Notes" link="numpy-17.html#pgfId-303012"/>
+		</sub>
+		<sub name="16. LinearAlgebra Reference" link="numpy-18.html#pgfId-303015">
+			<sub name="Python Interface" link="numpy-18.html#pgfId-303017">
+				<sub name="solve_linear_equations(a, b)" link="numpy-18.html#pgfId-303019"/>
+				<sub name="inverse(a)" link="numpy-18.html#pgfId-303023"/>
+				<sub name="eigenvalues(a)" link="numpy-18.html#pgfId-303047"/>
+				<sub name="eigenvectors(a)" link="numpy-18.html#pgfId-303058"/>
+				<sub name="singular_value_decomposition(a, full_matrices=0)" link="numpy-18.html#pgfId-303076"/>
+				<sub name="generalized_inverse(a, rcond=1e-10)" link="numpy-18.html#pgfId-303079"/>
+				<sub name="determinant(a)" link="numpy-18.html#pgfId-303082"/>
+				<sub name="linear_least_squares(a, b, rcond=e-10)" link="numpy-18.html#pgfId-303085"/>
+				<sub name="cholesky_decomposition(a)" link="numpy-18.html#pgfId-306308"/>
+				<sub name="Heigenvalues(a)" link="numpy-18.html#pgfId-306314"/>
+				<sub name="Heigenvectors(a)" link="numpy-18.html#pgfId-306318"/>
+			</sub>
+			<sub name="Compilation Notes" link="numpy-18.html#pgfId-303088"/>
+		</sub>
+		<sub name="17. RandomArray Reference" link="numpy-19.html#pgfId-303091">
+			<sub name="Python Interface" link="numpy-19.html#pgfId-303094">
+				<sub name="seed(x=0, y=0)" link="numpy-19.html#pgfId-303096"/>
+				<sub name="get_seed()" link="numpy-19.html#pgfId-303099"/>
+				<sub name="random(shape=" link="numpy-19.html#pgfId-303102"/>
+				<sub name="uniform(minimum, maximum, shape=ReturnFloat)" link="numpy-19.html#pgfId-303105"/>
+				<sub name="randint(minimum, maximum, shape=ReturnFloat)" link="numpy-19.html#pgfId-303108"/>
+				<sub name="permutation(n)" link="numpy-19.html#pgfId-303111"/>
+			</sub>
+			<sub name="Floating point random arrays" link="numpy-19.html#pgfId-305397">
+				<sub name="standard_normal (shape=ReturnFloat)" link="numpy-19.html#pgfId-305398"/>
+				<sub name="normal (mean, stddev, shape=ReturnFloat)" link="numpy-19.html#pgfId-305400"/>
+				<sub name="multivariate_normal (mean, covariance) or" link="numpy-19.html#pgfId-305402"/>
+				<sub name="multivariate_normal (mean, covariance, leadingAxesShape)" link="numpy-19.html#pgfId-305402"/>
+				<sub name="exponential (mean, shape=ReturnFloat)" link="numpy-19.html#pgfId-305407"/>
+				<sub name="beta (a, b, shape=ReturnFloat)" link="numpy-19.html#pgfId-305409"/>
+				<sub name="gamma (a, r, shape=ReturnFloat)" link="numpy-19.html#pgfId-305411"/>
+				<sub name="chi_square (df, shape=ReturnFloat)" link="numpy-19.html#pgfId-305413"/>
+				<sub name="noncentral_chi_square (df, nonc, shape=ReturnFloat)" link="numpy-19.html#pgfId-305415"/>
+				<sub name="F (dfn, dfd, shape=ReturnFloat)" link="numpy-19.html#pgfId-305417"/>
+				<sub name="noncentral_F (dfn, dfd, nconc, shape=ReturnFloat)" link="numpy-19.html#pgfId-305419"/>
+			</sub>
+			<sub name="Integer random arrays" link="numpy-19.html#pgfId-305421">
+				<sub name="binomial (trials, prob, shape=ReturnInt)" link="numpy-19.html#pgfId-305422"/>
+				<sub name="negative_binomial (trials, prob, shape=ReturnInt)" link="numpy-19.html#pgfId-305424"/>
+				<sub name="poisson (mean, shape=ReturnInt)" link="numpy-19.html#pgfId-305426"/>
+				<sub name="multinomial (trials, probs) or multinomial (trials, probs, leadingAxesShape)" link="numpy-19.html#pgfId-305428"/>
+			</sub>
+			<sub name="Examples" link="numpy-19.html#pgfId-305431"/>
+		</sub>
+		<sub name="18. Independent Random Streams" link="numpy-20.html#pgfId-290702">
+			<sub name="Background" link="numpy-20.html#pgfId-304780"/>
+			<sub name="Usage" link="numpy-20.html#pgfId-304419">
+				<sub name="Module RNG" link="numpy-20.html#pgfId-304559">
+					<sub name="Generator objects" link="numpy-20.html#pgfId-304635"/>
+				</sub>
+				<sub name="Module ranf" link="numpy-20.html#pgfId-304493"/>
+			</sub>
+			<sub name="Examples" link="numpy-20.html#pgfId-304426"/>
+		</sub>
+		<sub name="19. Properties Reference" link="numpy-21.html#pgfId-305690">
+			<sub name="Defining a property" link="numpy-21.html#pgfId-305692">
+				<sub name="Evading the mechanism" link="numpy-21.html#pgfId-305730"/>
+				<sub name="Creating the class" link="numpy-21.html#pgfId-305737"/>
+				<sub name="Setting a property" link="numpy-21.html#pgfId-305742">
+					<sub name="Example:" link="numpy-21.html#pgfId-305804"/>
+				</sub>
+			</sub>
+		</sub>
+		<sub name="20. Masked Arrays" link="numpy-22.html#pgfId-303698">
+			<sub name="Required Packages" link="numpy-22.html#pgfId-296294">
+				<sub name="Properties" link="numpy-22.html#pgfId-320813"/>
+			</sub>
+			<sub name="What is a masked array?" link="numpy-22.html#pgfId-320810"/>
+			<sub name="Installing and using MA" link="numpy-22.html#pgfId-304772"/>
+			<sub name="Class MaskedArray" link="numpy-22.html#pgfId-296950">
+				<sub name="Attributes of masked arrays" link="numpy-22.html#pgfId-305213"/>
+				<sub name="Methods on masked arrays." link="numpy-22.html#pgfId-305217"/>
+				<sub name="Constructing masked arrays" link="numpy-22.html#pgfId-320251"/>
+				<sub name="What are masks?" link="numpy-22.html#pgfId-320302"/>
+				<sub name="Working with masks" link="numpy-22.html#pgfId-320312"/>
+				<sub name="Operations" link="numpy-22.html#pgfId-320257"/>
+				<sub name="Copying or not?" link="numpy-22.html#pgfId-305173"/>
+				<sub name="Behaviors" link="numpy-22.html#pgfId-305435"/>
+				<sub name="Indexing and Slicing" link="numpy-22.html#pgfId-304210"/>
+				<sub name="Indexing in assignments" link="numpy-22.html#pgfId-320846"/>
+				<sub name="Operations that produce a scalar result" link="numpy-22.html#pgfId-306592"/>
+				<sub name="Assignment to elements and slices" link="numpy-22.html#pgfId-304229"/>
+			</sub>
+			<sub name="Module MA: Attributes" link="numpy-22.html#pgfId-297249"/>
+			<sub name="Module MA: Functions" link="numpy-22.html#pgfId-305706">
+				<sub name="Unary functions" link="numpy-22.html#pgfId-298306"/>
+				<sub name="Binary functions" link="numpy-22.html#pgfId-298312">
+					<sub name="Comparison operators" link="numpy-22.html#pgfId-298340"/>
+					<sub name="Logical operators" link="numpy-22.html#pgfId-298353"/>
+				</sub>
+				<sub name="Special array operators" link="numpy-22.html#pgfId-298365"/>
+				<sub name="Controlling the size of the string representations" link="numpy-22.html#pgfId-305726"/>
+			</sub>
+			<sub name="Helper classes" link="numpy-22.html#pgfId-304172">
+				<sub name="MAError" link="numpy-22.html#pgfId-306892"/>
+				<sub name="The constant masked" link="numpy-22.html#pgfId-306894"/>
+				<sub name="The constant masked_print_option" link="numpy-22.html#pgfId-320644">
+					<sub name="Example of masked behavior" link="numpy-22.html#pgfId-306903"/>
+				</sub>
+				<sub name="Class masked_unary_function" link="numpy-22.html#pgfId-305737"/>
+				<sub name="Class masked_binary_function" link="numpy-22.html#pgfId-305759"/>
+				<sub name="Class domained_binary_function" link="numpy-22.html#pgfId-320776"/>
+			</sub>
+			<sub name="Examples of Using MA" link="numpy-22.html#pgfId-306123">
+				<sub name="Data with a given value representing missing data" link="numpy-22.html#pgfId-306127"/>
+				<sub name="Filling in the missing data" link="numpy-22.html#pgfId-306145"/>
+				<sub name="Numerical operations" link="numpy-22.html#pgfId-306378"/>
+				<sub name="Seeing the mask" link="numpy-22.html#pgfId-306406"/>
+				<sub name="Filling it your way" link="numpy-22.html#pgfId-306428"/>
+				<sub name="Ignoring extreme values" link="numpy-22.html#pgfId-320020"/>
+				<sub name="Averaging an entire multidimensional array" link="numpy-22.html#pgfId-320037"/>
+			</sub>
+		</sub>
+	</sub>
+</chapters>
+
+</book>
