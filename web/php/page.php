@@ -16,18 +16,35 @@
 	if(!$path)
 	{
 		$result = mysql_query('SELECT `default_path` FROM `book` WHERE `id`=' . $book_id);
-		list($default_path) = mysql_fetch_row($result);
-		header('Location: ' . $default_path);
-		exit;
+		if(mysql_num_rows($result))
+		{
+			list($default_path) = mysql_fetch_row($result);
+			header('Location: http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/' . $book_id . '/' . $default_path);
+			exit;
+		}
 	}
 
 	$result = mysql_query('SELECT `content` FROM `page` WHERE `book_id`=' . $book_id . ' AND `path`=\'' . mysql_escape_string($path) . '\'');
-	list($content) = mysql_fetch_row($result);
-	
-	$content_type = mime_content_type($path);
-	
-	header('Content-Type: ' . $content_type);
-	header('Content-Length: ' . strlen($content));
+	if(mysql_num_rows($result))
+	{
+		list($content) = mysql_fetch_row($result);
+		
+		$content_type = mime_content_type($path);
+		
+		header('Content-Type: ' . $content_type);
+		header('Content-Length: ' . strlen($content));
 
-	echo $content;
+		echo $content;
+	}
+	else
+	{
+		header("Status: 404 Not Found");
+		echo '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">';
+		echo '<html><head>';
+		echo '<title>404 Not Found</title>';
+		echo '</head><body>';
+		echo '<h1>Not Found</h1>';
+		echo '<p>The requested page was not found.</p>';
+		echo '</body></html>';
+	}
 ?>
