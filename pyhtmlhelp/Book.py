@@ -1,58 +1,59 @@
 """Classes for generic HTML help books."""
 
 
-class Entry:
-	"""General book entry."""
+class ContentsNodeList(list):
+	pass
 
-	def __init__(self, title, link):
-		self._title = title
-		self._link = link
-		
-	def title(self):
-		return self._title
+
+class ContentsNode(object):
+	"""Node in a table of contents."""
+
+	def __init__(self, name, link, childs = None):
+		self.name = name
+		self.link = link
+		if childs is None:
+			self.childs = ContentsNodeList()
+		else:
+			self.childs = childs
 	
-	def link(self):
-		return self._link
+	def __repr__(self):
+		return '%s(%s, %s, %s)' % (self.__class__.__name__, repr(self.name), repr(self.link), repr(self.childs))
 
 
-class ContentsEntry(Entry):
-	"""Contents entry."""
-
-	def __init__(self, title, link, childs = ()):
-		Entry.__init__(self, title, link)
-
-		self._childs = childs
-		
-	def childs(self):
-		return self._childs
-
-
-class Contents(list):
-	"""Book contents.
-
-	A list of ContentsEntry objects."""
+class Contents(ContentsNode):
+	"""Table of contents.
 	
+	Is simultaneously the root node."""
+
+	def __init__(self):
+		ContentsNode.__init__(self, None, None)
+
+
+class IndexEntry(object):
+	"""An entry in the index."""
+
+	# TODO: Allow sub-entries
+	
+	def __init__(self, term, link):
+		self.term = term
+		self.link = link
+
+	def __repr__(self):
+		return '%s(%s, %s)' % (self.__class__.__name__, repr(self.term), repr(self.link))
+	
+
+class Index(list):
+	"""Index."""
+
 	pass
 
 
-class IndexEntry(Entry):
-	"""Index entry."""
-
-	pass
-
-
-class Index:
-	"""Book index.
-
-	A list of IndexEntry objects."""
-
-	pass
-
-
-class SearchEntry(Entry):
+class SearchEntry(object):
 	"""Search result entry."""
 
-	pass
+	def __init__(self, name, link):
+		self.name = name
+		self.link = link
 
 
 class Search(list):
@@ -63,37 +64,28 @@ class Search(list):
 	pass
 
 
-class Book:
-
-	def title(self):
-		"""Returns a string with the book title."""
+class Book(object):
+	
+	def __init__(self):
+		self.name = None
+		self.title = None
+		self.default = None
 		
-		assert 0
-	
-	def link(self):
-		"""Returns the relative link of the default topic."""
-
-		assert 0
+		self.contents = Contents()
+		self.index = Index()
 		
-	def contents(self):
-		"""Returns an object describing the book table of contents."""
-
-		return Contents()
-	
-	def index(self):
-		"""Returns an object describing the book index."""
-
-		return Index()
-	
 	def search(self, term):
 		"""Returns an object with the search results."""
 
 		return Search()
 	
-	def page(self, link, highlight = ()):
-		"""Return a file-like object with the required page."""
+	def get(self, link):
+		"""Return a file-like object with the required link."""
 		
 		assert 0
+	
+	def __repr__(self):
+		return '<%s: contents=%s, index=%s>' % (self.__class__.__name__, repr(self.contents), repr(self.index))
 
 
 class List(list):
@@ -101,7 +93,7 @@ class List(list):
 	pass
 
 
-class Factory:
+class Factory(object):
 
 	def enumerate(self):
 		"""Enumerate the available books."""

@@ -104,7 +104,7 @@ class HTML:
 			'\t\t<frame src="?action=contents" name="navigation">\n'
 			'\t<frame src="%s" name="main">\n'
 			'\t</frameset>\n'
-			'</html>\n' % (book.title(), book.link()))
+			'</html>\n' % (book.title, book.default))
 		f.seek(0)
 		
 		return f
@@ -116,23 +116,20 @@ class HTML:
 		else:
 			f.write('<ul class="closed">\n')
 		for entry in entries:
-			childs = entry.childs()
 			f.write('\t'*(level + 1))
-			if childs:
+			if entry.childs:
 				f.write('<li class="closed">')
 			else:
 				f.write('<li class="none">')
-			f.write('<a href="%s" target="main">%s</a>' % (entry.link(), entry.title()))
-			if childs:
+			f.write('<a href="%s" target="main">%s</a>' % (entry.link, entry.name))
+			if entry.childs:
 				f.write('\n')
-				self.tree(f, childs, level + 1)
+				self.tree(f, entry.childs, level + 1)
 				f.write('\t'*(level + 1))
 			f.write('</li>\n')
 		f.write('\t'*level + '</ul>\n')
 
 	def book_contents(self, book):
-		contents = book.contents()
-
 		f = StringIO()
 		f.write(
 			'<html>\n'
@@ -141,9 +138,9 @@ class HTML:
 			'\t<link href="/styles/tree.css" type="text/css" rel="stylesheet" />\n'
 			'\t<script type="text/javascript" src="/scripts/tree.js" />\n'
 			'</head>\n'
-			'<body>\n' % book.title())
+			'<body>\n' % book.title)
 
-		self.tree(f, contents, level = 1)
+		self.tree(f, book.contents.childs, level = 1)
 		
 		f.write('</body>\n'
 			'</html>\n')
@@ -153,7 +150,7 @@ class HTML:
 
 	def book_page(self, book, link):
 		try:
-			f = book.page(link)
+			f = book.get(link)
 		except:
 			raise HTMLError(404)
 
