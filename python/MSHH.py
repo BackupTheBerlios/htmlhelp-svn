@@ -64,7 +64,7 @@ class HHKParser(HTMLParser.HTMLParser):
 			if attrs['type'] == 'text/sitemap':
 				self.entry = Book.IndexEntry(None)
 		elif tag == 'param':
-			if self.entry:
+			if self.entry is not None:
 				if attrs['name'] == 'Name':
 					if self.entry.name is None:
 						self.entry.name = attrs['value'].strip()
@@ -73,7 +73,7 @@ class HHKParser(HTMLParser.HTMLParser):
 	
 	def handle_endtag(self, tag):
 		if tag == 'object':
-			if self.entry:
+			if self.entry is not None:
 				self.book.index.append(self.entry)
 				self.entry = None
 
