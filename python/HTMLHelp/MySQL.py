@@ -2,7 +2,7 @@
 
 
 import sys
-import HTMLParser, htmlentitydefs
+import htmlentitydefs
 import posixpath, mimetypes
 
 
@@ -103,16 +103,6 @@ def extract(path, content):
 		return None, content
 	else:
 		return None, None
-
-
-def test_extract():
-	for arg in sys.argv[1:]:
-		title, body = extract_html(open(arg, "rt").read())
-		print `title`
-		print
-		print `body`
-		print
-		print
 
 
 #######################################################################
@@ -226,6 +216,9 @@ def dump_book(book):
 	
 
 def dump_contents(book):
+	if not len(book.contents):
+		return
+
 	sys.stdout.write('INSERT INTO `toc` (`book_id`, `number`, `parent_number`, `name`, `path`, `anchor`) VALUES')
 	dump_contents_entries(book.contents, 0)
 	sys.stdout.write(';\n')
@@ -235,7 +228,7 @@ def dump_contents_entries(entry, parent_number, cont = 0):
 	number = parent_number + 1
 	for subentry in entry:
 		name = subentry.name
-		path, anchor = split_link(subentry.link)
+		path, anchor = subentry.link is None and ('', '') or split_link(subentry.link)
 
 		sys.stdout.write(cont and ',\n ' or '\n ')
 		sys.stdout.write('(' + ', '.join(quote(literal('@book_id'), number, parent_number, name, path, anchor)) + ')')
@@ -247,6 +240,9 @@ def dump_contents_entries(entry, parent_number, cont = 0):
 	
 
 def dump_index(book):
+	if not len(book.index):
+		return
+
 	sys.stdout.write('INSERT INTO `index` (`book_id`, `term`) VALUES')
 	cont = 0
 	for entry in book.index:
