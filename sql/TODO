@@ -1,0 +1,13 @@
+			       To-do List
+
+
+Things to be done, by no particular order:
+
+- Use page ID's instead of "paths" as page locator.
+
+- Replace MySQL FULLTEXT index by a custom fulltext indexing suited to our specific needs:
+  
+  - avoiding to have a plaintext duplicate version of each page, therfore saving space
+
+  - consider using a word hash for fast lookup
+
