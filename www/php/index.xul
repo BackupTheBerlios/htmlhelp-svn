@@ -33,43 +33,40 @@
 			<tabpanels flex="1">
 			
 				<tabpanel id="contents" orient="vertical">
-					<tree flex="1" datasources="toc.rdf.php?book_id=37" ref="urn:root" onselect="doSelect(event)">
+					<tree flex="1" datasources="toc.rdf.php?book_id=37" ref="urn:root" seltype="single" hidecolumnpicker="true" onselect="doSelect(event)">
 						<treecols>
-							<treecol id="name" label="Name" primary="true" flex="1"/>
-							<treecol id="link" label="Link" flex="1"/>
+							<treecol id="name" label="Title" primary="true" flex="1"/>
 						</treecols>
 
 						<template>
 							<treechildren>
-							 <treeitem uri="rdf:*">
-								 <treerow>
-									 <treecell label="rdf:http://htmlhelp.berlios.de/rdf#name"/>
-									 <treecell label="rdf:http://htmlhelp.berlios.de/rdf#link"/>
-								 </treerow>
-							 </treeitem>
+							<treeitem uri="rdf:*">
+								<treerow>
+									<treecell 
+										label="rdf:http://htmlhelp.berlios.de/rdf#name"
+										value="rdf:http://htmlhelp.berlios.de/rdf#link"/>
+								</treerow>
+							</treeitem>
 							</treechildren>
 						</template>
 					</tree>
 				</tabpanel>
 				
 				<tabpanel id="index">
-					<listbox flex="1">
-					  <listhead>
-							<listheader label="Name"/>
-							<listheader label="Link"/>
-						</listhead>
-
+					<listbox flex="1" datasources="index.rdf.php?book_id=37" ref="urn:root">
 						<listcols>
 							<listcol primary="true" flex="1"/>
 							<listcol flex="1"/>
 						</listcols>
 
 						<template>
-						 <listitem uri="rdf:*">
-							 <listrow>
-								 <listcell label="rdf:http://htmlhelp.berlios.de/rdf#name"/>
-								 <listcell label="rdf:http://htmlhelp.berlios.de/rdf#link"/>
-							 </listrow>
+						<listitem uri="rdf:*">
+							<listrow>
+								<listcell
+									label="rdf:http://htmlhelp.berlios.de/rdf#term"
+									value="rdf:http://htmlhelp.berlios.de/rdf#href"
+									/>
+							</listrow>
 						 </listitem>
 						</template>
 					</listbox>
@@ -97,3 +94,5 @@
 		</vbox>
 	</hbox>
 </window>
+
+<!-- vim:set sw=2 ts=2 noet: -->

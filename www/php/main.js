@@ -11,7 +11,7 @@ function doSelect(event)
   // We need to supply two parameters, the selected row index
   // held in the tree's currentIndex property and the id of the
   // column.
-  var txt=tree.view.getCellText(tree.currentIndex,"link")
+  var txt=tree.view.getCellValue(tree.currentIndex,"name")
 
   // assign the text to the label.
   label.setAttribute("src",txt);
