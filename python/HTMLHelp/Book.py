@@ -2,15 +2,10 @@
 
 
 import os.path, weakref
+import Error
 
 
-class Error(Exception):
-	"""Common base class for all excpetions in this module."""
-
-	pass
-
-
-class InvalidBookError(Error):
+class InvalidBookError(Error.Error):
 	"""Attempt to open an invalid book."""
 		
 	pass
