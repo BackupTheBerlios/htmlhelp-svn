@@ -267,7 +267,9 @@ class BookResource(Resource):
 			'</head>\n'
 			'<body>\n' % encode(self.book.title))
 
-		self.walk_contents(request, self.book.contents, level = 1)
+		request.write('<ul>\n')
+		self.walk_contents(request, self.book.contents)
+		request.write('</ul>\n')
 		
 		request.write(
 			'</body>\n'
@@ -275,24 +277,20 @@ class BookResource(Resource):
 		request.finish()
 	
 	def walk_contents(self, f, entry, level = 1):
-		f.write('\t'*level)
-		if level == 1:
-			f.write('<ul>\n')
-		else:
-			f.write('<ul class="closed">\n')
-		for child in entry.children:
-			f.write('\t'*(level + 1))
-			if child.children:
-				f.write('<li class="closed">')
-			else:
-				f.write('<li class="none">')
-			f.write('<a href="%s" target="main">%s</a>' % (escape(child.link), encode(child.name)))
-			if child.children:
+		for subentry in entry:
+			if len(subentry):
+				f.write('\t'*level + '<li class="closed">')
+				f.write('<a href="%s" target="main">%s</a>' % (escape(subentry.link), encode(subentry.name)))
 				f.write('\n')
-				self.walk_contents(f, child, level + 1)
-				f.write('\t'*(level + 1))
-			f.write('</li>\n')
-		f.write('\t'*level + '</ul>\n')
+				f.write('\t'*level + '<ul class="closed">\n')
+				self.walk_contents(f, subentry, level + 1)
+				f.write('\t'*level + '</ul>\n')
+				f.write('\t'*level + '</li>\n')
+			else:
+				f.write('\t'*level + '<li class="none">')
+				f.write('<a href="%s" target="main">%s</a>' % (escape(subentry.link), encode(subentry.name)))
+				f.write('</li>\n')
+				
 	
 	def render_index(self, request):
 		request.set_response(200)
@@ -306,7 +304,7 @@ class BookResource(Resource):
 			'</head>\n'
 			'<body>\n' % encode(self.book.title))
 
-		self.walk_index(request, self.book.index, level = 1)
+		self.walk_index(request, self.book.index)
 		
 		request.write(
 			'</body>\n'

@@ -39,7 +39,7 @@ class SpecParser:
 		assert len(self.contents_stack) > 0
 
 		entry = Book.ContentsEntry(name, self.translate_link(link))
-		self.contents_stack[-1].children.append(entry)
+		self.contents_stack[-1].append(entry)
 		self.contents_stack.append(entry)
 		
 	def end_sub(self):
@@ -49,7 +49,7 @@ class SpecParser:
 
 	def start_function(self, name, link, **dummy):
 		entry = Book.IndexEntry(name, self.translate_link(link))
-		self.book.index.children.append(entry)
+		self.book.index.append(entry)
 		
 	def handle_element_start(self, name, attributes):
 		method = 'start_' + name

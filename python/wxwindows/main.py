@@ -310,7 +310,7 @@ class BookFrame(wxFrame):
 		#self.AddIndex(book, book.index)
 
 	def AddContents(self, tree_node, book, toc_node):
-		for toc_child in toc_node.children:
+		for toc_child in toc_node:
 			if wxUSE_UNICODE:
 				name = toc_child.name
 			else:

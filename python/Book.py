@@ -18,78 +18,66 @@ class InvalidBookError(Error):
 	pass
 
 
-def EntryListIterator(parent):
-	# Iterator for the subentries in a table of contents / index entry.
-
-	child = parent._children_head()
-	while child:
-		yield child
-		child = child._next_sibling()
-
-
-class EntryList(object):
-	# List-alike wrapper object for the subentries in a table of contents / index
-	# entry.
-
-	def __init__(self, parent):
-		self._parent = parent
-
-	def __nonzero__(self):
-		return self._parent._children_tail is not None
-
-	def __len__(self):
-		n = 0
-		child = self._parent._children_head()
-		while child:
-			n += 1
-			child = child._next_sibling()
-		return n
-
-	def append(self, child):
-		parent = self._parent
-		
-		if parent._children_tail is None:
-			parent._children_tail = child
-			parent._children_head = weakref.ref(child)
-		else:
-			parent._children_tail._next_sibling = weakref.ref(child)
-			child._prev_sibling = parent._children_tail
-			parent._children_tail = child
-			
-		child._parent = weakref.ref(parent)
-
-	def __iter__(self):
-		return EntryListIterator(self._parent)
-
-
-class ContentsEntry(object):
+class ContentsEntry(list):
 	"""Entry in a table of contents."""
 
 	def __init__(self, name = None, link = None):
+		list.__init__(self)
 		self.name = name
 		self.link = link
+		self.number = None
+		self.parentref = None
 
-		self._parent = lambda: None
-		self._prev_sibling = None
-		self._next_sibling = lambda: None
-		self._children_head = lambda: None
-		self._children_tail = None
+	def __setitem__(self, index, item):
+		item.parentref = weakref.ref(self)
+		item.number = index + 1
+		list.__setitem__(self, index, item)
+	
+	def append(self, item):
+		assert isinstance(item, ContentsEntry)
 
-	parent = property(
-			lambda self: self._parent(), 
-			doc = """Parent entry.""")
+		item.parentref = weakref.ref(self)
+		item.number = len(self)
+		list.append(self, item)
+
+	def renumber(self):
+		number = 1
+		for item in self:
+			item.number = number
+			number += 1
 	
-	prev = property(
-			lambda self: self._prev_sibling, 
-			doc = """Prev entry.""")
+	def get_parent(self):
+		if self.parentref is None:
+			return None
+		return self.parentref()
 	
-	next = property(
-			lambda self: self._next_sibling(), 
-			doc = """Next entry.""")
+	def get_prev(self):
+		parent = self.get_parent()
+		if parent is None:
+			return None
+		index = self.number - 2
+		if index < 0:
+			return None
+		return parent[index]
+			
+	def get_next(self):
+		parent = self.get_parent()
+		if parent is None:
+			return None
+		index = self.number
+		if index >= len(parent):
+			return None
+		return parent[index]
 	
-	children = property(
-			lambda self: EntryList(self), 
-			doc = """Sub-entries.""")
+	def get_children(self):
+		if not len(self):
+			return None	
+		return self[0]
+	
+	parent   = property(get_parent,   doc = """Parent entry.""")
+	prev     = property(get_prev,     doc = """Prev entry.""")
+	next     = property(get_next,     doc = """Next entry.""")
+	children = property(get_children, doc = """Sub-entries.""")
 
 
 class Contents(ContentsEntry):
@@ -98,38 +86,18 @@ class Contents(ContentsEntry):
 	pass
 
 
-class IndexEntry(object):
+class IndexEntry(list):
 	"""Entry in an index."""
 
 	def __init__(self, name = None, link = None):
 		self.name = name
 		self.links = []
+
 		if link is not None:
 			self.links.append(link)
 
-		self._parent = lambda: None
-		self._prev_sibling = None
-		self._next_sibling = lambda: None
-		self._children_head = lambda: None
-		self._children_tail = None
 
-	parent = property(
-			lambda self: self._parent(), 
-			doc = """Parent entry.""")
-	
-	prev = property(
-			lambda self: self._prev_sibling, 
-			doc = """Prev entry.""")
-	
-	next = property(
-			lambda self: self._next_sibling(), 
-			doc = """Next entry.""")
-	
-	children = property(
-			lambda self: EntryList(self), 
-			doc = """Sub-entries.""")
-
-class Index(IndexEntry):
+class Index(list):
 	"""Book index."""
 
 	pass

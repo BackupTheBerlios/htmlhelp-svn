@@ -32,6 +32,7 @@ class GlobalFactory(Book.Factory):
 
 factory = GlobalFactory()
 factory.register(DevHelp.factory)
+factory.register(HTB.factory)
 
 
 def GlobalCatalogIterator(self):
