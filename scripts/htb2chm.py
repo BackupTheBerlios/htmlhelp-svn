@@ -55,11 +55,11 @@ def convert(path):
 def main():
 	if not sys.platform.startswith('win'):
 		sys.stderr.write('Only Windows platform is supported.\n')
-		#sys.exit(1)
+		sys.exit(1)
 
 	if not os.path.exists(hhc):
 		sys.stderr.write('HHC not found on \'%s\'.\n' % hhc)
-		#sys.exit(1)
+		sys.exit(1)
 		
 	for arg in sys.argv[1:]:
 		for file in glob.glob(arg):
