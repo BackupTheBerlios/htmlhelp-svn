@@ -15,6 +15,9 @@
 
 	include 'header.inc.php';
 
+	if(!$book_id && !intval($_GET['nojs']))
+		echo '<script type="text/javascript">if(navigator.userAgent.indexOf("Gecko") >= 0) document.location.href = "index.xul";</script>';
+	
 	echo '<frameset rows="80,*">';
 	echo '<frame src="menu.php?book_id=' . $book_id . '" name="menu"/>';
 	echo '<frameset rows="*" cols="*,3*">';
