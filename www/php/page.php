@@ -1,5 +1,6 @@
 <?php
 	include 'config.inc.php';
+	include 'mysql.inc.php';
 
 	// For this to work with the CGI version of PHP4, the "cgi.fix_pathinfo=1"
 	// option in php.ini must be set.
@@ -8,13 +9,10 @@
 	$path = $PATH_INFO;
 	while(!$book_id and $path)
 		list($book_id, $path) = explode('/', $path, 2);
-	
-	mysql_connect($db_server, $db_username, $db_password);
-	mysql_select_db($db_database);
+	$book_id = intval($book_id);
 
-	$pages = mysql_query(sprintf('SELECT `book_id`, `path`, `content` FROM `page` WHERE `book_id`=%d AND `path`="%s"', $book_id, mysql_escape_string($path)));
-	$page = mysql_fetch_object($pages);
-	$content = $page->content;
+	$result = mysql_query('SELECT `content` FROM `page` WHERE `book_id`=' . $book_id . ' AND `path`=\'' . mysql_escape_string($path) . '\'');
+	list($content) = mysql_fetch_row($result);
 	
 	function _mime_content_type($path)
 	{
