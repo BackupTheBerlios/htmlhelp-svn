@@ -1,40 +1,95 @@
 """Classes for generic HTML help books."""
 
 
-import os.path
+from __future__ import generators
+
+import os.path, weakref
 
 
 class Error(Exception):
+	"""Common base class for all excpetions in this module."""
 
 	pass
 
 
 class InvalidBookError(Error):
+	"""Attempt to open an invalid book."""
 		
 	pass
 
 
-class Entry(object):
-	"""Shared by the table of contents and index entries."""
+def ContentsEntryListIterator(parent):
+	# Iterator for the subentries in a table of contents entry.
+
+	child = parent._children_head()
+	while child:
+		yield child
+		child = child._next_sibling()
+
+
+class ContentsEntryList(object):
+	# List-alike wrapper object for the subentries in a table of contents
+	# entry.
+
+	def __init__(self, parent):
+		self._parent = parent
+
+	def __nonzero__(self):
+		return self._parent._children_tail is not None
+
+	def __len__(self):
+		n = 0
+		child = self._parent._children_head()
+		while child:
+			n += 1
+			child = child._next_sibling()
+		return n
+
+	def append(self, child):
+		parent = self._parent
+		
+		if parent._children_tail is None:
+			parent._children_tail = child
+			parent._children_head = weakref.ref(child)
+		else:
+			parent._children_tail._next_sibling = weakref.ref(child)
+			child._prev_sibling = parent._children_tail
+			parent._children_tail = child
+			
+		child._parent = weakref.ref(parent)
+
+	def __iter__(self):
+		return ContentsEntryListIterator(self._parent)
+
+
+class ContentsEntry(object):
+	"""Entry in a table of contents."""
 
 	def __init__(self, name = None, link = None):
 		self.name = name
 		self.link = link
+
+		self._parent = lambda: None
+		self._prev_sibling = None
+		self._next_sibling = lambda: None
+		self._children_head = lambda: None
+		self._children_tail = None
+
+	parent = property(
+			lambda self: self._parent(), 
+			doc = """Parent entry.""")
 	
-
-class ContentsEntryList(list):
-	pass
-
-
-class ContentsEntry(Entry):
-	"""Entry in a table of contents."""
-
-	def __init__(self, name = None, link = None, children = None):
-		Entry.__init__(self, name, link)
-		if children is None:
-			self.children = ContentsEntryList()
-		else:
-			self.children = children
+	prev = property(
+			lambda self: self._prev_sibling, 
+			doc = """Prev entry.""")
+	
+	next = property(
+			lambda self: self._next_sibling(), 
+			doc = """Next entry.""")
+	
+	children = property(
+			lambda self: ContentsEntryList(self), 
+			doc = """Sub-entries.""")
 
 
 class Contents(ContentsEntry):
@@ -43,32 +98,37 @@ class Contents(ContentsEntry):
 	pass
 
 
-class IndexEntry(Entry):
-	"""An entry in the index."""
-	
-
 class Index(list):
 	"""Book index."""
 
-	pass
+	def append(self, entry):
+		# Keep index entries sorted
+		
+		list.append(self, entry)
+		list.sort(self)
 
 
-class SearchEntry(Entry):
-	"""Search result entry."""
+class IndexEntry(Index):
+	"""An entry in the index."""
 
-	pass
+	def __init__(self, name = None, links = None):
+		self.name = name
 
+		if links is None:
+			self.links = []
+		else:
+			self.links = links
+	
+	def __cmp__(self, other):
+		return cmp(self.name, other.name)
 
-class Search(list):
-	"""Search result.
-
-	A list of SearchEntry objects."""
-
-	pass
+	def __contains__(self, keyword):
+		# FIXME: fill in here...
+		assert 0
 
 
 class Book(object):
-	"""Abstract book class."""
+	"""Base book class."""
 	
 	def __init__(self, archive):
 		self.archive = archive
@@ -76,9 +136,13 @@ class Book(object):
 		self.contents = Contents()
 		self.index = Index()
 		
-	title = property(lambda self: self.contents.name)
+	title = property(
+			lambda self: self.contents.name,
+			doc = """Book title.""")
 
-	default_link = property(lambda self: self.contents.link)
+	default_link = property(
+			lambda self: self.contents.link,
+			doc = """Default link.""")
 	
 	def resource(self, link):
 		"""Return a file-like object with the required link."""
@@ -87,11 +151,16 @@ class Book(object):
 	
 
 class Factory(object):
+	"""Abstract book factory."""
 	
 	def __apply__(self, path):
+		"""Create a book instance from the given path."""
+		
 		raise NotImplementedError
 
 	def extension(self, path):
+		# Utility function to determine the extension of a path
+		
 		root, ext = os.path.splitext(path)
 		return ext
 		
@@ -104,12 +173,22 @@ class CatalogEntry(object):
 		self.__path = path
 		self.__book = None
 
-	def open(self):
-		if self.__book is None:
-			self.__book = self.__factory(self.__path)
-		return self.__book
+	def get_book(self):
+		book = self.__book
+		if book is None:
+			if 1:
+				book = self.__factory(self.__path)
+				self.__book = book
+			else:
+				book = self.__book()
+				if book is None:
+					book = self.__factory(self.__path)
+					self.__book = weakref.ref(book)
+		return book
 
-	book = property(lambda self: self.open())
+	book = property(
+			get_book,
+			doc = """The book associated with this entry.""")
 
 		
 class Catalog(object):
