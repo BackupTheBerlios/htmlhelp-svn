@@ -37,7 +37,8 @@ class HHCParser(MSHTMLParser):
 			if len(self.contents_stack) == 0:
 				node = self.book.contents
 			else:
-				assert self.node is not None
+				if self.node is None:
+					self.node = Book.ContentsEntry(None, None)
 				
 				node = self.node
 				
