@@ -25,12 +25,179 @@ def store(book):
 # title and plaintext extraction
 
 
+import HTMLParser, htmlentitydefs
+import posixpath, mimetypes
+
+
+class HTMLExtractor(HTMLParser.HTMLParser):
+
+	# FIXME: detect the encoding from the HTML
+	encoding = 'iso8859-1'
+
+	ignore_tags = ('script',)
+	indent_tags = ('dd', 'ol', 'ul')
+	vspace_before_tags = ('dt', 'hr', 'pre', 'table',)
+	vspace_after_tags = ('h1', 'h2', 'h3', 'h4', 'h5', 'hr', 'pre', 'table',)
+	hspace_before_tags = ('td', 'th')
+	hspace_after_tags = ()
+	paragraph_tags = ('dt', 'h1', 'h2', 'h3', 'h4', 'h5', 'p')
+	annotation_tags = {'li': u'\xb7 ', 'br': u'\n', 'hr': u'\x2014'}
+	
+	def __init__(self):
+		HTMLParser.HTMLParser.__init__(self)
+		
+		self.title = None
+		self.plaintext = None
+
+		self.in_title = 0
+		self.in_body = 0
+		self.ignore = 0
+		self.verbatim = 0
+
+		self.indent = 0
+
+		self.text_pieces = []
+		
+	def handle_starttag(self, tag, attrs):
+		attrs = dict(attrs)
+
+		if tag == 'title':
+			self.title = u''
+			self.in_title = 1
+		if tag == 'body':
+			self.plaintext = u''
+			self.in_body = 1
+			
+		if tag == 'pre':
+			self.verbatim = 1
+			
+		if tag in self.ignore_tags:
+			self.ignore += 1
+		if self.ignore:
+			return
+		
+		if tag in self.vspace_before_tags:
+			self.do_verbatim(u'\n')
+
+		if tag in self.indent_tags:
+			self.indent += 1
+			
+		if tag in self.hspace_before_tags:
+			self.do_verbatim(u'\t')
+
+		if tag in self.paragraph_tags:
+			self.do_verbatim(u' '*self.indent)
+
+		if tag in self.annotation_tags:
+			self.do_verbatim(self.annotation_tags[tag])
+	
+	def handle_endtag(self, tag):
+		if tag == 'title':
+			self.do_flush()
+			self.in_title = 0
+		if tag == 'body':
+			self.do_flush()
+			self.in_body = 0
+
+		if tag == 'pre':
+			self.verbatim = 0
+		
+		if tag in self.ignore_tags:
+			self.ignore -= 1
+		if self.ignore:
+			return
+		
+		if tag in self.hspace_after_tags:
+			self.do_verbatim(u'\t')
+
+		if tag in self.paragraph_tags:
+			self.do_verbatim(u'\n')
+
+		if tag in self.indent_tags:
+			self.indent -= 1
+
+		if tag in self.vspace_after_tags:
+			self.do_verbatim(u'\n')
+
+	def handle_data(self, data):
+		if self.ignore:
+			return
+
+		text = data.decode(self.encoding)
+	
+		if self.verbatim:
+			self.do_verbatim(text)
+		else:
+			self.do_text(text)
+
+	def handle_charref(self, name):
+		text = unichr(int(name))
+
+		self.do_text(text)
+			
+	def handle_entityref(self, name):
+		try:
+			text = unichr(htmlentitydefs.name2codepoint[name])
+		except KeyError:
+			return
+
+		self.do_text(text)
+			
+	def do_text(self, text):
+		self.text_pieces.append(text)
+
+	def do_flush(self):
+		text = u''.join(self.text_pieces)
+		self.do(u' '.join(text.strip().split()))
+		self.text_pieces = []
+		
+	def do_verbatim(self, text):
+		self.do_flush()
+		self.do(text)
+
+	def do(self, text):
+		if self.in_title:
+			self.title += text
+		if self.in_body:
+			self.plaintext += text
+
+
+def extract_html(content):
+	parser = HTMLExtractor()
+	parser.feed(content)
+
+	return parser.title, parser.plaintext
+
+
+def guess_type(path):
+	base, ext = posixpath.splitext(path)
+	if ext in mimetypes.types_map:
+		return mimetypes.types_map[ext]
+	else:
+		return 'application/octet-stream'
+	
+
 def extract(path, content):
 	"""Extract the title and plaintext version of a document."""
 
-	# FIXME: implement this...
+	type = guess_type(path)
 
-	return None, None
+	if type == 'text/html':
+		return extract_html(content)
+	elif type == 'text/plain':
+		return None, content
+	else:
+		return None, None
+
+
+def test_extract():
+	for arg in sys.argv[1:]:
+		title, plaintext = extract_html(open(arg, "rt").read())
+		print title.encode('latin-1', 'ignore')
+		print
+		print plaintext.encode('latin-1', 'ignore')
+		print
+		print
 
 
 #######################################################################
@@ -82,7 +249,7 @@ def quote_str(s):
 def quote_unicode(u, encoding = 'UTF-8'):
 	"""Quote a unicode literal."""
 
-	return quote.string(u.encode(encoding))
+	return quote_str(u.encode(encoding))
 
 
 def quote(*args):
@@ -205,7 +372,9 @@ def dump_index_links(entry, parent_id, cont = 0):
 
 
 def dump_archive(archive):
-	sys.stdout.write('INSERT INTO `pages` (book_id, path, content, title, plaintext) VALUES')
+	# FIXME: collate an appropriate number of inserts in order to keep the packet
+	# size into a reasonable size...
+	
 	paths = archive.list()
 	for i in range(len(paths)):
 		path = paths[i]
@@ -213,9 +382,10 @@ def dump_archive(archive):
 		content = archive.open(path).read()
 		title, plaintext = extract(path, content)
 		
-		sys.stdout.write(i and ',\n ' or '\n ')
+		#sys.stdout.write(i and ',\n ' or '\n ')
+		sys.stdout.write('INSERT INTO `pages` (book_id, path, content, title, plaintext) VALUES')
 		sys.stdout.write('(' + ',\n  '.join(quote(literal('@book_id'), path, content, title, plaintext)) + ')')
-	sys.stdout.write(';\n')
+		sys.stdout.write(';\n')
 	
 
 
