@@ -47,8 +47,8 @@ def html_entity_decode(s, encoding = 'iso-8859-1'):
 	return u''.join(r)
 
 
-_html_title_re = re.compile(r'<title(?:\s.*?)?>(.*?)</title>', re.IGNORECASE | re.DOTALL)
-_html_body_re = re.compile(r'<body(?:\s.*?)?>(.*?)</body>', re.IGNORECASE | re.DOTALL)
+_html_title_re = re.compile(r'<title(?:\s.*?)?>(.*?)</title\s*>', re.IGNORECASE | re.DOTALL)
+_html_body_re = re.compile(r'<body(?:\s.*?)?>(.*?)</body\s*>', re.IGNORECASE | re.DOTALL)
 _html_tag_re = re.compile(r'<.*?>', re.DOTALL)
 
 def extract_html(content):
