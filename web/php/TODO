@@ -1,7 +1,7 @@
 Things to be done (by no particular order):
 
-- Compress the generated TOC and index pages and be nicer to web caches for
-  bandwith saving since TOC and indexes can be quite big. Some resources are:
+- Be nicer to web caches for bandwith saving since TOC and indexes can be quite
+  big. Some resources are:
 
   * http://php.weblogs.com/http_compression
 
@@ -9,15 +9,23 @@ Things to be done (by no particular order):
 
   * http://webreference.com/internet/software/servers/http/compression/
 
-- Better error handling.
-
 - Perhaps store some content gzip'd in the database to save disk space and
   eliminate the run-time compression.
 
-- Take in more consideration usability issues and try to improve them.
+- Better error handling.
+
+- Take in more consideration usability issues and try to improve them:
+
+  * Facilitate the navigation with lesser clicks.
+
+  * Beutify the stylesheet to be more easy to read.
 
 - More commenting.
 
 - Internationalization.
 
 - Tabbed browsing in the XUL interface (via the <tabbrowser> tag).
+
+- Filtering in the TOC and book list (in every navigation tab, as matter of fact).
+
+- Advanced search/filtering.
