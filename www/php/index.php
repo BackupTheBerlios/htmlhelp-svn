@@ -14,17 +14,17 @@
 	include 'header.inc.php';
 
 	echo '<frameset rows="80,*">';
-	echo '<frame src="menu.php?book_id=' . $book_id . '" name="menu" frameborder="1" scrolling="no" noresize="noresize"/>';
+	echo '<frame src="menu.php?book_id=' . $book_id . '" name="menu"/>';
 	echo '<frameset rows="*" cols="*,3*">';
 	if($book_id)
 	{
-		echo '<frame src="toc.php?book_id=' . $book_id . '" name="navigation" frameborder="0"/>';
-		echo '<frame src="page.php/' . $book_id . '/' . $book->default_path . '#' . $book->default_anchor . '" name="main" frameborder="0"/>';
+		echo '<frame src="toc.php?book_id=' . $book_id . '" name="navigation"/>';
+		echo '<frame src="page.php/' . $book_id . '/' . $book->default_path . '#' . $book->default_anchor . '" name="main"/>';
 	}
 	else
 	{
-		echo '<frame src="books.php" name="navigation" frameborder="0"/>';
-		echo '<frame src="about.php" name="main" frameborder="0"/>';
+		echo '<frame src="books.php" name="navigation"/>';
+		echo '<frame src="about.php" name="main"/>';
 	}
 	echo '</frameset>';
 	echo '</frameset>';

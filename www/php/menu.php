@@ -15,8 +15,18 @@
 
 	echo '<body>';
 	
-	echo '<div class="search">';
-	echo '<form action="search.php" target="navigation">';
+	echo '<div class="header">' . $title . '</div>';
+	echo '<div class="menubar">';
+	echo '<span class="left">';
+	echo '<a href="books.php" target="navigation">Books</a>';
+	if($book_id)
+	{
+		echo '| <a href="toc.php?book_id=' . $book_id . '" target="navigation">Contents</a>';
+		echo '| <a href="_index.php?book_id=' . $book_id . '" target="navigation">Index</a>';
+	}
+	echo '</span>';
+	echo '<span class="right">';
+	echo '<form class="search" action="search.php" target="navigation">';
 	
 	/*
 	echo '<input type="hidden" name="book_id" value="' . $book_id .'"/>';
@@ -38,16 +48,7 @@
 	echo '<input type="submit" value="Search">';
 	
 	echo '</form>';
-	echo '</div>';
-
-	echo '<div class="header">' . $title . '</div>';
-	echo '<div class="menubar">';
-	echo '<a href="books.php" target="navigation">Books</a>';
-	if($book_id)
-	{
-		echo '| <a href="toc.php?book_id=' . $book_id . '" target="navigation">Contents</a>';
-		echo '| <a href="_index.php?book_id=' . $book_id . '" target="navigation">Index</a>';
-	}
+	echo '</span>';
 	echo '</div>';
 	echo '</body>';
 	

@@ -53,11 +53,8 @@ a {
 /* Search */
 
 .search {
-	margin-top: 18px;
-	margin-right: 6px;
-
-	float: right;
-	clear: none;
+	margin: 0px;
+	padding: 0px;
 }
 
 
