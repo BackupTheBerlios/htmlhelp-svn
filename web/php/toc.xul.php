@@ -14,11 +14,11 @@
 
 	echo '<script src="toc.js"/>';
 
-	$book = new Book($_GET['book_id']);
+	$book = new Book($_GET['book']);
 	
 	echo '<button label="Sync" oncommand="onButtonCommand(event)"/>';
 						
-	echo '<tree id="tree" flex="1" seltype="single" hidecolumnpicker="true" onselect="onTocSelect(event, ' . $book->id . ')">';
+	echo '<tree id="tree" flex="1" seltype="single" hidecolumnpicker="true" onselect="onTocSelect(event, \'' . htmlspecialchars($book->alias) . '\')">';
 
 	echo '<treecols>';
 	echo '<treecol id="name" hideheader="true" primary="true" flex="1"/>';
@@ -32,7 +32,7 @@
 			echo '<treeitem>';
 			
 		echo '<treerow>';
-		echo '<treecell label="' . htmlspecialchars($title) . '" value = "' . $link . '"/>';
+		echo '<treecell label="' . htmlspecialchars($title) . '" value="' . htmlspecialchars($link) . '"/>';
 		echo '</treerow>';
 
 		walk_toc_entries($children);

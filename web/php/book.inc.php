@@ -4,10 +4,10 @@
 
 	function book_catalog()
 	{
-		$result = mysql_query('SELECT `id`, `title` FROM `book` ORDER BY `title`');
+		$result = mysql_query('SELECT `alias`, `title` FROM `book` ORDER BY `title`');
 		$entries = array();
-		while(list($book_id, $title) = mysql_fetch_row($result))
-			$entries[$book_id] = $title;
+		while(list($book_alias, $book_title) = mysql_fetch_row($result))
+			$entries[$book_alias] = $book_title;
 		return $entries;
 	}
 	
@@ -15,9 +15,13 @@
 	{
 		var $id;
 
-		function Book($id)
+		function Book($alias)
 		{
-			$this->id = intval($id);
+			$result = mysql_query('SELECT `id` FROM `book` WHERE `alias`=\'' . mysql_escape_string($alias) . '\'');
+			list($id) = mysql_fetch_row($result);
+			
+			$this->alias = $alias;
+			$this->id = $id;
 		}
 
 		function title()

@@ -1,12 +1,12 @@
 var noSelect = 0;
 
-function onTocSelect(event, book_id)
+function onTocSelect(event, book)
 {
 	var tree = event.target;
 	var link = tree.view.getCellValue(tree.currentIndex, "name");
 
 	if(!noSelect && link)
-		parent.content.location.href = "page.php/" + book_id + "/" + link;
+		parent.content.location.href = "page.php/" + book + "/" + link;
 }
 
 function parentTreeItem(element)
@@ -44,7 +44,7 @@ function onButtonCommand(event)
 	var tree = document.getElementById("tree");
 
 	var href = parent.content.location.href;
-	var base = document.location.href.replace(/\/toc\.xul\.php\?book_id=(.*)$/,'/page.php/$1/')
+	var base = document.location.href.replace(/\/toc\.xul\.php\?book=(.*)$/,'/page.php/$1/')
 
 	if(href.substr(0, base.length) == base)
 	{

@@ -73,10 +73,10 @@
 		
 		if($action == 'delete')
 		{
-			$book_ids = $_POST['book_ids'];
-			foreach($book_ids as $book_id)
+			$books = $_POST['books'];
+			foreach($books as $book)
 			{
-				$book = new Book($book_id);
+				$book = new Book($book);
 				$book->delete();
 			}
 		}
@@ -127,10 +127,10 @@
 		echo '<p>';
 		echo '<form action="admin.php" method="post">';
 		echo '<input type="hidden" name="action" value="delete"/>';
-		echo '<select name="book_ids[]" multiple="yes">';
+		echo '<select name="books[]" multiple="yes">';
 		$entries = book_catalog();	
-		foreach($entries as $book_id => $title)
-			echo '<option value="' . $book_id . '">' . $title . '</option>';
+		foreach($entries as $book => $title)
+			echo '<option value="' . $book . '">' . $title . '</option>';
 		echo '</select>';
 		echo '<input type="submit" value="Delete">';
 		echo '</form>';

@@ -2,7 +2,7 @@
 	include 'config.inc.php';
 	include 'book.inc.php';
 
-	$book = new Book($_GET['book_id']);
+	$book = new Book($_GET['book']);
 	$title = htmlspecialchars($book->title(), ENT_NOQUOTES);
 
 	header('Content-Type: text/html; charset=utf-8');

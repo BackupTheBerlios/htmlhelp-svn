@@ -2,7 +2,7 @@
 	include 'config.inc.php';
 	include 'book.inc.php';
 
-	$book = new Book($_GET['book_id']);
+	$book = new Book($_GET['book']);
 	
 	# Enable HTTP compression
 	ob_start("ob_gzhandler");
@@ -15,20 +15,20 @@
 	echo '<head>';
 	echo  '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>';
 	echo  '<title>Search</title>';
-	echo  '<base href="http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/page.php/' . $book->id . '/" target="main"/>';
+	echo  '<base href="http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/page.php/' . htmlspecialchars($book->alias) . '/" target="main"/>';
 	echo  '<link href="../../' . $css . '" type="text/css" rel="stylesheet"/>';
 	echo '</head>';
 	echo '<body id="search" class="sidebar">';
 
 	echo '<div class="menubar">';
-	echo  '<a href="../../toc.php?book_id=' . $book->id . '" target="_self">Contents</a> | ';
-	echo  '<a href="../../_index.php?book_id=' . $book->id . '" target="_self">Index</a> | ';
-	echo  '<a href="../../search.php?book_id=' . $book->id . '" target="_self">Search</a>';
+	echo  '<a href="../../toc.php?book=' . htmlspecialchars($book->alias) . '" target="_self">Contents</a> | ';
+	echo  '<a href="../../_index.php?book=' . htmlspecialchars($book->alias) . '" target="_self">Index</a> | ';
+	echo  '<a href="../../search.php?book=' . htmlspecialchars($book->alias) . '" target="_self">Search</a>';
 	echo '</div>';
 
 	$query = $_GET['query'];
 	echo '<form id="find" target="navigation" action="../../search.php">';
-	echo  '<input type="hidden" name="book_id" value="' . $book->id .'"/>';
+	echo  '<input type="hidden" name="book" value="' . htmlspecialchars($book->alias) .'"/>';
 	echo  '<input id="query" type="text" name="query" value="' . htmlspecialchars($query) . '"/>';
 	echo  '<input id="submit" type="submit" value="Find"/>';
 	echo '</form>';

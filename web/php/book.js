@@ -10,9 +10,9 @@ function goForward(event)
 	return true;
 }
 
-function goHome(event, book_id)
+function goHome(event, book)
 {
-	self.content.location.href = "page.php/" + book_id + "/";
+	self.content.location.href = "page.php/" + book + "/";
 	return true;
 }
 

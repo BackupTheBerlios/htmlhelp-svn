@@ -15,12 +15,12 @@
 
 	echo '<script src="_index.js"/>';
 	
-	$book = new Book($_GET['book_id']);
+	$book = new Book($_GET['book']);
 	$query = $_GET['query'];
 	
-	echo '<textbox id="query" type="autocomplete" value="' . htmlspecialchars($query) . '" onkeypress="onQueryKeypress(event, ' . $book->id . ')"/>';
+	echo '<textbox id="query" type="autocomplete" value="' . htmlspecialchars($query) . '" onkeypress="onQueryKeypress(event, \'' . htmlspecialchars($book->alias) . '\')"/>';
 	
-	echo '<listbox seltype="single" flex="1" onselect="onIndexSelect(event, ' . $book->id . ')">';
+	echo '<listbox seltype="single" flex="1" onselect="onIndexSelect(event, \'' . htmlspecialchars($book->alias) . '\')">';
 	if(isset($query))
 	{
 		$entries = $book->index($query);

@@ -6,16 +6,16 @@
 	// For this to work with the CGI version of PHP4, the "cgi.fix_pathinfo=1"
 	// option in php.ini must be set.
 
-	$book_id = '';
+	$book = '';
 	$path = $_SERVER['PATH_INFO'];
-	while(!$book_id and $path)
-		list($book_id, $path) = explode('/', $path, 2);
-	$book = new Book($book_id);
+	while(!$book and $path)
+		list($book, $path) = explode('/', $path, 2);
+	$book = new Book($book);
 
 	// If the 'path' param is not given then redirect to the book's front page.
 	if(!$path)
 	{
-		header('Location: http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/' . $book->id . '/' . $book->default_link());
+		header('Location: http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/' . htmlspecialchars($book->alias) . '/' . $book->default_link());
 		exit;
 	}
 
