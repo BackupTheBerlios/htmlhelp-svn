@@ -120,10 +120,15 @@ class Book(object):
 			lambda self: self.contents.link,
 			doc = """Default link.""")
 	
-	def resource(self, link):
+	def list(self):
+		"""List the pages in the book."""
+
+		return self.archive.list()
+		
+	def resource(self, path):
 		"""Return a file-like object with the required link."""
 		
-		return self.archive.open(link)
+		return self.archive.open(path)
 	
 
 class Factory(object):

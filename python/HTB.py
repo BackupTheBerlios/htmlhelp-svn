@@ -19,6 +19,11 @@ class HTBBook(MSHH.MSHHBook):
 		hhp = names[0]
 
 		MSHH.MSHHBook.__init__(self, archive, hhp)
+	
+	def list(self):
+		return filter(
+				lambda name: name[-4:].lower() not in ('.hhp', '.hhc', '.hhk'),
+				self.archive.list())
 
 
 class HTBFactory(Book.Factory):
