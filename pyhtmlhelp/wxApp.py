@@ -104,6 +104,7 @@ class MyFrame(wxFrame):
 			panel.SetSizer(topsizer)
 
 			m_ContentsBox = wxTreeCtrl(panel, wxID_HTML_TREECTRL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxTR_HAS_BUTTONS | wxTR_HIDE_ROOT | wxTR_LINES_AT_ROOT)
+			self.m_ContentsBox = m_ContentsBox
 			#m_ContentsBox.AssignImageList(ContentsImageList)
 			
 			topsizer.Add(m_ContentsBox, 1, wxEXPAND | wxALL)
@@ -189,6 +190,8 @@ class MyFrame(wxFrame):
 			else:
 				m_NavigPan.Show(FALSE)
 				m_Splitter.Initialize(m_HtmlWin)
+
+		self.AddBooks()
 	
 	def AddToolBarButtons(self, toolBar, style):
 		wpanelBitmap = wxArtProvider_GetBitmap(wxART_HELP_SIDE_PANEL, wxART_HELP_BROWSER)
@@ -216,6 +219,26 @@ class MyFrame(wxFrame):
 		if style & wxHF_PRINT:
 			toolBar.AddSimpleTool(wxID_HTML_PRINT, wprintBitmap, "Print this page")
 		
+	def AddBooks(self):
+		import Generic
+		book_factory = Generic.BookFactory()
+		root = self.m_ContentsBox.AddRoot("Books")
+		for name in book_factory.enumerate():
+			book = book_factory.book(name)
+			self.AddBook(root, book)
+		
+	def AddBook(self, node, book):
+		child = self.m_ContentsBox.AppendItem(node, book.title())
+		contents = book.contents()
+		self.AddContents(child, contents)
+
+	def AddContents(self, node, contents):
+		for entry in contents:
+			if wxUSE_UNICODE:
+				child = self.m_ContentsBox.AppendItem(node, entry.title())
+			else:
+				child = self.m_ContentsBox.AppendItem(node, entry.title().encode('iso-8859-1', 'replace'))
+			self.AddContents(child, entry.childs())
 		
 	def OnToolbar(self, event):
 		
