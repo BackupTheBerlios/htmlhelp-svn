@@ -3,8 +3,6 @@
 See http://www.imendio.com/projects/devhelp/ for more information about DevHelp."""
 
 
-from __future__ import generators
-
 import os, os.path, urlparse, xml.parsers.expat
 import Book, Archive
 
@@ -89,11 +87,31 @@ class RawDevHelpBook(DevHelpBook):
 		DevHelpBook.__init__(self, archive, spec)
 
 
+class TgzDevHelpBook(DevHelpBook):
+
+	def __init__(self, path):
+		archive = Archive.TarArchive(path)
+
+		DevHelpBook.__init__(self, archive, 'book.devhelp')
+	
+	def list(self):
+		result = []
+		for name in self.archive.list():
+			if name.startswith('book/'):
+				result.append(name[5:])
+		return result
+		
+	def resource(self, path):
+		return self.archive.open('book/' + path)
+
+
 class DevHelpFactory(Book.Factory):
 
 	def __call__(self, path):
 		if self.extension(path) == 'devhelp':
 			return RawDevHelpBook(path)
+		elif self.extension(path) == 'tgz':
+			return TgzDevHelpBook(path)
 
 		raise Book.InvalidBookError
 

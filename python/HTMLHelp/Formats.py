@@ -1,8 +1,6 @@
 """Generic interface to all formats."""
 
 
-from __future__ import generators
-
 import Book, DevHelp, MSHH, HTB
 
 
@@ -40,6 +38,8 @@ def GlobalCatalogIterator(self):
 	for catalog in self._GlobalCatalog__catalogs:
 		for entry in catalog:
 			yield entry
+	
+	raise StopIteration
 
 class GlobalCatalog(Book.Catalog):
 

@@ -3,8 +3,6 @@
 See http://dox.berlios.de/ for more information about Dox."""
 
 
-from __future__ import generators
-
 import os, os.path, urlparse, xml.parsers.expat
 import Book
 

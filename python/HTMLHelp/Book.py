@@ -1,8 +1,6 @@
 """Classes for generic HTML help books."""
 
 
-from __future__ import generators
-
 import os.path, weakref
 
 
