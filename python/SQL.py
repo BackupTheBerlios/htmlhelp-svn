@@ -1,32 +1,68 @@
 """SQL database."""
 
-if 0:
-	import MySQLdb
 
+import sys
+
+
+#######################################################################
+# Store a book directly into a MySQL database
+
+
+def store(book):
+	import MySQLdb
 
 	connection = MySQLdb.connect(db = 'htmlhelp')
 
 	cursor = connection.cursor()
 
-	cursor.execute('DESCRIBE book')
-	print cursor.fetchall()
+	# FIXME: fill in the rest...
+	cursor.execute('...')
 			
 	connection.close()
 
-import os.path, posixpath, mimetypes, sys
 
-import Book
-
-
-def guess_type(path):
-	base, ext = posixpath.splitext(path)
-	if ext in mimetypes.types_map:
-		return mimetypes.types_map[ext]
-	else:
-		return 'application/octet-stream'
+#######################################################################
+# title and plaintext extraction
 
 
-def quote(s):
+def extract(path, content):
+	"""Extract the title and plaintext version of a document."""
+
+	# FIXME: implement this...
+
+	return None, None
+
+
+#######################################################################
+# SQL literals quoting
+
+
+class literal(str):
+	"""A SQL literal."""
+
+	pass
+
+
+def quote_int(i):
+	"""Quote a integer literal."""
+
+	return literal('%i' % i)
+
+
+def quote_long(l):
+	"""Quote a long integer literal."""
+
+	return literal('%li' % l)
+
+
+def quote_float(f):
+	"""Quote a floating point literal."""
+
+	return literal('%f' % f)
+
+
+def quote_str(s):
+	"""Quote a string literal."""
 
 	s = s.replace('\\', '\\\\')
 	
@@ -40,70 +76,155 @@ def quote(s):
 	s = s.replace("'", "\\'")
 	s = s.replace('"', '\\"')
 
-	return "'" + s + "'"
+	return literal("'" + s + "'")
+
+
+def quote_unicode(u, encoding = 'UTF-8'):
+	"""Quote a unicode literal."""
+
+	return quote.string(u.encode(encoding))
+
+
+def quote(*args):
+	"""Quote one or more literals."""
+	
+	result = []
+	for arg in args:
+		if arg is None:
+			result.append('NULL')
+		elif isinstance(arg, literal):
+			result.append(arg)
+		elif isinstance(arg, int):
+			result.append(quote_int(arg))
+		elif isinstance(arg, long):
+			result.append(quote_long(arg))
+		elif isinstance(arg, float):
+			result.append(quote_float(arg))
+		elif isinstance(arg, str):
+			result.append(quote_str(arg))
+		elif isinstance(arg, unicode):
+			result.append(quote_unicode(arg))
+		else:
+			raise TypeError, 'unknown data type'
+	if len(result) == 1:
+		return result[0]
+	else:
+		return tuple(result)
 
 
 #######################################################################
 # Dump a book into a SQL language file
 
 
+def split_link(link):
+	i = link.find('#')
+	if i >= 0:
+		path, anchor = link[:i], link[i+1:]
+	else:
+		path, anchor = link, ''
+	return path, anchor
+	
+
 def dump(book):
 	dump_book(book)
 
 
 def dump_book(book):
-	print "INSERT INTO `books` (`title`, `default_link`) VALUES (%s, %s);" % (quote(book.title.encode('utf-8')), quote(book.default_link.encode('utf-8')))
-	print "SET @book_id = LAST_INSERT_ID();" 
+	title = book.title
+	default_path, default_anchor  = split_link(book.default_link)
+	
+	sys.stdout.write('INSERT INTO `books` (`title`, `default_path`, `default_anchor`) VALUES (%s, %s, %s);\n' % quote(title, default_path, default_anchor))
+	sys.stdout.write('SET @book_id = LAST_INSERT_ID();\n')
 
 	dump_contents(book.contents)
-	#dump_index(book.index, 0)
+	
+	dump_index(book.index)
+
 	dump_archive(book.archive)
 	
 
 def dump_contents(contents):
-	print "INSERT INTO `toc` (`book_id`, `parent_id`, `number`, `name`, `link`) VALUES"
-	id = dump_contents_entry(contents, 0, 1)
+	sys.stdout.write('INSERT INTO `toc` (`book_id`, `number`, `parent_number`, `name`, `path`, `anchor`) VALUES')
+	dump_contents_entries(contents, 0)
+	sys.stdout.write(';\n')
+	
+	
+def dump_contents_entries(entry, parent_number, cont = 0):
+	number = parent_number + 1
+	for subentry in entry:
+		name = subentry.name
+		path, anchor = split_link(subentry.link)
 
-	print "UPDATE `toc` SET `parent_id` = LAST_INSERT_ID() + `parent_id` - 1 WHERE `book_id` = @book_id AND `parent_id` != 1;"
+		sys.stdout.write(cont and ',\n ' or '\n ')
+		sys.stdout.write('(' + ', '.join(quote(literal('@book_id'), number, parent_number, name, path, anchor)) + ')')
+		cont = 1
+
+		number = dump_contents_entries(subentry, number, cont)
+	
+	return number
+	
+
+def dump_index(index):
+	sys.stdout.write('INSERT INTO `index` (`book_id`, `parent_id`, `term`) VALUES')
+	dump_index_entries(index, 0)
+	sys.stdout.write(';\n')
+	
+	sys.stdout.write('SET @index_id = LAST_INSERT_ID();\n')
+	sys.stdout.write('UPDATE `index` SET `parent_id` = @index_id + `parent_id` - 1 WHERE `book_id` = @book_id AND `parent_id` != 0;\n')
+	
+	sys.stdout.write('INSERT INTO `index_links` (`index_id`, `path`, `anchor`) VALUES');
+	dump_index_links(index, 0)
+	sys.stdout.write(';\n')
 	
 	
-def dump_contents_entry(entry, parent_id, last):
+def dump_index_entries(entry, parent_id, cont = 0):
 	id = parent_id + 1
 	for subentry in entry:
-		sublast = last and subentry is entry[-1]
-		print "  (@book_id, %d, %d, %s, %s)%s" % (parent_id, subentry.number, quote(subentry.name.encode('utf-8')), quote(subentry.link.encode('utf-8')), (sublast and not len(subentry)) and ";" or ",")
-		id = dump_contents_entry(subentry, id, sublast)
+		sys.stdout.write(cont and ',\n ' or '\n ')
+		sys.stdout.write('(' + ', '.join(quote(literal('@book_id'), parent_id, subentry.name)) + ')')
+		cont = 1
+				
+		id = dump_index_links(subentry, id, cont)
 	
 	return id
-	
 
-def dump_index_entry(entry, id, parent_id):
-
-	print "INSERT INTO `index` (`parent_id`, `name`) VALUES (%s, %s)" % (parent_id, entry.name.encode('utf-8'))
-	id = parent_id + 1
-
-	for link in entry.links:
-		print "INSERT INTO `index_links` VALUES (%s, %s)", (id, link.encode('utf-8'))
-		
-	parent_id = id
+def dump_index_links(entry, parent_id, cont = 0):
 	id = parent_id + 1
 	for subentry in entry:
-		id = dump_index_entry(child, id, parent_id)
+		for	link in subentry.links:
+
+			path, anchor = split_link(link)
+
+			sys.stdout.write(cont and ',\n ' or '\n ')
+			sys.stdout.write('(' + ', '.join(quote(literal('@index_id + %d - 1' % id), path, anchor)) + ')')
+			cont = 1
+				
+		id = dump_index_links(subentry, id, cont)
 	
 	return id
 
 
 def dump_archive(archive):
-	print "INSERT INTO `pages` (book_id, path, content) VALUES"
+	sys.stdout.write('INSERT INTO `pages` (book_id, path, content, title, plaintext) VALUES')
 	paths = archive.list()
-	for path in paths:
-		last = path is paths[-1]
+	for i in range(len(paths)):
+		path = paths[i]
+
 		content = archive.open(path).read()
-		print "  (@book_id, %s, %s)%s" % (quote(path.encode('utf-8')), quote(content), last and ';' or ',')
+		title, plaintext = extract(path, content)
+		
+		sys.stdout.write(i and ',\n ' or '\n ')
+		sys.stdout.write('(' + ',\n  '.join(quote(literal('@book_id'), path, content, title, plaintext)) + ')')
+	sys.stdout.write(';\n')
+	
+
+
+#######################################################################
+# Main program
 
 
 def main():
-	from HTB import factory
+	from Formats import factory
 	
 	for arg in sys.argv[1:]:
 		try:
@@ -112,7 +233,6 @@ def main():
 			raise
 
 		dump(book)
-	
 
 
 if __name__ == '__main__':
