@@ -15,7 +15,7 @@
 
 	echo '<script src="books.js"/>';
 	
-	echo '<listbox seltype="single" flex="1" onselect="onBookSelect(event)">';
+	echo '<listbox seltype="single" flex="1" onclick="onBookSelect(event)">';
 	$result = mysql_query('SELECT `id`, `title` FROM `book` ORDER BY `title`');
 	while(list($book_id, $title) = mysql_fetch_row($result))
 		echo '<listitem label="' . htmlspecialchars($title) . '" value="' . $book_id . '"/>';

@@ -26,8 +26,8 @@
 	else
 		$title = 'HTML Help Books';
 
-	echo '<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" title="' . $title . '">';
-	echo '<script type="text/javascript">document.title = "' . $title . '";</script>';
+	echo '<window id="wnd" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" title="' . $title . '" width="640" height="420" screenX="100" screenY="100" persist="width height screenX screenY sizemode">';
+	#echo '<script type="text/javascript">document.title = "' . $title . '";</script>';
 	
 	echo '<script src="index.js"/>';
 	
@@ -42,6 +42,7 @@
 	echo   '<tab label="Index"/>';
 	echo   '<tab label="Search"/>';
 	}
+	else
 	echo   '<tab label="Books"/>';
 	echo  '</tabs>';
 	echo  '<tabpanels flex="1">';
@@ -51,6 +52,7 @@
 	echo   '<iframe id="index" src="_index.xul.php?book_id=' . $book_id .'" flex="1"/>';
 	echo   '<iframe id="search" src="search.xul.php?book_id=' . $book_id .'" flex="1"/>';
 	}
+	else
 	echo   '<iframe id="books" src="books.xul.php" flex="1"/>';
 	echo  '</tabpanels>';
 	echo '</tabbox>';
