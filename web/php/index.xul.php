@@ -37,7 +37,7 @@
 	if(!$book_id)
 		echo '<menuitem label="Choose a book" value="0" selected="true"/>';
 		
-	$result = mysql_query('SELECT `id`, `title` FROM `book`');
+	$result = mysql_query('SELECT `id`, `title` FROM `book` ORDER BY `title`');
 	while($book = mysql_fetch_object($result))
 		echo '<menuitem label="' . $book->title . '" value="' . $book->id . '"' . ($book->id == $book_id ? ' selected="true"' : '') . '/>';
 				
