@@ -1,36 +1,26 @@
 #!/usr/bin/python
 
+import os.path
 import sys
 
 from wxPython.wx import *
 from wxPython.html import *
 
-sys.path.insert(0, '..')
-import Formats
+from HTMLHelp import Formats
 
 
 class file_wrapper:
-	"""Hack around a bug in wxPython 2.4.0.7"""
+	"""Hack around a bug in wxPython"""
 
 	def __init__(self, f):
 		self.f = f
-		self.n = 0
 	
-	def __getattr__(self, name):
-		return getattr(self.f, name)
-
-	def seek(self, offset, whence):
-		if self.n == 0 and whence == 0:
-			whence = 2
-		elif whence < 0:
-			whence = 1
+	def __getattr__(self, n):
+		return getattr(self.f, n)
 	
-		self.n += 1
-
-		if 0:
-			print "%d: seek(%d, %d)" % (self.n, offset, whence)
-		self.f.seek(offset, whence)
-
+	def tell(self):
+		return long(self.f.tell())
+	
 
 class BookFileSystemHandler(wxFileSystemHandler):
 
@@ -46,11 +36,10 @@ class BookFileSystemHandler(wxFileSystemHandler):
 			words = filter(None, link.split('/'))
 			name = words[0]
 			link = '/'.join(words[1:])
-		entry = Formats.catalog[name]
-		book = entry.book
+		book = catalog[name]
 		anchor = self.GetAnchor(location)
 		mimetype = self.GetMimeTypeFromExt(location)
-		stream = wxInputStream(file_wrapper(book.resource(link)))
+		stream = wxInputStream(file_wrapper(book.archive[link]))
 		return wxFSFile(stream, location, mimetype, anchor, wxDateTime_Now())
 
 
@@ -298,9 +287,8 @@ class BookFrame(wxFrame):
 	
 	def AddBooks(self):
 		root = self.contentsTree.AddRoot("Books")
-		for entry in Formats.catalog:
-			book = entry.book
-			book.name = entry.name
+		for name, book in catalog.iteritems():
+			book.name = name
 			self.AddBook(root, book)
 		
 	def AddBook(self, node, book):
@@ -360,6 +348,16 @@ class BookFrame(wxFrame):
 
 
 def main():
+	global catalog
+	
+	catalog = {}
+
+	for arg in sys.argv[1:]:
+		root, ext = os.path.splitext(arg)
+		name = os.path.basename(root)
+		book = Formats.factory(arg)
+		catalog[name] = book
+				
 	app = wxPySimpleApp()
 	frame = BookFrame(None, -1, "HTML Help Books")
 	frame.Show(TRUE)
