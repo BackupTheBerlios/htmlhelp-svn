@@ -93,19 +93,18 @@ else
 XSL_ = $(DEVHELP_XSL)
 endif
 
-devhelp.%: %.xml
-	rm -rf $@
-	mkdir -p $@
-	$(XSLTPROC) $(XSLTPROC_FLAGS) $(XSLTPROC_FLAGS_DEVHELP) -o $@/ $(XSL_) $<
-ifdef FIGURES
-	cp -r $(FIGURES) $@/book
-endif
+%.devhelp: %.xml
+	@rm -rf $@d
+	@mkdir -p $@d
+	$(foreach FIGURE,$(FIGURES), cp -r $(FIGURE) $@d;)
+	$(XSLTPROC) $(XSLTPROC_FLAGS) $(XSLTPROC_FLAGS_DEVHELP) -o $@d/ $(XSL_) $<
+	@touch $@
+	
+.PRECIOUS: %.devhelp
+	
 
-%.tgz: devhelp.%
-	tar -czf $@ -C $< book.devhelp book
-
-
-.PHONY: devhelp.%
+%.tgz: %.devhelp
+	tar -czf $@ -C $<d book.devhelp book
 
 
 include $(GARDIR)/docbook.lib.mk

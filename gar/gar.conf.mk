@@ -171,8 +171,8 @@ GARPKGDIR = $(GARPKGROOT)/$(GARNAME)
 FILE_SITES = file://$(FILEDIR)/ file://$(GARCHIVEDIR)/
 
 # Extra libs to include with gar.mk
-#GAR_EXTRA_LIBS += devhelp.lib.mk
-#GAR_EXTRA_LIBS += chm.lib.mk
+GAR_EXTRA_LIBS += devhelp.lib.mk
+GAR_EXTRA_LIBS += chm.lib.mk
 GAR_EXTRA_LIBS += htb.lib.mk
 
 SHELL=/bin/bash

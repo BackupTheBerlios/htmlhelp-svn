@@ -31,19 +31,18 @@ endif
 
 # Compilation
 
-ifdef WIN32
 HHC = "C:/Program Files/HTML Help Workshop/hhc.exe"
-else
-WINE = wine
-HHC = $(WINE) -- "C:/Program Files/HTML Help Workshop/hhc.exe"
+HHC_FLAGS =
 
-.PRECIOUS: %.hhp %.hhc %.hhk
+WINE = wine
+WINE_FLAGS = 
+ifneq ($(shell which $(WINE)),)
+HHC := $(WINE) $(WINE_FLAGS) -- $(HHC)
 endif
 
+%.chm: %.mshh
+	$(HHC) $(HHC_FLAGS) $(wildcard $<d/*.hhp)
+	mv $<d/$(@F) $@
 
-%.chm: htmlhelp.%
-	cd $< && $(HHC) $(basename $(wildcard $</*.hhp))
-	mv $</$(@F) $@
 
-
-include $(GARDIR)/htmlhelp.lib.mk
+include $(GARDIR)/mshh.lib.mk

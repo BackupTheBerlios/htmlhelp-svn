@@ -1,8 +1,8 @@
 # Rules for Microsoft Html Help books generation
 
 
-ifndef HTMLHELP_LIB_MK
-HTMLHELP_LIB_MK := 1
+ifndef MSHH_LIB_MK
+MSHH_LIB_MK := 1
 
 
 # DocBook XML (using XSL)
@@ -28,14 +28,14 @@ XSLTPROC_FLAGS_HTMLHELP = \
 HTMLHELP_XSL = /usr/share/sgml/docbook/stylesheet/xsl/nwalsh/htmlhelp/htmlhelp.xsl
 
 
-#%.hhp %.hhc %.hhk: %.xml
-htmlhelp.%: %.xml
-	rm -rf $@
-	mkdir -p $@
-	$(XSLTPROC) $(XSLTPROC_FLAGS) $(XSLTPROC_FLAGS_HTMLHELP) -o $@/ $(HTMLHELP_XSL) $<
-ifdef FIGURES
-	cp -r $(FIGURES) $@
-endif
+%.mshh: %.xml
+	@rm -rf $@d
+	@mkdir -p $@d
+	$(XSLTPROC) $(XSLTPROC_FLAGS) $(XSLTPROC_FLAGS_HTMLHELP) -o $@d/ $(HTMLHELP_XSL) $<
+	$(foreach FIGURE,$(FIGURES), cp -r $(FIGURE) $@d;)
+	@touch $@
+
+.PRECIOUS: %.mshh
 
 
 include $(GARDIR)/docbook.lib.mk

@@ -31,8 +31,8 @@ else
 endif
 
 
-%.htb: htmlhelp.%
-	cd $< && zip -r ../$(@F) .
+%.htb: %.mshh
+	cd $<d && zip -r ../$(@F) .
 
 
-include $(GARDIR)/htmlhelp.lib.mk
+include $(GARDIR)/mshh.lib.mk
