@@ -1,0 +1,29 @@
+--- www.pfdubois.com/numpy/html2/numpy.css	2001-09-07 19:52:46.000000000 +0100
++++ www.pfdubois.com/numpy/html2/numpy.css	2003-01-26 23:40:33.000000000 +0000
+@@ -1323,7 +1323,7 @@
+ 	display: block;
+ 	text-align: justify;
+ 	text-indent: 0.000000pt;
+-	margin-top: -48.000000pt;
++	margin-top: 48.000000pt;
+ 	margin-bottom: 0.000000pt;
+ 	margin-right: 0.000000pt;
+ 	margin-left: 46.799988pt;
+@@ -1340,7 +1340,7 @@
+ 	display: block;
+ 	text-align: left;
+ 	text-indent: 0.000000pt;
+-	margin-top: 0.000000pt;
++	margin-top: 48.000000pt;
+ 	margin-bottom: 0.000000pt;
+ 	margin-right: 0.000000pt;
+ 	margin-left: 0.000000pt;
+@@ -1357,7 +1357,7 @@
+ 	display: block;
+ 	text-align: left;
+ 	text-indent: -14.400009pt;
+-	margin-top: -48.000000pt;
++	margin-top: 0.000000pt;
+ 	margin-bottom: 0.000000pt;
+ 	margin-right: 61.199997pt;
+ 	margin-left: 61.199997pt;

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<book title="Numerical Python" name="Numeric" version="22.0" link="numpy.html">
+<book title="Numerical Python" name="Numeric" link="numpy.html">
 
 <chapters>
 	<sub name="Part I: Numerical Python" link="numpy-1.html#pgfId-59427">

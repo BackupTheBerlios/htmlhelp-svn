@@ -1,0 +1,52 @@
+[OPTIONS]
+Binary TOC=Yes
+Compatibility=1.1 or later
+Compiled file=Numeric.chm
+Contents file=Numeric.hhc
+Index file=Numeric.hhk
+Default Window=Main
+Default topic=numpy.html
+Full-text search=Yes
+Language=0x0409
+Title=Numeric Python
+
+[WINDOWS]
+Main="Numeric Python","Numeric.hhc","Numeric.hhk","numpy.html","numpy.html",,,,,0x2520,,0x603006,,,,,,,,0
+
+[FILES]
+numpy.html
+numpy-1.html
+numpy-2.html
+numpy-3.html
+numpy-4.html
+numpy-5.html
+numpy-6.html
+numpy-7.html
+numpy-8.html
+numpy-9.html
+numpy-10.html
+numpy-11.html
+numpy-12.html
+numpy-13.html
+numpy-14.html
+numpy-15.html
+numpy-16.html
+numpy-17.html
+numpy-18.html
+numpy-19.html
+numpy-20.html
+numpy-21.html
+numpy-22.html
+numpy-23.html
+numpy.css
+numpy-1.gif
+numpy-2.gif
+numpy-3.gif
+numpy-4.gif
+numpy-5.gif
+numpy-6.gif
+numpy-7.gif
+numpy-8.gif
+numpy-9.gif
+numpy-10.gif
+numpy-11.gif

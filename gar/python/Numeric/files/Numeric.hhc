@@ -1,0 +1,410 @@
+<HTML>
+<HEAD>
+</HEAD>
+<BODY>
+<OBJECT type="text/site properties">
+	<param name="ImageType" value="Folder">
+</OBJECT>
+<UL>
+	<LI><OBJECT type="text/sitemap"><param name="Name" value="Part I: Numerical Python"><param name="Local" value="numpy-1.html#pgfId-59427"></OBJECT>
+	<UL>
+		<LI><OBJECT type="text/sitemap"><param name="Name" value="1. Introduction"><param name="Local" value="numpy-2.html#pgfId-78440"></OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Where to get information and code"><param name="Local" value="numpy-2.html#pgfId-67465"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Acknowledgments"><param name="Local" value="numpy-2.html#pgfId-67319"></OBJECT>
+		</UL>
+		<LI><OBJECT type="text/sitemap"><param name="Name" value="2. Installing NumPy"><param name="Local" value="numpy-3.html#pgfId-54827"></OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Testing the Python installation"><param name="Local" value="numpy-3.html#pgfId-37275"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Testing the Numeric Python Extension Installation"><param name="Local" value="numpy-3.html#pgfId-37281"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Installing NumPy"><param name="Local" value="numpy-3.html#pgfId-54827"></OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Installing on Windows"><param name="Local" value="numpy-3.html#pgfId-84400"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Installing on Unix"><param name="Local" value="numpy-3.html#pgfId-84404"></OBJECT>
+			</UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="At the SourceForge..."><param name="Local" value="numpy-3.html#pgfId-68233"></OBJECT>
+		</UL>
+		<LI><OBJECT type="text/sitemap"><param name="Name" value="3. The NumTut package"><param name="Local" value="numpy-4.html#pgfId-37261"></OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Testing the NumTut package"><param name="Local" value="numpy-4.html#pgfId-35585"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Possible reasons for failure"><param name="Local" value="numpy-4.html#pgfId-56796"></OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Win32"><param name="Local" value="numpy-4.html#pgfId-57000"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Unix"><param name="Local" value="numpy-4.html#pgfId-56857"></OBJECT>
+			</UL>
+		</UL>
+		<LI><OBJECT type="text/sitemap"><param name="Name" value="4. High-Level Overview"><param name="Local" value="numpy-5.html#pgfId-57136"></OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Array Objects"><param name="Local" value="numpy-5.html#pgfId-57154"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Universal Functions"><param name="Local" value="numpy-5.html#pgfId-57178"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Convenience Functions"><param name="Local" value="numpy-5.html#pgfId-60952"></OBJECT>
+		</UL>
+		<LI><OBJECT type="text/sitemap"><param name="Name" value="5. Array Basics"><param name="Local" value="numpy-6.html#pgfId-57315"></OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Basics"><param name="Local" value="numpy-6.html#pgfId-37311"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Creating arrays from scratch"><param name="Local" value="numpy-6.html#pgfId-35605"></OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="array() and typecodes"><param name="Local" value="numpy-6.html#pgfId-35606"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Multidimensional Arrays"><param name="Local" value="numpy-6.html#pgfId-35637"></OBJECT>
+				<UL>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="resize"><param name="Local" value="numpy-6.html#pgfId-68290"></OBJECT>
+				</UL>
+			</UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Creating arrays with values specified `on-the-fly'"><param name="Local" value="numpy-6.html#pgfId-60291"></OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="zeros() and ones()"><param name="Local" value="numpy-6.html#pgfId-60120"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="arrayrange()"><param name="Local" value="numpy-6.html#pgfId-35764"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Creating an array from a function: fromfunction()"><param name="Local" value="numpy-6.html#pgfId-35809"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="identity()"><param name="Local" value="numpy-6.html#pgfId-59602"></OBJECT>
+			</UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Coercion and Casting"><param name="Local" value="numpy-6.html#pgfId-35852"></OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Automatic Coercions and Binary Operations"><param name="Local" value="numpy-6.html#pgfId-35854"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Deliberate up-casting: The asarray function"><param name="Local" value="numpy-6.html#pgfId-35864"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="The typecode value table"><param name="Local" value="numpy-6.html#pgfId-35867"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Consequences of silent upcasting"><param name="Local" value="numpy-6.html#pgfId-35950"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Saving space"><param name="Local" value="numpy-6.html#pgfId-68241"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Deliberate casts (potentially down): the astype method"><param name="Local" value="numpy-6.html#pgfId-35975"></OBJECT>
+			</UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Operating on Arrays"><param name="Local" value="numpy-6.html#pgfId-35984"></OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Simple operations"><param name="Local" value="numpy-6.html#pgfId-35985"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="In-place operations"><param name="Local" value="numpy-6.html#pgfId-85860"></OBJECT>
+			</UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Getting and Setting array values"><param name="Local" value="numpy-6.html#pgfId-36033"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Slicing Arrays"><param name="Local" value="numpy-6.html#pgfId-36074"></OBJECT>
+		</UL>
+		<LI><OBJECT type="text/sitemap"><param name="Name" value="6. Ufuncs"><param name="Local" value="numpy-7.html#pgfId-36126"></OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="What are Ufuncs?"><param name="Local" value="numpy-7.html#pgfId-36127"></OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Ufuncs can operate on any Python sequence"><param name="Local" value="numpy-7.html#pgfId-36229"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Ufuncs can take output arguments"><param name="Local" value="numpy-7.html#pgfId-36233"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Ufuncs have special methods"><param name="Local" value="numpy-7.html#pgfId-36249"></OBJECT>
+				<UL>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="The reduce ufunc method"><param name="Local" value="numpy-7.html#pgfId-36250"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="The accumulate ufunc method"><param name="Local" value="numpy-7.html#pgfId-61704"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="The outer ufunc method"><param name="Local" value="numpy-7.html#pgfId-61715"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="The reduceat ufunc method"><param name="Local" value="numpy-7.html#pgfId-61737"></OBJECT>
+				</UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Ufuncs always return new arrays"><param name="Local" value="numpy-7.html#pgfId-61739"></OBJECT>
+			</UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Which are the Ufuncs?"><param name="Local" value="numpy-7.html#pgfId-36300"></OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Unary Mathematical Ufuncs (take only one argument)"><param name="Local" value="numpy-7.html#pgfId-36302"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Binary Mathematical Ufuncs"><param name="Local" value="numpy-7.html#pgfId-36313"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Logical Ufuncs"><param name="Local" value="numpy-7.html#pgfId-36315"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Comparisons"><param name="Local" value="numpy-7.html#pgfId-86369"></OBJECT>
+				<UL>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="The operators and the comparison functions are not exactly equivalent"><param name="Local" value="numpy-7.html#pgfId-86430"></OBJECT>
+				</UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Ufunc shorthands"><param name="Local" value="numpy-7.html#pgfId-36357"></OBJECT>
+			</UL>
+		</UL>
+		<LI><OBJECT type="text/sitemap"><param name="Name" value="7. Pseudo Indices"><param name="Local" value="numpy-8.html#pgfId-36371"></OBJECT>
+		<LI><OBJECT type="text/sitemap"><param name="Name" value="8. Array Functions"><param name="Local" value="numpy-9.html#pgfId-36422"></OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="take(a, indices, axis=0)"><param name="Local" value="numpy-9.html#pgfId-36425"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="put (a, indices, values)"><param name="Local" value="numpy-9.html#pgfId-78510"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="putmask (a, mask, values)"><param name="Local" value="numpy-9.html#pgfId-84177"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="transpose(a, axes=None)"><param name="Local" value="numpy-9.html#pgfId-36476"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="repeat(a, repeats, axis=0)"><param name="Local" value="numpy-9.html#pgfId-36494"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="choose(a, (b0, ..., bn))"><param name="Local" value="numpy-9.html#pgfId-36498"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="ravel(a)"><param name="Local" value="numpy-9.html#pgfId-36512"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="nonzero(a)"><param name="Local" value="numpy-9.html#pgfId-58067"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="where(condition, x, y)"><param name="Local" value="numpy-9.html#pgfId-36518"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="compress(condition, a, axis=0)"><param name="Local" value="numpy-9.html#pgfId-36520"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="diagonal(a, k=0, axis1=0, axis2 = 1)"><param name="Local" value="numpy-9.html#pgfId-58163"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="trace(a, k=0)"><param name="Local" value="numpy-9.html#pgfId-36523"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="searchsorted(a, values)"><param name="Local" value="numpy-9.html#pgfId-36532"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="sort(a, axis=-1)"><param name="Local" value="numpy-9.html#pgfId-66636"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="argsort(a, axis=-1)"><param name="Local" value="numpy-9.html#pgfId-65841"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="argmax(a, axis=-1), argmin(a, axis=-1)"><param name="Local" value="numpy-9.html#pgfId-66027"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="fromstring(string, typecode)"><param name="Local" value="numpy-9.html#pgfId-36538"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="dot(m1, m2)"><param name="Local" value="numpy-9.html#pgfId-36540"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="matrixmultiply(m1, m2)"><param name="Local" value="numpy-9.html#pgfId-36542"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="clip(m, m_min, m_max)"><param name="Local" value="numpy-9.html#pgfId-36545"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="indices(shape, typecode=None)"><param name="Local" value="numpy-9.html#pgfId-66267"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="swapaxes(a, axis1, axis2)"><param name="Local" value="numpy-9.html#pgfId-58407"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="concatenate((a0, a1, ... , an), axis=0)"><param name="Local" value="numpy-9.html#pgfId-58428"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="innerproduct(a, b)"><param name="Local" value="numpy-9.html#pgfId-58474"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="outerproduct(a,b)"><param name="Local" value="numpy-9.html#pgfId-84301"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="array_repr()"><param name="Local" value="numpy-9.html#pgfId-84308"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="array_str()"><param name="Local" value="numpy-9.html#pgfId-58479"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="resize(a, new_shape)"><param name="Local" value="numpy-9.html#pgfId-58481"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="diagonal(a, offset=0, axis1=0, axis2=1)"><param name="Local" value="numpy-9.html#pgfId-58514"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="repeat	 (a, counts, axis=0)"><param name="Local" value="numpy-9.html#pgfId-58523"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="convolve (a, v, mode=2)"><param name="Local" value="numpy-9.html#pgfId-67914"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="cross_correlate (a, v, mode=0)"><param name="Local" value="numpy-9.html#pgfId-67917"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="where (condition, x, y)"><param name="Local" value="numpy-9.html#pgfId-67907"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="identity(n)"><param name="Local" value="numpy-9.html#pgfId-58536"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="sum(a, index=0)"><param name="Local" value="numpy-9.html#pgfId-58544"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="cumsum(a, index=0)"><param name="Local" value="numpy-9.html#pgfId-58556"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="product(a, index=0)"><param name="Local" value="numpy-9.html#pgfId-58558"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="cumproduct(a, index=0)"><param name="Local" value="numpy-9.html#pgfId-58560"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="alltrue(a, index=0)"><param name="Local" value="numpy-9.html#pgfId-58562"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="sometrue(a, index=0)"><param name="Local" value="numpy-9.html#pgfId-58564"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="allclose (x, y, rtol = 1.e-5, atol = 1.e-8)"><param name="Local" value="numpy-9.html#pgfId-86200"></OBJECT>
+		</UL>
+		<LI><OBJECT type="text/sitemap"><param name="Name" value="9. Array Methods"><param name="Local" value="numpy-10.html#pgfId-36552"></OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="itemsize()"><param name="Local" value="numpy-10.html#pgfId-36554"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="iscontiguous()"><param name="Local" value="numpy-10.html#pgfId-36565"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="typecode()"><param name="Local" value="numpy-10.html#pgfId-36568"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="byteswapped()"><param name="Local" value="numpy-10.html#pgfId-36576"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="tostring()"><param name="Local" value="numpy-10.html#pgfId-36582"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="tolist()"><param name="Local" value="numpy-10.html#pgfId-36588"></OBJECT>
+		</UL>
+		<LI><OBJECT type="text/sitemap"><param name="Name" value="10. Array Attributes"><param name="Local" value="numpy-11.html#pgfId-36604"></OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="flat"><param name="Local" value="numpy-11.html#pgfId-36606"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="real"><param name="Local" value="numpy-11.html#pgfId-36629"></OBJECT>
+		</UL>
+		<LI><OBJECT type="text/sitemap"><param name="Name" value="11. Special Topics"><param name="Local" value="numpy-12.html#pgfId-59071"></OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Subclassing"><param name="Local" value="numpy-12.html#pgfId-67984"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Code Organization"><param name="Local" value="numpy-12.html#pgfId-67992"></OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Numeric.py and friends"><param name="Local" value="numpy-12.html#pgfId-66725"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="UserArray.py"><param name="Local" value="numpy-12.html#pgfId-66711"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Matrix.py"><param name="Local" value="numpy-12.html#pgfId-66719"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Precision.py"><param name="Local" value="numpy-12.html#pgfId-66783"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="ArrayPrinter.py"><param name="Local" value="numpy-12.html#pgfId-66787"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="MLab.py"><param name="Local" value="numpy-12.html#pgfId-66808"></OBJECT>
+				<UL>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="bartlett(M)"><param name="Local" value="numpy-12.html#pgfId-66920"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="blackman(M)"><param name="Local" value="numpy-12.html#pgfId-66922"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="corrcoef(x, y=None)"><param name="Local" value="numpy-12.html#pgfId-66924"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="cov(m,y=None)"><param name="Local" value="numpy-12.html#pgfId-66926"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="cumprod(m, axis=0)"><param name="Local" value="numpy-12.html#pgfId-66928"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="cumsum(m, axis=0)"><param name="Local" value="numpy-12.html#pgfId-66930"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="diag(v, k=0)"><param name="Local" value="numpy-12.html#pgfId-66932"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="diff(x, n=1)"><param name="Local" value="numpy-12.html#pgfId-66934"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="eig(m)"><param name="Local" value="numpy-12.html#pgfId-66936"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="eye(N, M=N, k=0, typecode=None)"><param name="Local" value="numpy-12.html#pgfId-66938"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="fliplr(m)"><param name="Local" value="numpy-12.html#pgfId-66940"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="flipud(m)"><param name="Local" value="numpy-12.html#pgfId-66942"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="hamming(M)"><param name="Local" value="numpy-12.html#pgfId-66944"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="hanning(M)"><param name="Local" value="numpy-12.html#pgfId-66946"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="kaiser(M, beta)"><param name="Local" value="numpy-12.html#pgfId-66948"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="max(m, axis=0)"><param name="Local" value="numpy-12.html#pgfId-66950"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="mean(m, axis=0)"><param name="Local" value="numpy-12.html#pgfId-67179"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="median(m)"><param name="Local" value="numpy-12.html#pgfId-66954"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="min(m, axis=0)"><param name="Local" value="numpy-12.html#pgfId-66956"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="msort(m)"><param name="Local" value="numpy-12.html#pgfId-66958"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="prod(m, axis=0)"><param name="Local" value="numpy-12.html#pgfId-66960"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="ptp(m, axis = 0)"><param name="Local" value="numpy-12.html#pgfId-66962"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="rand(d1, ..., dn)"><param name="Local" value="numpy-12.html#pgfId-66964"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="rot90(m,k=1)"><param name="Local" value="numpy-12.html#pgfId-67153"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="sinc(x)"><param name="Local" value="numpy-12.html#pgfId-67155"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="squeeze(a)"><param name="Local" value="numpy-12.html#pgfId-66970"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="std(m, axis = 0)"><param name="Local" value="numpy-12.html#pgfId-66972"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="sum(m, axis=0)"><param name="Local" value="numpy-12.html#pgfId-66974"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="svd(m)"><param name="Local" value="numpy-12.html#pgfId-66976"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="trapz(y,x=None)"><param name="Local" value="numpy-12.html#pgfId-66978"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="tri(N, M=N, k=0, typecode=None)"><param name="Local" value="numpy-12.html#pgfId-66980"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="tril(m,k=0)"><param name="Local" value="numpy-12.html#pgfId-66982"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="triu(m,k=0)"><param name="Local" value="numpy-12.html#pgfId-66984"></OBJECT>
+				</UL>
+			</UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="The multiarray object"><param name="Local" value="numpy-12.html#pgfId-66811"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Typecodes"><param name="Local" value="numpy-12.html#pgfId-59085"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Indexing in and out, slicing"><param name="Local" value="numpy-12.html#pgfId-59290"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Ellipses"><param name="Local" value="numpy-12.html#pgfId-59320"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="NewAxis"><param name="Local" value="numpy-12.html#pgfId-59324"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Set-indexing and Broadcasting"><param name="Local" value="numpy-12.html#pgfId-59327"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Axis specifications"><param name="Local" value="numpy-12.html#pgfId-59331"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Textual representations of arrays"><param name="Local" value="numpy-12.html#pgfId-59333"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Comparisons"><param name="Local" value="numpy-12.html#pgfId-59418"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Storing arrays on disk"><param name="Local" value="numpy-12.html#pgfId-67223"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Dealing with floating point exceptions"><param name="Local" value="numpy-12.html#pgfId-59422"></OBJECT>
+		</UL>
+		<LI><OBJECT type="text/sitemap"><param name="Name" value="12. Writing a C extension to NumPy"><param name="Local" value="numpy-13.html#pgfId-36640"></OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Introduction"><param name="Local" value="numpy-13.html#pgfId-36641"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Preparing an extension module for NumPy arrays"><param name="Local" value="numpy-13.html#pgfId-36646"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Accessing NumPy arrays from C"><param name="Local" value="numpy-13.html#pgfId-36649"></OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Types and Internal Structure"><param name="Local" value="numpy-13.html#pgfId-36650"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Element data types"><param name="Local" value="numpy-13.html#pgfId-36661"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Contiguous arrays"><param name="Local" value="numpy-13.html#pgfId-36717"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Zero-dimensional arrays"><param name="Local" value="numpy-13.html#pgfId-36719"></OBJECT>
+			</UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="A simple example"><param name="Local" value="numpy-13.html#pgfId-36721"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Accepting input data from any sequence type"><param name="Local" value="numpy-13.html#pgfId-36748"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Creating NumPy arrays"><param name="Local" value="numpy-13.html#pgfId-36783"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Returning arrays from C functions"><param name="Local" value="numpy-13.html#pgfId-36796"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="A less simple example"><param name="Local" value="numpy-13.html#pgfId-36801"></OBJECT>
+		</UL>
+		<LI><OBJECT type="text/sitemap"><param name="Name" value="13. C API Reference"><param name="Local" value="numpy-14.html#pgfId-57398"></OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="ArrayObject C Structure and API"><param name="Local" value="numpy-14.html#pgfId-25107"></OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Structures"><param name="Local" value="numpy-14.html#pgfId-57404"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="The ArrayObject API"><param name="Local" value="numpy-14.html#pgfId-34282"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Notes"><param name="Local" value="numpy-14.html#pgfId-586"></OBJECT>
+			</UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="UfuncObject C Structure and API"><param name="Local" value="numpy-14.html#pgfId-587"></OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="C Structure"><param name="Local" value="numpy-14.html#pgfId-589"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="UfuncObject C API"><param name="Local" value="numpy-14.html#pgfId-590"></OBJECT>
+			</UL>
+		</UL>
+		<LI><OBJECT type="text/sitemap"><param name="Name" value="14. Glossary"><param name="Local" value="numpy-15.html#pgfId-57323"></OBJECT>
+	</UL>
+	<LI><OBJECT type="text/sitemap"><param name="Name" value="Part II: Optional Packages"><param name="Local" value="numpy-16.html#pgfId-304408"></OBJECT>
+	<UL>
+		<LI><OBJECT type="text/sitemap"><param name="Name" value="License and disclaimer for packages MA, RNG, Properties"><param name="Local" value="numpy-16.html#pgfId-304744"></OBJECT>
+		<LI><OBJECT type="text/sitemap"><param name="Name" value="15. FFT Reference"><param name="Local" value="numpy-17.html#pgfId-304711"></OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Python Interface"><param name="Local" value="numpy-17.html#pgfId-302955"></OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="fft(data, n=None, axis=-1)"><param name="Local" value="numpy-17.html#pgfId-302958"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="inverse_fft(data, n=None, axis=-1)"><param name="Local" value="numpy-17.html#pgfId-302970"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="real_fft(data, n=None, axis=-1)"><param name="Local" value="numpy-17.html#pgfId-302973"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="inverse_real_fft(data, n=None, axis=-1)"><param name="Local" value="numpy-17.html#pgfId-302986"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="fft2d(data, s=None, axes=(-2,-1))"><param name="Local" value="numpy-17.html#pgfId-302988"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="real_fft2d(data, s=None, axes=(-2,-1))"><param name="Local" value="numpy-17.html#pgfId-302990"></OBJECT>
+			</UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="C API"><param name="Local" value="numpy-17.html#pgfId-302992"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Compilation Notes"><param name="Local" value="numpy-17.html#pgfId-303012"></OBJECT>
+		</UL>
+		<LI><OBJECT type="text/sitemap"><param name="Name" value="16. LinearAlgebra Reference"><param name="Local" value="numpy-18.html#pgfId-303015"></OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Python Interface"><param name="Local" value="numpy-18.html#pgfId-303017"></OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="solve_linear_equations(a, b)"><param name="Local" value="numpy-18.html#pgfId-303019"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="inverse(a)"><param name="Local" value="numpy-18.html#pgfId-303023"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="eigenvalues(a)"><param name="Local" value="numpy-18.html#pgfId-303047"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="eigenvectors(a)"><param name="Local" value="numpy-18.html#pgfId-303058"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="singular_value_decomposition(a, full_matrices=0)"><param name="Local" value="numpy-18.html#pgfId-303076"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="generalized_inverse(a, rcond=1e-10)"><param name="Local" value="numpy-18.html#pgfId-303079"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="determinant(a)"><param name="Local" value="numpy-18.html#pgfId-303082"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="linear_least_squares(a, b, rcond=e-10)"><param name="Local" value="numpy-18.html#pgfId-303085"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="cholesky_decomposition(a)"><param name="Local" value="numpy-18.html#pgfId-306308"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Heigenvalues(a)"><param name="Local" value="numpy-18.html#pgfId-306314"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Heigenvectors(a)"><param name="Local" value="numpy-18.html#pgfId-306318"></OBJECT>
+			</UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Compilation Notes"><param name="Local" value="numpy-18.html#pgfId-303088"></OBJECT>
+		</UL>
+		<LI><OBJECT type="text/sitemap"><param name="Name" value="17. RandomArray Reference"><param name="Local" value="numpy-19.html#pgfId-303091"></OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Python Interface"><param name="Local" value="numpy-19.html#pgfId-303094"></OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="seed(x=0, y=0)"><param name="Local" value="numpy-19.html#pgfId-303096"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="get_seed()"><param name="Local" value="numpy-19.html#pgfId-303099"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="random(shape="><param name="Local" value="numpy-19.html#pgfId-303102"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="uniform(minimum, maximum, shape=ReturnFloat)"><param name="Local" value="numpy-19.html#pgfId-303105"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="randint(minimum, maximum, shape=ReturnFloat)"><param name="Local" value="numpy-19.html#pgfId-303108"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="permutation(n)"><param name="Local" value="numpy-19.html#pgfId-303111"></OBJECT>
+			</UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Floating point random arrays"><param name="Local" value="numpy-19.html#pgfId-305397"></OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="standard_normal (shape=ReturnFloat)"><param name="Local" value="numpy-19.html#pgfId-305398"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="normal (mean, stddev, shape=ReturnFloat)"><param name="Local" value="numpy-19.html#pgfId-305400"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="multivariate_normal (mean, covariance) or"><param name="Local" value="numpy-19.html#pgfId-305402"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="multivariate_normal (mean, covariance, leadingAxesShape)"><param name="Local" value="numpy-19.html#pgfId-305402"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="exponential (mean, shape=ReturnFloat)"><param name="Local" value="numpy-19.html#pgfId-305407"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="beta (a, b, shape=ReturnFloat)"><param name="Local" value="numpy-19.html#pgfId-305409"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="gamma (a, r, shape=ReturnFloat)"><param name="Local" value="numpy-19.html#pgfId-305411"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="chi_square (df, shape=ReturnFloat)"><param name="Local" value="numpy-19.html#pgfId-305413"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="noncentral_chi_square (df, nonc, shape=ReturnFloat)"><param name="Local" value="numpy-19.html#pgfId-305415"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="F (dfn, dfd, shape=ReturnFloat)"><param name="Local" value="numpy-19.html#pgfId-305417"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="noncentral_F (dfn, dfd, nconc, shape=ReturnFloat)"><param name="Local" value="numpy-19.html#pgfId-305419"></OBJECT>
+			</UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Integer random arrays"><param name="Local" value="numpy-19.html#pgfId-305421"></OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="binomial (trials, prob, shape=ReturnInt)"><param name="Local" value="numpy-19.html#pgfId-305422"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="negative_binomial (trials, prob, shape=ReturnInt)"><param name="Local" value="numpy-19.html#pgfId-305424"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="poisson (mean, shape=ReturnInt)"><param name="Local" value="numpy-19.html#pgfId-305426"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="multinomial (trials, probs) or multinomial (trials, probs, leadingAxesShape)"><param name="Local" value="numpy-19.html#pgfId-305428"></OBJECT>
+			</UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Examples"><param name="Local" value="numpy-19.html#pgfId-305431"></OBJECT>
+		</UL>
+		<LI><OBJECT type="text/sitemap"><param name="Name" value="18. Independent Random Streams"><param name="Local" value="numpy-20.html#pgfId-290702"></OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Background"><param name="Local" value="numpy-20.html#pgfId-304780"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Usage"><param name="Local" value="numpy-20.html#pgfId-304419"></OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Module RNG"><param name="Local" value="numpy-20.html#pgfId-304559"></OBJECT>
+				<UL>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="Generator objects"><param name="Local" value="numpy-20.html#pgfId-304635"></OBJECT>
+				</UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Module ranf"><param name="Local" value="numpy-20.html#pgfId-304493"></OBJECT>
+			</UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Examples"><param name="Local" value="numpy-20.html#pgfId-304426"></OBJECT>
+		</UL>
+		<LI><OBJECT type="text/sitemap"><param name="Name" value="19. Properties Reference"><param name="Local" value="numpy-21.html#pgfId-305690"></OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Defining a property"><param name="Local" value="numpy-21.html#pgfId-305692"></OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Evading the mechanism"><param name="Local" value="numpy-21.html#pgfId-305730"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Creating the class"><param name="Local" value="numpy-21.html#pgfId-305737"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Setting a property"><param name="Local" value="numpy-21.html#pgfId-305742"></OBJECT>
+				<UL>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="Example:"><param name="Local" value="numpy-21.html#pgfId-305804"></OBJECT>
+				</UL>
+			</UL>
+		</UL>
+		<LI><OBJECT type="text/sitemap"><param name="Name" value="20. Masked Arrays"><param name="Local" value="numpy-22.html#pgfId-303698"></OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Required Packages"><param name="Local" value="numpy-22.html#pgfId-296294"></OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Properties"><param name="Local" value="numpy-22.html#pgfId-320813"></OBJECT>
+			</UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="What is a masked array?"><param name="Local" value="numpy-22.html#pgfId-320810"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Installing and using MA"><param name="Local" value="numpy-22.html#pgfId-304772"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Class MaskedArray"><param name="Local" value="numpy-22.html#pgfId-296950"></OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Attributes of masked arrays"><param name="Local" value="numpy-22.html#pgfId-305213"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Methods on masked arrays."><param name="Local" value="numpy-22.html#pgfId-305217"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Constructing masked arrays"><param name="Local" value="numpy-22.html#pgfId-320251"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="What are masks?"><param name="Local" value="numpy-22.html#pgfId-320302"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Working with masks"><param name="Local" value="numpy-22.html#pgfId-320312"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Operations"><param name="Local" value="numpy-22.html#pgfId-320257"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Copying or not?"><param name="Local" value="numpy-22.html#pgfId-305173"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Behaviors"><param name="Local" value="numpy-22.html#pgfId-305435"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Indexing and Slicing"><param name="Local" value="numpy-22.html#pgfId-304210"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Indexing in assignments"><param name="Local" value="numpy-22.html#pgfId-320846"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Operations that produce a scalar result"><param name="Local" value="numpy-22.html#pgfId-306592"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Assignment to elements and slices"><param name="Local" value="numpy-22.html#pgfId-304229"></OBJECT>
+			</UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Module MA: Attributes"><param name="Local" value="numpy-22.html#pgfId-297249"></OBJECT>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Module MA: Functions"><param name="Local" value="numpy-22.html#pgfId-305706"></OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Unary functions"><param name="Local" value="numpy-22.html#pgfId-298306"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Binary functions"><param name="Local" value="numpy-22.html#pgfId-298312"></OBJECT>
+				<UL>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="Comparison operators"><param name="Local" value="numpy-22.html#pgfId-298340"></OBJECT>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="Logical operators"><param name="Local" value="numpy-22.html#pgfId-298353"></OBJECT>
+				</UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Special array operators"><param name="Local" value="numpy-22.html#pgfId-298365"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Controlling the size of the string representations"><param name="Local" value="numpy-22.html#pgfId-305726"></OBJECT>
+			</UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Helper classes"><param name="Local" value="numpy-22.html#pgfId-304172"></OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="MAError"><param name="Local" value="numpy-22.html#pgfId-306892"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="The constant masked"><param name="Local" value="numpy-22.html#pgfId-306894"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="The constant masked_print_option"><param name="Local" value="numpy-22.html#pgfId-320644"></OBJECT>
+				<UL>
+					<LI><OBJECT type="text/sitemap"><param name="Name" value="Example of masked behavior"><param name="Local" value="numpy-22.html#pgfId-306903"></OBJECT>
+				</UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Class masked_unary_function"><param name="Local" value="numpy-22.html#pgfId-305737"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Class masked_binary_function"><param name="Local" value="numpy-22.html#pgfId-305759"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Class domained_binary_function"><param name="Local" value="numpy-22.html#pgfId-320776"></OBJECT>
+			</UL>
+			<LI><OBJECT type="text/sitemap"><param name="Name" value="Examples of Using MA"><param name="Local" value="numpy-22.html#pgfId-306123"></OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Data with a given value representing missing data"><param name="Local" value="numpy-22.html#pgfId-306127"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Filling in the missing data"><param name="Local" value="numpy-22.html#pgfId-306145"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Numerical operations"><param name="Local" value="numpy-22.html#pgfId-306378"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Seeing the mask"><param name="Local" value="numpy-22.html#pgfId-306406"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Filling it your way"><param name="Local" value="numpy-22.html#pgfId-306428"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Ignoring extreme values"><param name="Local" value="numpy-22.html#pgfId-320020"></OBJECT>
+				<LI><OBJECT type="text/sitemap"><param name="Name" value="Averaging an entire multidimensional array"><param name="Local" value="numpy-22.html#pgfId-320037"></OBJECT>
+			</UL>
+		</UL>
+	</UL>
+</UL>
+</BODY>
+</HTML>
