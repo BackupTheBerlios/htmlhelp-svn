@@ -6,7 +6,8 @@ all: chm
 
 # chm	- Generate Compiled Html Help books.
 
-CHM_TARGETS = $(addsuffix .chm,$(basename $(filter %.texi %.texinfo %.txi %.xml,$(BOOKS)))) $(CHM_EXTRA_TARGETS)
+CHM_TARGETS = $(addsuffix .chm,$(basename $(BOOKS)))
+BOOKS_TARGETS += $(CHM_TARGETS)
 
 chm: build pre-chm $(CHM_TARGETS) post-chm
 	$(DONADA)
@@ -16,20 +17,7 @@ chm-p:
 	@$(foreach COOKIEFILE,$(CHM_TARGETS), test -e $(COOKIEDIR)/$(COOKIEFILE) ;)
 
 
-# install	- Install Compiled Html Help books
-post-install: chm-post-install
-
-chm-post-install:
-ifdef GARVERSION
-	$(foreach FILE,$(CHM_TARGETS), \
-		cp -a $(FILE) $(DESTDIR)/$(notdir $(addsuffix -$(GARVERSION)$(suffix $(FILE)),$(basename $(FILE)))) ;)
-else
-	$(foreach FILE,$(CHM_TARGETS), \
-		cp -a $(FILE) $(DESTDIR) ;)
-endif
-
-
-# Compilation
+################### CHM RULES ####################
 
 HHC = "C:/Program Files/HTML Help Workshop/hhc.exe"
 HHC_FLAGS =
@@ -43,6 +31,10 @@ endif
 %.chm: %.mshh
 	$(HHC) $(HHC_FLAGS) $(wildcard $<d/*.hhp)
 	mv $<d/$(@F) $@
+	@$(MAKECOOKIE)
+
+%.chm: empty-%.chm
+	@$(MAKECOOKIE)
 
 
 include $(GARDIR)/mshh.lib.mk

@@ -5,7 +5,8 @@ all: devhelp
 
 # devhelp	- Generate DevHelp books.
 
-DEVHELP_TARGETS = $(addsuffix .tgz,$(basename $(filter %.sgml %.texi %.texinfo %.txi %.xml,$(BOOKS)))) $(DEVHELP_EXTRA_TARGETS)
+DEVHELP_TARGETS = $(addsuffix .tgz,$(basename $(BOOKS)))
+BOOKS_TARGETS += $(DEVHELP_TARGETS)
 
 devhelp: build pre-devhelp $(DEVHELP_TARGETS) post-devhelp
 	$(DONADA)
@@ -13,33 +14,6 @@ devhelp: build pre-devhelp $(DEVHELP_TARGETS) post-devhelp
 # returns true if DevHelp books have completed successfully, false otherwise
 devhelp-p:
 	@$(foreach COOKIEFILE,$(DEVHELP_TARGETS), test -e $(COOKIEDIR)/$(COOKIEFILE) ;)
-
-
-# install	- Install DevHelp books
-post-install: devhelp-post-install
-
-devhelp-post-install:
-ifdef GARVERSION
-	$(foreach FILE,$(DEVHELP_TARGETS), \
-		cp -a $(FILE) $(DESTDIR)/$(notdir $(addsuffix -$(GARVERSION)$(suffix $(FILE)),$(basename $(FILE)))) ;)
-else
-	$(foreach FILE,$(DEVHELP_TARGETS), \
-		cp -a $(FILE) $(DESTDIR) ;)
-endif
-
-
-# validate	- Validate DevHelp books
-DEVHELP_DTD = $(GARDIR)/stylesheets/devhelp-1.dtd
-XMLLINT = xmllint
-XMLLINT_FLAGS = --noout --dtdvalid $(DEVHELP_DTD)
-
-validate: devhelp pre-validate validate_target post-validate
-	$(DONADA)
-
-validate_target:
-	$(foreach FILE,$(DEVHELP_TARGETS), \
-		tar -xzf $(FILE) -O book.devhelp | \
-		$(XMLLINT) $(XMLLINT_FLAGS) -)
 
 
 #################### DEVHELP RULES ####################
@@ -62,15 +36,13 @@ else
 DSSSL_ = $(DEVHELP_DSL)
 endif
 
-devhelp.%: %.sgml $(DSSSL)
-	rm -rf $@
-	mkdir -p $@
-	cd $@ && $(JADE) -t sgml -i html $(JADE_FLAGS) -d $(DSSSL_) $(DCL) ../$<
-	mkdir -p $@/book
-	mv $@/*.html $@/book
-ifdef FIGURES
-	cp -r $(FIGURES) $@/book
-endif
+%.devhelp: %.sgml $(DSSSL)
+	@rm -rf $@d
+	@mkdir -p $@d
+	cd $@d && $(JADE) -t sgml -i html $(JADE_FLAGS) -d $(DSSSL_) $(DCL) ../$(<F)
+	@mkdir -p $@d/book
+	@mv $@/*.html $@/book
+	$(foreach FIGURE,$(FIGURES), cp -r $(FIGURE) $@d/book;)
 
 
 # DocBook XML (using XSL)
@@ -96,8 +68,8 @@ endif
 %.devhelp: %.xml
 	@rm -rf $@d
 	@mkdir -p $@d
-	$(foreach FIGURE,$(FIGURES), cp -r $(FIGURE) $@d;)
 	$(XSLTPROC) $(XSLTPROC_FLAGS) $(XSLTPROC_FLAGS_DEVHELP) -o $@d/ $(XSL_) $<
+	$(foreach FIGURE,$(FIGURES), cp -r $(FIGURE) $@d/book;)
 	@touch $@
 	
 .PRECIOUS: %.devhelp
@@ -105,6 +77,10 @@ endif
 
 %.tgz: %.devhelp
 	tar -czf $@ -C $<d book.devhelp book
+	@$(MAKECOOKIE)
+
+%.tgz: empty-%.tgz
+	@$(MAKECOOKIE)
 
 
 include $(GARDIR)/docbook.lib.mk

@@ -78,7 +78,7 @@ build_licensedir = $(build_prefix)/licenses
 # the DESTDIR is used at INSTALL TIME ONLY to determine what the
 # filesystem root should be.  Each different DESTIMG has its own
 # DESTDIR.
-main_DESTDIR ?= $(GARDIR)/../books
+main_DESTDIR ?= /tmp/gar
 build_DESTDIR ?= /
 build_chroot_DESTDIR ?= /tmp/chroot
 
@@ -171,8 +171,6 @@ GARPKGDIR = $(GARPKGROOT)/$(GARNAME)
 FILE_SITES = file://$(FILEDIR)/ file://$(GARCHIVEDIR)/
 
 # Extra libs to include with gar.mk
-GAR_EXTRA_LIBS += devhelp.lib.mk
-GAR_EXTRA_LIBS += chm.lib.mk
-GAR_EXTRA_LIBS += htb.lib.mk
+GAR_EXTRA_LIBS += htmlhelp.lib.mk
 
 SHELL=/bin/bash
