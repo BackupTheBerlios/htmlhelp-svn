@@ -15,11 +15,12 @@ $(WORKDIR)/$(GARNAME).devhelp: $(FILEDIR)/py2devhelp.py
 	rm -rf $@d
 	mkdir -p $@d
 	cp -a $(WORKSRC) $@d/book
-	cd $@d/book && python ../../../../$(FILEDIR)/py2devhelp.py ../book
+	cd $@d/book && python ../../$(FILEDIR)/py2devhelp.py ../book
 	touch $@
 
-$(WORKDIR)/$(GARNAME).mshh:
+# See http://cvs.sourceforge.net/viewcvs.py/*checkout*/python/python/dist/src/Doc/tools/prechm.py
+$(WORKDIR)/$(GARNAME).mshh: $(FILEDIR)/prechm.py
 	rm -rf $@d
 	cp -a $(WORKSRC) $@d
-	cd $@d && python2.4 /usr/lib/python2.4/doc/tools/prechm.py -v $(GARVERSION) $(GARNAME)
+	cd $@d && python ../../$(FILEDIR)/prechm.py -v $(GARVERSION) $(GARNAME)
 	touch $@
