@@ -1,11 +1,11 @@
 # phpMyAdmin SQL Dump
-# version 2.5.6-rc1
+# version 2.5.6
 # http://www.phpmyadmin.net
 #
 # Host: localhost
-# Generation Time: Feb 14, 2004 at 01:25 AM
-# Server version: 4.0.17
-# PHP Version: 4.3.3
+# Generation Time: Mar 21, 2004 at 12:32 AM
+# Server version: 4.0.18
+# PHP Version: 4.3.4
 # 
 # Database : `htmlhelp`
 # 
@@ -19,8 +19,8 @@
 CREATE TABLE `book` (
   `id` smallint(5) unsigned NOT NULL auto_increment,
   `title` varchar(255) NOT NULL default '',
-  `default_path` varchar(255) binary NOT NULL default '',
-  `default_anchor` varchar(255) binary NOT NULL default '',
+  `page_no` smallint(5) unsigned NOT NULL default '0',
+  `anchor` varchar(255) binary NOT NULL default '',
   PRIMARY KEY  (`id`),
   KEY `title` (`title`(7))
 ) TYPE=MyISAM;
@@ -47,7 +47,7 @@ CREATE TABLE `index_entry` (
 CREATE TABLE `index_link` (
   `book_id` smallint(5) unsigned NOT NULL default '0',
   `no` smallint(5) unsigned NOT NULL default '0',
-  `path` varchar(255) binary NOT NULL default '',
+  `page_no` smallint(5) unsigned NOT NULL default '0',
   `anchor` varchar(255) binary NOT NULL default '',
   KEY `index` (`book_id`,`no`)
 ) TYPE=MyISAM;
@@ -73,12 +73,14 @@ CREATE TABLE `metadata` (
 
 CREATE TABLE `page` (
   `book_id` smallint(5) NOT NULL default '0',
+  `no` smallint(5) unsigned NOT NULL default '0',
   `path` varchar(255) binary NOT NULL default '',
   `compressed` tinyint(1) unsigned NOT NULL default '0',
   `content` mediumblob NOT NULL,
   `title` text,
   `body` mediumtext,
-  PRIMARY KEY  (`book_id`,`path`),
+  PRIMARY KEY  (`book_id`,`no`),
+  UNIQUE KEY `path` (`book_id`,`path`),
   FULLTEXT KEY `fulltext` (`title`,`body`)
 ) TYPE=MyISAM;
 
@@ -93,8 +95,7 @@ CREATE TABLE `toc_entry` (
   `parent_no` smallint(5) unsigned NOT NULL default '0',
   `no` smallint(5) unsigned NOT NULL default '0',
   `title` varchar(255) NOT NULL default '',
-  `path` varchar(255) binary NOT NULL default '',
+  `page_no` smallint(5) unsigned NOT NULL default '0',
   `anchor` varchar(255) binary NOT NULL default '',
-  PRIMARY KEY  (`book_id`,`parent_no`,`no`),
-  KEY `link` (`book_id`,`path`(31),`anchor`(7))
+  PRIMARY KEY  (`book_id`,`parent_no`,`no`)
 ) TYPE=MyISAM;

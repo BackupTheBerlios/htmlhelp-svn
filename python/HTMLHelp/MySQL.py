@@ -112,13 +112,14 @@ def quote(*args):
 # Dump a book into a SQL language file
 
 
-def split_link(link):
+def split_link(link, page_map):
 	i = link.find('#')
 	if i >= 0:
 		path, anchor = link[:i], link[i+1:]
 	else:
 		path, anchor = link, ''
-	return path, anchor
+	page_no = page_map.get(path, 0)
+	return page_no, anchor
 	
 
 def dump(book):
@@ -128,46 +129,51 @@ def dump(book):
 
 
 def dump_book(book):
-	title = book.title
-	default_path, default_anchor  = split_link(book.default_link)
+	path_map = {}
+	for path in book.archive:
+		no = len(path_map) + 1
+		path_map[path] = no
 	
-	sys.stdout.write('INSERT INTO `book` (`title`, `default_path`, `default_anchor`) VALUES (%s, %s, %s);\n' % quote(title, default_path, default_anchor))
+	title = book.title
+	page_no, anchor  = split_link(book.default_link, path_map)
+	
+	sys.stdout.write('INSERT INTO `book` (`title`, `page_no`, `anchor`) VALUES (%s, %s, %s);\n' % quote(title, page_no, anchor))
 	sys.stdout.write('SET @book_id = LAST_INSERT_ID();\n')
 
-	dump_contents(book)
+	dump_contents(book, path_map)
 	
-	dump_index(book)
+	dump_index(book, path_map)
 
 	dump_metadata(book)
-
-	dump_archive(book)
 	
+	dump_archive(book, path_map)
 
-def dump_contents(book):
+
+def dump_contents(book, path_map):
 	if not len(book.contents):
 		return
 
-	sys.stdout.write('INSERT INTO `toc_entry` (`book_id`, `no`, `parent_no`, `title`, `path`, `anchor`) VALUES')
-	dump_contents_entries(book.contents, 0)
+	sys.stdout.write('INSERT INTO `toc_entry` (`book_id`, `no`, `parent_no`, `title`, `page_no`, `anchor`) VALUES')
+	dump_contents_entries(book.contents, path_map, 0)
 	sys.stdout.write(';\n')
 	
 	
-def dump_contents_entries(entry, parent_number, cont = 0):
+def dump_contents_entries(entry, path_map, parent_number, cont = 0):
 	number = parent_number + 1
 	for subentry in entry:
 		name = subentry.name
-		path, anchor = subentry.link is None and ('', '') or split_link(subentry.link)
-
+		page_no, anchor = subentry.link is None and ('', '') or split_link(subentry.link, path_map)
+			
 		sys.stdout.write(cont and ',\n ' or '\n ')
-		sys.stdout.write('(' + ', '.join(quote(literal('@book_id'), number, parent_number, name, path, anchor)) + ')')
+		sys.stdout.write('(' + ', '.join(quote(literal('@book_id'), number, parent_number, name, page_no, anchor)) + ')')
 		cont = 1
 
-		number = dump_contents_entries(subentry, number, cont)
+		number = dump_contents_entries(subentry, path_map, number, cont)
 	
 	return number
 	
 
-def dump_index(book):
+def dump_index(book, path_map):
 	if not len(book.index):
 		return
 
@@ -182,16 +188,16 @@ def dump_index(book):
 		cont = 1
 	sys.stdout.write(';\n')
 	
-	sys.stdout.write('INSERT INTO `index_link` (`book_id`, `no`, `path`, `anchor`) VALUES');
+	sys.stdout.write('INSERT INTO `index_link` (`book_id`, `no`, `page_no`, `anchor`) VALUES');
 	cont = 0
 	no = 0
 	for entry in book.index:
 		no += 1
 		for	link in entry.links:
-			path, anchor = split_link(link)
+			page_no, anchor = split_link(link, path_map)
 
 			sys.stdout.write(cont and ',\n ' or '\n ')
-			sys.stdout.write('(' + ', '.join(quote(literal('@book_id'), no, path, anchor)) + ')')
+			sys.stdout.write('(' + ', '.join(quote(literal('@book_id'), no, page_no, anchor)) + ')')
 			cont = 1
 	sys.stdout.write(';\n')
 
@@ -217,8 +223,10 @@ def compress(data):
 	return fp.getvalue()
 
 
-def dump_archive(book):
+def dump_archive(book, path_map):
 	for path in book.archive:
+		no = path_map[path]
+
 		content = book.archive[path].read()
 		title, body = Plaintext.extract(path, content)
 
@@ -230,7 +238,7 @@ def dump_archive(book):
 				compressed = 1
 				content = compressed_content
 		
-		sys.stdout.write('INSERT INTO `page` (book_id, path, compressed, content, title, body) VALUES\n')
-		sys.stdout.write(' (' + ',\n  '.join(quote(literal('@book_id'), path, compressed, content, title, body)) + ')')
+		sys.stdout.write('INSERT INTO `page` (book_id, no, path, compressed, content, title, body) VALUES\n')
+		sys.stdout.write(' (' + ',\n  '.join(quote(literal('@book_id'), no, path, compressed, content, title, body)) + ')')
 		sys.stdout.write(';\n')
 
