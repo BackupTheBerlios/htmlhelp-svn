@@ -1,0 +1,24 @@
+#!/bin/sh
+
+set -e
+
+if [ "$1" ]
+then
+	NAME=$1
+else
+	NAME=screenshot
+fi
+
+for SECONDS in 3 2 1
+do
+	echo "Screenshot in $SECONDS..."
+	sleep 1
+done
+
+echo "Click on window."
+
+xwd -frame | xwdtopnm | pnmtopng > $NAME.png
+
+echo "$NAME.png written."
+
+gthumb $NAME.png &

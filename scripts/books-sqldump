@@ -2,5 +2,5 @@
 
 for FILE
 do
-	python ~/projects/htmlhelp/python/HTMLHelp/MySQL.py $FILE > ${FILE%.*}.sql || rm -f ${FILE%.*}
+	PYTHONPATH=~/projects/htmlhelp/python/:$PYTHONPATH python ~/projects/htmlhelp/python/scripts/hhsqldump $FILE > ${FILE%.*}.sql || rm -f ${FILE%.*}
 done

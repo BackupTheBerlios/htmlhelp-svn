@@ -3,6 +3,7 @@
 rsync \
 	-rtzv \
 	--exclude '.*.sw*' \
+	--exclude '/news.inc.php' \
 	--exclude '/cgi-bin' \
 	--exclude '/books/download' \
 	--exclude '/web/php' \
