@@ -65,9 +65,9 @@ CREATE TABLE `pages` (
   `path` varchar(255) binary NOT NULL default '0',
   `content` mediumblob NOT NULL,
   `title` text,
-  `plaintext` mediumtext,
+  `body` mediumtext,
   PRIMARY KEY  (`book_id`,`path`),
-  FULLTEXT KEY `fulltext` (`title`,`plaintext`)
+  FULLTEXT KEY `fulltext` (`title`,`body`)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
