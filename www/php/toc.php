@@ -9,14 +9,14 @@
 
 	function walk_toc($book_id, $parent_number)
 	{
+		$result = mysql_query('SELECT `book_id`, `number`, `parent_number`, `name`, `path`, `anchor` FROM `toc` WHERE `book_id`=' . $book_id . ' AND `parent_number`=' . $parent_number . ' ORDER BY `number`');
 		echo '<ul>';
-		$entries = mysql_query(sprintf('SELECT * FROM `toc` WHERE `book_id`=%d AND `parent_number`=%d ORDER BY number', $book_id, $parent_number));
-		while($entry = mysql_fetch_object($entries))
+		while(list($book_id, $number, $parent_number, $name, $path, $anchor) = mysql_fetch_row($result))
 		{
 			echo '<li>';
-			echo '<a href="page.php/' . $book_id . '/' . $entry->path . '#' . $entry->anchor . '" target="main">' . htmlentities($entry->name, ENT_NOQUOTES, 'UTF-8') . '</a>';
-			walk_toc($book_id, $entry->number);
-			echo "</li>";
+			echo '<a href="page.php/' . $book_id . '/' . $path . '#' . $anchor . '" target="main">' . htmlentities($name, ENT_NOQUOTES, 'UTF-8') . '</a>';
+			walk_toc($book_id, $number);
+			echo '</li>';
 		}
 		echo '</ul>';
 	}

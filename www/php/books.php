@@ -1,5 +1,6 @@
 <?php
 	include 'config.inc.php';
+	include 'mysql.inc.php';
 
 	$title = 'Catalog';
 
@@ -7,8 +8,6 @@
 ?>
 	<body class="sidebar">
 		<?php
-			mysql_connect($db_server, $db_username, $db_password);
-			mysql_select_db($db_database);
 			$books = mysql_query('SELECT `id`, `title` FROM `books`');
 			echo '<ul>';
 			while($book = mysql_fetch_object($books))

@@ -12,33 +12,46 @@
 		$title = 'HTML Help Books';
 
 	include 'header.inc.php';
-?>
-	<body>
-		<div class="search">
-			<form action="search.php" target="navigation">
-				<input type="hidden" name="book_id" value="<?php echo $book_id; ?>" />
-				<input type="text" name="query" value=""/>
-				<input type="submit" value="Search">
-			</form>
-		</div>
-		<div class="header"><?php echo $title;?></div>
-		<div class="menubar">
-<?php
+
+	echo '<body>';
+	
+	echo '<div class="search">';
+	echo '<form action="search.php" target="navigation">';
+	
+	#echo '<input type="hidden" name="book_id" value="' . $book_id .'"/>';
+	$books = mysql_query('SELECT `id`, `title` FROM `books`');
+	echo '<select name="book_id">';
+	echo '<option value="0">All</option>';
+	while($book = mysql_fetch_object($books))
+		echo '<option value="' . $book->id . '"' . ($book->id == $book_id ? ' selected="1"' : '') . '>' . $book->title . '</option>';
+	echo '</select>';	
+
+	echo '<select name="where">';
+	echo '<option value="contents">Contents</option>';
+	echo '<option value="index" selected="1">Index</option>';
+	echo '<option value="fulltext">Full-text</option>';
+	echo '</select>';
+
+	echo '<input type="text" name="query" value=""/>';
+	echo '<input type="submit" value="Search">';
+	
+	echo '</form>';
+	echo '</div>';
+
+	echo '<div class="header">' . $title . '</div>';
+	echo '<div class="menubar">';
 	if($book_id)
 	{
-?>
-			<span class="left">
-				<a href="toc.php?book_id=<?php echo $book_id;?>" target="navigation">Contents</a> |
-				<a href="_index.php?book_id=<?php echo $book_id;?>" target="navigation">Index</a>
-			</span>
-<?php
+		echo '<span class="left">';
+		echo '<a href="toc.php?book_id=' . $book_id . '" target="navigation">Contents</a> |';
+		echo '<a href="_index.php?book_id=' . $book_id . '" target="navigation">Index</a>';
+		echo '</span>';
 	}
-?>
-			<span class="right">
-				<a href="books.php" target="navigation">Catalog</a>
-			</span>
-		</div>
-	</body>
-<?php
+	echo '<span class="right">';
+	echo '<a href="books.php" target="navigation">Catalog</a>';
+	echo '</span>';
+	echo '</div>';
+	echo '</body>';
+	
 	include 'footer.inc.php';
 ?>
