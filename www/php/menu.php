@@ -11,6 +11,7 @@
 	else
 		$title = 'HTML Help Books';
 
+	$target = "navigation";
 	include 'header.inc.php';
 
 	echo '<body>';
@@ -18,15 +19,15 @@
 	echo '<div class="header">' . $title . '</div>';
 	echo '<div class="menubar">';
 	echo '<span class="left">';
-	echo '<a href="books.php" target="navigation">Books</a>';
+	echo '<a href="books.php">Books</a>';
 	if($book_id)
 	{
-		echo '| <a href="toc.php?book_id=' . $book_id . '" target="navigation">Contents</a>';
-		echo '| <a href="_index.php?book_id=' . $book_id . '" target="navigation">Index</a>';
+		echo '| <a href="toc.php?book_id=' . $book_id . '">Contents</a>';
+		echo '| <a href="_index.php?book_id=' . $book_id . '">Index</a>';
 	}
 	echo '</span>';
 	echo '<span class="right">';
-	echo '<form class="search" action="search.php" target="navigation">';
+	echo '<form class="search" action="search.php">';
 	
 	/*
 	echo '<input type="hidden" name="book_id" value="' . $book_id .'"/>';

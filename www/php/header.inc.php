@@ -8,5 +8,7 @@
 		echo '<title>' . $title . '</title>';
 	if($css)
 		echo '<link href="' . $css . '" type="text/css" rel="stylesheet"/>';
+	if($target)
+		echo '<base target="' . $target . '"/>';
 	echo '</head>';
 ?>
