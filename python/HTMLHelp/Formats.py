@@ -1,9 +1,7 @@
 """Generic interface to all formats."""
 
 
-import Book, DevHelp, MSHH, HTB
-
-
+import Book, DevHelp, MSHH, HTB, CHM
 
 
 class GlobalFactory(Book.Factory):
@@ -32,6 +30,7 @@ factory = GlobalFactory()
 factory.register(DevHelp.factory)
 factory.register(MSHH.factory)
 factory.register(HTB.factory)
+factory.register(CHM.factory)
 
 
 def GlobalCatalogIterator(self):

@@ -1,228 +1,147 @@
-"""Microsoft HTML Help."""
+"""Microsoft Compiled HTML Help (CHM)."""
 
 
-import os, re, sys, HTMLParser
-import Book
+import struct
 
-
-class HHCParser(HTMLParser.HTMLParser):
-
-	def __init__(self, book):
-		HTMLParser.HTMLParser.__init__(self)
-
-		self.book = book
-		self.contents_stack = []
-		self.node = None
-
-	def handle_starttag(self, tag, attrs):
-		attrs = dict(attrs)
-		if tag == 'ul':
-			if len(self.contents_stack) == 0:
-				node = self.book.contents
-			else:
-				assert self.node is not None
-				
-				node = self.node
-				
-			self.contents_stack.append(node)
-			self.node = None
-		elif tag == 'object':
-			if attrs['type'] == 'text/sitemap':
-				self.node = Book.ContentsNode(None, None)
-			else:
-				self.node = None
-		elif tag == 'param':
-			if self.node:
-				if attrs['name'] == 'Name':
-					self.node.name = attrs['value'].strip()
-				elif attrs['name'] == 'Local':
-					self.node.link = attrs['value']
-			
-	def handle_endtag(self, tag):
-		if tag == 'ul':
-			self.contents_stack.pop()
-		elif tag == 'object':
-			if self.node:
-				self.contents_stack[-1].childs.append(self.node)
-
-	def parse(self, fp):
-		self.feed(fp.read())
-
-
-class HHKParser(HTMLParser.HTMLParser):
-
-	def __init__(self, book):
-		HTMLParser.HTMLParser.__init__(self)
-
-		self.book = book
-		self.entry = None
-
-	def handle_starttag(self, tag, attrs):
-		attrs = dict(attrs)
-		if tag == 'object':
-			if attrs['type'] == 'text/sitemap':
-				self.entry = Book.IndexEntry(None, None)
-		elif tag == 'param':
-			if self.entry:
-				if attrs['name'] == 'Name':
-					if self.entry.term is None:
-						self.entry.term = attrs['value'].strip()
-				elif attrs['name'] == 'Local':
-					self.entry.link = attrs['value']
-	
-	def handle_endtag(self, tag):
-		if tag == 'object':
-			if self.entry:
-				self.book.index.append(self.entry)
-				self.entry = None
-
-	def parse(self, fp):
-		self.feed(fp.read())
-
-
-class HHPParser:
-	
-	OPTCRE = re.compile(
-		r'(?P<option>[]\-[\w_.*,(){}]+)'      # a lot of stuff found by IvL
-		r'[ \t]*=[ \t]*'                      # followed by separator
-		r'(?P<value>.*)$'                     # everything up to eol
-		)
-
-	def __init__(self, book):
-		self.book = book
-		self.section = None
-	
-	def handle_section(self, name):
-		print '[%s]' % (name,)
-		self.section = name
-	
-	def handle_option(self, name, value):
-		print name+'='+ value
-		if self.section == 'OPTIONS':
-			if name == 'Contents file':
-				parser = HHCParser(self.book)
-				parser.parse(self.book.get(value))
-			elif name == 'Index file':
-				parser = HHKParser(self.book)
-				parser.parse(self.book.get(value))
-			elif name == 'Title':
-				self.book.title = value
-			elif name == 'Default topic':
-				self.book.default = value
-	
-	def handle_line(self, line):
-		pass
-	
-	def parse(self, fp):
-		section = None
-		while 1:
-			line = fp.readline()
-			if not line:
-				break
-			
-			# strip comments
-			i = line.rfind(';')
-			if i >= 0:
-				line = line[:i]
-
-			# strip whitespace
-			line = line.rstrip()
-
-			# is it empty?
-			if line == '':
-				continue
-
-			# is it a section header?
-			if line[:1] == '[' and line[-1:] == ']':
-				section = line[1:-1]
-				self.handle_section(section)
-			# no section header in the file?
-			elif section is None:
-				continue
-			# an option line?
-			elif line.find('=') >= 0:
-				optname, optval = line.split('=', 1)
-				optname = optname.strip()
-				optval = optval.strip()
-				# allow empty values
-				if optval == '""':
-					optval = ''
-
-				self.handle_option(optname, optval)
-			else:
-				self.handle_line(line)
-
-
-class MSHHBook(Book.Book):
-	"""Microsoft HTML Help."""
-
-	pass
-
-
-class UncompressedMSHHBook(MSHHBook):
-
-	def __init__(self, hhp):
-		MSHHBook.__init__(self)
-
-		self.basedir = os.path.dirname(hhp)
-
-		parser = HHPParser(hhp)
-		parser.parse(open(hhp))
-	
-	def get(self, link):
-		path = os.path.join(self.basedir, link)
-
-		return open(path)
-
-
-class CHMBook(MSHHBook):
-	"""Windows Compiled HTML Help."""
-	
-	# TODO: Fill in the rest.
-
-	pass
-
-
-import zipfile
 try:
 	from cStringIO import StringIO
 except ImportError:
 	from StringIO import StringIO
 
+import chmlib
+import Book, Archive, MSHH
 
-class HTBBook(MSHHBook):
-	"""wxWindows HTML Help Book."""
 
-	def __init__(self, htb):
-		MSHHBook.__init__(self)
+class ChmArchive(Archive.Archive):
+	"""Compiled HTML Help (CHM) archive."""
 
-		self.zip = zipfile.ZipFile(htb, "r")
+	def __init__(self, path):
+		self.chm = chmlib.chm_open(path)
 
-		for name in self.zip.namelist():
-			if name[-4:] == '.hhp':
-				parser = HHPParser(self)
-				parser.parse(self.get(name))
-				return
-
-		raise Exception, "project file not found"
+	def __del__(self):
+		chmlib.chm_close(self.chm)
 	
-	def list(self):
-		return self.zip.namelist()
+	def _enumerate(self, chm, ui, result):
+		result.append(ui.path)
 		
-	def get(self, link):
+		return chmlib.CHM_ENUMERATOR_CONTINUE
+
+	def list(self):
+		result = []
+		chmlib.chm_enumerate(self.chm, chmlib.CHM_ENUMERATE_NORMAL | chmlib.CHM_ENUMERATE_FILES, self._enumerate, result)
+		return result
+	
+	def open(self, path):
+		ui = chmlib.chm_resolve_object(self.chm, path)
+
 		fp = StringIO()
-		fp.write(self.zip.read(link))
+
+		offset = 0L
+		remain = ui.length
+		while remain:
+			buffer = chmlib.chm_retrieve_object(self.chm, ui, offset, 32768)
+			if buffer:
+				fp.write(buffer)	
+				offset += len(buffer)
+				remain -= len(buffer)
+			else:
+				raise IOError, "incomplete file: %s\n" % ui.path
+
 		fp.seek(0)
 		return fp
 
 
-if __name__ == "__main__":
-	import sys
+class SystemParser:
+
+	def __init__(self, book):
+		self.book = book
 	
-	for arg in sys.argv:
-		if arg[-4:] == '.htb':
-			book = HTBBook(arg)
-			print book
-		elif arg[-4:] == '.hhp':
-			book = UncompressedMSHHBook(arg)
-			print book
+		self.parse(book.archive.open('/#SYSTEM'))
+		
+	def _read(self, fp, fmt):
+		fmt = '<' + fmt
+		size = struct.calcsize(fmt)
+		data = fp.read(size)
+		if not data:
+			raise IOError
+		return struct.unpack(fmt, data)
+	
+	def parse(self, fp):
+		version, = self._read(fp, 'L')
+
+		try:
+			while 1:
+				code, length = self._read(fp, 'HH')
+				data, = self._read(fp, '%ds' % length)
+				self.handle_entry(code, data)
+		except IOError:
+			pass
+
+	def handle_entry(self, code, data):
+		if code == 0:
+			parser = MSHH.HHCParser(self)
+			parser.parse(archive.open(data))
+		elif code == 1:
+			parser = MSHH.HHKParser(self)
+			parser.parse(archive.open(data))
+		elif code == 2:
+			self.book.contents.link = data
+		elif code == 3:
+			self.book.contents.name = data
+		
+
+class ChmBook(Book.Book):
+
+	def __init__(self, path):
+		archive = ChmArchive(path)
+
+		Book.Book.__init__(self, archive)
+
+		SystemParser(self)
+		
+		for name in self.archive.list():
+			if name.lower().endswith('.hhc') and not len(self.contents):
+				parser = MSHH.HHCParser(self)
+				parser.parse(archive.open(name))
+			elif name.lower().endswith('.hhk') and not len(self.index):
+				parser = MSHH.HHKParser(self)
+				parser.parse(archive.open(name))
+
+	def list(self):
+		result = []
+		for name in self.archive.list():
+			if name[:1] == '/' and not (name.lower().endswith('.hhc') or name.lower().endswith('.hhk')):
+				result.append(name[1:])
+		return result
+
+	def resource(self, path):
+		return self.archive.open('/' + path)
+
+
+class ChmFactory(Book.Factory):
+
+	def __call__(self, path):
+		if self.extension(path).lower() == 'chm':
+			return ChmBook(path)
+
+		raise Book.InvalidBookError
+
+factory = ChmFactory()
+
+
+#######################################################################
+# Test program
+
+
+def test():
+	import sys
+
+	for arg in sys.argv[1:]:
+		book = ChmBook(arg)
+		print book.list()
+		print book.contents
+		print book.index
+	
+
+if __name__ == '__main__':
+	test()
