@@ -58,6 +58,14 @@ class Archive(object):
 		
 		return iter(self.keys())
 
+	def iteritems(self):
+		"""Iterate over the member file names."""
+		
+		for name in self:
+			yield name, self[name]
+		
+		raise StopIteration
+
 	def keys(self):
 		"""List archive contents."""
 		

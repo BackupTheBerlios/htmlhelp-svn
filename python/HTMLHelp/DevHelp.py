@@ -203,7 +203,7 @@ class TgzDevhelpFilterArchive(Archive.FilterArchive):
 # Readers
 
 
-def read_plain(path):
+def read_spec(path):
 	"""Read a DevHelp book on a plain directory."""
 
 	basedir, spec = os.path.split(os.path.abspath(path))
