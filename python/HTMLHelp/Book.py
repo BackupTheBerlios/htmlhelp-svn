@@ -94,11 +94,46 @@ class IndexEntry(object):
 		if link is not None:
 			self.links.append(link)
 
+	def __cmp__(self, other):
+		return cmp(self.name, other.name)
 
-class Index(list):
-	"""Book index."""
+	def __hash__(self):
+		return hash(self.name)
 
-	pass
+
+class Index(object):
+	"""Book index.
+
+	It is a mix between a dictionary and a list where entries are kept sorted and
+	those with duplicate terms are merged together."""
+
+	def __init__(self):
+		self.__dict = {}
+		self.__list = []
+	
+	def __len__(self):
+		assert len(self.__list) == len(self.__dict)
+
+		return len(self.__list)
+	
+	def __iter__(self):
+		return iter(self.__list)
+
+	def __contains__(self, term):
+		return term in self.__dict
+	
+	def __getitem__(self, term):
+		return self.__dict[term]
+
+	def append(self, entry):
+		"""Append an entry."""
+
+		if entry.name in self.__dict:
+			self.__dict[entry.name].links.extend(entry.links)
+		else:
+			self.__dict[entry.name] = entry
+			self.__list.append(entry)
+			self.__list.sort()
 
 
 class Book(object):
