@@ -5,13 +5,9 @@
 #
 #  update.sh bookdump.sql 
 
-set -e
-
-. `dirname $0`/config.sh
-
 EXIT=0
 for BOOK
 do
-	sed -f `dirname $0`/update.sed $BOOK | $MYSQL $DATABASE || EXIT=1
+	sed -f `dirname $0`/update.sed $BOOK | `dirname $0`/mysql.sh || EXIT=1
 done
 exit $EXIT

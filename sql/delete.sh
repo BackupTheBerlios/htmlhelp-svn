@@ -7,12 +7,10 @@
 
 set -e
 
-. `dirname $0`/config.sh
-
 (
 	for BOOK_ID
 	do
 		echo "SET @book_id=$BOOK_ID;" 
 		cat `dirname $0`/delete.sql 
 	done
-) | $MYSQL $DATABASE
+) | `dirname $0`/mysql.sh

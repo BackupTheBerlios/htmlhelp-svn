@@ -2,4 +2,6 @@
 
 MYSQL=mysql
 
+HOSTNAME=localhost
 DATABASE=htmlhelp
+USERNAME=htmlhelp
