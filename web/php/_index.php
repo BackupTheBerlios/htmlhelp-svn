@@ -2,6 +2,9 @@
 	include 'config.inc.php';
 	include 'mysql.inc.php';
 
+	# Enable HTTP compression
+	ob_start("ob_gzhandler");
+	
 	$title = 'Index';
 	$target = 'main';
 	include 'header.inc.php';

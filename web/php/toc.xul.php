@@ -2,6 +2,9 @@
 	include 'config.inc.php';
 	include 'mysql.inc.php';
 
+	# Enable HTTP compression
+	ob_start("ob_gzhandler");
+	
 	header('Content-type: application/vnd.mozilla.xul+xml');
 
 	echo '<?xml version="1.0" encoding="UTF-8"?' . '>';

@@ -3,6 +3,9 @@
 	include 'mysql.inc.php';
 	include 'mysql_version.inc.php';
 
+	# Enable HTTP compression
+	ob_start("ob_gzhandler");
+	
 	$title = 'Search';
 	$target = 'main';
 	include 'header.inc.php';
