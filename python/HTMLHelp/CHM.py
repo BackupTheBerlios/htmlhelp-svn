@@ -36,13 +36,29 @@ if sys.platform.startswith('win'):
 			#  http://bonedaddy.net/pabs3/code/#istorage
 			#  http://www.oreilly.com/catalog/pythonwin32/chapter/ch12.html
 			raise NotImplementedError
-
-			flags = storagecon.STGM_READ | storagecon.STGM_SHARE_EXCLUSIVE
-			#flags = storagecon.STGM_READ | storagecon.STGM_SHARE_DENY_WRITE
-			self.stg = pythoncom.StgOpenStorage(path, None, flags)
+			
+			if not pythoncom.StgIsStorageFile(path):
+				print "The file is not a storage file!"
+				raise ValueError, "The file is not a storage file!"
+			
+			#flags = storagecon.STGM_READ | storagecon.STGM_SHARE_EXCLUSIVE
+			flags = storagecon.STGM_READ | storagecon.STGM_SHARE_DENY_WRITE
+			self.stg = pythoncom.StgOpenStorage(path, None, flags, None, 0)
 
 		def __del__(self):
 			pass
+
+		def __getitem__(self, path):
+			fp = StringIO()
+
+			flags = STGM_READ|STGM_SHARE_EXCLUSIVE
+			stg = self.stg.OpenStream(path, None, flags, 0)
+		
+			fp.write(stg.read())
+
+			fp.seek(0)
+			
+			return fp
 
 		def __iter__(self):
 			return iter(self.keys())
@@ -51,6 +67,7 @@ if sys.platform.startswith('win'):
 			result = []
 			enum = self.stg.EnumElements(0, None, 0)
 			while enum is not None:
+				print dir(enum)
 
 				enum = enum.Next()
 			return result
