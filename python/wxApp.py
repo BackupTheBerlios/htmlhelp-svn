@@ -44,8 +44,8 @@ class BookFileSystemHandler(wxFileSystemHandler):
 			words = filter(None, link.split('/'))
 			name = words[0]
 			link = '/'.join(words[1:])
-		entry = Book.catalog[name]
-		book = entry.open()
+		entry = Formats.catalog[name]
+		book = entry.book
 		anchor = self.GetAnchor(location)
 		mimetype = self.GetMimeTypeFromExt(location)
 		stream = wxInputStream(file_wrapper(book.resource(link)))
@@ -296,19 +296,19 @@ class BookFrame(wxFrame):
 	
 	def AddBooks(self):
 		root = self.contentsTree.AddRoot("Books")
-		for entry in Book.catalog:
+		for entry in Formats.catalog:
 			book = entry.book
-			book.name = name
+			book.name = entry.name
 			self.AddBook(root, book)
 		
 	def AddBook(self, node, book):
 		child = self.contentsTree.AppendItem(node, book.title)
-		self.contentsTree.SetPyData(child, (book, book.default))
+		self.contentsTree.SetPyData(child, (book, book.default_link))
 		self.AddContents(child, book, book.contents)
 		#self.AddIndex(book, book.index)
 
 	def AddContents(self, tree_node, book, toc_node):
-		for toc_child in toc_node.childs:
+		for toc_child in toc_node.children:
 			if wxUSE_UNICODE:
 				name = toc_child.name
 			else:
