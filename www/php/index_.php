@@ -31,7 +31,7 @@
 					$link = mysql_fetch_object($links);
 					
 					echo '<li>';
-					echo '<a href="page.php?book_id=' . $book_id . '&path=' . $link->path . '#' . $link->anchor . '" target="main">' . $entry->term . '</a>';
+					echo '<a href="page.php/' . $book_id . '/' . $link->path . '#' . $link->anchor . '" target="main">' . $entry->term . '</a>';
 					walk_index($entry->id);
 					echo '</li>';
 				}

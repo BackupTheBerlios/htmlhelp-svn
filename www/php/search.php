@@ -34,7 +34,7 @@
 				while($entry = mysql_fetch_object($entries))
 				{
 					echo "<li>";
-					echo "<a href=\"page.php?book_id=$book_id&path=$entry->path\" target=\"main\">$entry->title</a>";
+					echo "<a href=\"page.php/$book_id/$entry->path\" target=\"main\">$entry->title</a>";
 					echo "</li>";
 				}
 				echo "</ul>";

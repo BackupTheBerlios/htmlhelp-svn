@@ -27,7 +27,7 @@
 				while($entry = mysql_fetch_object($entries))
 				{
 					echo '<li>';
-					echo '<a href="page.php?book_id=' . $book_id . '&path=' . $entry->path . '#' . $entry->anchor . '" target="main">' . $entry->name . '</a>';
+					echo '<a href="page.php/' . $book_id . '/' . $entry->path . '#' . $entry->anchor . '" target="main">' . $entry->name . '</a>';
 					walk_toc($entry->number);
 					echo "</li>";
 				}

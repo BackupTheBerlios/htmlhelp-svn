@@ -1,6 +1,14 @@
 <?php
 	include 'config.inc.php';
 
+	// For this to work with the CGI version of PHP4, the "cgi.fix_pathinfo=1"
+	// option in php.ini must be set.
+
+	$book_id = '';
+	$path = $PATH_INFO;
+	while(!$book_id and $path)
+		list($book_id, $path) = explode('/', $path, 2);
+	
 	$db = mysql_connect($db_server, $db_username, $db_password);
 	mysql_select_db($db_database, $db);
 
@@ -10,26 +18,18 @@
 	
 	function _mime_content_type($path)
 	{
-		if(substr($path, strlen($path) - 5) == '.html')
+		$ext = strrchr($path, '.');
+		
+		if($ext == '.html' or $ext == '.htm')
 			return 'text/html';
 
-		if(substr($path, strlen($path) - 4) == '.htm')
-			return 'text/html';
-			
+		if($ext == '.css')
+			return 'text/css';
+
 		return 'application/octet-stream';
 	}	
 	
 	$content_type = _mime_content_type($path);
-	
-	if($content_type == 'text/html') {
-		function href_replace_callback($matches) {
-			global $book_id;
-			
-			return $matches[1] . '="page.php?book_id=' . $book_id . '&path=' . $matches[2] . '"';
-		}
-		
-		$content = preg_replace_callback('/(href|src)="([^"]*)"/', "href_replace_callback", $page->content);
-	}
 	
 	header('Content-Type: ' . $content_type);
 	echo $content;
