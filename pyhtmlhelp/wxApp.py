@@ -26,14 +26,15 @@ class file_wrapper:
 	
 		self.n += 1
 
-		print "%d: seek(%d, %d)" % (self.n, offset, whence)
+		if 0:
+			print "%d: seek(%d, %d)" % (self.n, offset, whence)
 		self.f.seek(offset, whence)
 
 
-class MyFileSystemHandler(wxFileSystemHandler):
+class BookFileSystemHandler(wxFileSystemHandler):
 
 	def CanOpen(self, location):
-		return self.GetProtocol(location) == 'hh'
+		return self.GetProtocol(location) == 'book'
 
 	def OpenFile(self, fs, location):
 		if 0:
@@ -44,291 +45,321 @@ class MyFileSystemHandler(wxFileSystemHandler):
 			words = filter(None, link.split('/'))
 			name = words[0]
 			link = '/'.join(words[1:])
-		print name, link
 		book = book_factory.book(name)
 		anchor = self.GetAnchor(location)
 		mimetype = self.GetMimeTypeFromExt(location)
-		f = book.page(link)
-		stream = wxInputStream(file_wrapper(f))
-		print location, mimetype, anchor
+		stream = wxInputStream(file_wrapper(book.get(link)))
 		return wxFSFile(stream, location, mimetype, anchor, wxDateTime_Now())
 
 
-wxFileSystem_AddHandler(MyFileSystemHandler())
+wxFileSystem_AddHandler(BookFileSystemHandler())
 
 
-wxHF_TOOLBAR = 0x0001
-wxHF_CONTENTS = 0x0002
-wxHF_INDEX = 0x0004
-wxHF_SEARCH = 0x0008
-wxHF_BOOKMARKS = 0x0010
-wxHF_PRINT = 0x0040
-wxHF_FLAT_TOOLBAR = 0x0080
-wxHF_MERGE_BOOKS = 0x0100
-wxHF_ICONS_BOOK = 0x0200
-wxHF_ICONS_BOOK_CHAPTER = 0x0400
-wxHF_ICONS_FOLDER = 0x0000 # this is 0 since it is default
-wxHF_DEFAULT_STYLE = (wxHF_TOOLBAR | wxHF_CONTENTS | wxHF_INDEX | wxHF_SEARCH | wxHF_BOOKMARKS | wxHF_PRINT)
+style_TOOLBAR		= 0x0001
+style_CONTENTS		= 0x0002
+style_INDEX		= 0x0004
+style_SEARCH		= 0x0008
+style_BOOKMARKS		= 0x0010
+style_OPEN_FILES	= 0x0020
+style_PRINT		= 0x0040
+style_FLAT_TOOLBAR	= 0x0080
+style_MERGE_BOOKS	= 0x0100
+style_ICONS_BOOK	= 0x0200
+style_ICONS_BOOK_CHAPTER= 0x0400
+style_ICONS_FOLDER	= 0x0000 # this is 0 since it is default
+style_DEFAULT_STYLE	= (style_TOOLBAR | style_CONTENTS | style_INDEX | style_SEARCH | style_BOOKMARKS | style_PRINT)
 
-wxID_HIGHEST = 100
-wxID_HTML_PANEL = wxID_HIGHEST + 2
-wxID_HTML_BACK = wxID_HIGHEST + 3
-wxID_HTML_FORWARD = wxID_HIGHEST + 4
-wxID_HTML_UPNODE = wxID_HIGHEST + 5
-wxID_HTML_UP = wxID_HIGHEST + 6
-wxID_HTML_DOWN = wxID_HIGHEST + 7
-wxID_HTML_PRINT = wxID_HIGHEST + 8
-wxID_HTML_OPENFILE = wxID_HIGHEST + 9
-wxID_HTML_OPTIONS = wxID_HIGHEST + 10
-wxID_HTML_BOOKMARKSLIST = wxID_HIGHEST + 11
-wxID_HTML_BOOKMARKSADD = wxID_HIGHEST + 12
-wxID_HTML_BOOKMARKSREMOVE = wxID_HIGHEST + 13
-wxID_HTML_TREECTRL = wxID_HIGHEST + 14
-wxID_HTML_INDEXPAGE = wxID_HIGHEST + 15
-wxID_HTML_INDEXLIST = wxID_HIGHEST + 16
-wxID_HTML_INDEXTEXT = wxID_HIGHEST + 17
-wxID_HTML_INDEXBUTTON = wxID_HIGHEST + 18
-wxID_HTML_INDEXBUTTONALL = wxID_HIGHEST + 19
-wxID_HTML_NOTEBOOK = wxID_HIGHEST + 20
-wxID_HTML_SEARCHPAGE = wxID_HIGHEST + 21
-wxID_HTML_SEARCHTEXT = wxID_HIGHEST + 22
-wxID_HTML_SEARCHLIST = wxID_HIGHEST + 23
-wxID_HTML_SEARCHBUTTON = wxID_HIGHEST + 24
-wxID_HTML_SEARCHCHOICE = wxID_HIGHEST + 25
-wxID_HTML_COUNTINFO = wxID_HIGHEST + 26
+id_PANEL		= 1002
+id_BACK			= 1003
+id_FORWARD		= 1004
+id_UPNODE		= 1005
+id_UP			= 1006
+id_DOWN			= 1007
+id_PRINT		= 1008
+id_OPENFILE		= 1009
+id_OPTIONS		= 1010
+id_BOOKMARKSLIST	= 1011
+id_BOOKMARKSADD		= 1012
+id_BOOKMARKSREMOVE	= 1013
+id_TREECTRL		= 1014
+id_INDEXPAGE		= 1015
+id_INDEXLIST		= 1016
+id_INDEXTEXT		= 1017
+id_INDEXBUTTON		= 1018
+id_INDEXBUTTONALL	= 1019
+id_NOTEBOOK		= 1020
+id_SEARCHPAGE		= 1021
+id_SEARCHTEXT		= 1022
+id_SEARCHLIST		= 1023
+id_SEARCHBUTTON		= 1024
+id_SEARCHCHOICE		= 1025
+id_COUNTINFO		= 1026
 
 
-class MyHtmlHelpHtmlWindow(wxHtmlWindow):
+class MyHtmlWindow(wxHtmlWindow):
 
 	def __init__(self, frame, parent):
 		wxHtmlWindow.__init__(self, parent)
-		self.m_Frame = frame
+		self.frame = frame
 		
-	#def OnLinkClicked(self, link):
-	#	self.m_Frame.NotifyPageChanged()
+	def OnLinkClicked(self, link):
+		self.frame.NotifyPageChanged()
 
 
-class MyFrame(wxFrame):
+class BookFrame(wxFrame):
 
-	def __init__(self, parent, id, title, style = wxHF_DEFAULT_STYLE):
-		wxFrame.__init__(self,parent,-4, title, style=wxDEFAULT_FRAME_STYLE|wxNO_FULL_REPAINT_ON_RESIZE)
+	def __init__(self, parent, id, title, style = style_DEFAULT_STYLE):
+		wxFrame.__init__(self, parent, -4, title, style = wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE)
 
 		self.SetIcon(wxArtProvider_GetIcon(wxART_HELP, wxART_HELP_BROWSER))
 
+		# Create the status bar
 		self.CreateStatusBar()
 
-		toolBar = self.CreateToolBar(wxNO_BORDER | wxTB_HORIZONTAL | wxTB_FLAT)
-		self.AddToolBarButtons(toolBar, style)
-		toolBar.Realize()
-		EVT_TOOL_RANGE(self, wxID_HTML_PANEL, wxID_HTML_OPTIONS, self.OnToolbar)
+		# Create the tool bar
+		if style & style_TOOLBAR:
+			self.toolBar = self.CreateToolBar(wxNO_BORDER | wxTB_HORIZONTAL | wxTB_FLAT)
 
-		if style & (wxHF_CONTENTS | wxHF_INDEX | wxHF_SEARCH):
+			self.toolBar.AddSimpleTool(
+				id_PANEL, 
+				wxArtProvider_GetBitmap(wxART_HELP_SIDE_PANEL, wxART_HELP_BROWSER), 
+				"Show/hide navigation panel")
+			self.toolBar.AddSeparator()
+			self.toolBar.AddSimpleTool(
+				id_BACK, 
+				wxArtProvider_GetBitmap(wxART_GO_BACK, wxART_HELP_BROWSER), 
+				"Go back")
+			self.toolBar.AddSimpleTool(
+				id_FORWARD, 
+				wxArtProvider_GetBitmap(wxART_GO_FORWARD, wxART_HELP_BROWSER), 
+				"Go forward")
+			self.toolBar.AddSeparator()
+			self.toolBar.AddSimpleTool(
+				id_UPNODE, 
+				wxArtProvider_GetBitmap(wxART_GO_TO_PARENT, wxART_HELP_BROWSER), 
+				"Go one level up in document hierarchy")
+			self.toolBar.AddSimpleTool(
+				id_UP, 
+				wxArtProvider_GetBitmap(wxART_GO_UP, wxART_HELP_BROWSER), 
+				"Previous page")
+			self.toolBar.AddSimpleTool(
+				id_DOWN, 
+				wxArtProvider_GetBitmap(wxART_GO_DOWN, wxART_HELP_BROWSER), 
+				"Next page")
+
+			if style & style_OPEN_FILES:
+				self.toolBar.AddTool(
+					id_OPENFILE, 
+					wxArtProvider_GetBitmap(wxART_FILE_OPEN, wxART_HELP_BROWSER), 
+					"Open HTML document")
+		
+			if style & style_PRINT:
+				self.toolBar.AddSimpleTool(
+					id_PRINT, 
+					wxArtProvider_GetBitmap(wxART_PRINT, wxART_HELP_BROWSER), 
+					"Print this page")
+
+			self.toolBar.Realize()
+
+			EVT_TOOL_RANGE(self, id_PANEL, id_OPTIONS, self.OnToolbar)
+
+		if style & (style_CONTENTS | style_INDEX | style_SEARCH):
 			# traditional help controller; splitter window with html page on the
 			# right and a notebook containing various pages on the left
-			m_Splitter = wxSplitterWindow(self, -1)
-			self.m_Splitter = m_Splitter
+			self.splitter = wxSplitterWindow(self, -1)
 
-			m_HtmlWin = MyHtmlHelpHtmlWindow(self, m_Splitter)
-			m_NavigPan = wxPanel(m_Splitter, -1)
-			self.m_NavigPan = m_NavigPan
-			m_NavigNotebook = wxNotebook(m_NavigPan, wxID_HTML_NOTEBOOK, wxDefaultPosition, wxDefaultSize)
-			nbs = wxNotebookSizer(m_NavigNotebook)
+			self.htmlWindow = MyHtmlWindow(self, self.splitter)
+			self.navigationPanel = wxPanel(self.splitter, -1)
+			self.navigationNotebook = wxNotebook(self.navigationPanel, id_NOTEBOOK, wxDefaultPosition, wxDefaultSize)
+			navigationNotebookSizer = wxNotebookSizer(self.navigationNotebook)
 			
-			navigSizer = wxBoxSizer(wxVERTICAL)
-			navigSizer.Add(nbs, 1, wxEXPAND)
+			navigationSizer = wxBoxSizer(wxVERTICAL)
+			navigationSizer.Add(navigationNotebookSizer, 1, wxEXPAND)
 
-			m_NavigPan.SetAutoLayout(TRUE)
-			m_NavigPan.SetSizer(navigSizer)
+			self.navigationPanel.SetAutoLayout(TRUE)
+			self.navigationPanel.SetSizer(navigationSizer)
 		else:
 			# only html window, no notebook with index,contents etc
-			m_HtmlWin = wxHtmlWindow(self)
-		self.m_HtmlWin = m_HtmlWin
+			self.htmlWindow = wxHtmlWindow(self)
 
-		self.m_TitleFormat = '%s'
-		m_HtmlWin.SetRelatedFrame(self, self.m_TitleFormat)
-		m_HtmlWin.SetRelatedStatusBar(0)
+		self.titleFormat = '%s'
+		self.htmlWindow.SetRelatedFrame(self, self.titleFormat)
+		self.htmlWindow.SetRelatedStatusBar(0)
 
-		# contents tree panel?
-		if style & wxHF_CONTENTS:
-			panel = wxPanel(m_NavigNotebook, wxID_HTML_INDEXPAGE)
-			topsizer = wxBoxSizer(wxVERTICAL)
+		# Create the contents tree panel
+		if style & style_CONTENTS:
+			contentsPage = wxPanel(self.navigationNotebook, id_INDEXPAGE)
+			contentsSizer = wxBoxSizer(wxVERTICAL)
 			
-			panel.SetAutoLayout(TRUE)
-			panel.SetSizer(topsizer)
+			contentsPage.SetAutoLayout(TRUE)
+			contentsPage.SetSizer(contentsSizer)
 
-			m_ContentsBox = wxTreeCtrl(panel, wxID_HTML_TREECTRL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxTR_HAS_BUTTONS | wxTR_HIDE_ROOT | wxTR_LINES_AT_ROOT)
-			self.m_ContentsBox = m_ContentsBox
-			#m_ContentsBox.AssignImageList(ContentsImageList)
-			EVT_TREE_SEL_CHANGED(self, wxID_HTML_TREECTRL, self.OnContentsSel)
+			self.contentsTree = wxTreeCtrl(
+				contentsPage, 
+				id_TREECTRL, 
+				wxDefaultPosition, wxDefaultSize, 
+				wxSUNKEN_BORDER | wxTR_HAS_BUTTONS | wxTR_HIDE_ROOT | wxTR_LINES_AT_ROOT)
 			
-			topsizer.Add(m_ContentsBox, 1, wxEXPAND | wxALL)
+			#contentsTree.AssignImageList(ContentsImageList)
+			EVT_TREE_SEL_CHANGED(self, id_TREECTRL, self.OnContentsSel)
+			
+			contentsSizer.Add(self.contentsTree, 1, wxEXPAND | wxALL)
 
-			m_NavigNotebook.AddPage(panel, "Contents")
+			self.navigationNotebook.AddPage(contentsPage, "Contents")
 
-		# index list panel?
-		if style & wxHF_INDEX:
-			panel = wxPanel(m_NavigNotebook, wxID_HTML_INDEXPAGE);	   
-			topsizer = wxBoxSizer(wxVERTICAL)
+		# Create the index list panel
+		if style & style_INDEX:
+			indexPage = wxPanel(self.navigationNotebook, id_INDEXPAGE);	   
+			indexSizer = wxBoxSizer(wxVERTICAL)
 
-			panel.SetAutoLayout(TRUE)
-			panel.SetSizer(topsizer)
+			indexPage.SetAutoLayout(TRUE)
+			indexPage.SetSizer(indexSizer)
 
-			m_IndexText = wxTextCtrl(panel, wxID_HTML_INDEXTEXT, '', wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER)
-			m_IndexList = wxListBox(panel, wxID_HTML_INDEXLIST, wxDefaultPosition, wxDefaultSize, style=wxLB_SINGLE)
+			self.indexText = wxTextCtrl(
+				indexPage, 
+				id_INDEXTEXT, 
+				'', 
+				wxDefaultPosition, wxDefaultSize, 
+				wxTE_PROCESS_ENTER)
+			self.indexList = wxListBox(
+				indexPage, 
+				id_INDEXLIST, 
+				wxDefaultPosition, wxDefaultSize, 
+				style = wxLB_SINGLE)
 
-			topsizer.Add(m_IndexText, 0, wxEXPAND | wxALL)
-			topsizer.Add(m_IndexList, 1, wxEXPAND | wxALL)
+			indexSizer.Add(self.indexText, 0, wxEXPAND | wxALL)
+			indexSizer.Add(self.indexList, 1, wxEXPAND | wxALL)
 
-			m_NavigNotebook.AddPage(panel, "Index")
+			self.navigationNotebook.AddPage(indexPage, "Index")
 
-		# search list panel?
-		if style & wxHF_SEARCH:
-			panel = wxPanel(m_NavigNotebook, wxID_HTML_INDEXPAGE);	   
-			sizer = wxBoxSizer(wxVERTICAL)
+		# Create the search list panel
+		if style & style_SEARCH:
+			searchPage = wxPanel(self.navigationNotebook, id_INDEXPAGE);	   
+			searchSizer = wxBoxSizer(wxVERTICAL)
 
-			panel.SetAutoLayout(TRUE)
-			panel.SetSizer(sizer)
+			searchPage.SetAutoLayout(TRUE)
+			searchPage.SetSizer(searchSizer)
 
-			m_SearchText = wxTextCtrl(panel, wxID_HTML_SEARCHTEXT, '', wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER)
-			m_SearchChoice = wxChoice(panel, wxID_HTML_SEARCHCHOICE, wxDefaultPosition, wxDefaultSize)
-			m_SearchCaseSensitive = wxCheckBox(panel, -1, "Case sensitive")
-			m_SearchWholeWords = wxCheckBox(panel, -1, "Whole words only")
-			m_SearchList = wxListBox(panel, wxID_HTML_SEARCHLIST, wxDefaultPosition, wxDefaultSize, style=wxLB_SINGLE)
+			self.searchText = wxTextCtrl(searchPage, id_SEARCHTEXT, '', wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER)
+			self.searchChoice = wxChoice(searchPage, id_SEARCHCHOICE, wxDefaultPosition, wxDefaultSize)
+			self.searchCaseSensitive = wxCheckBox(searchPage, -1, "Case sensitive")
+			self.searchWholeWords = wxCheckBox(searchPage, -1, "Whole words only")
+			self.searchList = wxListBox(searchPage, id_SEARCHLIST, wxDefaultPosition, wxDefaultSize, style=wxLB_SINGLE)
 										 
-			sizer.Add(m_SearchText, 0, wxEXPAND | wxALL)
-			sizer.Add(m_SearchChoice, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM)
-			sizer.Add(m_SearchCaseSensitive, 0, wxLEFT | wxRIGHT)
-			sizer.Add(m_SearchWholeWords, 0, wxLEFT | wxRIGHT)
-			sizer.Add(m_SearchList, 1, wxEXPAND | wxALL)
+			searchSizer.Add(self.searchText, 0, wxEXPAND | wxALL)
+			searchSizer.Add(self.searchChoice, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM)
+			searchSizer.Add(self.searchCaseSensitive, 0, wxLEFT | wxRIGHT)
+			searchSizer.Add(self.searchWholeWords, 0, wxLEFT | wxRIGHT)
+			searchSizer.Add(self.searchList, 1, wxEXPAND | wxALL)
 
-			m_NavigNotebook.AddPage(panel, "Search")
+			self.navigationNotebook.AddPage(searchPage, "Search")
 
-		# bookmar list panel?
-		if style & wxHF_BOOKMARKS:
-			panel = wxPanel(m_NavigNotebook, wxID_HTML_INDEXPAGE);	   
-			topsizer = wxBoxSizer(wxVERTICAL)
+		# Create the bookmark list panel
+		if style & style_BOOKMARKS:
+			bookmarksPage = wxPanel(self.navigationNotebook, id_INDEXPAGE);	   
+			bookmarksSizer = wxBoxSizer(wxVERTICAL)
 
-			panel.SetAutoLayout(TRUE)
-			panel.SetSizer(topsizer)
+			bookmarksPage.SetAutoLayout(TRUE)
+			bookmarksPage.SetSizer(bookmarksSizer)
 
-			m_BookmarksList = wxListBox(panel, wxID_HTML_INDEXLIST, wxDefaultPosition, wxDefaultSize, style=wxLB_SINGLE)
+			self.bookmarksList = wxListBox(bookmarksPage, id_INDEXLIST, wxDefaultPosition, wxDefaultSize, style=wxLB_SINGLE)
 
-			topsizer.Add(m_BookmarksList, 1, wxEXPAND | wxALL)
+			bookmarksSizer.Add(self.bookmarksList, 1, wxEXPAND | wxALL)
 
-			m_NavigNotebook.AddPage(panel, "Bookmarks")
+			self.navigationNotebook.AddPage(bookmarksPage, "Bookmarks")
 
-		m_HtmlWin.Show(TRUE)
+		self.htmlWindow.Show(TRUE)
 
 		#self.RefreshLists()
 
-		if navigSizer:
-			navigSizer.SetSizeHints(m_NavigPan)
-			m_NavigPan.Layout()
+		if navigationSizer:
+			navigationSizer.SetSizeHints(self.navigationPanel)
+			self.navigationPanel.Layout()
 
-		class Cfg:
-			pass
-			
-		m_Cfg = Cfg()
-		m_Cfg.navig_on = 1
-		m_Cfg.sashpos = 250
+		self.navigation = 1
+		self.sashpos = 250
 
 		# showtime
-		if m_NavigPan and m_Splitter:
-			m_Splitter.SetMinimumPaneSize(20)
-			if m_Cfg.navig_on:
-				m_Splitter.SplitVertically(m_NavigPan, m_HtmlWin, m_Cfg.sashpos)
+		if self.navigationPanel and self.splitter:
+			self.splitter.SetMinimumPaneSize(20)
+			if self.navigation:
+				self.splitter.SplitVertically(self.navigationPanel, self.htmlWindow, self.sashpos)
 
-			if m_Cfg.navig_on:
-				m_NavigPan.Show(TRUE)
-				m_Splitter.SplitVertically(m_NavigPan, m_HtmlWin, m_Cfg.sashpos)
+			if self.navigation:
+				self.navigationPanel.Show(TRUE)
+				self.splitter.SplitVertically(self.navigationPanel, self.htmlWindow, self.sashpos)
 			else:
-				m_NavigPan.Show(FALSE)
-				m_Splitter.Initialize(m_HtmlWin)
+				self.navigationPanel.Show(FALSE)
+				self.splitter.Initialize(htmlWindow)
 
 		self.AddBooks()
 	
-	def AddToolBarButtons(self, toolBar, style):
-		wpanelBitmap = wxArtProvider_GetBitmap(wxART_HELP_SIDE_PANEL, wxART_HELP_BROWSER)
-		wbackBitmap = wxArtProvider_GetBitmap(wxART_GO_BACK, wxART_HELP_BROWSER)
-		wforwardBitmap = wxArtProvider_GetBitmap(wxART_GO_FORWARD, wxART_HELP_BROWSER)
-		wupnodeBitmap = wxArtProvider_GetBitmap(wxART_GO_TO_PARENT, wxART_HELP_BROWSER)
-		wupBitmap = wxArtProvider_GetBitmap(wxART_GO_UP, wxART_HELP_BROWSER)
-		wdownBitmap = wxArtProvider_GetBitmap(wxART_GO_DOWN, wxART_HELP_BROWSER)
-		wopenBitmap = wxArtProvider_GetBitmap(wxART_FILE_OPEN, wxART_HELP_BROWSER)
-		wprintBitmap = wxArtProvider_GetBitmap(wxART_PRINT, wxART_HELP_BROWSER)
-
-		assert wpanelBitmap.Ok() and wbackBitmap.Ok() and wforwardBitmap.Ok() and wupnodeBitmap.Ok() and wupBitmap.Ok() and wdownBitmap.Ok() and wopenBitmap.Ok() and wprintBitmap.Ok()
-
-		toolBar.AddSimpleTool(wxID_HTML_PANEL, wpanelBitmap, "Show/hide navigation panel")
-
-		toolBar.AddSeparator()
-		toolBar.AddSimpleTool(wxID_HTML_BACK, wbackBitmap, "Go back")
-		toolBar.AddSimpleTool(wxID_HTML_FORWARD, wforwardBitmap, "Go forward")
-		toolBar.AddSeparator()
-
-		toolBar.AddSimpleTool(wxID_HTML_UPNODE, wupnodeBitmap, "Go one level up in document hierarchy")
-		toolBar.AddSimpleTool(wxID_HTML_UP, wupBitmap, "Previous page")
-		toolBar.AddSimpleTool(wxID_HTML_DOWN, wdownBitmap, "Next page")
-
-		if style & wxHF_PRINT:
-			toolBar.AddSimpleTool(wxID_HTML_PRINT, wprintBitmap, "Print this page")
-		
 	def AddBooks(self):
-		root = self.m_ContentsBox.AddRoot("Books")
+		root = self.contentsTree.AddRoot("Books")
 		for name in book_factory.enumerate():
 			book = book_factory.book(name)
 			book.name = name
 			self.AddBook(root, book)
 		
 	def AddBook(self, node, book):
-		child = self.m_ContentsBox.AppendItem(node, book.title())
-		self.m_ContentsBox.SetPyData(child, (book, book.link()))
-		contents = book.contents()
-		self.AddContents(child, book, contents)
+		child = self.contentsTree.AppendItem(node, book.title)
+		self.contentsTree.SetPyData(child, (book, book.default))
+		self.AddContents(child, book, book.contents)
+		#self.AddIndex(book, book.index)
 
-	def AddContents(self, node, book, contents):
-		for entry in contents:
+	def AddContents(self, tree_node, book, toc_node):
+		for toc_child in toc_node.childs:
 			if wxUSE_UNICODE:
-				child = self.m_ContentsBox.AppendItem(node, entry.title())
+				name = toc_child.name
 			else:
-				child = self.m_ContentsBox.AppendItem(node, entry.title().encode('iso-8859-1', 'replace'))
-			self.m_ContentsBox.SetPyData(child, (book, entry.link()))
-			self.AddContents(child, book, entry.childs())
+				name = toc_child.name.encode('iso-8859-1', 'replace')
+			tree_child = self.contentsTree.AppendItem(tree_node, name)
+			self.contentsTree.SetPyData(tree_child, (book, toc_child.link))
+			self.AddContents(tree_child, book, toc_child)
+		
+	def AddIndex(self, book, index):
+		for entry in index:
+			if wxUSE_UNICODE:
+				term = entry.term
+			else:
+				term = entry.term.encode('iso-8859-1', 'replace')
+			self.indexList.Append(term)
 		
 	def Location(self, book, link):
-		return 'hh:/%s/%s' % (book.name, link)
+		return 'book:/%s/%s' % (book.name, link)
 	
 	def OnContentsSel(self, event):
 		item = event.GetItem()
-		(book, link) = self.m_ContentsBox.GetPyData(item)
+		(book, link) = self.contentsTree.GetPyData(item)
 		if 0:
-			html = book.page(link).read()
-			self.m_HtmlWin.SetPage(html)
+			html = book.get(link).read()
+			self.htmlWindow.SetPage(html)
 		else:
 			location = self.Location(book, link)
-			print location
-			self.m_HtmlWin.LoadPage(location)
+			self.htmlWindow.LoadPage(location)
 		
 	def OnToolbar(self, event):
-		
-		if event.GetId() == wxID_HTML_PANEL:
-			if not (self.m_Splitter and self.m_NavigPan):
+		if event.GetId() == id_PANEL:
+			if not (self.splitter and self.navigationPanel):
 				return
 		
-			if self.m_Splitter.IsSplit():
-				self.sashpos = self.m_Splitter.GetSashPosition()
-				self.m_Splitter.Unsplit(self.m_NavigPan);
-				#m_Cfg.navig_on = FALSE
+			if self.splitter.IsSplit():
+				self.sashpos = self.splitter.GetSashPosition()
+				self.splitter.Unsplit(self.navigationPanel);
+				self.navigation = 1
 			else:
-				self.m_NavigPan.Show(TRUE)
-				self.m_HtmlWin.Show(TRUE)
-				self.m_Splitter.SplitVertically(self.m_NavigPan, self.m_HtmlWin, self.sashpos)
-				#m_Cfg.navig_on = TRUE
+				self.navigationPanel.Show(TRUE)
+				self.htmlWindow.Show(TRUE)
+				self.splitter.SplitVertically(self.navigationPanel, self.htmlWindow, self.sashpos)
+				self.navigation = 1
 		
+	def NotifyPageChanged(self):
+		pass
+
 
 def main():
 	app = wxPySimpleApp()
-	frame = MyFrame(None, -1, "HTML Help Books")
+	frame = BookFrame(None, -1, "HTML Help Books")
 	frame.Show(TRUE)
 	app.MainLoop()
 
