@@ -15,6 +15,7 @@
 
 import sys
 import os
+import posixpath
 import formatter
 import htmllib
 import string
@@ -30,7 +31,7 @@ Usage: pythlp.py [-c] [-k] [-p] [-v 1.5[.x]] filename
     -k: does not build filename.hhk (Index)
     -p: does not build filename.hhp (Project File)
     -v 1.5[.x]: makes help for the python 1.5[.x] docs
-        (default is python 2.2 docs)
+        (default is python 2.3 docs)
 '''
 
 # project file (*.hhp) template. there are seven %s
@@ -66,6 +67,22 @@ object_sitemap = '''
 # each 'book' : ( Dir, Title, First page, Content page, Index page)
 #
 supported_libraries = {
+    # j_r_fonseca@yahoo.co.uk Aug 21/03: library for 2.3 version:
+    '2.3': 
+    [ 
+        ('tut','Tutorial','tut.html','node2.html',None),
+        ('whatsnew','What\'s New in Python','whatsnew23.html','contents.html',None),
+        ('.','Global Module Index','modindex.html',None,None),
+        ('lib','Library Reference','lib.html','contents.html','genindex.html'),
+        ('ref','Language Reference','ref.html','contents.html','genindex.html'),
+        ('mac','Macintosh Module Reference','mac.html','contents.html','genindex.html'),
+        ('ext','Extending and Embedding','ext.html','contents.html',None),
+        ('api','Python/C API','api.html','contents.html','genindex.html'),
+        ('doc','Documenting Python','doc.html','contents.html',None) ,
+        ('inst','Installing Python Modules','inst.html','index.html',None),
+        ('dist','Distributing Python Modules','dist.html','index.html',None), 
+    ],
+
     # hernan@orgmf.com.ar Nov 28/01: library for 2.2 version:
     '2.2': 
     [ 
@@ -263,7 +280,7 @@ def do_content(library, output) :
     output.write('<UL>\n')
     for book in library :
         print '\t', book[2]
-        output.write(object_sitemap % (book[0]+"/"+book[2], book[1]))
+        output.write(object_sitemap % (posixpath.normpath(posixpath.join(book[0], book[2])), book[1]))
         if book[3] :
             content(book[0], book[3], output)
     output.write('</UL>\n')
@@ -308,8 +325,8 @@ def do_it(args = None) :
         usage()
     arch = args[0]
 
-    # default to 2.2
-    version = '2.2'
+    # default to 2.3
+    version = '2.3'
     for opt in optlist:
         if opt[0] == '-v':
             version = opt[1]

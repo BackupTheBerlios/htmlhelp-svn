@@ -32,13 +32,29 @@ Usage: py2devhelp.py [-c] [-f] [-v 1.5[.x]] filename
     -c: does not include the table of contents
     -f: does not include the function table
     -v 1.5[.x]: makes help for the python 1.5[.x] docs
-        (default is python 2.2 docs)
+        (default is python 2.3 docs)
 '''
 
 # Library Doc list of tuples: 
 # each 'book' : ( Dir, Title, First page, Content page, Index page)
 #
 supported_libraries = {
+    # j_r_fonseca@yahoo.co.uk Aug 21/03: library for 2.3 version:
+    '2.3': 
+    [ 
+        ('tut','Tutorial','tut.html','node2.html',None),
+        ('whatsnew','What\'s New in Python','whatsnew23.html','contents.html',None),
+        ('.','Global Module Index','modindex.html',None,None),
+        ('lib','Library Reference','lib.html','contents.html','genindex.html'),
+        ('ref','Language Reference','ref.html','contents.html','genindex.html'),
+        ('mac','Macintosh Module Reference','mac.html','contents.html','genindex.html'),
+        ('ext','Extending and Embedding','ext.html','contents.html',None),
+        ('api','Python/C API','api.html','contents.html','genindex.html'),
+        ('doc','Documenting Python','doc.html','contents.html',None) ,
+        ('inst','Installing Python Modules','inst.html','index.html',None),
+        ('dist','Distributing Python Modules','dist.html','index.html',None), 
+    ],
+
     # hernan@orgmf.com.ar Nov 28/01: library for 2.2 version:
     '2.2': 
     [ 
@@ -297,8 +313,8 @@ def do_it(args = None) :
         usage()
     arch = args[0]
 
-    # default to 2.2
-    version = '2.2'
+    # default to 2.3
+    version = '2.3'
     for opt in optlist:
         if opt[0] == '-v':
             version = opt[1]
