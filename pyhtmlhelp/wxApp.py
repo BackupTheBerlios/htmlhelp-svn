@@ -3,7 +3,58 @@
 
 from wxPython.wx import *
 from wxPython.html import *
-import os
+
+import Generic
+book_factory = Generic.BookFactory()
+
+
+class file_wrapper:
+	"""Hack around a bug in wxPython 2.4.0.7"""
+
+	def __init__(self, f):
+		self.f = f
+		self.n = 0
+	
+	def __getattr__(self, name):
+		return getattr(self.f, name)
+
+	def seek(self, offset, whence):
+		if self.n == 0 and whence == 0:
+			whence = 2
+		elif whence < 0:
+			whence = 1
+	
+		self.n += 1
+
+		print "%d: seek(%d, %d)" % (self.n, offset, whence)
+		self.f.seek(offset, whence)
+
+
+class MyFileSystemHandler(wxFileSystemHandler):
+
+	def CanOpen(self, location):
+		return self.GetProtocol(location) == 'hh'
+
+	def OpenFile(self, fs, location):
+		if 0:
+			name = self.GetLeftLocation(location)
+			link = self.GetRightLocation(location)
+		else:
+			link = self.GetRightLocation(location)
+			words = filter(None, link.split('/'))
+			name = words[0]
+			link = '/'.join(words[1:])
+		print name, link
+		book = book_factory.book(name)
+		anchor = self.GetAnchor(location)
+		mimetype = self.GetMimeTypeFromExt(location)
+		f = book.page(link)
+		stream = wxInputStream(file_wrapper(f))
+		print location, mimetype, anchor
+		return wxFSFile(stream, location, mimetype, anchor, wxDateTime_Now())
+
+
+wxFileSystem_AddHandler(MyFileSystemHandler())
 
 
 wxHF_TOOLBAR = 0x0001
@@ -46,14 +97,16 @@ wxID_HTML_SEARCHBUTTON = wxID_HIGHEST + 24
 wxID_HTML_SEARCHCHOICE = wxID_HIGHEST + 25
 wxID_HTML_COUNTINFO = wxID_HIGHEST + 26
 
+
 class MyHtmlHelpHtmlWindow(wxHtmlWindow):
 
 	def __init__(self, frame, parent):
 		wxHtmlWindow.__init__(self, parent)
 		self.m_Frame = frame
 		
-	def OnLinkClicked(self, link):
-		self.m_Frame.NotifyPageChanged()
+	#def OnLinkClicked(self, link):
+	#	self.m_Frame.NotifyPageChanged()
+
 
 class MyFrame(wxFrame):
 
@@ -221,11 +274,10 @@ class MyFrame(wxFrame):
 			toolBar.AddSimpleTool(wxID_HTML_PRINT, wprintBitmap, "Print this page")
 		
 	def AddBooks(self):
-		import Generic
-		book_factory = Generic.BookFactory()
 		root = self.m_ContentsBox.AddRoot("Books")
 		for name in book_factory.enumerate():
 			book = book_factory.book(name)
+			book.name = name
 			self.AddBook(root, book)
 		
 	def AddBook(self, node, book):
@@ -243,11 +295,19 @@ class MyFrame(wxFrame):
 			self.m_ContentsBox.SetPyData(child, (book, entry.link()))
 			self.AddContents(child, book, entry.childs())
 		
+	def Location(self, book, link):
+		return 'hh:/%s/%s' % (book.name, link)
+	
 	def OnContentsSel(self, event):
 		item = event.GetItem()
 		(book, link) = self.m_ContentsBox.GetPyData(item)
-		h = book.page(link).read()
-		self.m_HtmlWin.SetPage(h)
+		if 0:
+			html = book.page(link).read()
+			self.m_HtmlWin.SetPage(html)
+		else:
+			location = self.Location(book, link)
+			print location
+			self.m_HtmlWin.LoadPage(location)
 		
 	def OnToolbar(self, event):
 		
@@ -265,9 +325,13 @@ class MyFrame(wxFrame):
 				self.m_Splitter.SplitVertically(self.m_NavigPan, self.m_HtmlWin, self.sashpos)
 				#m_Cfg.navig_on = TRUE
 		
-	
-if __name__ == "__main__":
+
+def main():
 	app = wxPySimpleApp()
 	frame = MyFrame(None, -1, "HTML Help Books")
 	frame.Show(TRUE)
 	app.MainLoop()
+
+
+if __name__ == "__main__":
+	main()
