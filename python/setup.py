@@ -18,4 +18,6 @@ setup(
 	packages = ['HTMLHelp'],
 	py_modules = ['chmlib'],
 	ext_modules = [chmlib],
-	scripts = ['scripts/hhsqldump'])
+	scripts = [
+		'scripts/hhconvert',
+		'scripts/hhsqldump'])
