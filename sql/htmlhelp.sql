@@ -3,7 +3,7 @@
 # http://www.phpmyadmin.net
 #
 # Host: localhost
-# Generation Time: Nov 09, 2003 at 06:37 PM
+# Generation Time: Nov 16, 2003 at 12:19 AM
 # Server version: 4.0.16
 # PHP Version: 4.3.3
 # 
@@ -13,12 +13,12 @@
 # --------------------------------------------------------
 
 #
-# Table structure for table `books`
+# Table structure for table `book`
 #
 
-CREATE TABLE `books` (
-  `id` smallint(11) unsigned NOT NULL auto_increment,
-  `title` tinytext NOT NULL,
+CREATE TABLE `book` (
+  `id` smallint(5) unsigned NOT NULL auto_increment,
+  `title` varchar(255) NOT NULL default '',
   `default_path` varchar(255) binary NOT NULL default '',
   `default_anchor` varchar(255) binary NOT NULL default '',
   PRIMARY KEY  (`id`),
@@ -28,38 +28,38 @@ CREATE TABLE `books` (
 # --------------------------------------------------------
 
 #
-# Table structure for table `index`
+# Table structure for table `index_entry`
 #
 
-CREATE TABLE `index` (
-  `id` mediumint(11) unsigned NOT NULL auto_increment,
-  `book_id` smallint(10) unsigned NOT NULL default '0',
-  `term` tinytext NOT NULL,
-  PRIMARY KEY  (`id`),
-  KEY `term` (`book_id`,`term`(7))
-) TYPE=MyISAM AUTO_INCREMENT=8544 ;
-
-# --------------------------------------------------------
-
-#
-# Table structure for table `index_links`
-#
-
-CREATE TABLE `index_links` (
-  `index_id` mediumint(11) NOT NULL default '0',
-  `path` varchar(255) binary NOT NULL default '',
-  `anchor` varchar(255) binary NOT NULL default '',
-  KEY `index_id` (`index_id`)
+CREATE TABLE `index_entry` (
+  `book_id` smallint(5) unsigned NOT NULL default '0',
+  `no` smallint(5) unsigned NOT NULL default '0',
+  `term` varchar(255) NOT NULL default '',
+  PRIMARY KEY  (`book_id`,`no`)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
 
 #
-# Table structure for table `pages`
+# Table structure for table `index_link`
 #
 
-CREATE TABLE `pages` (
-  `book_id` smallint(11) NOT NULL default '0',
+CREATE TABLE `index_link` (
+  `book_id` smallint(5) unsigned NOT NULL default '0',
+  `no` smallint(5) unsigned NOT NULL default '0',
+  `path` varchar(255) binary NOT NULL default '',
+  `anchor` varchar(255) binary NOT NULL default '',
+  PRIMARY KEY  (`book_id`,`no`)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+
+#
+# Table structure for table `page`
+#
+
+CREATE TABLE `page` (
+  `book_id` smallint(5) NOT NULL default '0',
   `path` varchar(255) binary NOT NULL default '0',
   `content` mediumblob NOT NULL,
   `title` text,
@@ -71,16 +71,16 @@ CREATE TABLE `pages` (
 # --------------------------------------------------------
 
 #
-# Table structure for table `toc`
+# Table structure for table `toc_entry`
 #
 
-CREATE TABLE `toc` (
-  `book_id` int(11) unsigned NOT NULL default '0',
-  `parent_number` smallint(11) unsigned NOT NULL default '0',
-  `number` smallint(11) unsigned NOT NULL default '0',
-  `name` text NOT NULL,
+CREATE TABLE `toc_entry` (
+  `book_id` smallint(5) unsigned NOT NULL default '0',
+  `parent_no` smallint(5) unsigned NOT NULL default '0',
+  `no` smallint(5) unsigned NOT NULL default '0',
+  `title` varchar(255) NOT NULL default '',
   `path` varchar(255) binary NOT NULL default '',
   `anchor` varchar(255) binary NOT NULL default '',
-  PRIMARY KEY  (`book_id`,`parent_number`,`number`),
-  INDEX `link` (`book_id`,`path`(31),`anchor`(7))
+  PRIMARY KEY  (`book_id`,`parent_no`,`no`),
+  KEY `link` (`book_id`,`path`(31),`anchor`(7))
 ) TYPE=MyISAM;

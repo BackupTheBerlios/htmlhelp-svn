@@ -4,7 +4,7 @@
 
 	if($book_id = intval($_GET['book_id']))
 	{
-		$books = mysql_query('SELECT * FROM `books` WHERE `id`=' . $book_id);
+		$books = mysql_query('SELECT * FROM `book` WHERE `id`=' . $book_id);
 		$book = mysql_fetch_object($books);
 		$title = htmlentities($book->title, ENT_NOQUOTES, 'UTF-8');
 	}
@@ -14,7 +14,7 @@
 	include 'header.inc.php';
 
 	echo '<frameset rows="80,*">';
-	echo '<frame src="menu.php?book_id=' . $book_id . '" name="menu" frameborder="0" scrolling="no" noresize="noresize"/>';
+	echo '<frame src="menu.php?book_id=' . $book_id . '" name="menu" frameborder="1" scrolling="no" noresize="noresize"/>';
 	echo '<frameset rows="*" cols="*,3*">';
 	if($book_id)
 	{

@@ -1,1 +1,1 @@
-DROP TABLE `books`, `index`, `index_links`, `pages`, `toc`;
+DROP TABLE `book`, `index_entry`, `index_link`, `page`, `toc_entry`;

@@ -205,7 +205,7 @@ def dump_book(book):
 	title = book.title
 	default_path, default_anchor  = split_link(book.default_link)
 	
-	sys.stdout.write('INSERT INTO `books` (`title`, `default_path`, `default_anchor`) VALUES (%s, %s, %s);\n' % quote(title, default_path, default_anchor))
+	sys.stdout.write('INSERT INTO `book` (`title`, `default_path`, `default_anchor`) VALUES (%s, %s, %s);\n' % quote(title, default_path, default_anchor))
 	sys.stdout.write('SET @book_id = LAST_INSERT_ID();\n')
 
 	dump_contents(book)
@@ -219,7 +219,7 @@ def dump_contents(book):
 	if not len(book.contents):
 		return
 
-	sys.stdout.write('INSERT INTO `toc` (`book_id`, `number`, `parent_number`, `name`, `path`, `anchor`) VALUES')
+	sys.stdout.write('INSERT INTO `toc_entry` (`book_id`, `no`, `parent_no`, `title`, `path`, `anchor`) VALUES')
 	dump_contents_entries(book.contents, 0)
 	sys.stdout.write(';\n')
 	
@@ -243,26 +243,27 @@ def dump_index(book):
 	if not len(book.index):
 		return
 
-	sys.stdout.write('INSERT INTO `index` (`book_id`, `term`) VALUES')
+	sys.stdout.write('INSERT INTO `index_entry` (`book_id`, `no`, `term`) VALUES')
 	cont = 0
+	no = 0
 	for entry in book.index:
+		no += 1
+
 		sys.stdout.write(cont and ',\n ' or '\n ')
-		sys.stdout.write('(' + ', '.join(quote(literal('@book_id'), entry.name)) + ')')
+		sys.stdout.write('(' + ', '.join(quote(literal('@book_id'), no, entry.name)) + ')')
 		cont = 1
 	sys.stdout.write(';\n')
 	
-	sys.stdout.write('SET @index_id = LAST_INSERT_ID();\n')
-	
-	sys.stdout.write('INSERT INTO `index_links` (`index_id`, `path`, `anchor`) VALUES');
+	sys.stdout.write('INSERT INTO `index_link` (`book_id`, `index_entry_no`, `path`, `anchor`) VALUES');
 	cont = 0
-	id = 0;
+	no = 0
 	for entry in book.index:
+		no += 1
 		for	link in entry.links:
-			id += 1
 			path, anchor = split_link(link)
 
 			sys.stdout.write(cont and ',\n ' or '\n ')
-			sys.stdout.write('(' + ', '.join(quote(literal('@index_id + %d - 1' % id), path, anchor)) + ')')
+			sys.stdout.write('(' + ', '.join(quote(literal('@book_id'), no, path, anchor)) + ')')
 			cont = 1
 	sys.stdout.write(';\n')
 
@@ -273,7 +274,7 @@ def dump_archive(book):
 		content = book.resource(path).read()
 		title, body = extract(path, content)
 		
-		sys.stdout.write('INSERT INTO `pages` (book_id, path, content, title, body) VALUES\n')
+		sys.stdout.write('INSERT INTO `page` (book_id, path, content, title, body) VALUES\n')
 		sys.stdout.write(' (' + ',\n  '.join(quote(literal('@book_id'), path, content, title, body)) + ')')
 		sys.stdout.write(';\n')
 	

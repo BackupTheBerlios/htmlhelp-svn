@@ -9,7 +9,7 @@
 
 	if($book_id = intval($_GET['book_id']))
 	{
-		$result = mysql_query('SELECT `term`, `path`, `anchor` FROM `index`  LEFT JOIN `index_links` ON `id`=`index_id` WHERE `book_id`=' . $book_id . ' ORDER BY `term`');
+		$result = mysql_query('SELECT `term`, `path`, `anchor` FROM `index_entry`,`index_link` WHERE `index_entry`.`book_id`=' . $book_id . ' AND `index_link`.`book_id`=' . $book_id . ' AND `index_link`.`no`=`index_entry`.`no` ORDER BY `index_entry`.`term`');
 		echo '<ul>';
 		while(list($term, $path, $anchor) = mysql_fetch_row($result))
 			echo '<li><a href="page.php/' . $book_id . '/' . $path . '#' . $anchor . '" target="main">' . $term . '</a></li>';

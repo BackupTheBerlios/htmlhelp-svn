@@ -9,7 +9,7 @@
 
 	function walk_toc($book_id, $parent_number)
 	{
-		$result = mysql_query('SELECT `book_id`, `parent_number`, `number`, `name`, `path`, `anchor` FROM `toc` WHERE `book_id`=' . $book_id . ' AND `parent_number`=' . $parent_number . ' ORDER BY `number`');
+		$result = mysql_query('SELECT `book_id`, `parent_no`, `no`, `title`, `path`, `anchor` FROM `toc_entry` WHERE `book_id`=' . $book_id . ' AND `parent_no`=' . $parent_number . ' ORDER BY `no`');
 		echo '<ul>';
 		while(list($book_id, $parent_number, $number, $name, $path, $anchor) = mysql_fetch_row($result))
 		{

@@ -4,7 +4,7 @@
 
 	if($book_id = intval($_GET['book_id']))
 	{
-		$books = mysql_query('SELECT * FROM `books` WHERE `id`=' . $book_id);
+		$books = mysql_query('SELECT * FROM `book` WHERE `id`=' . $book_id);
 		$book = mysql_fetch_object($books);
 		$title = htmlentities($book->title, ENT_NOQUOTES, 'UTF-8');
 	}
@@ -18,8 +18,10 @@
 	echo '<div class="search">';
 	echo '<form action="search.php" target="navigation">';
 	
-	#echo '<input type="hidden" name="book_id" value="' . $book_id .'"/>';
-	$books = mysql_query('SELECT `id`, `title` FROM `books`');
+	/*
+	echo '<input type="hidden" name="book_id" value="' . $book_id .'"/>';
+	*/
+	$books = mysql_query('SELECT `id`, `title` FROM `book`');
 	echo '<select name="book_id">';
 	echo '<option value="0">All</option>';
 	while($book = mysql_fetch_object($books))
