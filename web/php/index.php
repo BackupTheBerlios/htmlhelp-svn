@@ -32,6 +32,10 @@
 
 	echo '</div>';
 
+	echo '<div>';
+	include 'frontpage.inc.php';
+	echo '</div>';
+	
 	echo '</body>';
 	
 	include 'footer.inc.php';

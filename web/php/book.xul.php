@@ -59,7 +59,7 @@
 	echo '</hbox>';
 	
 	// Browser window
-	echo '<browser name="content" type="content-primary" src="' . ($book_id ? 'page.php/' . $book_id . '/' : 'about.php') .' " flex="1"/>';
+	echo '<browser name="content" type="content-primary" src="page.php/' . $book_id . '/" flex="1"/>';
 
 	echo '</vbox>';
 
