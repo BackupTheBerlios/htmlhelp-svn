@@ -18,4 +18,5 @@ FILE_SITES = file://$(FILEDIR)/ file://$(GARCHIVEDIR)
 
 # Extra libs to include with gar.mk
 #EXTRA_LIBS = devhelp.lib.mk
-EXTRA_LIBS = chm.lib.mk
+#EXTRA_LIBS += chm.lib.mk
+EXTRA_LIBS += htb.lib.mk

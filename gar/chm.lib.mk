@@ -38,9 +38,9 @@ HHC = $(WINE) -- "C:/Program Files/HTML Help Workshop/hhc.exe"
 endif
 
 
-#%.chm: %.hhp %.hhc %.hhk
 %.chm: htmlhelp.%
 	cd $< && $(HHC) $(*F).hhp
+	mv $</$(@F) $@
 
 
 include $(GARDIR)/hh.lib.mk
