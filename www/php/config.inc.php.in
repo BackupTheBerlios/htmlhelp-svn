@@ -3,7 +3,7 @@
 	$encoding = 'utf-8';
 
 	// HTML style-sheet
-	$css = '../css/default.css';
+	$css = 'default.css';
 	
 	// MySQL server settings
 	$db_server = 'localhost';
