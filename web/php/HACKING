@@ -3,6 +3,8 @@
 
 = XUL =
 
+- http://lxr.mozilla.org/seamonkey/source/extensions/help/resources/content/
+
 == Skinning ==
 
 See:
@@ -12,3 +14,8 @@ See:
 - [Writing Skinnable XUL and CSS http://www.mozilla.org/xpfe/skins.html]
 
 
+= JavaScript =
+
+ - [Popup Windows http://www.yourhtmlsource.com/javascript/popupwindows.html]
+
+ - [Monitoring Frames http://developer.irt.org/script/971.htm]

@@ -18,7 +18,11 @@ function goHome(event, book_id)
 
 function print()
 {
-	try 
+	try
+	{
 		_content.print();
-	catch (e);
+	}
+	catch (e)
+	{
+	}
 }
