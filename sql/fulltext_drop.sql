@@ -1,1 +1,1 @@
-ALTER TABLE `pages` DROP INDEX `fulltext`;
+ALTER TABLE `page` DROP INDEX `fulltext`;

@@ -254,7 +254,7 @@ def dump_index(book):
 		cont = 1
 	sys.stdout.write(';\n')
 	
-	sys.stdout.write('INSERT INTO `index_link` (`book_id`, `index_entry_no`, `path`, `anchor`) VALUES');
+	sys.stdout.write('INSERT INTO `index_link` (`book_id`, `no`, `path`, `anchor`) VALUES');
 	cont = 0
 	no = 0
 	for entry in book.index:

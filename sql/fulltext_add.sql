@@ -1,1 +1,1 @@
-ALTER TABLE `pages` ADD FULLTEXT `fulltext` (`title`,`body`);
+ALTER TABLE `page` ADD FULLTEXT `fulltext` (`title`,`body`);
