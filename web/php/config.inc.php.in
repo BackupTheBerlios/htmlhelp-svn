@@ -1,7 +1,4 @@
 <?php
-	// HTML encoding
-	$encoding = 'utf-8';
-
 	// HTML style-sheet
 	$css = 'default.css';
 	

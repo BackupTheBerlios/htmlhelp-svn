@@ -31,7 +31,7 @@
 		{
 			echo '<ul class="list">';
 			while(list($book_id, $path, $title) = mysql_fetch_row($result))
-				echo '<li><a href="page.php/' . $book_id . '/' . $path .'">' . htmlspecialchars($title, ENT_NOQUOTES, $encoding) . '</a></li>';
+				echo '<li><a href="page.php/' . $book_id . '/' . $path .'">' . htmlspecialchars($title, ENT_NOQUOTES) . '</a></li>';
 			echo '</ul>';
 		}
 	}

@@ -55,7 +55,7 @@
 			echo '<a href="page.php/' . $book_id . '/' . $path . ($anchor ? '#' . $anchor : '') . '">';
 		else
 			echo '<a target="_self" href="toc.php?book_id=' . $book_id . '&amp;toc_no=' . $number . '">';
-		echo htmlspecialchars($name, ENT_NOQUOTES, $encoding) . '</a>';
+		echo htmlspecialchars($name, ENT_NOQUOTES) . '</a>';
 			
 		walk_children($result, $depth);
 		echo '</li>';
@@ -77,9 +77,9 @@
 			echo '<ul class="tree">';
 			echo '<li class="expanded">';
 			if($path)
-				echo '<a href="page.php/' . $book_id . '/' . $path . ($anchor ? '#' . $anchor : '') . '">' . htmlspecialchars($name, ENT_NOQUOTES, $encoding) . '</a>';
+				echo '<a href="page.php/' . $book_id . '/' . $path . ($anchor ? '#' . $anchor : '') . '">' . htmlspecialchars($name, ENT_NOQUOTES) . '</a>';
 			else
-				echo htmlspecialchars($name, ENT_NOQUOTES, $encoding);
+				echo htmlspecialchars($name, ENT_NOQUOTES);
 			
 			walk_children(query_toc($number), $depth - 1);
 			echo '</li>';

@@ -2,14 +2,10 @@
 	include 'config.inc.php';
 	include 'mysql.inc.php';
 
-	if($book_id = intval($_GET['book_id']))
-	{
-		$books = mysql_query('SELECT * FROM `book` WHERE `id`=' . $book_id);
-		$book = mysql_fetch_object($books);
-		$title = htmlspecialchars($book->title, ENT_NOQUOTES, $encoding);
-	}
-	else
-		$title = 'HTML Help Books';
+	$book_id = intval($_GET['book_id']);
+	$result = mysql_query('SELECT `title` FROM `book` WHERE `id`=' . $book_id);
+	list($title) = mysql_fetch_row($result);
+	$title = htmlspecialchars($title, ENT_NOQUOTES);
 
 	include 'header.inc.php';
 

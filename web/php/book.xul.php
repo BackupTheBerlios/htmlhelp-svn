@@ -20,7 +20,7 @@
 	$book_id = intval($_GET['book_id']);
 	$books = mysql_query('SELECT * FROM `book` WHERE `id`=' . $book_id);
 	$book = mysql_fetch_object($books);
-	$title = htmlspecialchars($book->title, ENT_NOQUOTES, $encoding);
+	$title = htmlspecialchars($book->title);
 
 	echo '<window id="wnd" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" title="' . $title . '" width="640" height="420" persist="width height screenX screenY sizemode">';
 	echo '<script type="text/javascript">document.title = "' . $title . '";</script>';
