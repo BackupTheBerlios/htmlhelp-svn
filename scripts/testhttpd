@@ -1,0 +1,72 @@
+#!/usr/bin/python
+"""Modified CGI HTTP server to handle PHP scripts."""
+
+
+import os
+import urllib
+import CGIHTTPServer
+import posixpath
+
+
+class MyRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
+
+	indices = [
+		'index.html', 
+		'index.cgi', 
+		'index.pl', 
+		'index.php', 
+		'index.xhtml',
+	]
+	
+	aliases = [
+		('/', './'),
+		('/cgi-bin', '/usr/lib/cgi-bin'),
+	]
+
+	actions = {
+		'application/x-httpd-php': '/cgi-bin/php4',
+	}
+
+	CGIHTTPServer.CGIHTTPRequestHandler.extensions_map.update({
+		'.php': 'application/x-httpd-php',
+	})
+	
+	def do_HEAD(self):
+		self.redirect_path()
+		CGIHTTPServer.CGIHTTPRequestHandler.do_HEAD(self)
+		
+	def do_GET(self):
+		self.redirect_path()
+		CGIHTTPServer.CGIHTTPRequestHandler.do_GET(self)
+		
+	def do_POST(self):
+		self.redirect_path()
+		CGIHTTPServer.CGIHTTPRequestHandler.do_POST(self)
+		
+	def redirect_path(self):
+		path = self.translate_path(self.path)
+		if os.path.isdir(path):
+			for index in self.indices:
+				if os.path.exists(os.path.join(path, index)):
+					path = os.path.join(path, index)
+					self.path = posixpath.join(self.path, index)
+					break
+
+		ctype = self.guess_type(self.path)
+		if ctype in self.actions:
+			os.environ['REDIRECT_STATUS'] = '200'			
+			self.path = self.actions[ctype] + self.path
+
+	def translate_path(self, path):
+		path = posixpath.normpath(urllib.unquote(path))
+		n = len(self.aliases)
+		for i in range(n):
+			url, dir = self.aliases[n-i-1]
+			length = len(url)
+			if path[:length] == url:
+				return dir + path[length:]
+		return ''
+
+
+if __name__ == '__main__':
+	CGIHTTPServer.test(MyRequestHandler)
