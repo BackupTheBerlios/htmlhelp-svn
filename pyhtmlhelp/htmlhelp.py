@@ -1,39 +1,127 @@
 #!/usr/bin/python
 
+
 import os, os.path, sys
 import xml.parsers.expat
+import SimpleHTTPServer
+import urllib, urlparse
+import posixpath
 
 try:
 	from cStringIO import StringIO
 except ImportError:
 	from StringIO import StringIO
 
+
+class Entry:
+	"""General book entry."""
+
+	def __init__(self, title, link):
+		self._title = title
+		self._link = link
+		
+	def title(self):
+		return self._title
+	
+	def link(self):
+		return self._link
+
+
+class ContentsEntry(Entry):
+	"""Contents entry."""
+
+	def __init__(self, title, link, childs = ()):
+		Entry.__init__(self, title, link)
+
+		self._childs = childs
+		
+	def childs(self):
+		return self._childs
+
+
+class Contents(list):
+	"""Book contents.
+
+	A list of ContentsEntry objects."""
+	
+	pass
+
+
+class IndexEntry(Entry):
+	"""Index entry."""
+
+	pass
+
+
+class Index:
+	"""Book index.
+
+	A list of IndexEntry objects."""
+
+	pass
+
+
+class SearchEntry(Entry):
+	"""Search result entry."""
+
+	pass
+
+
+class Search(list):
+	"""Search result.
+
+	A list of SearchEntry objects."""
+
+	pass
+
+
 class Book:
 
 	def title(self):
+		"""Returns a string with the book title."""
+		
 		pass
 	
-	def table_of_context(self):
+	def link(self):
+		"""Returns the relative link of the default topic."""
+
+		pass
+		
+	def contents(self):
+		"""Returns an object describing the book table of contents."""
+
 		pass
 	
 	def index(self):
+		"""Returns an object describing the book index."""
+
 		pass
 	
 	def search(self, term):
+		"""Returns an object with the search results."""
+
 		pass
 	
 	def page(self, link, highlight = ()):
+		"""Return a file-like object with the required page."""
+		
 		pass
 
-class BookFactory:
+
+class Factory:
 
 	def enumerate(self):
+		"""Enumerate the available books."""
+		
 		pass
 	
 	def book(self, name):
+		"""Get the required book."""
+
 		pass
 
-class CachingBookFactory(BookFactory):
+
+class CachingFactory(Factory):
 
 	# TODO: Implement cache aging and limiting.
 
@@ -65,6 +153,7 @@ class CachingBookFactory(BookFactory):
 			self._book_cache[name] = book
 			return book
 
+
 class DevHelpBook(Book):
 
 	# TODO: Implement indexing.
@@ -72,14 +161,9 @@ class DevHelpBook(Book):
 	_title = None
 	_link = None
 	_base = None
-	_toc = None
+	_contents = None
 	_index = None
-	_link_prefix = None
 		
-	def link(self, link):
-
-		return link
-
 	def _start_book(self, title, link, base = None, **attributes):
 		self._title = title
 		self._link = link
@@ -87,12 +171,17 @@ class DevHelpBook(Book):
 			self._base = base
 		
 	def _start_sub(self, name, link, **attributes):
-		toc_entry = (name, self.link(link), [])
-		self.__toc_stack[-1].append(toc_entry)
-		self.__toc_stack.append(toc_entry[2])
+		assert len(self.__contents_stack) > 0
+
+		childs = Contents()
+		entry = ContentsEntry(name, link, childs)
+		self.__contents_stack[-1].append(entry)
+		self.__contents_stack.append(childs)
 		
 	def _end_sub(self):
-		self.__toc_stack.pop()
+		assert len(self.__contents_stack) > 0
+		
+		self.__contents_stack.pop()
 
 	def _start_element(self, name, attributes):
 		if self.__dispatch_start.has_key(name):
@@ -105,49 +194,61 @@ class DevHelpBook(Book):
 		if self.__dispatch_end.has_key(name):
 			apply(self.__dispatch_end[name])
 	
-	def parse_spec(self, spec, do_metadata, do_toc, do_index):
+	def parse_fp(self, fp, do_metadata, do_contents, do_index):
 		self.__dispatch_start = {}
 		self.__dispatch_end = {}
 		
 		if do_metadata:
 			self.__dispatch_start['book'] = self._start_book
 
-		if do_toc:
-			self._toc = []
-			self.__toc_stack = [self._toc]
+		if do_contents:
+			self._contents = Contents()
+			self.__contents_stack = [self._contents]
 			
 			self.__dispatch_start['sub'] = self._start_sub
 			self.__dispatch_end['sub'] = self._end_sub
 
 		if do_index:
-			self._index = []
+			self._index = Index()
 	
 		if self.__dispatch_start or self.__dispatch_end:
 			parser = xml.parsers.expat.ParserCreate()
 			parser.StartElementHandler = self._start_element
 			parser.EndElementHandler = self._end_element
-			parser.ParseFile(spec)
+			parser.ParseFile(fp)
 
-		if do_toc:
-			assert len(self.__toc_stack) == 1
-			del self.__toc_stack
+		if do_contents:
+			assert len(self.__contents_stack) == 1
+
+			del self.__contents_stack
 
 		del self.__dispatch_start, self.__dispatch_end
 
-	def parse(self, do_metadata = 0, do_toc = 0, do_index = 0):
+	def parse(self, do_metadata = 0, do_contents = 0, do_index = 0):
+		"""Parse the book spec file.
+
+		It should be overriden by the inherited classes to open the
+		spec file and passe it to parse_fp()."""
+
 		pass
 	
 	def title(self):
 		if self._title is None or self._link == None:
 			self.parse(do_metadata = 1)
 
-		return (self._title, self.link(self._link))
+		return self._title
 
-	def toc(self):
-		if self._toc is None:
-			self.parse(do_toc = 1)
+	def link(self):
+		if self._link == None:
+			self.parse(do_metadata = 1)
+
+		return self._link
+
+	def contents(self):
+		if self._contents is None:
+			self.parse(do_contents = 1)
 	
-		return self._toc
+		return self._contents
 	
 	def index(self):
 		if self._index is None:
@@ -156,7 +257,8 @@ class DevHelpBook(Book):
 		return self._index
 
 	def search(self, term):
-		return []
+		return Search()
+
 
 class UncompressedDevHelpBook(DevHelpBook):
 	
@@ -167,17 +269,18 @@ class UncompressedDevHelpBook(DevHelpBook):
 		else:
 			self._base = base
 	
-	def parse(self, do_metadata = 0, do_toc = 0, do_index = 0):
-		self.parse_spec(open(self._spec), do_metadata, do_toc, do_index)
+	def parse(self, do_metadata = 0, do_contents = 0, do_index = 0):
+		self.parse_fp(open(self._spec), do_metadata, do_contents, do_index)
 	
 	def page(self, link, highlight = None):
 		path = os.path.join(self._base, link)
 		return open(path)
 
-class DevHelpBookFactory(CachingBookFactory):
+
+class DevHelpFactory(CachingFactory):
 
 	def __init__(self, search_path = None):
-		CachingBookFactory.__init__(self)
+		CachingFactory.__init__(self)
 		
 		self._search_path = [
 			os.path.join(os.getenv('HOME'), '.devhelp2', 'books'),
@@ -208,19 +311,15 @@ class DevHelpBookFactory(CachingBookFactory):
 
 		return UncompressedDevHelpBook(spec)
 		
-		
 
-import SimpleHTTPServer
-import urllib, urlparse
 
 BaseRequestHandler = SimpleHTTPServer.SimpleHTTPRequestHandler
 
-import posixpath
 
 class MyRequestHandler(BaseRequestHandler):
 
 	root_dir = os.path.dirname(sys.argv[0])
-	book_factory = DevHelpBookFactory()
+	book_factory = DevHelpFactory()
 	
 	def send_head(self):
 		#scheme, netloc, path, query, fragment = urlparse.urlsplit(self.path)
@@ -234,7 +333,7 @@ class MyRequestHandler(BaseRequestHandler):
 			elif len(words) == 2:
 				return self.send_book(words[1])
 			elif words[2] == 'tree.html':
-				return self.send_book_toc(words[1])
+				return self.send_book_contents(words[1])
 			else:
 				name = words[1]
 				book = self.book_factory.book(name)
@@ -263,7 +362,8 @@ class MyRequestHandler(BaseRequestHandler):
 
 	def send_book(self, name):
 		book = self.book_factory.book(name)
-		title, link = book.title()
+		title = book.title()
+		link = book.link()
 
 		f = StringIO()
 		f.write(
@@ -279,10 +379,11 @@ class MyRequestHandler(BaseRequestHandler):
 		
 		return self.send_html(f)
 
-	def send_book_toc(self, name):
+	def send_book_contents(self, name):
 		book = self.book_factory.book(name)
-		title, link = book.title()
-		toc = book.toc()
+		title = book.title()
+		link = book.link()
+		contents = book.contents()
 
 		tree_open = '/icons/tree_minus.png'
 		tree_closed = '/icons/tree_plus.png'
@@ -298,27 +399,28 @@ class MyRequestHandler(BaseRequestHandler):
 			'</head>\n'
 			'<body>\n' % title)
 
-		def walk_toc(nodes, level = 1):
+		def walk_contents(contents, level = 1):
 			f.write('\t'*level)
 			if level == 1:
 				f.write('<ul>\n')
 			else:
 				f.write('<ul class="closed">\n')
-			for name, link, childs in nodes:
+			for entry in contents:
+				childs = entry.childs()
 				f.write('\t'*(level + 1))
 				if childs:
 					f.write('<li class="closed">')
 				else:
 					f.write('<li class="none">')
-				f.write('<a href="%s" target="mainfrm">%s</a>' % (link, name))
+				f.write('<a href="%s" target="mainfrm">%s</a>' % (entry.link(), entry.title()))
 				if childs:
 					f.write('\n')
-					walk_toc(childs, level + 1)
+					walk_contents(childs, level + 1)
 					f.write('\t'*(level + 1))
 				f.write('</li>\n')
 			f.write('\t'*level + '</ul>\n')
 
-		walk_toc(toc)
+		walk_contents(contents)
 		
 		f.write('</body>\n'
 			'</html>\n')
@@ -346,8 +448,11 @@ class MyRequestHandler(BaseRequestHandler):
 			if word in (os.curdir, os.pardir): continue
 			path = os.path.join(path, word)
 		return path
+
+
 def main():
 	SimpleHTTPServer.test(MyRequestHandler)
+
 
 if __name__ == "__main__":
 		main()
