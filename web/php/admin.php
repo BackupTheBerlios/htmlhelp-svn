@@ -1,6 +1,6 @@
 <?php
 	include 'config.inc.php';
-	include 'mysql.inc.php';
+	include 'book.inc.php';
 
 	$authenticated = 0;
 	$password = $_COOKIE['Password'];
@@ -76,13 +76,8 @@
 			$book_ids = $_POST['book_ids'];
 			foreach($book_ids as $book_id)
 			{
-				$book_id = intval($book_id);
-				mysql_query('DELETE FROM `book` WHERE `id`=' . $book_id);
-				mysql_query('DELETE FROM `toc_entry` WHERE `book_id`=' . $book_id);
-				mysql_query('DELETE FROM `index_entry` WHERE `book_id`=' . $book_id);
-				mysql_query('DELETE FROM `index_link` WHERE `book_id`=' . $book_id);
-				mysql_query('DELETE FROM `page` WHERE `book_id`=' . $book_id);
-				mysql_query('DELETE FROM `metadata` WHERE `book_id`=' . $book_id);
+				$book = new Book($book_id);
+				$book->delete();
 			}
 		}
 	}
@@ -133,8 +128,8 @@
 		echo '<form action="admin.php" method="post">';
 		echo '<input type="hidden" name="action" value="delete"/>';
 		echo '<select name="book_ids[]" multiple="yes">';
-		$result = mysql_query('SELECT `id`, `title` FROM `book` ORDER BY `title`');
-		while(list($book_id, $title) = mysql_fetch_row($result))
+		$entries = book_catalog();	
+		foreach($entries as $book_id => $title)
 			echo '<option value="' . $book_id . '">' . $title . '</option>';
 		echo '</select>';
 		echo '<input type="submit" value="Delete">';

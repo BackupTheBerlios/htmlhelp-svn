@@ -1,6 +1,6 @@
 <?php
 	include 'config.inc.php';
-	include 'mysql.inc.php';
+	include 'book.inc.php';
 
 	// For link backward compatability
 	if($book_id = intval($_GET['book_id']))
@@ -21,11 +21,11 @@
 	
 	echo '<div>';
 	
-	$result = mysql_query('SELECT `id`, `title` FROM `book` ORDER BY `title`');
-	if(mysql_num_rows($result))
+	$entries = book_catalog();	
+	if(count($entries))
 	{
 		echo '<ul class="list">';
-		while(list($book_id, $title) = mysql_fetch_row($result))
+		foreach($entries as $book_id => $title)
 			echo '<li><a href="book.php?book_id=' . $book_id . '" onclick="return openBook(' . $book_id . ');" target="_blank">' . $title . '</a></li>';
 		echo '</ul>';
 	}

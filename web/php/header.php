@@ -1,11 +1,9 @@
 <?php
 	include 'config.inc.php';
-	include 'mysql.inc.php';
+	include 'book.inc.php';
 
-	$book_id = intval($_GET['book_id']);
-	$result = mysql_query('SELECT `title` FROM `book` WHERE `id`=' . $book_id);
-	list($title) = mysql_fetch_row($result);
-	$title = htmlspecialchars($title, ENT_NOQUOTES);
+	$book = new Book($_GET['book_id']);
+	$title = htmlspecialchars($book->title(), ENT_NOQUOTES);
 
 	header('Content-Type: text/html; charset=utf-8');
 		

@@ -1,8 +1,8 @@
 <?php
 	include 'config.inc.php';
-	include 'mysql.inc.php';
+	include 'book.inc.php';
 
-	$book_id = intval($_GET['book_id']);
+	$book = new Book($_GET['book_id']);
 	
 	# Enable HTTP compression
 	ob_start("ob_gzhandler");
@@ -15,44 +15,36 @@
 	echo '<head>';
 	echo  '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>';
 	echo  '<title>Table of contents</title>';
-	echo  '<base href="http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/page.php/' . $book_id . '/" target="main"/>';
+	echo  '<base href="http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/page.php/' . $book->id . '/" target="main"/>';
 	echo  '<link href="../../' . $css . '" type="text/css" rel="stylesheet"/>';
 	echo '</head>';
 	echo '<body id="toc" class="sidebar">';
 
 	echo '<div class="menubar">';
-	echo  '<a href="../../toc.php?book_id=' . $book_id . '" target="_self">Contents</a> | ';
-	echo  '<a href="../../_index.php?book_id=' . $book_id . '" target="_self">Index</a> | ';
-	echo  '<a href="../../search.php?book_id=' . $book_id . '" target="_self">Search</a>';
+	echo  '<a href="../../toc.php?book_id=' . $book->id . '" target="_self">Contents</a> | ';
+	echo  '<a href="../../_index.php?book_id=' . $book->id . '" target="_self">Index</a> | ';
+	echo  '<a href="../../search.php?book_id=' . $book->id . '" target="_self">Search</a>';
 	echo '</div>';
 
-	function query_toc($parent_number)
+	function walk_children($entries, $depth)
 	{
-		global $book_id;
-
-		return mysql_query('SELECT `no`, `title`, `path`, `anchor` FROM `toc_entry` WHERE `book_id`=' . $book_id . ' AND `parent_no`=' . $parent_number . ' ORDER BY `no`');
-
-	}
-	
-	function walk_children($result, $depth)
-	{
-		global $book_id;
-		
-		if(mysql_num_rows($result) && $depth)
+		if(count($entries) && $depth)
 		{
 			echo '<ul class="tree">';
-			while(list($number, $name, $path, $anchor) = mysql_fetch_row($result))
-				walk_toc($number, $name, $path, $anchor, $depth - 1);
+			foreach($entries as $number => $entry)
+			{
+				list($name, $link, $children) = $entry;
+				walk_toc($number, $name, $link, $children, $depth - 1);
+			}
 			echo '</ul>';
 		}
 	}
 	
-	function walk_toc($number, $name, $path, $anchor, $depth)
+	function walk_toc($number, $name, $link, $children, $depth)
 	{
-		global $book_id;
+		global $book;
 		
-		$result = query_toc($number);
-		$has_children = mysql_num_rows($result);
+		$has_children = count($children);
 
 		if($has_children)
 		{
@@ -65,12 +57,12 @@
 			echo '<li class="single">';
 		
 		if($depth || !$has_children)
-			echo '<a href="' . $path . ($anchor ? '#' . $anchor : '') . '">';
+			echo '<a href="' . $link . '">';
 		else
-			echo '<a href="../../toc.php?book_id=' . $book_id . '&amp;toc_no=' . $number . '" target="_self">';
+			echo '<a href="../../toc.php?book_id=' . $book->id . '&amp;toc_no=' . $number . '" target="_self">';
 		echo htmlspecialchars($name, ENT_NOQUOTES) . '</a>';
 			
-		walk_children($result, $depth);
+		walk_children($children, $depth);
 		echo '</li>';
 	}
 
@@ -79,19 +71,18 @@
 	
 	if($number)
 	{
-		$result = mysql_query('SELECT `parent_no`, `title`, `path`, `anchor` FROM `toc_entry` WHERE `book_id`=' . $book_id . ' AND `no`=' . $number . ' ORDER BY `no`');
-		list($parent_number, $name, $path, $anchor) = mysql_fetch_row($result);
+		list($parent_number, $title, $link) = $book->toc_entry($number);
 		
-		echo '<ul class="tree"><li class="collapsed"><a href="../../toc.php?book_id=' . $book_id . '&amp;toc_no=' . $parent_number . '" target="_self">&hellip;</a>'; 
+		echo '<ul class="tree"><li class="collapsed"><a href="../../toc.php?book_id=' . $book->id . '&amp;toc_no=' . $parent_number . '" target="_self">&hellip;</a>'; 
 			
 		echo '<ul class="tree">';
 		echo '<li class="expanded">';
 		if($path)
-			echo '<a href="' . $path . ($anchor ? '#' . $anchor : '') . '">' . htmlspecialchars($name, ENT_NOQUOTES) . '</a>';
+			echo '<a href="' . $link . '">' . htmlspecialchars($title, ENT_NOQUOTES) . '</a>';
 		else
-			echo htmlspecialchars($name, ENT_NOQUOTES);
+			echo htmlspecialchars($title, ENT_NOQUOTES);
 		
-		walk_children(query_toc($number), $depth - 1);
+		walk_children($book->toc($number, $depth), $depth - 1);
 		echo '</li>';
 		echo '</ul>';
 		
@@ -99,7 +90,7 @@
 		
 	}
 	else
-		walk_children(query_toc(0), $depth);
+		walk_children($book->toc(0, $depth + 1), $depth);
 	
 	echo '</body>';
 	echo '</html>';

@@ -1,8 +1,8 @@
 <?php
 	include 'config.inc.php';
-	include 'mysql.inc.php';
+	include 'book.inc.php';
 
-	$book_id = intval($_GET['book_id']);
+	$book = new Book($_GET['book_id']);
 	
 	# Enable HTTP compression
 	ob_start("ob_gzhandler");
@@ -15,32 +15,35 @@
 	echo '<head>';
 	echo  '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>';
 	echo  '<title>Index</title>';
-	echo  '<base href="http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/page.php/' . $book_id . '/" target="main"/>';
+	echo  '<base href="http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/page.php/' . $book->id . '/" target="main"/>';
 	echo  '<link href="../../' . $css . '" type="text/css" rel="stylesheet"/>';
 	echo '</head>';
 	echo '<body id="index" class="sidebar">';
 
 	echo '<div class="menubar">';
-	echo  '<a href="../../toc.php?book_id=' . $book_id . '" target="_self">Contents</a> | ';
-	echo  '<a href="../../_index.php?book_id=' . $book_id . '" target="_self">Index</a> | ';
-	echo  '<a href="../../search.php?book_id=' . $book_id . '" target="_self">Search</a>';
+	echo  '<a href="../../toc.php?book_id=' . $book->id . '" target="_self">Contents</a> | ';
+	echo  '<a href="../../_index.php?book_id=' . $book->id . '" target="_self">Index</a> | ';
+	echo  '<a href="../../search.php?book_id=' . $book->id . '" target="_self">Search</a>';
 	echo '</div>';
 
 	$query = $_GET['query'];
 	echo '<form id="find" target="navigation" action="../../_index.php">';
-	echo  '<input type="hidden" name="book_id" value="' . $book_id .'"/>';
+	echo  '<input type="hidden" name="book_id" value="' . $book->id .'"/>';
 	echo  '<input id="query" type="text" name="query" value="' . htmlspecialchars($query) . '"/>';
 	echo  '<input id="submit" type="submit" value="Find"/>';
 	echo '</form>';
 
 	if(isset($query))
 	{
-		$result = mysql_query('SELECT `term`, `path`, `anchor` FROM `index_entry`,`index_link` WHERE `index_entry`.`book_id`=' . $book_id . ' AND `index_link`.`book_id`=' . $book_id . ' AND `index_link`.`no`=`index_entry`.`no`' . ($query ? ' AND LOCATE(\'' . mysql_escape_string($query) . '\', `term`)' : '') . ' ORDER BY `index_entry`.`term`');
-		if(mysql_num_rows($result))
+		$entries = $book->index($query);
+		if(count($entries))
 		{
 			echo '<ul class="list">';
-			while(list($term, $path, $anchor) = mysql_fetch_row($result))
-				echo '<li><a href="' . $path . ($anchor ? '#' . $anchor : '') . '">' . htmlspecialchars($term, ENT_NOQUOTES) . '</a></li>';
+			foreach($entries as $entry)
+			{
+				list($term, $path) = $entry;
+				echo '<li><a href="' . $path .'">' . htmlspecialchars($term, ENT_NOQUOTES) . '</a></li>';
+			}
 			echo '</ul>';
 		}
 	}

@@ -1,6 +1,6 @@
 <?php
 	include 'config.inc.php';
-	include 'mysql.inc.php';
+	include 'book.inc.php';
 	include 'mimetypes.inc.php';
 
 	// For this to work with the CGI version of PHP4, the "cgi.fix_pathinfo=1"
@@ -10,25 +10,17 @@
 	$path = $_SERVER['PATH_INFO'];
 	while(!$book_id and $path)
 		list($book_id, $path) = explode('/', $path, 2);
-	$book_id = intval($book_id);
+	$book = new Book($book_id);
 
 	// If the 'path' param is not given then redirect to the book's front page.
 	if(!$path)
 	{
-		$result = mysql_query('SELECT `default_path` FROM `book` WHERE `id`=' . $book_id);
-		if(mysql_num_rows($result))
-		{
-			list($default_path) = mysql_fetch_row($result);
-			header('Location: http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/' . $book_id . '/' . $default_path);
-			exit;
-		}
+		header('Location: http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/' . $book->id . '/' . $book->default_link());
+		exit;
 	}
 
-	$result = mysql_query('SELECT `compressed`, `content` FROM `page` WHERE `book_id`=' . $book_id . ' AND `path`=\'' . mysql_escape_string($path) . '\'');
-	if(mysql_num_rows($result))
+	if(list($compressed, $content) = $book->page($path))
 	{
-		list($compressed, $content) = mysql_fetch_row($result);
-		
 		$content_type = mime_content_type($path);
 		$accept_compressed = strpos($_SERVER["HTTP_ACCEPT_ENCODING"], 'gzip') !== false;
 		
