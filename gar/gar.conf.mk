@@ -162,7 +162,7 @@ export GARBUILD
 export PATH LD_LIBRARY_PATH #LD_PRELOAD
 export PKG_CONFIG_PATH
 
-GARCHIVEROOT ?= $(GARDIR)/../garchive
+GARCHIVEROOT ?= /var/www/garchive
 GARCHIVEDIR = $(GARCHIVEROOT)/$(DISTNAME)
 GARPKGROOT ?= /var/www/garpkg
 GARPKGDIR = $(GARPKGROOT)/$(GARNAME)
@@ -170,7 +170,8 @@ GARPKGDIR = $(GARPKGROOT)/$(GARNAME)
 # prepend the local file listing
 FILE_SITES = file://$(FILEDIR)/ file://$(GARCHIVEDIR)/
 
+# Extra configuration for the lnx-bbc build
+GAR_EXTRA_CONF += htmlhelp.conf.mk
+
 # Extra libs to include with gar.mk
 GAR_EXTRA_LIBS += htmlhelp.lib.mk
-
-SHELL=/bin/bash

@@ -1,32 +1,28 @@
 # HTML Help books generation
 
-all: books
+all: htmlhelp
 
 
 # books	- Generate HTML Help books.
 
-BOOKS_TARGETS =
+HTMLHELP_TARGETS ?=
 
-books: build pre-books $(BOOKS_TARGETS) post-books
+include $(addprefix $(GARDIR)/,$(sort $(HTMLHELP_EXTRA_LIBS)))
+
+htmlhelp: build pre-htmlhelp $(HTMLHELP_TARGETS) post-htmlhelp
 	$(DONADA)
 
 # returns true if all books have completed successfully, false otherwise
-books-p:
-	@$(foreach COOKIEFILE,$(BOOKS_TARGETS), test -e $(COOKIEDIR)/$(COOKIEFILE) ;)
+htmlhelp-p:
+	@$(foreach COOKIEFILE,$(HTMLHELP_TARGETS), test -e $(COOKIEDIR)/$(COOKIEFILE) ;)
 
 
-# booksarchive	- Archive HTML Help books
-BOOKSDIR ?= $(GARDIR)/../books
+# books	- Archive HTML Help books
 
-booksarchive: 
-	$(foreach FILE,$(BOOKS_TARGETS), \
+books:
+	$(foreach FILE,$(HTMLHELP_TARGETS), \
 		test -e $(FILE) && \
 		cp -a $(FILE) $(BOOKSDIR)/$(notdir $(basename $(FILE)))$(if $(GARVERSION),-$(GARVERSION),)$(suffix $(FILE)) ;)
-
-
-HTMLHELP_EXTRA_LIBS ?= chm.lib.mk devhelp.lib.mk htb.lib.mk
-
-include $(addprefix $(GARDIR)/,$(sort $(HTMLHELP_EXTRA_LIBS)))
 
 
 empty-%:

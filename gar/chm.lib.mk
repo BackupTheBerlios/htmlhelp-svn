@@ -7,7 +7,7 @@ all: chm
 # chm	- Generate Compiled Html Help books.
 
 CHM_TARGETS = $(addsuffix .chm,$(basename $(BOOKS)))
-BOOKS_TARGETS += $(CHM_TARGETS)
+HTMLHELP_TARGETS += $(CHM_TARGETS)
 
 chm: build pre-chm $(CHM_TARGETS) post-chm
 	$(DONADA)
@@ -29,8 +29,8 @@ HHC := $(WINE) $(WINE_FLAGS) -- $(HHC)
 endif
 
 %.chm: %.mshh
-	$(HHC) $(HHC_FLAGS) $(wildcard $<d/*.hhp)
-	mv $<d/$(@F) $@
+	-$(HHC) $(HHC_FLAGS) $(wildcard $<d/*.hhp)
+	mv -f $<d/$(@F) $@
 	@$(MAKECOOKIE)
 
 %.chm: empty-%.chm

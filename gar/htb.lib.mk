@@ -12,7 +12,7 @@ all: htb
 # htb	- Generate Compiled Html Help books.
 
 HTB_TARGETS = $(addsuffix .htb,$(basename $(BOOKS)))
-BOOKS_TARGETS += $(HTB_TARGETS)
+HTMLHELP_TARGETS += $(HTB_TARGETS)
 
 htb: build pre-htb $(HTB_TARGETS) post-htb
 	$(DONADA)

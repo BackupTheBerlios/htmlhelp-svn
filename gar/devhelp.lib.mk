@@ -6,7 +6,7 @@ all: devhelp
 # devhelp	- Generate DevHelp books.
 
 DEVHELP_TARGETS = $(addsuffix .tgz,$(basename $(BOOKS)))
-BOOKS_TARGETS += $(DEVHELP_TARGETS)
+HTMLHELP_TARGETS += $(DEVHELP_TARGETS)
 
 devhelp: build pre-devhelp $(DEVHELP_TARGETS) post-devhelp
 	$(DONADA)
