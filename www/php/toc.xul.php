@@ -16,7 +16,7 @@
 	echo '<tree flex="1" seltype="single" hidecolumnpicker="true" onselect="onTocSelect(event, ' . $book_id . ')">';
 
 	echo '<treecols>';
-	echo '<treecol id="name" label="Title" primary="true" flex="1"/>';
+	echo '<treecol id="name" primary="true" flex="1"/>';
 	echo '</treecols>';
 
 	function walk_toc($book_id, $number, $title, $path, $anchor)
