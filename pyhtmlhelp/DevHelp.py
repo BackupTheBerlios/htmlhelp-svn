@@ -134,7 +134,7 @@ class DevHelpFactory(Book.CachingFactory):
 		Book.CachingFactory.__init__(self)
 		
 		self._search_path = [
-			os.path.join(os.getenv('HOME'), '.devhelp2', 'books'),
+			os.path.join(os.getenv('HOME', ''), '.devhelp2', 'books'),
 			'/usr/share/gtk-doc/html']
 		if search_path is not None:
 			self._search_path.extend(search_path)
@@ -146,11 +146,12 @@ class DevHelpFactory(Book.CachingFactory):
 		
 		self._path_hash = {}
 		for dir in self._search_path:
-			for name in os.listdir(dir):
-				spec = os.path.join(dir, name, name + '.devhelp')
-				if os.path.isfile(spec):
-					self._path_hash[name] = spec
-					enum.append(name)
+			if os.path.isdir(dir):
+				for name in os.listdir(dir):
+					spec = os.path.join(dir, name, name + '.devhelp')
+					if os.path.isfile(spec):
+						self._path_hash[name] = spec
+						enum.append(name)
 
 		return enum
 		
