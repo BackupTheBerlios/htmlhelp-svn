@@ -43,7 +43,6 @@
 		
 		echo '<p>Importing ' . $file . '...</p>';
 		echo '<pre>';
-		echo "$admin_mysql -h $db_server -u $db_username -pXXXXXXXX $db_database < $file\n";
 		$handle = popen("$admin_mysql -h $db_server -u $db_username -p$db_password -e \"source $file\" $db_database", 'r');
 		do {
 			$data = fread($handle, 8192);
@@ -60,8 +59,9 @@
 	{
 		if($action == 'import')
 		{
-			$file = $admin_directory . '/' . $_POST['file'];
-			mysql_import($file);
+			$files = $_POST['files'];
+			foreach($files as $file)
+				mysql_import($admin_directory . '/' .$file);
 		}
 		
 		if($action == 'upload')
@@ -73,13 +73,17 @@
 		
 		if($action == 'delete')
 		{
-			$book_id = intval($_POST['book_id']);
-			mysql_query('DELETE FROM `book` WHERE `id`=' . $book_id);
-			mysql_query('DELETE FROM `toc_entry` WHERE `book_id`=' . $book_id);
-			mysql_query('DELETE FROM `index_entry` WHERE `book_id`=' . $book_id);
-			mysql_query('DELETE FROM `index_link` WHERE `book_id`=' . $book_id);
-			mysql_query('DELETE FROM `page` WHERE `book_id`=' . $book_id);
-			mysql_query('DELETE FROM `metadata` WHERE `book_id`=' . $book_id);
+			$book_ids = $_POST['book_ids'];
+			foreach($book_ids as $book_id)
+			{
+				$book_id = intval($book_id);
+				mysql_query('DELETE FROM `book` WHERE `id`=' . $book_id);
+				mysql_query('DELETE FROM `toc_entry` WHERE `book_id`=' . $book_id);
+				mysql_query('DELETE FROM `index_entry` WHERE `book_id`=' . $book_id);
+				mysql_query('DELETE FROM `index_link` WHERE `book_id`=' . $book_id);
+				mysql_query('DELETE FROM `page` WHERE `book_id`=' . $book_id);
+				mysql_query('DELETE FROM `metadata` WHERE `book_id`=' . $book_id);
+			}
 		}
 	}
 	echo '</div>';
@@ -100,7 +104,7 @@
 			echo '<p>';
 			echo '<form action="admin.php" method="post">';
 			echo '<input type="hidden" name="action" value="import"/>';
-			echo '<select name="file">';
+			echo '<select name="files[]" multiple="yes">';
 			$dir = dir($admin_directory);
 			$ext = '.sql';
 			while(false !== ($entry = $dir->read()))
@@ -128,8 +132,7 @@
 		echo '<p>';
 		echo '<form action="admin.php" method="post">';
 		echo '<input type="hidden" name="action" value="delete"/>';
-		echo '<select name="book_id">';
-		echo '<option value="0">All</option>';
+		echo '<select name="book_ids[]" multiple="yes">';
 		$result = mysql_query('SELECT `id`, `title` FROM `book` ORDER BY `title`');
 		while(list($book_id, $title) = mysql_fetch_row($result))
 			echo '<option value="' . $book_id . '">' . $title . '</option>';
