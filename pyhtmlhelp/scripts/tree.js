@@ -16,23 +16,6 @@
 
 function toggle(e) {
 	parentNode = e.target;
-	for(i = 0; i < parentNode.childNodes.length; i++) {
-		childNode = parentNode.childNodes.item(i);
-		if(childNode.tagName == 'UL') {
-			if(childNode.style.display == 'none') {
-				childNode.style.display = 'block';
-				parentNode.style.listStyleImage = 'url(tree_minus.png)';
-			} else {
-				childNode.style.display = 'none';
-				parentNode.style.listStyleImage = 'url(tree_plus.png)';
-			}
-			break;
-		}
-	}
-}
-
-function toggle2(e) {
-	parentNode = e.target;
 	if ( parentNode.className == 'closed') {
 		parentNode.className = 'open';
 		for(i = 0; i < parentNode.childNodes.length; i++) {
@@ -48,6 +31,6 @@ function toggle2(e) {
 	}
 }
 
-document.onclick = toggle2;
+document.onclick = toggle;
 
 
