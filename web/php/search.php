@@ -24,10 +24,7 @@
 
 	if($query)
 	{
-		$book_expr = $book_id ? ' book_id=' . $book_id : '1';
-		$against_expr = 'AGAINST (\'' . mysql_escape_string($query) . '\'' . (0 /*mysql_check_version('4.0.1')*/ ? ' IN BOOLEAN MODE' : '') . ')';
-
-		$result = mysql_query('SELECT `book_id`, `path`, `title` FROM `page` WHERE ' . $book_expr . ' AND MATCH (`title`, `body`) ' . $against_expr);
+		$result = mysql_query('SELECT `book_id`, `path`, `title` FROM `page` WHERE ' . ($book_id ? ' book_id=' . $book_id : '1') . ' AND MATCH (`title`, `body`) AGAINST (\'' . mysql_escape_string($query) . '\'' . ($boolean_mode ? ' IN BOOLEAN MODE' : '') . ')');
 		if(mysql_num_rows($result))
 		{
 			echo '<ul>';
