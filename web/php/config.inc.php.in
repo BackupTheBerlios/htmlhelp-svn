@@ -2,9 +2,15 @@
 	// HTML style-sheet
 	$css = 'default.css';
 	
+	// MySQL executable
+	$mysql = 'mysql';
+	
 	// MySQL server settings
 	$db_server = 'localhost';
 	$db_username = 'www';
 	$db_password = '';
 	$db_database = 'htmlhelp';
+	
+	// Administrator password
+	$secret = 'secret';
 ?>
