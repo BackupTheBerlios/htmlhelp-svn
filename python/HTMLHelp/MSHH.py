@@ -126,7 +126,8 @@ class HHKParser(SitemapParser):
 		
 	def handle_param(self, name, value):
 		if name == 'Name':
-			self.entry.name = value
+			if self.entry.name is None:
+				self.entry.name = value
 		elif name == 'Local':
 			self.entry.links.append(value)
 			
