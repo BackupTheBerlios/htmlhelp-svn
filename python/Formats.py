@@ -21,7 +21,7 @@ class GlobalFactory(Book.Factory):
 	def unregister(self, factory):
 		raise NotImplementedError
 
-	def __apply__(self, path):
+	def __call__(self, path):
 		for factory in self.__factories:
 			try:
 				return factory(path)

@@ -44,7 +44,7 @@ class HHCParser(HTMLParser.HTMLParser):
 			self.contents_stack.pop()
 		elif tag == 'object':
 			if self.node:
-				self.contents_stack[-1].children.append(self.node)
+				self.contents_stack[-1].append(self.node)
 
 	def parse(self, fp):
 		self.feed(fp.read())
@@ -74,7 +74,7 @@ class HHKParser(HTMLParser.HTMLParser):
 	def handle_endtag(self, tag):
 		if tag == 'object':
 			if self.entry:
-				self.book.index.children.append(self.entry)
+				self.book.index.append(self.entry)
 				self.entry = None
 
 	def parse(self, fp):

@@ -91,7 +91,7 @@ class RawDevHelpBook(DevHelpBook):
 
 class DevHelpFactory(Book.Factory):
 
-	def __apply__(self, path):
+	def __call__(self, path):
 		if self.extension(path) == 'devhelp':
 			return RawDevHelpBook(path)
 
@@ -116,7 +116,7 @@ class DevHelpCatalog(Book.Catalog):
 		self.path = []
 
 		if 'HOME' in os.environ:
-			self.path.append(os.path.join(os.environ['HOME'], '.devhelp2', 'books'))
+			self.path.append(os.path.join(os.environ['HOME'], '.devhelp', 'books'))
 		
 		self.path.append('/usr/share/gtk-doc/html')
 		self.path.append('/usr/local/share/gtk-doc/html')
