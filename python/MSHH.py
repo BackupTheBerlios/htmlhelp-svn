@@ -33,7 +33,7 @@ class HHCParser(HTMLParser.HTMLParser):
 			else:
 				self.node = None
 		elif tag == 'param':
-			if self.node:
+			if self.node is not None:
 				if attrs['name'] == 'Name':
 					self.node.name = attrs['value'].strip()
 				elif attrs['name'] == 'Local':
@@ -43,7 +43,7 @@ class HHCParser(HTMLParser.HTMLParser):
 		if tag == 'ul':
 			self.contents_stack.pop()
 		elif tag == 'object':
-			if self.node:
+			if self.node is not None:
 				self.contents_stack[-1].append(self.node)
 
 	def parse(self, fp):
