@@ -17,9 +17,11 @@
 				</template>
 			</menupopup>
 		</menulist>
+		<!--
 		<spacer flex="1"/>
 		<label value="Search for:" control="find-text"/>
 		<textbox id="find-text"/>
+		-->
 	</hbox>
 
 	<hbox flex="1">
@@ -45,6 +47,7 @@
 		</splitter>
 
 		<vbox flex="2">
+			<!--
 			<hbox>
 				<button label="Back"/>
 				<button label="Forward"/>
@@ -52,6 +55,7 @@
 				<spacer flex="1" />
 				<button label="Sync TOC"/>
 			</hbox>
+			-->
 			<browser id="body" name="body" src="about.php" flex="1"/>
 		</vbox>
 	</hbox>
