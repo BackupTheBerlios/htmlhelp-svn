@@ -53,9 +53,10 @@ a {
 /* Search */
 
 #search {
-	position: absolute;
-	top: 18px;
-	right: 6px;
+	margin-top: 18px;
+	margin-right: 6px;
+	float: right;
+	clear: none;
 }
 
 

@@ -7,6 +7,13 @@
 	include 'header.inc.php';
 ?>
 	<body>
+		<div id="search">
+			<form action="search.php" target="side">
+				<input type="hidden" name="book_id" value="<?php echo $book->id; ?>" />
+				<input type="text" name="query" value="<?php echo $query; ?>"/>
+				<input type="submit" value="Search">
+			</form>
+		</div>
 		<div class="header"><?php echo htmlentities($book->title, ENT_NOQUOTES, 'UTF-8');?></div>
 		<div class="menubar">
 			<div class="left">
@@ -16,11 +23,6 @@
 			<div class="right">
 				<a href="catalog.php" target="_parent">Catalog</a>
 			</div>
-			<form id="search" action="search.php" target="side">
-				<input type="hidden" name="book_id" value="<?php echo $book->id; ?>" />
-				<input type="text" name="query" value="<?php echo $query; ?>"/>
-				<input type="submit" value="Search">
-			</form>
 		</div>
 	</body>
 <?php
