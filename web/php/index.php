@@ -20,19 +20,20 @@
 	if(!intval($_GET['noxul']))
 		echo '<script type="text/javascript">if(navigator.userAgent.indexOf("Gecko") >= 0) document.location.href = "index.xul.php?book_id=' . $book_id . '";</script>';
 	
-	echo '<frameset rows="80,*">';
-	echo '<frame src="menu.php?book_id=' . $book_id . '" name="menu"/>';
+	echo '<frameset rows="56,*">';
+	echo '<frame src="header.php?book_id=' . $book_id . '" name="header"/>';
 	echo '<frameset rows="*" cols="*,3*">';
+	echo '<frameset rows="24,*">';
+	echo '<frame src="menu.php?book_id=' . $book_id . '" name="menu"/>';
 	if($book_id)
-	{
 		echo '<frame src="toc.php?book_id=' . $book_id . '" name="navigation"/>';
-		echo '<frame src="page.php/' . $book_id . '/' . $book->default_path . '#' . $book->default_anchor . '" name="main"/>';
-	}
 	else
-	{
 		echo '<frame src="books.php" name="navigation"/>';
+	echo '</frameset>';
+	if($book_id)
+		echo '<frame src="page.php/' . $book_id . '/' . $book->default_path . '#' . $book->default_anchor . '" name="main"/>';
+	else
 		echo '<frame src="about.php" name="main"/>';
-	}
 	echo '</frameset>';
 	echo '<noframes>A frames-capable web browser is required.</noframes>';
 	echo '</frameset>';
