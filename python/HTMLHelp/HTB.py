@@ -8,28 +8,34 @@ import Book
 import MSHH
 
 
-class HtbBook(MSHH.MshhBook):
+def read_htb(path):
 	"""wxWindows HTML Help Book."""
 
-	def __init__(self, path):
-		archive = Archive.ZipArchive(path)
+	archive = Archive.ZipArchive(path)
 		
-		names = filter(
-				lambda name: name[-4:].lower() == '.hhp',
-				archive.keys())
-
-		# FIXME: Actually the HTB format allows more than one project inside a zip
-		assert len(names) == 1
-		hhp = names[0]
-
-		MSHH.MshhBook.__init__(self, archive, hhp)
+	book =  Book.Book(archive)
 	
-		self.archive = MSHH.MshhFilterArchive(archive)
+	names = filter(
+			lambda name: name[-4:].lower() == '.hhp',
+			archive.keys())
+	if not len(names):
+		raise ValueError, 'no HHP file found.'
+	if len(names) > 1:
+		# FIXME: Actually the HTB format allows more than one project inside a zip
+		raise ValueError, 'HTB with multiple books are not supported'
+	hhp = names[0]
+
+	parser = MSHH.HHPParser(book)
+	parser.parse(archive[hhp])
+		
+	book.archive = MSHH.MshhFilterArchive(archive)
+
+	return book
 
 
 def read(path):
 	root, ext = os.path.splitext(path)
 	if ext.lower() in ('.htb', '.zip'):
-		return HtbBook(path)
+		return read_htb(path)
 	else:
 		raise ValueError, 'unknown HTB extension \'%s\'' % ext

@@ -10,8 +10,17 @@ import Archive
 import Book
 
 
-class MSHTMLParser(HTMLParser.HTMLParser):
+#######################################################################
+# Parsing/formatting
 
+
+class SitemapParser(HTMLParser.HTMLParser):
+
+	def __init__(self):
+		HTMLParser.HTMLParser.__init__(self)
+
+		self.in_object = 0
+		
 	def error(self, message):
 		lineno, offset = self.getpos()
 		sys.stderr.write(message) 
@@ -25,75 +34,105 @@ class MSHTMLParser(HTMLParser.HTMLParser):
 		self.feed(fp.read())
 		self.close()
 
-
-class HHCParser(MSHTMLParser):
-
-	def __init__(self, book):
-		HTMLParser.HTMLParser.__init__(self)
-
-		self.book = book
-		self.contents_stack = []
-		self.node = None
-
 	def handle_starttag(self, tag, attrs):
 		attrs = dict(attrs)
 		if tag == 'ul':
-			if len(self.contents_stack) == 0:
-				node = self.book.contents
-			else:
-				if self.node is None:
-					self.node = Book.ContentsEntry(None, None)
-				
-				node = self.node
-				
-			self.contents_stack.append(node)
-			self.node = None
+			self.handle_ul_start()
+		elif tag == 'li':
+			self.handle_li()
 		elif tag == 'object':
 			if attrs['type'] == 'text/sitemap':
-				self.node = Book.ContentsEntry(None, None)
-			else:
-				self.node = None
+				self.handle_object_start()
+				self.in_object = 1
 		elif tag == 'param':
-			if self.node is not None:
-				if attrs['name'] == 'Name':
-					self.node.name = attrs['value'].strip()
-				elif attrs['name'] == 'Local':
-					self.node.link = attrs['value']
+			if self.in_object:
+				self.handle_param(attrs.get('name').strip(), attrs.get('value').strip())
 			
 	def handle_endtag(self, tag):
 		if tag == 'ul':
-			self.contents_stack.pop()
+			self.handle_ul_end()
 		elif tag == 'object':
-			if self.node is not None:
-				self.contents_stack[-1].append(self.node)
+			if self.in_object:
+				self.handle_object_end()
+				self.in_object = 0
+				
+	def handle_ul_start(self):
+		pass
 
+	def handle_li(self):
+		pass
+	
+	def handle_object_start(self):
+		pass
+	
+	def handle_param(self, name, value):
+		pass
+	
+	def handle_object_end(self):
+		pass
 
-class HHKParser(MSHTMLParser):
+	def handle_ul_end(self):
+		pass
+	
+
+class HHCParser(SitemapParser):
 
 	def __init__(self, book):
-		HTMLParser.HTMLParser.__init__(self)
+		SitemapParser.__init__(self)
 
-		self.book = book
+		self.contents = book.contents
+		self.contents_stack = []
+		
+		self.entry = self.contents
+
+	def handle_ul_start(self):
+		if self.entry is None:
+			self.entry = self.contents_stack[-1]
+			
+		self.contents_stack.append(self.entry)
+		
+		self.entry = None
+	
+	def handle_li(self):
+		self.entry = None
+	
+	def handle_object_start(self):
+		self.entry = Book.ContentsEntry(None, None)
+		
+	def handle_param(self, name, value):
+		if name == 'Name':
+			self.entry.name = value
+		elif name == 'Local':
+			self.entry.link = value
+			
+	def handle_object_end(self):
+		self.contents_stack[-1].append(self.entry)
+
+	def handle_ul_end(self):
+		self.entry = self.contents_stack.pop()
+		
+
+class HHKParser(SitemapParser):
+
+	def __init__(self, book):
+		SitemapParser.__init__(self)
+
+		self.index = book.index
+
 		self.entry = None
 
-	def handle_starttag(self, tag, attrs):
-		attrs = dict(attrs)
-		if tag == 'object':
-			if attrs['type'] == 'text/sitemap':
-				self.entry = Book.IndexEntry(None)
-		elif tag == 'param':
-			if self.entry is not None:
-				if attrs['name'] == 'Name':
-					if self.entry.name is None:
-						self.entry.name = attrs['value'].strip()
-				elif attrs['name'] == 'Local':
-					self.entry.links.append(attrs['value'])
-	
-	def handle_endtag(self, tag):
-		if tag == 'object':
-			if self.entry is not None:
-				self.book.index.append(self.entry)
-				self.entry = None
+	def handle_object_start(self):
+		self.entry = Book.IndexEntry()
+		
+	def handle_param(self, name, value):
+		if name == 'Name':
+			self.entry.name = value
+		elif name == 'Local':
+			self.entry.link = value
+			
+	def handle_object_end(self):
+		self.index.append(self.entry)
+		self.entry = None
 
 
 class HHPParser:
@@ -101,7 +140,7 @@ class HHPParser:
 	OPTCRE = re.compile(
 		r'(?P<option>[]\-[\w_.*,(){}]+)'      # a lot of stuff found by IvL
 		r'[ \t]*=[ \t]*'                      # followed by separator
-		r'(?P<value>.*)$'                     # everything up to eol
+		r'(?P<value>.*)$'                     # everything up to EOL
 		)
 
 	def __init__(self, book):
@@ -167,6 +206,10 @@ class HHPParser:
 				self.handle_line(line)
 
 
+########################################################################
+# Archive filters
+
+
 class MshhFilterArchive(Archive.FilterArchive):
 
 	def filter(self, path):
@@ -178,31 +221,36 @@ class MshhFilterArchive(Archive.FilterArchive):
 	translate = filter
 
 
-class MshhBook(Book.Book):
-	"""Microsoft HTML Help Book."""
+########################################################################
+# Readers
 
-	def __init__(self, archive, hhp):
-		Book.Book.__init__(self, archive)
 
-		parser = HHPParser(self)
-		parser.parse(archive[hhp])
-	
-
-class RawMshhBook(MshhBook):
+def read_hhp(path):
 	"""Uncompressed HTML Help Book."""
 
-	def __init__(self, path):
-		basedir, hhp = os.path.split(os.path.abspath(path))
-		archive = Archive.DirArchive(basedir)
+	basedir = os.path.dirname(os.path.abspath(path))
+	archive = Archive.DirArchive(basedir)
 		
-		MshhBook.__init__(self, archive, hhp)
+	book = Book.Book(archive)
+	
+	parser = HHPParser(book)
+	parser.parse(open(path))
+		
+	book.archive = MshhFilterArchive(archive)
 
-		self.archive = FilterArchive(archive)
+	return book
 
 
 def read(path):
 	root, ext = os.path.splitext(path)
 	if ext.lower() == '.hhp':
-		return RawMshhBook(path)
+		return read_hhp(path)
 	else:
 		raise ValueError, 'not a HTML Help Project file'
+
+
+########################################################################
+# Writers
+
+
+
