@@ -1,5 +1,4 @@
 <?php
-
 	header('Content-Type: text/html; charset=' . $encoding);
 		
 	echo '<?xml version="1.0" encoding="' . $encoding . '"?>';

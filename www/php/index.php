@@ -15,6 +15,9 @@
 
 	include 'header.inc.php';
 
+	// if displaying the frontpage and no 'nojs' param is given then embed a
+	// Javascript script to redirect Gecko-based browsers to the XUL-based
+	// interface
 	if(!$book_id && !intval($_GET['nojs']))
 		echo '<script type="text/javascript">if(navigator.userAgent.indexOf("Gecko") >= 0) document.location.href = "index.xul";</script>';
 	

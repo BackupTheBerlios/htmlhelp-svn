@@ -1,4 +1,5 @@
 <?php
+	// Get the MySQL server version
 	function mysql_version()
 	{
 		list($version) = mysql_fetch_row(mysql_query('SELECT VERSION()'));
@@ -12,6 +13,7 @@
 		return explode('.', $version);
 	}
 		
+	// Checks for a specified MySQL server version
 	function mysql_check_version($version)
 	{
 		$version = explode_version($version);

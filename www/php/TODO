@@ -1,0 +1,3 @@
+ - better error handling
+ - compress the generated TOC and index pages for bandwith saving and responsiveness
+ - more commenting

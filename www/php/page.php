@@ -11,6 +11,7 @@
 		list($book_id, $path) = explode('/', $path, 2);
 	$book_id = intval($book_id);
 
+	// If the 'path' param is not given then redirect to the book's front page.
 	if(!$path)
 	{
 		$result = mysql_query('SELECT `default_path` FROM `book` WHERE `id`=' . $book_id);
@@ -22,6 +23,8 @@
 	$result = mysql_query('SELECT `content` FROM `page` WHERE `book_id`=' . $book_id . ' AND `path`=\'' . mysql_escape_string($path) . '\'');
 	list($content) = mysql_fetch_row($result);
 	
+	// Determine the MIME content-type from the file extension.
+	// FIXME: This is very incomplete - we should rely on the PHP library for this.
 	function _mime_content_type($path)
 	{
 		$ext = strrchr($path, '.');
