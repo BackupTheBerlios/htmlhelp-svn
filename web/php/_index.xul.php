@@ -25,9 +25,7 @@
 	{
 		$result = mysql_query('SELECT `term`, `path`, `anchor` FROM `index_entry`,`index_link` WHERE `index_entry`.`book_id`=' . $book_id . ' AND `index_link`.`book_id`=' . $book_id . ' AND `index_link`.`no`=`index_entry`.`no`' . ($query ? ' AND LOCATE(\'' . mysql_escape_string($query) . '\', `term`)' : '') . ' ORDER BY `index_entry`.`term`');
 		while(list($term, $path, $anchor) = mysql_fetch_row($result))
-		{
 			echo '<listitem label="' . htmlspecialchars($term) . '" value="' . $path . ($anchor ? '#' . $anchor : '') . '"/>';
-		}
 	}
 	echo '</listbox>';
 

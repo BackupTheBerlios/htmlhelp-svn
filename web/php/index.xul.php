@@ -27,44 +27,31 @@
 		$title = 'HTML Help Books';
 
 	echo '<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" title="' . $title . '">';
-
+	echo '<script type="text/javascript">document.title = "' . $title . '";</script>';
+	
 	echo '<script src="index.js"/>';
 	
-	echo '<hbox>';
-	
-	echo'<menulist label="Book"><menupopup oncommand="onBookCommand(event)">';
-	
-	if(!$book_id)
-		echo '<menuitem label="Choose a book" value="0" selected="true"/>';
-		
-	$result = mysql_query('SELECT `id`, `title` FROM `book` ORDER BY `title`');
-	while($book = mysql_fetch_object($result))
-		echo '<menuitem label="' . $book->title . '" value="' . $book->id . '"' . ($book->id == $book_id ? ' selected="true"' : '') . '/>';
-				
-	echo '</menupopup></menulist>';
-	
-	/*
-	echo '<!--
-		<spacer flex="1"/>
-		<label value="Search for:" control="find-text"/>
-		<textbox id="find-text"/>';
-	*/
-
-	echo '</hbox>';
-
 	echo '<hbox flex="1">';
 		
 	// Navigation panels
 	echo '<tabbox flex="1">';
 	echo  '<tabs>';
+	if($book_id)
+	{
 	echo   '<tab label="Contents"/>';
 	echo   '<tab label="Index"/>';
 	echo   '<tab label="Search"/>';
+	}
+	echo   '<tab label="Books"/>';
 	echo  '</tabs>';
 	echo  '<tabpanels flex="1">';
+	if($book_id)
+	{
 	echo   '<iframe id="toc" src="toc.xul.php?book_id=' . $book_id .'" flex="1"/>';
 	echo   '<iframe id="index" src="_index.xul.php?book_id=' . $book_id .'" flex="1"/>';
 	echo   '<iframe id="search" src="search.xul.php?book_id=' . $book_id .'" flex="1"/>';
+	}
+	echo   '<iframe id="books" src="books.xul.php" flex="1"/>';
 	echo  '</tabpanels>';
 	echo '</tabbox>';
 		
