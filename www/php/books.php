@@ -8,11 +8,14 @@
 	
 	echo '<body class="sidebar">';
 	
-	$books = mysql_query('SELECT `id`, `title` FROM `book` ORDER BY `title`');
-	echo '<ul>';
-	while($book = mysql_fetch_object($books))
-		echo '<li><a href="index.php?book_id=' . $book->id . '">' . $book->title . '</a></li>';
-	echo '</ul>';
+	$result = mysql_query('SELECT `id`, `title` FROM `book` ORDER BY `title`');
+	if(mysql_num_rows($result))
+	{
+		echo '<ul>';
+		while(list($book_id, $title) = mysql_fetch_row($result))
+			echo '<li><a href="index.php?book_id=' . $book_id . '">' . $title . '</a></li>';
+		echo '</ul>';
+	}
 
 	echo '</body>';
 	

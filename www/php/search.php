@@ -21,28 +21,37 @@
 		if($where == 'contents')
 		{
 			$result = mysql_query('SELECT `book_id`, `title`, `path`, `anchor` FROM `toc_entry` WHERE ' . $book_expr . ' AND LOCATE(\'' . mysql_escape_string($query) . '\', `title`) ORDER BY `title`');
-			echo '<ul>';
-			while(list($book_id, $name, $path, $anchor) = mysql_fetch_row($result))
-				echo '<li><a href="page.php/' . $book_id . '/' . $path . ($anchor ? '#' . $anchor : '') . '">' . htmlentities($name, ENT_NOQUOTES, 'UTF-8') . '</a></li>';
-			echo '</ul>';
+			if(mysql_num_rows($result))
+			{
+				echo '<ul>';
+				while(list($book_id, $name, $path, $anchor) = mysql_fetch_row($result))
+					echo '<li><a href="page.php/' . $book_id . '/' . $path . ($anchor ? '#' . $anchor : '') . '">' . htmlentities($name, ENT_NOQUOTES, 'UTF-8') . '</a></li>';
+				echo '</ul>';
+			}
 		}
 
 		if($where == 'index')
 		{
 			$result = mysql_query('SELECT `index_entry`.`book_id`, `term`, `path`, `anchor` FROM `index_entry`,`index_link` WHERE ' . ($book_id ? '`index_entry`.`book_id`=' . $book_id . ' AND `index_link`.`book_id`=' . $book_id : '`index_link`.`book_id`=`index_entry`.`book_id`') . ' AND `index_link`.`no`=`index_entry`.`no` AND LOCATE(\'' . mysql_escape_string($query) . '\', `term`) ORDER BY `index_entry`.`term`') or die(mysql_error());
-			echo '<ul>';
-			while(list($book_id, $term, $path, $anchor) = mysql_fetch_row($result))
-				echo '<li><a href="page.php/' . $book_id . '/' . $path . ($anchor ? '#' . $anchor : '') . '">' . $term . '</a></li>';
-			echo '</ul>';
+			if(mysql_num_rows($result))
+			{
+				echo '<ul>';
+				while(list($book_id, $term, $path, $anchor) = mysql_fetch_row($result))
+					echo '<li><a href="page.php/' . $book_id . '/' . $path . ($anchor ? '#' . $anchor : '') . '">' . $term . '</a></li>';
+				echo '</ul>';
+			}
 		}
 
 		if($where == 'fulltext')
 		{
 			$result = mysql_query('SELECT `book_id`, `path`, `title` FROM `page` WHERE ' . $book_expr . ' AND MATCH (`title`, `body`) ' . $against_expr);
-			echo '<ul>';
-			while(list($book_id, $path, $title) = mysql_fetch_row($result))
-				echo '<li><a href="page.php/' . $book_id . '/' . $path .'">' . htmlentities($title, ENT_NOQUOTES, 'UTF-8') . '</a></li>';
-			echo '</ul>';
+			if(mysql_num_rows($result))
+			{
+				echo '<ul>';
+				while(list($book_id, $path, $title) = mysql_fetch_row($result))
+					echo '<li><a href="page.php/' . $book_id . '/' . $path .'">' . htmlentities($title, ENT_NOQUOTES, 'UTF-8') . '</a></li>';
+				echo '</ul>';
+			}
 		}
 	}
 

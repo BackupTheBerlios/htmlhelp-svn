@@ -2,6 +2,8 @@
 	include 'config.inc.php';
 	include 'mysql.inc.php';
 
+	$doctype = 'frameset';
+	
 	if($book_id = intval($_GET['book_id']))
 	{
 		$books = mysql_query('SELECT * FROM `book` WHERE `id`=' . $book_id);
