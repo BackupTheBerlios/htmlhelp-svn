@@ -18,8 +18,8 @@ class InvalidBookError(Error):
 	pass
 
 
-def ContentsEntryListIterator(parent):
-	# Iterator for the subentries in a table of contents entry.
+def EntryListIterator(parent):
+	# Iterator for the subentries in a table of contents / index entry.
 
 	child = parent._children_head()
 	while child:
@@ -27,8 +27,8 @@ def ContentsEntryListIterator(parent):
 		child = child._next_sibling()
 
 
-class ContentsEntryList(object):
-	# List-alike wrapper object for the subentries in a table of contents
+class EntryList(object):
+	# List-alike wrapper object for the subentries in a table of contents / index
 	# entry.
 
 	def __init__(self, parent):
@@ -59,7 +59,7 @@ class ContentsEntryList(object):
 		child._parent = weakref.ref(parent)
 
 	def __iter__(self):
-		return ContentsEntryListIterator(self._parent)
+		return EntryListIterator(self._parent)
 
 
 class ContentsEntry(object):
@@ -88,7 +88,7 @@ class ContentsEntry(object):
 			doc = """Next entry.""")
 	
 	children = property(
-			lambda self: ContentsEntryList(self), 
+			lambda self: EntryList(self), 
 			doc = """Sub-entries.""")
 
 
@@ -98,33 +98,41 @@ class Contents(ContentsEntry):
 	pass
 
 
-class Index(list):
+class IndexEntry(object):
+	"""Entry in an index."""
+
+	def __init__(self, name = None, link = None):
+		self.name = name
+		self.links = []
+		if link is not None:
+			self.links.append(link)
+
+		self._parent = lambda: None
+		self._prev_sibling = None
+		self._next_sibling = lambda: None
+		self._children_head = lambda: None
+		self._children_tail = None
+
+	parent = property(
+			lambda self: self._parent(), 
+			doc = """Parent entry.""")
+	
+	prev = property(
+			lambda self: self._prev_sibling, 
+			doc = """Prev entry.""")
+	
+	next = property(
+			lambda self: self._next_sibling(), 
+			doc = """Next entry.""")
+	
+	children = property(
+			lambda self: EntryList(self), 
+			doc = """Sub-entries.""")
+
+class Index(IndexEntry):
 	"""Book index."""
 
-	def append(self, entry):
-		# Keep index entries sorted
-		
-		list.append(self, entry)
-		list.sort(self)
-
-
-class IndexEntry(Index):
-	"""An entry in the index."""
-
-	def __init__(self, name = None, links = None):
-		self.name = name
-
-		if links is None:
-			self.links = []
-		else:
-			self.links = links
-	
-	def __cmp__(self, other):
-		return cmp(self.name, other.name)
-
-	def __contains__(self, keyword):
-		# FIXME: fill in here...
-		assert 0
+	pass
 
 
 class Book(object):
@@ -159,10 +167,10 @@ class Factory(object):
 		raise NotImplementedError
 
 	def extension(self, path):
-		# Utility function to determine the extension of a path
+		"""Utility function to determine the extension of a path."""
 		
 		root, ext = os.path.splitext(path)
-		return ext
+		return ext[1:]
 		
 
 class CatalogEntry(object):
@@ -192,6 +200,7 @@ class CatalogEntry(object):
 
 		
 class Catalog(object):
+	"""A collection of books."""
 
 	def __contains__(self, name):
 		for entry in self:
