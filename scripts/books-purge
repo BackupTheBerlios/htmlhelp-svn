@@ -1,0 +1,108 @@
+#!/usr/bin/python
+
+import os, os.path, re, sys
+
+
+class Version:
+
+	def __init__(self, numbers, filename = None):
+		self.numbers = numbers
+		self.filename = filename
+		
+	def __cmp__(self, other):
+		return cmp(tuple(self.numbers), tuple(other.numbers))
+	
+		
+class Package:
+
+	def __init__(self, name):
+		self.name = name
+		self.versions = []
+
+
+class Extension:
+
+	def __init__(self, name):
+		self.name = name
+		self.packages = {}
+
+
+class Factory:
+
+	PACKAGE_RE = r"[a-zA-Z][-+0-9a-zA-Z_]*?"
+	VERSION_PREFIX_RE = r"pre"
+	VERSION_NUMBER_RE = r"[0-9]+"
+	VERSION_SUFFIX_RE = r"[a-z]"
+	VERSION_RE = VERSION_NUMBER_RE+r"(?:\.(?:"+VERSION_PREFIX_RE+r")?"+VERSION_NUMBER_RE+r"(?:"+VERSION_SUFFIX_RE+r")?)*"
+	EXTENSION_RE = r"[^.]+"
+	BASENAME_RE = r"^("+PACKAGE_RE+r")-("+VERSION_RE+r")(\."+EXTENSION_RE+r")$"
+	
+	basename_re = re.compile(BASENAME_RE)
+	version_number_re = re.compile(r"^("+VERSION_PREFIX_RE+r"|)("+VERSION_NUMBER_RE+r")("+VERSION_SUFFIX_RE+r"|)$")
+	
+	def __init__(self):
+		self.extensions = {}
+
+	def add(self, filename):
+		basename = os.path.basename(filename)
+
+		mo = self.basename_re.match(basename)
+		if mo:
+			package_name = mo.group(1)
+			version_numbers = mo.group(2)
+			extension_name = mo.group(3)
+
+			def fo(s):
+				dummy, pre, no, post, dummy = self.version_number_re.split(s)
+				no = int(no)
+				if post:
+					no += (ord(post) - ord('a') + 1.0)/(ord('z')-ord('a') + 1.0)
+				if pre == 'pre':
+					no = -no
+				return no
+				
+			version_numbers = map(fo, version_numbers.split('.'))
+
+			if extension_name not in self.extensions:
+				extension = self.extensions[extension_name] = Extension(extension_name)
+			else:
+				extension = self.extensions[extension_name]
+
+			if package_name not in extension.packages:
+				package = extension.packages[package_name] = Package(package_name)
+			else:
+				package = extension.packages[package_name]
+
+			package.versions.append(Version(version_numbers, filename))
+			package.versions.sort()
+		else:
+			sys.stderr.write("warning: %s ignored\n" % filename)
+
+	def dump(self):
+		for extension in self.extensions.itervalues():
+			print extension.name
+			for package in extension.packages.itervalues():
+				print ' ' + package.name
+				for version in package.versions:
+					print '  ' + ';'.join(map(str,version.numbers))
+					print '  ' + version.filename
+
+	def purge(self):
+		for extension in self.extensions.itervalues():
+			for package in extension.packages.itervalues():
+				for version in package.versions[:-1]:
+					#sys.stderr.write("%s is outdated by %s\n" % (version.filename, package.versions[-1].filename))
+					sys.stdout.write(version.filename + '\n')
+	
+
+def main():
+	factory = Factory()
+
+	for arg in sys.argv[1:]:
+		factory.add(arg)
+	
+	factory.purge()
+	
+
+if __name__ == '__main__':
+	main()

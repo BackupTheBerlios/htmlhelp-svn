@@ -1,0 +1,23 @@
+#!/bin/sh
+
+for FILE
+do
+	EXTENSION=${FILE##*.}
+	BASENAME=`basename "$FILE" ".$EXTENSION"`
+	NAME=`echo "$BASENAME" | sed -e 's/-[0-9]\+\(\.[a-z]*[0-9]\+[a-z]*\)*$//'`
+
+	case "$EXTENSION" in
+		htb)
+			TITLE=`unzip -c $FILE '*.hhp' | sed -n -e 's/^Title=//p'`
+			;;
+
+		tgz)
+			TITLE=`tar -xOzf $FILE book.devhelp | sed -n -e 's/^.*title="\([^"]\+\)".*$/\1/p'`
+			;;
+		*)
+			TITLE=
+			;;
+	esac
+
+	echo "$NAME	$TITLE"
+done

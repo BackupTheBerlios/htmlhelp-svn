@@ -1,0 +1,14 @@
+#!/bin/sh
+
+rsync \
+	-rtv \
+	--include '*.chm' \
+	--include '*.hlp' \
+	--include '*.htb' \
+	--include '*.tgz' \
+	--exclude '*' \
+	--delete \
+	~/projects/htmlhelp/books/ \
+	jrfonseca@shell.berlios.de:/home/groups/ftp/pub/htmlhelp/
+
+ssh jrfonseca@shell.berlios.de chmod g+w,o-w /home/groups/ftp/pub/htmlhelp/*
