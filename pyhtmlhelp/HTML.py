@@ -26,6 +26,18 @@ def rsplit(path):
 BookFactory = DevHelp.DevHelpFactory
 
 
+class HTMLError(Exception):
+    """Exception raised for all generation errors."""
+
+    def __init__(self, code, message=None):
+	self.code = code
+        self.message = message
+
+    def __str__(self):
+        return "code %d, message %s" % (self.code, self.message)
+        return result
+
+
 class HTML:
 
 	book_factory = BookFactory()
@@ -35,18 +47,23 @@ class HTML:
 		
 		if head in ('', 'index.htm', 'index.html'):
 			return self.main()
-		else:
-			book = self.book_factory.book(head)
+
+		book = self.book_factory.book(head)
+		if not book:
+			return HTMLError(404)
 			
-			if tail:
-				return book.page(tail)
-			elif query.has_key('action'):
-				if query['action'][-1] == 'contents':
-					return self.book_contents(book)
-				else:
-					return self.empty()
-			else:
-				return self.book_main(book)
+		if tail:
+			return self.book_page(book, tail)
+
+		print head, tail, query
+		if not query.has_key('action'):
+			return self.book_main(book)
+			
+		action = query['action'][-1]
+		if action == 'contents':
+			return self.book_contents(book)
+		else:
+			raise HTMLError(400)
 	
 	def empty(self):
 		f = StringIO()
@@ -120,10 +137,6 @@ class HTML:
 	def book_contents(self, book):
 		contents = book.contents()
 
-		tree_open = '/icons/tree_minus.png'
-		tree_closed = '/icons/tree_plus.png'
-		tree_none = '/icons/tree_none.png'
-		
 		f = StringIO()
 		f.write(
 			'<html>\n'
@@ -140,4 +153,12 @@ class HTML:
 			'</html>\n')
 		f.seek(0)
 		
+		return f
+
+	def book_page(self, book, link):
+		try:
+			f = book.page(link)
+		except:
+			raise HTMLError(404)
+
 		return f

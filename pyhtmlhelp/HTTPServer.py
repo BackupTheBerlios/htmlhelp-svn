@@ -23,10 +23,16 @@ class MyRequestHandler(BaseRequestHandler):
 		head, tail = HTML.rsplit(path)
 
 		if head == 'books':
-			self.send_response(200)
-			self.send_header("Content-type", "text/html") 
-			self.end_headers() 
-			return self.html(tail, query)
+			try:
+				f = self.html(tail, query)
+				self.send_response(200)
+				self.send_header("Content-type", "text/html") 
+				self.end_headers() 
+				return f
+			except HTML.HTMLError:
+				exc = sys.exc_info()[1]
+				self.send_error(exc.code, exc.message)
+				return
 		else:
 			return BaseRequestHandler.send_head(self)
 
