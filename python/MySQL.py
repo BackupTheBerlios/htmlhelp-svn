@@ -301,16 +301,16 @@ def dump_book(book):
 	sys.stdout.write('INSERT INTO `books` (`title`, `default_path`, `default_anchor`) VALUES (%s, %s, %s);\n' % quote(title, default_path, default_anchor))
 	sys.stdout.write('SET @book_id = LAST_INSERT_ID();\n')
 
-	dump_contents(book.contents)
+	dump_contents(book)
 	
-	dump_index(book.index)
+	dump_index(book)
 
-	dump_archive(book.archive)
+	dump_archive(book)
 	
 
-def dump_contents(contents):
+def dump_contents(book):
 	sys.stdout.write('INSERT INTO `toc` (`book_id`, `number`, `parent_number`, `name`, `path`, `anchor`) VALUES')
-	dump_contents_entries(contents, 0)
+	dump_contents_entries(book.contents, 0)
 	sys.stdout.write(';\n')
 	
 	
@@ -329,16 +329,16 @@ def dump_contents_entries(entry, parent_number, cont = 0):
 	return number
 	
 
-def dump_index(index):
+def dump_index(book):
 	sys.stdout.write('INSERT INTO `index` (`book_id`, `parent_id`, `term`) VALUES')
-	dump_index_entries(index, 0)
+	dump_index_entries(book.index, 0)
 	sys.stdout.write(';\n')
 	
 	sys.stdout.write('SET @index_id = LAST_INSERT_ID();\n')
 	sys.stdout.write('UPDATE `index` SET `parent_id` = @index_id + `parent_id` - 1 WHERE `book_id` = @book_id AND `parent_id` != 0;\n')
 	
 	sys.stdout.write('INSERT INTO `index_links` (`index_id`, `path`, `anchor`) VALUES');
-	dump_index_links(index, 0)
+	dump_index_links(book.index, 0)
 	sys.stdout.write(';\n')
 	
 	
@@ -369,21 +369,14 @@ def dump_index_links(entry, parent_id, cont = 0):
 	return id
 
 
-def dump_archive(archive):
-	# FIXME: collate an appropriate number of inserts in order to keep the packet
-	# size into a reasonable size...
-	max_allowed_packet = 1047552
-
-	paths = archive.list()
-	for i in range(len(paths)):
-		path = paths[i]
-
-		content = archive.open(path).read()
+def dump_archive(book):
+	paths = book.list()
+	for path in paths:
+		content = book.resource(path).read()
 		title, body = extract(path, content)
 		
-		#sys.stdout.write(i and ',\n ' or '\n ')
-		sys.stdout.write('INSERT INTO `pages` (book_id, path, content, title, body) VALUES')
-		sys.stdout.write('(' + ',\n  '.join(quote(literal('@book_id'), path, content, title, body)) + ')')
+		sys.stdout.write('INSERT INTO `pages` (book_id, path, content, title, body) VALUES\n')
+		sys.stdout.write(' (' + ',\n  '.join(quote(literal('@book_id'), path, content, title, body)) + ')')
 		sys.stdout.write(';\n')
 	
 
