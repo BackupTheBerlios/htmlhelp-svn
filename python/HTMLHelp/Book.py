@@ -162,18 +162,3 @@ class Book(object):
 		"""Return a file-like object with the required link."""
 		
 		return self.archive.open(path)
-	
-
-class Factory(object):
-	"""Abstract book factory."""
-	
-	def __apply__(self, path):
-		"""Create a book instance from the given path."""
-		
-		raise NotImplementedError
-
-	def extension(self, path):
-		"""Utility function to determine the extension of a path."""
-		
-		root, ext = os.path.splitext(path)
-		return ext[1:]

@@ -4,7 +4,7 @@ See http://www.imendio.com/projects/devhelp/ for more information about DevHelp.
 
 
 import os, os.path, urlparse, xml.parsers.expat
-import Book, Archive
+import Book, Archive, Catalog
 
 
 class SpecParser:
@@ -88,6 +88,7 @@ class RawDevHelpBook(DevHelpBook):
 
 
 class TgzDevHelpBook(DevHelpBook):
+	"""A DevHelp book in a .tgz tarball."""
 
 	def __init__(self, path):
 		archive = Archive.TarArchive(path)
@@ -105,17 +106,16 @@ class TgzDevHelpBook(DevHelpBook):
 		return self.archive.open('book/' + path)
 
 
-class DevHelpFactory(Book.Factory):
-
-	def __call__(self, path):
-		if self.extension(path) == 'devhelp':
-			return RawDevHelpBook(path)
-		elif self.extension(path) == 'tgz':
-			return TgzDevHelpBook(path)
-
-		raise Book.InvalidBookError
-
-factory = DevHelpFactory()
+def factory(path):
+	"""Attempt to open a DevHelp book from the given."""
+	
+	root, ext = os.path.splitext(path)
+	if ext == '.devhelp':
+		return RawDevHelpBook(path)
+	elif ext == '.tgz':
+		return TgzDevHelpBook(path)
+	else:
+		raise Book.InvalidBookError, 'unknown DevHelp book extension \'%s\'' % ext
 
 
 def DevHelpCatalogIterator(self):
@@ -124,12 +124,12 @@ def DevHelpCatalogIterator(self):
 			for name in os.listdir(dir):
 				path = os.path.join(dir, name, name + '.devhelp')
 				if os.path.isfile(path):
-					yield Book.CatalogEntry(name, RawDevHelpBook, path)
+					yield Catalog.CatalogEntry(name, RawDevHelpBook, path)
 					
-class DevHelpCatalog(Book.Catalog):
+class DevHelpCatalog(Catalog.Catalog):
 
 	def __init__(self):
-		Book.Catalog.__init__(self)
+		Catalog.Catalog.__init__(self)
 		
 		self.path = []
 

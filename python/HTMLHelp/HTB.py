@@ -1,6 +1,7 @@
 """wxWindows' HTML Help."""
 
 
+import os.path
 import Book, MSHH, Archive
 
 
@@ -26,12 +27,9 @@ class HTBBook(MSHH.MSHHBook):
 				self.archive.list())
 
 
-class HTBFactory(Book.Factory):
-
-	def __call__(self, path):
-		if self.extension(path).lower() in ('htb', 'zip'):
-			return HTBBook(path)
-
-		raise Book.InvalidBookError
-
-factory = HTBFactory()
+def factory(path):
+	root, ext = os.path.splitext(path)
+	if ext.lower() in ('.htb', '.zip'):
+		return HTBBook(path)
+	else:
+		raise Book.InvalidBookError, 'unknown HTB extension \'%s\'' % ext

@@ -1,7 +1,7 @@
 """Microsoft Compiled HTML Help (CHM)."""
 
 
-import struct
+import os.path, struct
 
 try:
 	from cStringIO import StringIO
@@ -118,15 +118,12 @@ class ChmBook(Book.Book):
 		return self.archive.open('/' + path)
 
 
-class ChmFactory(Book.Factory):
-
-	def __call__(self, path):
-		if self.extension(path).lower() == 'chm':
-			return ChmBook(path)
-
-		raise Book.InvalidBookError
-
-factory = ChmFactory()
+def factory(path):
+	root, ext = os.path.splitext(path)
+	if ext.lower() == '.chm':
+		return ChmBook(path)
+	else:
+		raise Book.InvalidBookError, 'not a CHM file'
 
 
 #######################################################################

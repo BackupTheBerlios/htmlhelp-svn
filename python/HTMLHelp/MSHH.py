@@ -181,12 +181,9 @@ class RawMSHHBook(MSHHBook):
 		MSHHBook.__init__(self, archive, hhp)
 
 
-class MSHHFactory(Book.Factory):
-
-	def __call__(self, path):
-		if self.extension(path).lower() == 'hhp':
-			return RawMSHHBook(path)
-
-		raise Book.InvalidBookError
-
-factory = MSHHFactory()
+def factory(path):
+	root, ext = os.path.splitext(path)
+	if ext.lower() == '.hhp':
+		return RawMSHHBook(path)
+	else:
+		raise Book.InvalidBookError, 'not a HTML Help Project file'
