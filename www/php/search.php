@@ -1,6 +1,7 @@
 <?php
 	include 'config.inc.php';
 	include 'mysql.inc.php';
+	include 'mysql_version.inc.php';
 
 	$title = 'Search';
 	include 'header.inc.php';
@@ -14,7 +15,7 @@
 	if($query)
 	{
 		echo '<ul>';
-		$entries = mysql_query("SELECT book_id, path, title, body FROM `pages` WHERE book_id=$book_id AND MATCH (title, body) AGAINST ('$query' IN BOOLEAN MODE)") or die("Query failed : " . mysql_error());
+		$entries = mysql_query('SELECT book_id, path, title, body FROM `pages` WHERE book_id=' . $book_id . ' AND MATCH (title, body) AGAINST ("' . $query . '"' . (mysql_check_version('4.0.1') ? ' IN BOOLEAN MODE' : '') . ')') or die("Query failed: " . mysql_error());
 		while($entry = mysql_fetch_object($entries))
 		{
 			echo '<li>';
