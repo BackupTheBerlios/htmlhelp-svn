@@ -9,7 +9,7 @@ try:
 except ImportError:
 	from StringIO import StringIO
 
-import Plaintext
+from htmlhelp.plaintext import extract, fulltext_index
 
 
 #######################################################################
@@ -233,10 +233,10 @@ def dump_archive(book, path_map, index):
 		no = path_map[path]
 
 		content = book.archive[path].read()
-		title, body = Plaintext.extract(path, content)
+		title, body = extract(path, content)
 
 		if body is not None:
-			Plaintext.fulltext_index(index, no, body)
+			fulltext_index(index, no, body)
 
 		compressed = 0
 		if content:

@@ -1,0 +1,71 @@
+"""Abstract class for archives."""
+
+
+class Archive(object):
+	"""Presents a dictionary-like view (so far read-only) of a file archive,
+	where the keys are file names and the values are file-like objects."""
+
+	# TODO: Add write support
+
+	def __contains__(self, path):
+		"""Whether a member with the given path is in the archive"""
+
+		for _path in self:
+			if _path == path:
+				return True
+		return False
+
+	def __iter__(self):
+		"""Iterate over the member file names.
+		
+		Must be overrided by derived classes."""
+		
+		return self.iterkeys()
+
+	def __len__(self):
+		count = 0
+		for path in self:
+			count += 1
+		return count
+
+	def __getitem__(self, path):
+		"""Get a file-like object for a member in the archive.
+		
+		Must be overrided by derived classes."""
+
+		raise NotImplementedError
+
+	def __str__(self):
+		return str(self.keys())
+		
+	def has_key(self, path):
+		"""Whether a member with the given path is in the archive."""
+
+		return path in self.keys()
+
+	def iterkeys(self):
+		"""Iterate over the member file names."""
+		
+		return iter(self.keys())
+
+	def iteritems(self):
+		"""Iterate over the member file names."""
+		
+		for name in self:
+			yield name, self[name]
+		
+		raise StopIteration
+
+	def keys(self):
+		"""List archive contents."""
+		
+		return list(iter(self))
+	
+	def get(self, path, default = None):
+		"""Get a file-like object for a member in the archive."""
+		
+		try:
+			return self[path]
+		except KeyError:
+			return default
+

@@ -9,9 +9,10 @@ try:
 except ImportError:
 	from StringIO import StringIO
 
-import Archive
-import Book
-import MSHH
+from htmlhelp.book import Book
+from htmlhelp.archive.zip import ZipArchive
+from htmlhelp.archive.filter import FilterArchive
+from htmlhelp.format.mshh import HHPParser, MshhFilterArchive, Formatter
 
 
 #######################################################################
@@ -19,13 +20,13 @@ import MSHH
 
 
 def read_htb(path):
-	"""wxWindows HTML Help Book."""
+	"""wxWindows HTML Help """
 
 	name = os.path.splitext(os.path.basename(path))[0]
 
-	archive = Archive.ZipArchive(path)
+	archive = ZipArchive(path)
 		
-	book =  Book.Book(name, archive)
+	book =  Book(name, archive)
 	
 	names = filter(
 			lambda name: name[-4:].lower() == '.hhp',
@@ -37,10 +38,10 @@ def read_htb(path):
 		raise ValueError, 'HTB with multiple books are not supported'
 	hhp = names[0]
 
-	parser = MSHH.HHPParser(book)
+	parser = HHPParser(book)
 	parser.parse(archive[hhp])
 		
-	book.archive = MSHH.MshhFilterArchive(archive)
+	book.archive = MshhFilterArchive(archive)
 
 	return book
 
@@ -64,7 +65,7 @@ def write_htb(book, path, name = None):
 		# TODO: choose a better default here
 		name = 'book'
 		
-	formatter = MSHH.Formatter(book, name)
+	formatter = Formatter(book, name)
 	
 	fp = StringIO()
 	formatter.write_hhp(fp)

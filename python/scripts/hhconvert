@@ -6,7 +6,7 @@
 import sys
 import os.path
 
-from HTMLHelp.Generic import read, write
+from htmlhelp.format.generic import read, write
 
 
 def main():

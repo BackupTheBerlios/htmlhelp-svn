@@ -1,8 +1,12 @@
 """Dox Books."""
 
 
-import os, os.path, urlparse, xml.parsers.expat
-import Book
+import os
+import os.path
+import urlparse
+import xml.parsers.expat
+
+from htmlhelp.book import Book, ContentsEntry, IndexEntry
 
 
 class Parser:
@@ -67,7 +71,7 @@ class TocParser(Parser):
 	def start_tocsect(self, name, url, **dummy):
 		assert len(self.contents_stack) > 0
 
-		entry = Book.ContentsEntry(name, self.translate_link(url))
+		entry = ContentsEntry(name, self.translate_link(url))
 		self.contents_stack[-1].children.append(entry)
 		self.contents_stack.append(entry)
 		
@@ -80,6 +84,6 @@ class TocParser(Parser):
 class IndexParser(Parser):
 
 	def start_function(self, name, link, **dummy):
-		entry = Book.IndexEntry(name, self.translate_link(link))
+		entry = IndexEntry(name, self.translate_link(link))
 		self.book.index.append(entry)
 		

@@ -17,12 +17,12 @@ if not sys.platform.startswith('win'):
 
 setup(
 	name = "PyHTMLHelp",
-	version = "0.1",
+	version = "0.2",
 	description = 'HTML Help Books Python API',
 	author = 'José Fonseca',
 	author_email = 'jrfonseca@users.berlios.de',
 	url = 'http://htmlhelp.berlios.de/',
-	packages = ['HTMLHelp'],
+	packages = ['htmlhelp'],
 	py_modules = py_modules,
 	ext_modules = ext_modules,
 	scripts = [

@@ -15,9 +15,11 @@ try:
 except ImportError:
 	from StringIO import StringIO
 
-import Archive
-import Book
-import Catalog
+from htmlhelp.archive.dir import DirArchive
+from htmlhelp.archive.tar import TarArchive
+from htmlhelp.archive.filter import FilterArchive
+from htmlhelp.book import Book, Contents, ContentsEntry, Index, IndexEntry
+from htmlhelp.catalog import Catalog
 
 
 #######################################################################
@@ -32,10 +34,10 @@ class SpecParser:
 	"""DevHelp spec file parser."""
 
 	def __init__(self):
-		self.contents = Book.Contents()
+		self.contents = Contents()
 		self.contents_stack = [self.contents]
 		
-		self.index = Book.Index()
+		self.index = Index()
 
 		self.metadata = {}
 
@@ -69,7 +71,7 @@ class SpecParser:
 	def start_chapter(self, name, link, **dummy):
 		assert len(self.contents_stack) > 0
 
-		entry = Book.ContentsEntry(name, self.translate_link(link))
+		entry = ContentsEntry(name, self.translate_link(link))
 		self.contents_stack[-1].append(entry)
 		self.contents_stack.append(entry)
 		
@@ -83,7 +85,7 @@ class SpecParser:
 	end_sub = end_chapter
 	
 	def start_function(self, name, link, **dummy):
-		entry = Book.IndexEntry(name, self.translate_link(link))
+		entry = IndexEntry(name, self.translate_link(link))
 		self.index.append(entry)
 		
 	def handle_element_start(self, name, attributes):
@@ -179,7 +181,7 @@ class SpecFormatter:
 # Archive filters
 
 
-class DirDevhelpFilterArchive(Archive.FilterArchive):
+class DirDevhelpFilterArchive(FilterArchive):
 	
 	def filter(self, path):
 		if not path.endswith('.devhelp'):
@@ -190,7 +192,7 @@ class DirDevhelpFilterArchive(Archive.FilterArchive):
 	translate = filter
 
 
-class TgzDevhelpFilterArchive(Archive.FilterArchive):
+class TgzDevhelpFilterArchive(FilterArchive):
 
 	def filter(self, path):
 		if path[:5] == 'book/':
@@ -213,12 +215,12 @@ def read_spec(path):
 	
 	name = os.path.splitext(spec)[0]
 
-	archive = Archive.DirArchive(basedir)
+	archive = DirArchive(basedir)
 
 	parser = SpecParser()
 	parser.parse(file(path, 'rt'))
 
-	book = Book.Book(
+	book = Book(
 			name,
 			DirDevhelpFilterArchive(archive),
 			parser.contents,
@@ -233,12 +235,12 @@ def read_tgz(path):
 
 	name = os.path.splitext(os.path.basename(path))[0]
 
-	archive = Archive.TarArchive(path)
+	archive = TarArchive(path)
 
 	parser = SpecParser()
 	parser.parse(archive['book.devhelp'])
 
-	book = Book.Book(
+	book = Book(
 			name,
 			TgzDevhelpFilterArchive(archive),
 			parser.contents,
@@ -300,10 +302,10 @@ def write(book, path, name=None):
 # Catalog
 
 
-class DevhelpCatalog(Catalog.Catalog):
+class DevhelpCatalog(Catalog):
 
 	def __init__(self):
-		Catalog.Catalog.__init__(self)
+		Catalog.__init__(self)
 		
 		self.path = []
 
@@ -319,7 +321,7 @@ class DevhelpCatalog(Catalog.Catalog):
 				for name in os.listdir(dir):
 					path = os.path.join(dir, name, name + '.devhelp')
 					if os.path.isfile(path):
-						yield Catalog.CatalogEntry(name, RawDevhelpBook, path)
+						yield Catalog.CatalogEntry(name, read, path)
 		raise StopIteration
 
 catalog = DevhelpCatalog()

@@ -1,24 +1,21 @@
 """Generic interface to all formats."""
 
 
-import DevHelp
-import MSHH
-import HTB
-import CHM
+from htmlhelp.format import devhelp, mshh, htb, chm
 
 
 readers = [
-	DevHelp.read,
-	MSHH.read,
-	HTB.read,
-	CHM.read,
+	devhelp.read,
+	mshh.read,
+	htb.read,
+	chm.read,
 ]
 
 
 writers = [
-	DevHelp.write,
-	HTB.write,
-	CHM.write,
+	devhelp.write,
+	htb.write,
+	chm.write,
 ]
 
 

@@ -5,7 +5,7 @@ __docformat__ = 'epytext'
 
 import weakref
 
-import Archive
+from htmlhelp.archive.dummy import DummyArchive
 
 
 class ContentsEntry(list):
@@ -161,9 +161,8 @@ class Index(object):
 class Book(object):
 	"""Generic HTML Help book.
 	
-	@type name: str
 	@ivar name: Name of the book.
-	@type archive: L{Archive.Archive}
+	@type archive: L{htmlhelp.archive.base.Archive}
 	@ivar archive: Archive with the HTML files, pictures, etc.
 	@type contents: L{Contents}
 	@ivar contents: Table of Contents.
@@ -176,7 +175,7 @@ class Book(object):
 		self.name = name
 		
 		if archive is None:
-			self.archive = Archive.EmptyArchive()
+			self.archive = DummyArchive()
 		else:
 			self.archive = archive
 

@@ -6,8 +6,9 @@ import re
 import sys
 import HTMLParser
 
-import Archive
-import Book
+from htmlhelp.book import Book, ContentsEntry, IndexEntry
+from htmlhelp.archive.dir import DirArchive
+from htmlhelp.archive.filter import FilterArchive
 
 
 #######################################################################
@@ -97,7 +98,7 @@ class HHCParser(SitemapParser):
 		self.entry = None
 	
 	def handle_object_start(self):
-		self.entry = Book.ContentsEntry(None, None)
+		self.entry = ContentsEntry(None, None)
 		
 	def handle_param(self, name, value):
 		if name == 'Name':
@@ -122,7 +123,7 @@ class HHKParser(SitemapParser):
 		self.entry = None
 
 	def handle_object_start(self):
-		self.entry = Book.IndexEntry()
+		self.entry = IndexEntry()
 		
 	def handle_param(self, name, value):
 		if name == 'Name':
@@ -317,7 +318,7 @@ class Formatter:
 # Archive filters
 
 
-class MshhFilterArchive(Archive.FilterArchive):
+class MshhFilterArchive(FilterArchive):
 
 	def filter(self, path):
 		if path[-4:].lower() not in ('.hhp', '.hhc', '.hhk'):
@@ -333,14 +334,14 @@ class MshhFilterArchive(Archive.FilterArchive):
 
 
 def read_hhp(path):
-	"""Uncompressed HTML Help Book."""
+	"""Uncompressed HTML Help """
 
 	basedir, name = os.path.split(os.path.abspath(path))
 	name = os.path.splitext(name)[0]
 
-	archive = Archive.DirArchive(basedir)
+	archive = DirArchive(basedir)
 		
-	book = Book.Book(name, archive)
+	book = Book(name, archive)
 	
 	parser = HHPParser(book)
 	parser.parse(open(path))

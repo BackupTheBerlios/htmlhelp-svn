@@ -5,8 +5,8 @@
 
 import sys
 
-from HTMLHelp.Generic import read
-from HTMLHelp.MySQL import dump
+from htmlhelp.format.generic import read
+from htmlhelp.format.mysql import dump
 
 
 def main():
