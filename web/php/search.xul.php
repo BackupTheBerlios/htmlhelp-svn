@@ -17,12 +17,12 @@
 	
 	$book_id = intval($_GET['book_id']);
 	$query = $_GET['query'];
+	$boolean_mode = intval($_GET['boolean_mode']) && mysql_check_version('4.0.1');
 	
 	echo '<textbox id="query" type="autocomplete" value="' . htmlspecialchars($query) . '" onkeypress="onQueryKeypress(event, ' . $book_id . ')"/>';
 	
 	echo '<listbox seltype="single" flex="1" onselect="onSearchSelect(event, ' . $book_id . ')">';
-	$against_expr = 'AGAINST (\'' . mysql_escape_string($query) . '\'' . (0 /*mysql_check_version('4.0.1')*/ ? ' IN BOOLEAN MODE' : '') . ')';
-	$result = mysql_query('SELECT `path`, `title` FROM `page` WHERE book_id=' . $book_id . ' AND MATCH (`title`, `body`) ' . $against_expr);
+	$result = mysql_query('SELECT `path`, `title` FROM `page` WHERE book_id=' . $book_id . ' AND MATCH (`title`, `body`) AGAINST (\'' . mysql_escape_string($query) . '\'' . (boolean_mode ? ' IN BOOLEAN MODE' : '') . ')');
 	while(list($path, $title) = mysql_fetch_row($result))
 		echo '<listitem label="' . htmlspecialchars($title) . '" value="' . $path .'"/>';
 	echo '</listbox>';
