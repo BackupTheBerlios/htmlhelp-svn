@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:doc="http://nwalsh.com/xsl/documentation/1.0"
-                xmlns:exsl="http://exslt.org/common"
-                xmlns:set="http://exslt.org/sets"
-		version="1.0"
-                exclude-result-prefixes="doc exsl set">
+<xsl:stylesheet version="1.0"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:doc="http://nwalsh.com/xsl/documentation/1.0"
+	xmlns:exsl="http://exslt.org/common"
+	xmlns:set="http://exslt.org/sets"
+	exclude-result-prefixes="doc exsl set"
+>
 
 <!-- 
      This file is used by devhelp.xsl if you want to generate spec files for
