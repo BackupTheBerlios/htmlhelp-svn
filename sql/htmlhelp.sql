@@ -1,10 +1,10 @@
 # phpMyAdmin SQL Dump
-# version 2.5.4
+# version 2.5.6-rc1
 # http://www.phpmyadmin.net
 #
 # Host: localhost
-# Generation Time: Nov 16, 2003 at 12:19 AM
-# Server version: 4.0.16
+# Generation Time: Feb 13, 2004 at 06:06 PM
+# Server version: 4.0.17
 # PHP Version: 4.3.3
 # 
 # Database : `htmlhelp`
@@ -23,7 +23,7 @@ CREATE TABLE `book` (
   `default_anchor` varchar(255) binary NOT NULL default '',
   PRIMARY KEY  (`id`),
   KEY `title` (`title`(7))
-) TYPE=MyISAM AUTO_INCREMENT=3 ;
+) TYPE=MyISAM;
 
 # --------------------------------------------------------
 
@@ -49,7 +49,7 @@ CREATE TABLE `index_link` (
   `no` smallint(5) unsigned NOT NULL default '0',
   `path` varchar(255) binary NOT NULL default '',
   `anchor` varchar(255) binary NOT NULL default '',
-  PRIMARY KEY  (`book_id`,`no`)
+  KEY `index` (`book_id`,`no`)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -61,6 +61,7 @@ CREATE TABLE `index_link` (
 CREATE TABLE `page` (
   `book_id` smallint(5) NOT NULL default '0',
   `path` varchar(255) binary NOT NULL default '0',
+  `compressed` tinyint(1) unsigned NOT NULL default '0',
   `content` mediumblob NOT NULL,
   `title` text,
   `body` mediumtext,

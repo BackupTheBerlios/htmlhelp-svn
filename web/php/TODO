@@ -9,9 +9,6 @@ Things to be done (by no particular order):
 
   * http://webreference.com/internet/software/servers/http/compression/
 
-- Perhaps store some content gzip'd in the database to save disk space and
-  eliminate the run-time compression.
-
 - Better error handling.
 
 - Take in more consideration usability issues and try to improve them:

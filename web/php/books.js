@@ -4,6 +4,6 @@ function onBookSelect(event)
   var book_id = list.value;
   
   //window.open('index.xul.php?book_id=' + book_id, 'htmlhelp', 'chrome,centerscreen');
-  window.open('index.xul.php?book_id=' + book_id, 'htmlhelp', 'centerscreen');
+  window.open('index.xul.php?book_id=' + book_id, '', 'centerscreen');
   return false;
 }

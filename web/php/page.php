@@ -24,17 +24,43 @@
 		}
 	}
 
-	$result = mysql_query('SELECT `content` FROM `page` WHERE `book_id`=' . $book_id . ' AND `path`=\'' . mysql_escape_string($path) . '\'');
+	$result = mysql_query('SELECT `compressed`, `content` FROM `page` WHERE `book_id`=' . $book_id . ' AND `path`=\'' . mysql_escape_string($path) . '\'');
 	if(mysql_num_rows($result))
 	{
-		list($content) = mysql_fetch_row($result);
+		list($compressed, $content) = mysql_fetch_row($result);
 		
 		$content_type = mime_content_type($path);
+		$accept_compressed = strpos($_SERVER["HTTP_ACCEPT_ENCODING"], 'gzip') !== false;
 		
-		header('Content-Type: ' . $content_type);
-		header('Content-Length: ' . strlen($content));
+		if($compressed)
+		{
+			if($accept_compressed)
+			{
+				header('Content-Encoding: gzip');
+				header('Content-Type: ' . $content_type);
+				header('Vary: Accept-Encoding');
 
-		echo $content;
+				echo $content;
+			}
+			else
+			{
+				# FIXME: verify header here
+				$content = gzinflate(substr($content, 10, -4));
+				
+				header('Content-Type: ' . $content_type);
+				header('Content-Length: ' . strlen($content));
+				header('Vary: Accept-Encoding');
+				
+				echo $content;
+			}
+		}
+		else
+		{
+			header('Content-Type: ' . $content_type);
+			header('Content-Length: ' . strlen($content));
+			
+			echo $content;
+		}
 	}
 	else
 	{

@@ -2,6 +2,12 @@
 
 
 import sys
+import gzip
+
+try:
+	from cStringIO import StringIO
+except ImportError:
+	from StringIO import StringIO
 
 import Plaintext
 
@@ -188,12 +194,27 @@ def dump_index(book):
 	sys.stdout.write(';\n')
 
 
+def compress(data):
+	fp = StringIO()
+	gz = gzip.GzipFile(None, 'wb', 9, fp)
+	gz.write(data)
+	gz.close()
+	return fp.getvalue()
+
+
 def dump_archive(book):
 	for path in book.archive:
 		content = book.archive[path].read()
 		title, body = Plaintext.extract(path, content)
+
+		compressed = 0
+		compressed_content = compress(content)
+		ratio = float(len(compressed_content))/float(len(content))
+		if ratio < 0.98:
+			compressed = 1
+			content = compressed_content
 		
-		sys.stdout.write('INSERT INTO `page` (book_id, path, content, title, body) VALUES\n')
-		sys.stdout.write(' (' + ',\n  '.join(quote(literal('@book_id'), path, content, title, body)) + ')')
+		sys.stdout.write('INSERT INTO `page` (book_id, path, compressed, content, title, body) VALUES\n')
+		sys.stdout.write(' (' + ',\n  '.join(quote(literal('@book_id'), path, compressed, content, title, body)) + ')')
 		sys.stdout.write(';\n')
 
