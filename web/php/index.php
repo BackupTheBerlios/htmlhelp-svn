@@ -11,11 +11,12 @@
 	
 	$noxul = intval($_GET['noxul']);
 
+	$title = 'HTML Help Books';
 	include 'header.inc.php';
 
 	echo '<body>';
 	
-	echo '<div class="header">HTML Help Books</div';
+	echo '<div class="header">HTML Help Books</div>';
 	
 	echo '<div>';
 	

@@ -15,14 +15,17 @@ Things to be done (by no particular order):
 
   * Facilitate the navigation with lesser clicks.
 
-  * Beutify the stylesheet to be more easy to read.
+  * Beautify the stylesheet to ease the reading.
 
 - More commenting.
 
 - Internationalization.
 
-- Tabbed browsing in the XUL interface (via the <tabbrowser> tag).
+- Tabbed browsing in the XUL interface (via the <tabbrowser> tag). (It might
+  not be possible at all with remote XUL.)
 
 - Filtering in the TOC and book list (in every navigation tab, as matter of fact).
 
 - Advanced search/filtering.
+
+- Add a book about page, with metadata and some statistics.
