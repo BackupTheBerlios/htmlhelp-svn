@@ -7,11 +7,6 @@ MASTER_SITES = \
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
 PATCHFILES = gar-base.diff
 
-CONFIGURE_SCRIPTS = $(WORKSRC)/gcc/configure $(WORKSRC)/libstdc++-v3/configure
-
-BUILD_SCRIPTS = $(WORKSRC)/libstdc++-v3/Makefile
-BUILD_ARGS = doxygen
-
 BOOKS = \
 	$(WORKSRC)/gcc/doc/cpp.texi \
 	$(WORKSRC)/gcc/doc/cppinternals.texi \
@@ -19,11 +14,14 @@ BOOKS = \
 	$(WORKSRC)/gcc/doc/gccint.texi \
 	$(WORKSRC)/gcc/f/g77.texi \
 	$(WORKSRC)/gcc/java/gcj.texi \
-	$(WORKSRC)/gcc/ada/gnat_ug_unx.texi \
 	$(WORKSRC)/gcc/ada/gnat_rm.texi \
 	$(WORKSRC)/gcc/ada/gnat-style.texi \
 	$(WORKSRC)/libstdc++-v3/docs/doxygen/libstdc++.mshh
 
+ifneq ($(shell which gnat),)
+BOOKS += $(WORKSRC)/gcc/ada/gnat_ug_unx.texi
+endif
+	
 NODIST_BOOKS = \
 	$(WORKSRC)/libiberty/libiberty.texi
 
@@ -36,5 +34,6 @@ $(WORKSRC)/gcc/ada/gnat_ug_unx.texi:
 	$(MAKE) -C $(@D) doctools/xgnatug $(@F)
 
 $(WORKSRC)/libstdc++-v3/docs/doxygen/libstdc++.mshh:
+	cd $(WORKSRC)/libstdc++-v3 && $(SHELL) docs/doxygen/run_doxygen --mode=user . .
 	ln -sf html_user $@d
 	@touch $@
