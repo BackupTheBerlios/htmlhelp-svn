@@ -1,0 +1,52 @@
+body {
+	font: 11px verdana, arial, helvetica, sans-serif;
+}
+
+.toc li {
+	list-style-type: none;
+}
+
+.toc ul {
+	padding-left: 0px;
+	margin-left: 0px;
+}
+
+.toc ul ul {
+	padding-left: 16px;
+	margin-left: 0px;
+}
+
+
+.toc a {
+	text-decoration: none;
+	display: block;
+}
+
+.toc a {
+	background-color: white;
+	color: black;
+}
+
+.toc a:hover {
+	background-color: black;
+	color: white;
+}
+
+.toc a:visited {
+	color: gray;
+}
+
+
+.index li {
+	list-style-type: none;
+}
+
+.index ul {
+	padding-left: 0px;
+	margin-left: 0px;
+}
+
+.index ul ul {
+	padding-left: 16px;
+	margin-left: 0px;
+}
