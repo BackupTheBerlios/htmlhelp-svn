@@ -40,16 +40,12 @@
 
 	echo '<div class="header">' . $title . '</div>';
 	echo '<div class="menubar">';
+	echo '<a href="books.php" target="navigation">Books</a>';
 	if($book_id)
 	{
-		echo '<span class="left">';
-		echo '<a href="toc.php?book_id=' . $book_id . '" target="navigation">Contents</a> |';
-		echo '<a href="_index.php?book_id=' . $book_id . '" target="navigation">Index</a>';
-		echo '</span>';
+		echo '| <a href="toc.php?book_id=' . $book_id . '" target="navigation">Contents</a>';
+		echo '| <a href="_index.php?book_id=' . $book_id . '" target="navigation">Index</a>';
 	}
-	echo '<span class="right">';
-	echo '<a href="books.php" target="navigation">Catalog</a>';
-	echo '</span>';
 	echo '</div>';
 	echo '</body>';
 	
