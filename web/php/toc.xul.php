@@ -16,7 +16,9 @@
 
 	$book_id = intval($_GET['book_id']);
 	
-	echo '<tree flex="1" seltype="single" hidecolumnpicker="true" onselect="onTocSelect(event, ' . $book_id . ')">';
+	echo '<button label="Sync" oncommand="onButtonCommand(event)"/>';
+						
+	echo '<tree id="tree" flex="1" seltype="single" hidecolumnpicker="true" onselect="onTocSelect(event, ' . $book_id . ')">';
 
 	echo '<treecols>';
 	echo '<treecol id="name" hideheader="true" primary="true" flex="1"/>';
