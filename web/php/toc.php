@@ -25,7 +25,7 @@
 		
 		if(mysql_num_rows($result) && $depth)
 		{
-			echo '<ul>';
+			echo '<ul class="tree">';
 			while(list($number, $name, $path, $anchor) = mysql_fetch_row($result))
 				walk_toc($number, $name, $path, $anchor, $depth - 1);
 			echo '</ul>';
@@ -70,9 +70,9 @@
 			$result = mysql_query('SELECT `parent_no`, `title`, `path`, `anchor` FROM `toc_entry` WHERE `book_id`=' . $book_id . ' AND `no`=' . $number . ' ORDER BY `no`');
 			list($parent_number, $name, $path, $anchor) = mysql_fetch_row($result);
 			
-			echo '<ul><li class="collapsed"><a target="_self" href="toc.php?book_id=' . $book_id . '&amp;toc_no=' . $parent_number . '">&hellip;</a>'; 
+			echo '<ul class="tree"><li class="collapsed"><a target="_self" href="toc.php?book_id=' . $book_id . '&amp;toc_no=' . $parent_number . '">&hellip;</a>'; 
 				
-			echo '<ul>';
+			echo '<ul class="tree">';
 			echo '<li class="expanded">';
 			echo '<a href="page.php/' . $book_id . '/' . $path . ($anchor ? '#' . $anchor : '') . '">' . htmlspecialchars($name, ENT_NOQUOTES, $encoding) . '</a>';
 			walk_children(query_toc($number), $depth - 1);

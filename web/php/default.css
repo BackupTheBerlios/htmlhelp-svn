@@ -7,7 +7,7 @@ body {
 	font-family: verdana, tahoma, helvetica, arial, sans-serif;
 	font-size: 12px;
 
-	margin: 0;
+	margin: 0px;
 }
 
 a {
@@ -17,12 +17,14 @@ a {
 /* Header */
 
 .header {
-	font-size: 36px;
+	margin: 0px;
 
 	padding-top: 4px;
 	padding-bottom: 4px;
 	padding-left: 8px;
 	padding-right: 8px;
+	
+	font-size: 36px;
 }
 
 /* Menubar */
@@ -50,22 +52,7 @@ a {
 }
 
 
-/* Search */
-
-.search {
-	margin: 0px;
-	padding: 0px;
-}
-
-
 /* Sidebar */
-
-div.sidebar {
-	width: 256px;
-
-	float: left;
-	clear: left;
-}
 
 .sidebar {
 	font-size: 11px;
@@ -80,6 +67,34 @@ div.sidebar {
 	list-style-type: none;
 }
 
+
+
+/* Lists */
+
+ul.list {
+	margin: 0px;
+	padding-top: 1px;
+	padding-bottom: 1px;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+
+/* Trees */
+
+ul.tree {
+	margin: 0px;
+	padding-top: 1px;
+	padding-bottom: 1px;
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-left: 20px;
+}
+
+ul.tree ul.tree {
+	padding-left: 16px;
+}
+
 li.expanded { 
 	list-style-image: url("minus.png") 
 }
@@ -92,30 +107,22 @@ li.single {
 	list-style-image: url("none.png") 
 }
 
-.sidebar ul {
+
+.sidebar form {
+	display: block;
 	margin: 0px;
-	padding-top: 1px;
-	padding-bottom: 1px;
-	padding-left: 2px;
-	padding-right: 2px;
+	padding: 0px;
+	text-align: center;
 }
 
-.sidebar ul {
-	padding-left: 20px;
+input#query {
+	width: 98%;
+	margin-top: 2px;
+	margin-bottom: 2px;
+	margin-left: auto;
+	margin-right: auto;
 }
 
-.sidebar ul ul {
-	padding-left: 16px;
-}
-
-
-/* Catalog */
-
-#catalog {
-	font-size: 16px;
-
-	margin-top: 128px;
-	margin-bottom: 128px;
-	margin-left: 256px;
-	margin-right: 256px;
+input#submit {
+	display: none;
 }

@@ -14,10 +14,10 @@
 	
 	echo '<body id="index" class="sidebar">';
 
-	echo '<form class="search" target="navigation" action="_index.php">';
+	echo '<form id="find" target="navigation" action="_index.php">';
 	echo  '<input type="hidden" name="book_id" value="' . $book_id .'"/>';
-	echo  '<input type="text" name="query" value="' . htmlspecialchars($query) . '"/>';
-	echo  '<input type="submit" value="Find">';
+	echo  '<input id="query" type="text" name="query" value="' . htmlspecialchars($query) . '"/>';
+	echo  '<input id="submit" type="submit" value="Find">';
 	echo '</form>';
 
 	if(isset($query))
@@ -25,7 +25,7 @@
 		$result = mysql_query('SELECT `term`, `path`, `anchor` FROM `index_entry`,`index_link` WHERE `index_entry`.`book_id`=' . $book_id . ' AND `index_link`.`book_id`=' . $book_id . ' AND `index_link`.`no`=`index_entry`.`no`' . ($query ? ' AND LOCATE(\'' . mysql_escape_string($query) . '\', `term`)' : '') . ' ORDER BY `index_entry`.`term`');
 		if(mysql_num_rows($result))
 		{
-			echo '<ul>';
+			echo '<ul class="list">';
 			while(list($term, $path, $anchor) = mysql_fetch_row($result))
 				echo '<li><a href="page.php/' . $book_id . '/' . $path . ($anchor ? '#' . $anchor : '') . '">' . $term . '</a></li>';
 			echo '</ul>';

@@ -16,10 +16,10 @@
 	$query = $_GET['query'];
 	$boolean_mode = intval($_GET['boolean_mode']) && mysql_check_version('4.0.1');
 	
-	echo '<form class="search" target="navigation" action="_index.php">';
+	echo '<form id="find" target="navigation" action="search.php">';
 	echo  '<input type="hidden" name="book_id" value="' . $book_id .'"/>';
-	echo  '<input type="text" name="query" value=""/>';
-	echo  '<input type="submit" value="Find">';
+	echo  '<input id="query" type="text" name="query" value="' . htmlspecialchars($query) . '"/>';
+	echo  '<input id="submit" type="submit" value="Find">';
 	echo '</form>';
 
 	if($query)
@@ -27,7 +27,7 @@
 		$result = mysql_query('SELECT `book_id`, `path`, `title` FROM `page` WHERE ' . ($book_id ? ' book_id=' . $book_id : '1') . ' AND MATCH (`title`, `body`) AGAINST (\'' . mysql_escape_string($query) . '\'' . ($boolean_mode ? ' IN BOOLEAN MODE' : '') . ')');
 		if(mysql_num_rows($result))
 		{
-			echo '<ul>';
+			echo '<ul class="list">';
 			while(list($book_id, $path, $title) = mysql_fetch_row($result))
 				echo '<li><a href="page.php/' . $book_id . '/' . $path .'">' . htmlspecialchars($title, ENT_NOQUOTES, $encoding) . '</a></li>';
 			echo '</ul>';
