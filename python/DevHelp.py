@@ -1,17 +1,19 @@
 """DevHelp Books.
 
-See http://devhelp.codefactory.se/ for more information about DevHelp."""
+See http://www.imendio.com/projects/devhelp/ for more information about DevHelp."""
 
+
+from __future__ import generators
 
 import os, os.path, urlparse, xml.parsers.expat
-import Book
+import Book, Archive
 
 
 class SpecParser:
 
 	def __init__(self, book):
 		self.book = book
-		self.contents_stack = [book.contents.childs]
+		self.contents_stack = [book.contents]
 		self.base = None
 		
 	def translate_link(self, link):
@@ -26,9 +28,9 @@ class SpecParser:
 		if base is not None:	# Must be first
 			self.base = base
 		
-		self.book.name = name
-		self.book.title = title
-		self.book.default = self.translate_link(link)
+		self.book.metadata['name'] = name
+		self.book.contents.name = title
+		self.book.contents.link = self.translate_link(link)
 	
 	def end_book(self):
 		assert len(self.contents_stack) == 1
@@ -36,9 +38,9 @@ class SpecParser:
 	def start_sub(self, name, link, **dummy):
 		assert len(self.contents_stack) > 0
 
-		node = Book.ContentsNode(name, self.translate_link(link))
-		self.contents_stack[-1].append(node)
-		self.contents_stack.append(node.childs)
+		entry = Book.ContentsEntry(name, self.translate_link(link))
+		self.contents_stack[-1].children.append(entry)
+		self.contents_stack.append(entry)
 		
 	def end_sub(self):
 		assert len(self.contents_stack) > 1
@@ -71,57 +73,56 @@ class SpecParser:
 
 class DevHelpBook(Book.Book):
 
-	pass
-
-
-class UncompressedDevHelpBook(DevHelpBook):
-	
-	def __init__(self, spec):
-		DevHelpBook.__init__(self)
-
-		self.basedir = os.path.dirname(spec)
+	def __init__(self, archive, spec):
+		Book.Book.__init__(self, archive)
 
 		parser = SpecParser(self)
-		parser.parse(open(spec))
+		parser.parse(archive.open(spec))
 	
-	def get(self, link):
-		print self.basedir, link
-		path = os.path.join(self.basedir, link)
+	
+class RawDevHelpBook(DevHelpBook):
 
-		return open(path)
-
-
-class DevHelpFactory(Book.CachingFactory):
-
-	def __init__(self, search_path = None):
-		Book.CachingFactory.__init__(self)
+	def __init__(self, path):
+		basedir, spec = os.path.split(os.path.abspath(path))
+		archive = Archive.DirArchive(basedir)
 		
-		self._search_path = [
-			os.path.join(os.getenv('HOME', ''), '.devhelp2', 'books'),
-			'/usr/share/gtk-doc/html']
-		if search_path is not None:
-			self._search_path.extend(search_path)
+		DevHelpBook.__init__(self, archive, spec)
+
+
+class DevHelpFactory(Book.Factory):
+
+	def __apply__(self, path):
+		if self.extension(path) == 'devhelp':
+			return RawDevHelpBook(path)
+
+		raise Book.InvalidBookError
+
+factory = DevHelpFactory()
+
+
+def DevHelpCatalogIterator(self):
+	for dir in self.path:
+		if os.path.isdir(dir):
+			for name in os.listdir(dir):
+				path = os.path.join(dir, name, name + '.devhelp')
+				if os.path.isfile(path):
+					yield Book.CatalogEntry(name, RawDevHelpBook, path)
+					
+class DevHelpCatalog(Book.Catalog):
+
+	def __init__(self):
+		Book.Catalog.__init__(self)
 		
-		self._path_hash = {}
+		self.path = []
 
-	def enumerate_uncached(self):
-		enum = Book.List()
+		if 'HOME' in os.environ:
+			self.path.append(os.path.join(os.environ['HOME'], '.devhelp2', 'books'))
 		
-		self._path_hash = {}
-		for dir in self._search_path:
-			if os.path.isdir(dir):
-				for name in os.listdir(dir):
-					spec = os.path.join(dir, name, name + '.devhelp')
-					if os.path.isfile(spec):
-						self._path_hash[name] = spec
-						enum.append(name)
+		self.path.append('/usr/share/gtk-doc/html')
+		self.path.append('/usr/local/share/gtk-doc/html')
+	
+	def __iter__(self):
 
-		return enum
-		
-	def book_uncached(self, name):
-		if not self._path_hash.has_key(name):
-			self.enumerate()
+		return DevHelpCatalogIterator(self)
 
-		spec = self._path_hash[name]
-
-		return UncompressedDevHelpBook(spec)
+catalog = DevHelpCatalog()

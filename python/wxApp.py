@@ -4,8 +4,7 @@
 from wxPython.wx import *
 from wxPython.html import *
 
-import Generic
-book_factory = Generic.BookFactory()
+import Formats
 
 
 class file_wrapper:
@@ -45,10 +44,11 @@ class BookFileSystemHandler(wxFileSystemHandler):
 			words = filter(None, link.split('/'))
 			name = words[0]
 			link = '/'.join(words[1:])
-		book = book_factory.book(name)
+		entry = Book.catalog[name]
+		book = entry.open()
 		anchor = self.GetAnchor(location)
 		mimetype = self.GetMimeTypeFromExt(location)
-		stream = wxInputStream(file_wrapper(book.get(link)))
+		stream = wxInputStream(file_wrapper(book.resource(link)))
 		return wxFSFile(stream, location, mimetype, anchor, wxDateTime_Now())
 
 
@@ -296,8 +296,8 @@ class BookFrame(wxFrame):
 	
 	def AddBooks(self):
 		root = self.contentsTree.AddRoot("Books")
-		for name in book_factory.enumerate():
-			book = book_factory.book(name)
+		for entry in Book.catalog:
+			book = entry.book
 			book.name = name
 			self.AddBook(root, book)
 		

@@ -1,59 +1,62 @@
 """Classes for generic HTML help books."""
 
 
-class ContentsNodeList(list):
+import os.path
+
+
+class Error(Exception):
+
 	pass
 
 
-class ContentsNode(object):
-	"""Node in a table of contents."""
+class InvalidBookError(Error):
+		
+	pass
 
-	def __init__(self, name, link, childs = None):
+
+class Entry(object):
+	"""Shared by the table of contents and index entries."""
+
+	def __init__(self, name = None, link = None):
 		self.name = name
 		self.link = link
-		if childs is None:
-			self.childs = ContentsNodeList()
+	
+
+class ContentsEntryList(list):
+	pass
+
+
+class ContentsEntry(Entry):
+	"""Entry in a table of contents."""
+
+	def __init__(self, name = None, link = None, children = None):
+		Entry.__init__(self, name, link)
+		if children is None:
+			self.children = ContentsEntryList()
 		else:
-			self.childs = childs
-	
-	def __repr__(self):
-		return '%s(%s, %s, %s)' % (self.__class__.__name__, repr(self.name), repr(self.link), repr(self.childs))
+			self.children = children
 
 
-class Contents(ContentsNode):
-	"""Table of contents.
-	
-	Is simultaneously the root node."""
+class Contents(ContentsEntry):
+	"""Book table of contents."""
 
-	def __init__(self):
-		ContentsNode.__init__(self, None, None)
+	pass
 
 
-class IndexEntry(object):
+class IndexEntry(Entry):
 	"""An entry in the index."""
-
-	# TODO: Allow sub-entries
-	
-	def __init__(self, term, link):
-		self.term = term
-		self.link = link
-
-	def __repr__(self):
-		return '%s(%s, %s)' % (self.__class__.__name__, repr(self.term), repr(self.link))
 	
 
 class Index(list):
-	"""Index."""
+	"""Book index."""
 
 	pass
 
 
-class SearchEntry(object):
+class SearchEntry(Entry):
 	"""Search result entry."""
 
-	def __init__(self, name, link):
-		self.name = name
-		self.link = link
+	pass
 
 
 class Search(list):
@@ -65,76 +68,67 @@ class Search(list):
 
 
 class Book(object):
+	"""Abstract book class."""
 	
-	def __init__(self):
-		self.name = None
-		self.title = None
-		self.default = None
-		
+	def __init__(self, archive):
+		self.archive = archive
+		self.metadata = {}
 		self.contents = Contents()
 		self.index = Index()
 		
-	def search(self, term):
-		"""Returns an object with the search results."""
+	title = property(lambda self: self.contents.name)
 
-		return Search()
+	default_link = property(lambda self: self.contents.link)
 	
-	def get(self, link):
+	def resource(self, link):
 		"""Return a file-like object with the required link."""
 		
-		assert 0
+		return self.archive.open(link)
 	
-	def __repr__(self):
-		return '<%s: contents=%s, index=%s>' % (self.__class__.__name__, repr(self.contents), repr(self.index))
-
-
-class List(list):
-
-	pass
-
 
 class Factory(object):
+	
+	def __apply__(self, path):
+		raise NotImplementedError
 
-	def enumerate(self):
-		"""Enumerate the available books."""
+	def extension(self, path):
+		root, ext = os.path.splitext(path)
+		return ext
 		
-		return List()
-	
-	def book(self, name):
-		"""Get the required book."""
 
-		pass
+class CatalogEntry(object):
 
+	def __init__(self, name, factory, path):
+		self.name = name
+		self.__factory = factory
+		self.__path = path
+		self.__book = None
 
-class CachingFactory(Factory):
+	def open(self):
+		if self.__book is None:
+			self.__book = self.__factory(self.__path)
+		return self.__book
 
-	# TODO: Implement cache aging and limiting.
+	book = property(lambda self: self.open())
 
-	def __init__(self):
-		self._enum_cache = None
-		self._book_cache = {}
-	
-	def cache_book(self, name, book):
-		self._book_cache[name] = book
-	
-	def enumerate_uncached(self):
-		pass
 		
-	def enumerate(self):
-		if self._enum_cache is None:
-			self._enum_cache = self.enumerate_uncached()
-			
-		return self._enum_cache
+class Catalog(object):
 
-	def book_uncached(self, name):
-		pass
+	def __contains__(self, name):
+		for entry in self:
+			if entry.name == name:
+				return 1
+
+		return 0
+
+	def __getitem__(self, name):
+		for entry in self:
+			if entry.name == name:
+				return entry
+
+		raise KeyError
 	
-	def book(self, name):
-		if self._book_cache.has_key(name):
-			return self._book_cache[name]
-		else:
-			book = self.book_uncached(name)
-			
-			self._book_cache[name] = book
-			return book
+	def __iter__(self):
+		raise NotImplementedError
+
 

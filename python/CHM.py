@@ -2,7 +2,6 @@
 
 
 import os, re, sys, HTMLParser
-
 import Book
 
 
@@ -94,6 +93,7 @@ class HHPParser:
 		self.section = None
 	
 	def handle_section(self, name):
+		print '[%s]' % (name,)
 		self.section = name
 	
 	def handle_option(self, name, value):
@@ -101,10 +101,10 @@ class HHPParser:
 		if self.section == 'OPTIONS':
 			if name == 'Contents file':
 				parser = HHCParser(self.book)
-				parser.parse(self.book.resource(value))
+				parser.parse(self.book.get(value))
 			elif name == 'Index file':
 				parser = HHKParser(self.book)
-				parser.parse(self.book.resource(value))
+				parser.parse(self.book.get(value))
 			elif name == 'Title':
 				self.book.title = value
 			elif name == 'Default topic':
@@ -156,28 +156,73 @@ class HHPParser:
 class MSHHBook(Book.Book):
 	"""Microsoft HTML Help."""
 
-	def __init__(self, archive, hhp):
-		Book.Book.__init__(self)
+	pass
 
-		parser = HHPParser(self)
-		parser.parse(archive.open(hhp))
+
+class UncompressedMSHHBook(MSHHBook):
+
+	def __init__(self, hhp):
+		MSHHBook.__init__(self)
+
+		self.basedir = os.path.dirname(hhp)
+
+		parser = HHPParser(hhp)
+		parser.parse(open(hhp))
 	
+	def get(self, link):
+		path = os.path.join(self.basedir, link)
 
-class RawMSHHBook(MSHHBook):
+		return open(path)
 
-	def __init__(self, path):
-		basedir, hhp = os.path.split(os.path.abspath(path))
-		archive = Archive.DirArchive(basedir)
+
+class CHMBook(MSHHBook):
+	"""Windows Compiled HTML Help."""
+	
+	# TODO: Fill in the rest.
+
+	pass
+
+
+import zipfile
+try:
+	from cStringIO import StringIO
+except ImportError:
+	from StringIO import StringIO
+
+
+class HTBBook(MSHHBook):
+	"""wxWindows HTML Help Book."""
+
+	def __init__(self, htb):
+		MSHHBook.__init__(self)
+
+		self.zip = zipfile.ZipFile(htb, "r")
+
+		for name in self.zip.namelist():
+			if name[-4:] == '.hhp':
+				parser = HHPParser(self)
+				parser.parse(self.get(name))
+				return
+
+		raise Exception, "project file not found"
+	
+	def list(self):
+		return self.zip.namelist()
 		
-		MSHHBook.__init__(self, archive, hhp)
+	def get(self, link):
+		fp = StringIO()
+		fp.write(self.zip.read(link))
+		fp.seek(0)
+		return fp
 
 
-class MSHHFactory(Book.Factory):
-
-	def __apply__(self, path):
-		if self.extension(path).lower() == 'hhp':
-			return RawMSHHBook(path)
-
-		raise Book.InvalidBookError
-
-factory = MSHHFactory()
+if __name__ == "__main__":
+	import sys
+	
+	for arg in sys.argv:
+		if arg[-4:] == '.htb':
+			book = HTBBook(arg)
+			print book
+		elif arg[-4:] == '.hhp':
+			book = UncompressedMSHHBook(arg)
+			print book

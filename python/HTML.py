@@ -1,101 +1,249 @@
 """HTML based used interface."""
 
 
-try:
-	from cStringIO import StringIO
-except ImportError:
-	from StringIO import StringIO
+import os.path, posixpath, mimetypes
+
+import Book
 
 
-def rsplit(path):
-	"""Split a pathname.  Returns tuple "(head, tail)" where "tail" is
-	everything after the first slash.  Either part may be empty."""
+if __name__ == '__main__':
+	import sys
+	root = os.path.dirname(os.path.abspath(sys.argv[0]))
+else:
+	root = os.path.dirname(os.path.abspath(__file__))
 
-	head, tail = '', path
-	while tail and not head:
-		i = tail.find('/')
-		if i >= 0:
-			head, tail = tail[:i], tail[i+1:]
-		else:
-			head, tail = tail, ''
-	return head, tail
+
+def guess_type(path):
+        base, ext = posixpath.splitext(path)
+	if ext in mimetypes.types_map:
+		return mimetypes.types_map[ext]
+	else:
+		return 'application/octet-stream'
+
+
+def escape(s):
+	"""Helper to add special character quoting."""
+	
+	s = s.replace("&", "&amp;") # Must be first
+	s = s.replace("<", "&lt;")
+	s = s.replace(">", "&gt;")
+	s = s.replace("'", "&apos;")
+	s = s.replace('"', "&quot;")
+
+	return s
+
+
+def encode(u, encoding = 'iso8859-1'):
+	"""Encode a Unicode string in HTML."""
+	
+
+	u = u.replace(u"&", u"&amp;") # Must be first
+
+	try:
+		s = u.encode(encoding)
+	except ValueError:
+		s = ''
+		for c in u:
+			try:
+				s += c.encode(encoding)
+			except ValueError:
+				#if rentitydefs.has_key(c):
+				#	s += '&%s;' % rentitydefs[c]
+				#else:
+					s += '&#%o;' % ord(c)
+	s = s.replace("<", "&lt;")
+	s = s.replace(">", "&gt;")
+
+	return s
 
 
 class HTMLError(Exception):
-    """Exception raised for all generation errors."""
+	"""Exception raised for all generation errors."""
 
-    def __init__(self, code, message=None):
-	self.code = code
-        self.message = message
+	def __init__(self, code, message=None):
+		self.code = code
+		self.message = message
 
-    def __str__(self):
-        return "code %d, message %s" % (self.code, self.message)
-        return result
+	def __str__(self):
+		return "code %d, message %s" % (self.code, self.message)
+		return result
 
 
-class HTML:
+class Request:
+	"""The attributes and methods expected from a request object."""
 
-	def __init__(self, book_factory):
-		self.book_factory = book_factory
+	def __init__(self, path, query):
+		self.path = path
+		self.query = query
 
-	def __call__(self, path, query):
-		head, tail = rsplit(path)
+	def set_response(self, code, message=None):
+		raise NotImplementedError
+
+	def set_header(self, keyword, value):
+		raise NotImplementedError
+
+	def write(self, data):
+		raise NotImplementedError
 		
-		if head in ('', 'index.htm', 'index.html'):
-			return self.main()
+	def finish(self):
+		raise NotImplementedError
 
-		book = self.book_factory.book(head)
-		if not book:
-			return HTMLError(404)
-			
-		if tail:
-			return self.book_page(book, tail)
 
-		print head, tail, query
-		if not query.has_key('action'):
-			return self.book_main(book)
-			
-		action = query['action'][-1]
-		if action == 'contents':
-			return self.book_contents(book)
-		else:
-			raise HTMLError(400)
+class Resource:
+
+	def __init__(self):
+		self.children = {}
+
+	def _child(self, path):
+		raise NotImplementedError
 	
-	def empty(self):
-		f = StringIO()
-		f.write(
+	def child(self, path):
+		if path == '' or path == '.':
+			return self
+		elif path == '..':
+			return None
+		elif path in self.children:
+			return self.children[path]
+		else:
+			return self._child(path)
+	
+	def render(self, request):
+		raise NotImplementedError
+	
+
+class BlankResource(Resource):
+
+	def _child(self, none):
+		return None
+
+	def render(self, request):
+		request.set_response(200)
+		request.set_header('Content-Type', 'text/html')
+		request.write(
 			'<html>\n'
 			'<head>\n'
 			'</head>\n'
 			'<body>\n'
 			'</body>\n'
 			'</html>\n')
-		f.seek(0)
-		
-		return f
-		
-	def main(self):
-		names = self.book_factory.enumerate()
+		request.finish()
 
-		f = StringIO()
-		f.write(
+
+class FileResource(Resource):
+	
+	def __init__(self, path):
+		Resource.__init__(self)
+
+		self.path = path
+
+	def _child(self, path):
+		return None
+
+	def render(self, request):
+		request.set_response(200)
+		request.set_header('Content-Type', guess_type(self.path))
+		fp = file(self.path)
+		while 1:
+			buf = fp.read(8192)
+			if not buf:
+				break
+			request.write(buf)
+		request.finish()
+
+
+class DirectoryResource(Resource):
+
+	def __init__(self, path):
+		Resource.__init__(self)
+
+		self.path = path
+
+	def _child(self, path):
+		path = posixpath.join(self.path, path)
+		if os.path.isdir(path):
+			return DirectoryResource(path)
+		else:
+			return FileResource(path)
+	
+	def render(self, request):
+		request.set_response(400)
+		request.set_header('Content-Type', 'text/html')
+		# FIXME: fill in here
+		request.write(
 			'<html>\n'
 			'<head>\n'
-			'\t<title>DevHelp Books</title>\n'
 			'</head>\n'
-			'<body>\n')
-		for name in names:
-			f.write('\t<p><a href="%s/">%s</a></p>' % (name, name))
-		f.write(
+			'<body>\n'
 			'</body>\n'
 			'</html>\n')
-		f.seek(0)
-		
-		return f
+		request.finish()
 
-	def book_main(self, book):
-		f = StringIO()
-		f.write(
+
+class BookPageResource(Resource):
+
+	def __init__(self, book, path):
+		Resource.__init__(self)
+
+		self.book = book
+		self.path = path
+
+	def _child(self, book, path):
+		path = os.path.join(self.path, path)
+		return BookPageResource(self.book, path)
+
+	def render(self, request):
+		request.set_response(200)
+		request.set_header('Content-Type', guess_type(self.path))
+		fp = self.book.archive.open(self.path)
+		while 1:
+			buf = fp.read(8192)
+			if not buf:
+				break
+			request.write(buf)
+		request.finish()
+
+
+index = ['index.html', 'index.htm']
+
+
+class BookResource(Resource):
+
+	def __init__(self, book):
+		Resource.__init__(self)
+
+		self.book = book
+	
+	def _child(self, path):
+		return BookPageResource(self.book, path)
+		
+	def render(self, request):
+		query = request.query
+		
+		if 'action' not in query:
+			self.render_top(request)
+		else:
+			action = query['action'][-1]
+			if action == 'contents':
+				self.render_contents(request)
+			else:
+				request.set_response(400)
+				request.set_header('Content-Type', 'text/html')
+				request.write(
+					'<html>\n'
+					'<head>\n'
+					'\t<title>Error</title>\n'
+					'</head>\n'
+					'<body>\n'
+					'\t<h1>Error</h1>\n'
+					'\t<p>Unknown action: %s</p>\n'
+					'</body>\n'
+					'</html>\n' % action)
+				request.finish()
+		
+	def render_top(self, request):
+		request.set_response(200)
+		request.set_header('Content-Type', 'text/html')
+		request.write(
 			'<html>\n'
 			'<head>\n'
 			'\t<title>%s</title>\n'
@@ -104,54 +252,82 @@ class HTML:
 			'\t\t<frame src="?action=contents" name="navigation">\n'
 			'\t<frame src="%s" name="main">\n'
 			'\t</frameset>\n'
-			'</html>\n' % (book.title, book.default))
-		f.seek(0)
-		
-		return f
+			'</html>\n' % (encode(self.book.title), escape(self.book.default_link)))
+		request.finish()
 
-	def tree(self, f, entries, level = 1):
+	def render_contents(self, request):
+		request.set_response(200)
+		request.set_header('Content-Type', 'text/html')
+		request.write(
+			'<html>\n'
+			'<head>\n'
+			'\t<title>%s</title>\n'
+			'\t<link href="../styles/tree.css" type="text/css" rel="stylesheet" />\n'
+			'\t<script type="text/javascript" src="../scripts/tree.js" />\n'
+			'</head>\n'
+			'<body>\n' % encode(self.book.title))
+
+		self.walk_tree(request, self.book.contents, level = 1)
+		
+		request.write(
+			'</body>\n'
+			'</html>\n')
+		request.finish()
+	
+	def walk_tree(self, f, entry, level = 1):
 		f.write('\t'*level)
 		if level == 1:
 			f.write('<ul>\n')
 		else:
 			f.write('<ul class="closed">\n')
-		for entry in entries:
+		for child in entry.children:
 			f.write('\t'*(level + 1))
-			if entry.childs:
+			if child.children:
 				f.write('<li class="closed">')
 			else:
 				f.write('<li class="none">')
-			f.write('<a href="%s" target="main">%s</a>' % (entry.link, entry.name))
-			if entry.childs:
+			f.write('<a href="%s" target="main">%s</a>' % (escape(child.link), encode(child.name)))
+			if child.children:
 				f.write('\n')
-				self.tree(f, entry.childs, level + 1)
+				self.walk_tree(f, child, level + 1)
 				f.write('\t'*(level + 1))
 			f.write('</li>\n')
 		f.write('\t'*level + '</ul>\n')
 
-	def book_contents(self, book):
-		f = StringIO()
-		f.write(
+
+class CatalogResource(Resource):
+
+	def __init__(self, catalog):
+		Resource.__init__(self)
+
+		self.catalog = catalog
+
+		for path in ('icons', 'scripts', 'styles'):
+			self.children[path] = DirectoryResource(os.path.join(root, path))
+
+	def _child(self, path):
+		if path in self.catalog:
+			entry = self.catalog[path]
+			return BookResource(entry.book)
+		else:
+			return None
+
+	def render(self, request):
+		request.set_response(200)
+		request.set_header('Content-Type', 'text/html')
+		request.write(
 			'<html>\n'
 			'<head>\n'
-			'\t<title>%s</title>\n'
-			'\t<link href="/styles/tree.css" type="text/css" rel="stylesheet" />\n'
-			'\t<script type="text/javascript" src="/scripts/tree.js" />\n'
+			'\t<title>HTML Help Books</title>\n'
 			'</head>\n'
-			'<body>\n' % book.title)
-
-		self.tree(f, book.contents.childs, level = 1)
-		
-		f.write('</body>\n'
+			'<body>\n'
+			'\t<h1>HTML Help Books</h1>\n'
+			'\t<ul>\n')
+		for entry in self.catalog:
+			request.write('\t\t<li><a href="%s/">%s</a></li>' % (entry.name, entry.name))
+		request.write(
+			'\t</ul>\n'
+			'</body>\n'
 			'</html>\n')
-		f.seek(0)
-		
-		return f
+		request.finish()
 
-	def book_page(self, book, link):
-		try:
-			f = book.get(link)
-		except:
-			raise HTMLError(404)
-
-		return f
