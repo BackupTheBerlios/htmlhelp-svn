@@ -18,11 +18,11 @@ chm-p:
 
 # install	- Install Compiled Html Help books
 post-install: chm-post-install
-	
+
 chm-post-install:
 ifdef GARVERSION
 	$(foreach FILE,$(CHM_TARGETS), \
-		cp -a $(FILE) $(DESTDIR)/$(addsuffix -$(GARVERSION)$(suffix $(FILE)),$(basename $(FILE))) ;)
+		cp -a $(FILE) $(DESTDIR)/$(notdir $(addsuffix -$(GARVERSION)$(suffix $(FILE)),$(basename $(FILE)))) ;)
 else
 	$(foreach FILE,$(CHM_TARGETS), \
 		cp -a $(FILE) $(DESTDIR) ;)

@@ -5,7 +5,7 @@ all: devhelp
 
 # devhelp	- Generate DevHelp books.
 
-DEVHELP_TARGETS = $(addsuffix .tgz,$(basename $(filter %.sgml %.texi %.texinfo %.txi %.xml,$(BOOKS)))) $(DEVHELP_EXTA_TARGETS)
+DEVHELP_TARGETS = $(addsuffix .tgz,$(basename $(filter %.sgml %.texi %.texinfo %.txi %.xml,$(BOOKS)))) $(DEVHELP_EXTRA_TARGETS)
 
 devhelp: build pre-devhelp $(DEVHELP_TARGETS) post-devhelp
 	$(DONADA)
@@ -21,7 +21,7 @@ post-install: devhelp-post-install
 devhelp-post-install:
 ifdef GARVERSION
 	$(foreach FILE,$(DEVHELP_TARGETS), \
-		cp -a $(FILE) $(DESTDIR)/$(addsuffix -$(GARVERSION)$(suffix $(FILE)),$(basename $(FILE))) ;)
+		cp -a $(FILE) $(DESTDIR)/$(notdir $(addsuffix -$(GARVERSION)$(suffix $(FILE)),$(basename $(FILE)))) ;)
 else
 	$(foreach FILE,$(DEVHELP_TARGETS), \
 		cp -a $(FILE) $(DESTDIR) ;)

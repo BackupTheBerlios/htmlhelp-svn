@@ -18,12 +18,12 @@ htb-p:
 	@$(foreach COOKIEFILE,$(HTB_TARGETS), test -e $(COOKIEDIR)/$(COOKIEFILE) ;)
 
 post-install: htb-post-install
-	
+
 # install	- Install Compiled Html Help books
 htb-post-install:
 ifdef GARVERSION
 	$(foreach FILE,$(HTB_TARGETS), \
-		cp -a $(FILE) $(DESTDIR)/$(addsuffix -$(GARVERSION)$(suffix $(FILE)),$(basename $(FILE))) ;)
+		cp -a $(FILE) $(DESTDIR)/$(notdir $(addsuffix -$(GARVERSION)$(suffix $(FILE)),$(basename $(FILE)))) ;)
 else
 	$(foreach FILE,$(HTB_TARGETS), \
 		cp -a $(FILE) $(DESTDIR) ;)
@@ -31,7 +31,7 @@ endif
 
 
 %.htb: htmlhelp.%
-	cd $< && zip ../$(@F) *
+	cd $< && zip -r ../$(@F) .
 
 
 include $(GARDIR)/htmlhelp.lib.mk
