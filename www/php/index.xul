@@ -6,12 +6,15 @@
 	<script src="main.js"/>
 
 	<hbox>
-		<menulist label="Bus">
-			<menupopup>
-				<menuitem label="Car"/>
-				<menuitem label="Taxi"/>
-				<menuitem label="Bus" selected="true"/>
-				<menuitem label="Train"/>
+		<menulist label="Book">
+			<menupopup datasources="books.rdf.php" ref="urn:root">
+				<template>
+					<menuitem 
+						uri="rdf:*"
+						label="rdf:http://htmlhelp.berlios.de/rdf#title"
+						value="rdf:http://htmlhelp.berlios.de/rdf#book_id"
+						/>
+				</template>
 			</menupopup>
 		</menulist>
 		<spacer flex="1"/>
