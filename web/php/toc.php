@@ -77,7 +77,7 @@
 			
 		echo '<ul class="tree">';
 		echo '<li class="expanded">';
-		if($path)
+		if($link)
 			echo '<a href="' . $link . '">' . htmlspecialchars($title, ENT_NOQUOTES) . '</a>';
 		else
 			echo htmlspecialchars($title, ENT_NOQUOTES);
