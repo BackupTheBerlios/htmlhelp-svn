@@ -5,7 +5,7 @@ all: devhelp
 
 # devhelp	- Generate DevHelp books.
 
-DEVHELP_TARGETS ?= $(addsuffix .tgz,$(basename $(filter %.sgml %.texi %.texinfo %.txi %.xml,$(BOOKS))))
+DEVHELP_TARGETS = $(addsuffix .tgz,$(basename $(filter %.sgml %.texi %.texinfo %.txi %.xml,$(BOOKS)))) $(DEVHELP_EXTA_TARGETS)
 
 devhelp: build pre-devhelp $(DEVHELP_TARGETS) post-devhelp
 	$(DONADA)
@@ -21,10 +21,10 @@ post-install: devhelp-post-install
 devhelp-post-install:
 ifdef GARVERSION
 	$(foreach FILE,$(DEVHELP_TARGETS), \
-		cp -a $(FILE) $(DESTDIR)/devhelp/$(addsuffix -$(GARVERSION)$(suffix $(FILE)),$(basename $(FILE))) ;)
+		cp -a $(FILE) $(DESTDIR)/$(addsuffix -$(GARVERSION)$(suffix $(FILE)),$(basename $(FILE))) ;)
 else
 	$(foreach FILE,$(DEVHELP_TARGETS), \
-		cp -a $(FILE) $(DESTDIR)/devhelp ;)
+		cp -a $(FILE) $(DESTDIR) ;)
 endif
 
 
@@ -109,7 +109,8 @@ endif
 %.tgz: devhelp.%
 	tar -czf $@ -C $< book.devhelp book
 
+
 .PHONY: devhelp.%
 
 
-include $(GARDIR)/texi.lib.mk
+include $(GARDIR)/docbook.lib.mk

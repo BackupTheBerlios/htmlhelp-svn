@@ -1,28 +1,31 @@
 # Compiled Html Help books generation
 
-all: htmlhelp
 
-# htmlhelp	- Generate Compiled Html Help books.
+all: chm
 
-HTMLHELP_TARGETS = $(addsuffix .chm,$(basename $(filter %.texi %.texinfo %.txi %.xml,$(BOOKS))))
 
-htmlhelp: build pre-htmlhelp $(HTMLHELP_TARGETS) post-htmlhelp
+# chm	- Generate Compiled Html Help books.
+
+CHM_TARGETS = $(addsuffix .chm,$(basename $(filter %.texi %.texinfo %.txi %.xml,$(BOOKS)))) $(CHM_EXTRA_TARGETS)
+
+chm: build pre-chm $(CHM_TARGETS) post-chm
 	$(DONADA)
 
 # returns true if the Compiled Html Help books have completed successfully, false otherwise
-htmlhelp-p:
-	@$(foreach COOKIEFILE,$(HTMLHELP_TARGETS), test -e $(COOKIEDIR)/$(COOKIEFILE) ;)
+chm-p:
+	@$(foreach COOKIEFILE,$(CHM_TARGETS), test -e $(COOKIEDIR)/$(COOKIEFILE) ;)
 
-post-install: htmlhelp-post-install
-	
+
 # install	- Install Compiled Html Help books
-htmlhelp-post-install:
+post-install: chm-post-install
+	
+chm-post-install:
 ifdef GARVERSION
-	$(foreach FILE,$(HTMLHELP_TARGETS), \
-		cp -a $(FILE) $(DESTDIR)/chm/$(addsuffix -$(GARVERSION)$(suffix $(FILE)),$(basename $(FILE))) ;)
+	$(foreach FILE,$(CHM_TARGETS), \
+		cp -a $(FILE) $(DESTDIR)/$(addsuffix -$(GARVERSION)$(suffix $(FILE)),$(basename $(FILE))) ;)
 else
-	$(foreach FILE,$(HTMLHELP_TARGETS), \
-		cp -a $(FILE) $(DESTDIR)/chm ;)
+	$(foreach FILE,$(CHM_TARGETS), \
+		cp -a $(FILE) $(DESTDIR) ;)
 endif
 
 
@@ -43,4 +46,4 @@ endif
 	mv $</$(@F) $@
 
 
-include $(GARDIR)/hh.lib.mk
+include $(GARDIR)/htmlhelp.lib.mk

@@ -1,8 +1,8 @@
-# Html Help books generation
+# Rules for Microsoft Html Help books generation
 
 
-ifndef HH_LIB_MK
-HH_LIB_MK := 1
+ifndef HTMLHELP_LIB_MK
+HTMLHELP_LIB_MK := 1
 
 
 # DocBook XML (using XSL)
@@ -37,7 +37,7 @@ ifdef FIGURES
 endif
 
 
-include $(GARDIR)/texi.lib.mk
+include $(GARDIR)/docbook.lib.mk
 
 
 endif

@@ -34,4 +34,4 @@ endif
 	cd $< && zip ../$(@F) *
 
 
-include $(GARDIR)/hh.lib.mk
+include $(GARDIR)/htmlhelp.lib.mk

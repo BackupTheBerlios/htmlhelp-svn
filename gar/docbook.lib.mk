@@ -1,15 +1,14 @@
-# Rules to generate DocBook XML books from Texinfo
+# Rules to generate DocBook XML books
 
-ifndef TEXI_LIB_MK
-TEXI_LIB_MK := 1
+ifndef DOCBOOK_LIB_MK
+DOCBOOK_LIB_MK := 1
 
 
 # NOTE: This tries to use a local version of texinfo from CVS where I try to
 # fix some of the bugs of makeinfo DocBook XML output until they're accepted
 # upstream.
-MAKEINFO = $(shell [ -x ~/projects/htmlhelp/texinfo/makeinfo/makeinfo ] && \
-	   echo ~/projects/htmlhelp/texinfo/makeinfo/makeinfo || \
-	   echo makeinfo)
+MAKEINFO_ALT = ~/projects/htmlhelp/texinfo/makeinfo/makeinfo
+MAKEINFO = $(shell [ -x $(MAKEINFO_ALT) ] && echo $(MAKEINFO_ALT) || echo makeinfo)
 MAKEINFO_FLAGS = --docbook --ifinfo
 
 
