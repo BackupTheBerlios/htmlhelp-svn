@@ -8,7 +8,7 @@
 ?>
 	<body class="sidebar">
 		<?php
-			$books = mysql_query('SELECT `id`, `title` FROM `books`');
+			$books = mysql_query('SELECT `id`, `title` FROM `books` ORDER BY `title`');
 			echo '<ul>';
 			while($book = mysql_fetch_object($books))
 				echo '<li><a href="index.php?book_id=' . $book->id . '" target="_top">' . $book->title . '</a></li>';
