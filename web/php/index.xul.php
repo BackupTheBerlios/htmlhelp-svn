@@ -27,7 +27,7 @@
 		$title = 'HTML Help Books';
 
 	echo '<window id="wnd" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" title="' . $title . '" width="640" height="420" screenX="100" screenY="100" persist="width height screenX screenY sizemode">';
-	#echo '<script type="text/javascript">document.title = "' . $title . '";</script>';
+	echo '<script type="text/javascript">document.title = "' . $title . '";</script>';
 	
 	echo '<script src="index.js"/>';
 	
@@ -62,18 +62,18 @@
 
 	echo '<vbox flex="3">';
 	
-	/*
 	echo '<hbox>';
-	echo  '<button label="Back"/>';
-	echo  '<button label="Forward"/>';
-	echo  '<button label="Home"/>';
+	echo  '<button label="Back" oncommand="goBack(event);"/>';
+	echo  '<button label="Forward" oncommand="goForward(event);"/>';
+	echo  '<button label="Home" oncommand="goHome(event, ' . $book_id . ');"/>';
+	/*
 	echo  '<spacer flex="1" />';
 	echo  '<button label="Sync TOC"/>';
-	echo '</hbox>';
 	*/
+	echo '</hbox>';
 	
 	// Browser window
-	echo '<browser id="body" name="body" src="' . ($book_id ? 'page.php/' . $book_id . '/' : 'about.php') .' " flex="1"/>';
+	echo '<browser name="content" type="content-primary" src="' . ($book_id ? 'page.php/' . $book_id . '/' : 'about.php') .' " flex="1"/>';
 
 	echo '</vbox>';
 

@@ -1,5 +1,3 @@
-var iframe = parent.frames['body'];
-
 var noSelect = 0;
 
 function onTocSelect(event, book_id)
@@ -8,7 +6,7 @@ function onTocSelect(event, book_id)
 	var link = tree.view.getCellValue(tree.currentIndex, "name");
 
 	if(!noSelect)
-		iframe.location.href = "page.php/" + book_id + "/" + link;
+		parent.content.location.href = "page.php/" + book_id + "/" + link;
 }
 
 function parentTreeItem(element)
@@ -45,7 +43,7 @@ function onButtonCommand(event)
 {
 	var tree = document.getElementById("tree");
 
-	var href = parent.body.location.href;
+	var href = parent.content.location.href;
 	var base = document.location.href.replace(/\/toc\.xul\.php\?book_id=(.*)$/,'/page.php/$1/')
 
 	if(href.substr(0, base.length) == base)

@@ -59,7 +59,5 @@
 	
 	echo '</tree>';
 	
-	//echo '<iframe id="body" name="body" src="/" flex="1"/>';
-
 	echo '</window>';
 ?>
