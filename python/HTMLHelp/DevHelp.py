@@ -7,6 +7,12 @@ import os
 import os.path
 import urlparse
 import xml.parsers.expat
+import tarfile
+
+try:
+	from cStringIO import StringIO
+except ImportError:
+	from StringIO import StringIO
 
 import Archive
 import Book
@@ -97,6 +103,75 @@ class SpecParser:
 		parser.ParseFile(fp)
 
 
+class SpecFormatter:
+
+	def __init__(self, fp, encoding = 'utf-8'):
+		self.fp = fp
+		self.encoding = encoding
+
+		self.fp.write('<?xml version="1.0" encoding="%s"?>\n' % self.encoding)
+	
+	def book(self, book, name = None):
+		if name is None:
+			if 'name' not in book.metadata:
+				raise ValueError, 'Required book name not specified.'
+			name = book.metadata['name']
+
+		self.fp.write('<book name="%s" title="%s" link="%s"' % (self.escape(name), self.escape(book.contents.name), self.escape(book.contents.link)))
+		if 'version' in book.metadata:
+			self.fp.write(' version="%s"' % self.escape(book.metadata['version']))
+		if 'author' in book.metadata:
+			self.fp.write(' author="%s"' % self.escape(book.metadata['author']))
+		self.fp.write('>\n')
+		self.chapters(book.contents)
+		self.functions(book.index)
+		self.fp.write('</book>\n')
+
+	def chapters(self, contents):
+		self.fp.write('<chapters>\n')
+		self.chapter(contents)
+		self.fp.write('</chapters>\n')
+
+	def chapter(self, parent):
+		for child in parent:
+			self.fp.write('<chapter name="%s" link="%s"' % (self.escape(child.name), self.escape(child.link)))
+			if len(child):
+				self.fp.write('>\n')
+				self.chapter(child)
+				self.fp.write('</chapter>\n')
+			else:
+				self.fp.write('/>\n')
+
+	def functions(self, index):
+		self.fp.write('<functions>\n')
+		for entry in index:
+			self.function(entry)
+		self.fp.write('</functions>\n')
+
+	def function(self, entry):
+		name = entry.name
+		for link in entry.links:
+			self.fp.write('<function name="%s" link="%s"/>\n' % (self.escape(name), self.escape(link)))
+
+	def escape(self, s):
+		"""Helper to add special character quoting."""
+		
+		if s is None:
+			return ''
+		
+		s = s.replace("&", "&amp;") # Must be first
+
+		if isinstance(s, unicode):
+			s = s.encode(self.encoding, 'xmlcharrefreplace')
+
+		s = s.replace("<", "&lt;")
+		s = s.replace(">", "&gt;")
+		s = s.replace("'", "&apos;")
+		s = s.replace('"', "&quot;")
+
+		return s
+
+
 #######################################################################
 # Archive filters
 
@@ -178,6 +253,37 @@ def read(path):
 
 factory = read
 
+
+#######################################################################
+# Writers
+
+
+def _addfile(tar, name, fp):
+	tarinfo = tarfile.TarInfo(name)
+	
+	fp.seek(0, 2)
+	tarinfo.size = fp.tell()
+	fp.seek(0)
+	
+	tar.addfile(tarinfo, fp)
+	
+
+def write_tgz(book, path, name = None):
+
+	tar = tarfile.open(path, "w:gz")
+
+	fp = StringIO()
+	formatter = SpecFormatter(fp)
+	formatter.book(book, name)
+	_addfile(tar, 'book.devhelp', fp)
+
+	for name in book.archive:
+		fp = book.archive[name]
+		_addfile(tar, 'book/' + name, fp)
+	
+
+write = write_tgz
+		
 
 #######################################################################
 # Catalog
