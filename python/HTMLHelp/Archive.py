@@ -17,6 +17,8 @@ class Archive(object):
 	"""Presents a dictionary-like view (so far read-only) of a file archive,
 	where the keys are file names and the values are file-like objects."""
 
+	# TODO: Add write support
+
 	def __contains__(self, path):
 		"""Whether a member with the given path is in the archive"""
 

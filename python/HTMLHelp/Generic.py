@@ -17,6 +17,7 @@ readers = [
 
 writers = [
 	DevHelp.write,
+	HTB.write,
 ]
 
 

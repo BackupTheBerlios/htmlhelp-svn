@@ -284,8 +284,11 @@ def write_tgz(book, path, name = None):
 		_addfile(tar, 'book/' + name, fp)
 	
 
-write = write_tgz
-		
+def write(book, path, name=None):
+	if not path.endswith('.tgz'):
+		raise ValueError
+	write_tgz(book, path, name=None)
+
 
 #######################################################################
 # Catalog

@@ -207,6 +207,112 @@ class HHPParser:
 				self.handle_line(line)
 
 
+
+class Formatter:
+
+	fts = True
+
+	def __init__(self, book, name):
+		self.book = book
+		self.name = name
+
+		self.chm_name = name + '.chm'
+		self.hhp_name = name + '.hhp'
+		self.hhc_name = name + '.hhc'
+		self.hhk_name = name + '.hhk'
+
+	def write_hhp(self, fp):
+		fp.write('[OPTIONS]\n')
+		fp.write('Compatibility=1.1 or later\n')
+		fp.write('Compiled file=%s\n' % self.chm_name)
+		fp.write('Contents file=%s\n' % self.hhc_name)
+		fp.write('Default Window=Default\n')
+		fp.write('Default topic=%s\n' % self.book.contents.link)
+		fp.write('Display compile progress=No\n')
+		fp.write('Full-text search=%s\n' % (self.fts and 'Yes' or 'No'))
+		fp.write('Index file=%s\n' % self.hhk_name)
+		fp.write('Language=0x409 English (United States)\n')
+		fp.write('Title=%s\n' % self.book.contents.name.encode('UTF-8'))
+		fp.write('\n')
+		fp.write('[WINDOWS]\n')
+		fp.write('Default=,"%s","%s","%s","%s",,,,,0x22520,,0x384e,,,,,,,,0\n' % (
+			self.hhc_name, self.hhk_name, self.book.contents.link,
+			self.book.contents.link))
+		fp.write('\n')
+		fp.write('[FILES]\n')
+		for name in self.book.archive:
+			fp.write(name + '\n')
+		
+	def write_hhc(self, fp):
+		fp.write('<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">\n')
+		fp.write('<HTML>\n')
+		fp.write('<HEAD>\n')
+		fp.write('</HEAD>\n')
+		fp.write('<BODY>\n')
+		
+		fp.write('<OBJECT type="text/site properties">\n')
+		fp.write('<param name="ImageType" value="Folder">\n')
+		fp.write('</OBJECT>\n')
+		
+		self.write_contents(fp, self.book.contents)
+		
+		fp.write('</BODY>\n')
+		fp.write('</HTML>\n')
+
+	def write_contents(self, fp, contents):
+		if len(contents):
+			fp.write('<UL>\n')
+			
+			for child in contents:
+				fp.write('<LI> <OBJECT type="text/sitemap">\n')
+				fp.write('<param name="Name" value="%s">\n' % self.escape(child.name.encode('UTF-8')))
+				fp.write('<param name="Local" value="%s">\n' % self.escape(child.link))
+				fp.write('</OBJECT> </LI>\n')
+				self.write_contents(fp, child)
+
+			fp.write('</UL>\n')
+	
+	def write_hhk(self, fp):
+		
+		fp.write('<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">\n')
+		fp.write('<HTML>\n')
+		fp.write('<HEAD>\n')
+		fp.write('</HEAD>\n')
+		fp.write('<BODY>\n')
+		
+		fp.write('<OBJECT type="text/site properties">\n')
+		fp.write('<param name="ImageType" value="Folder">\n')
+		fp.write('</OBJECT>\n')
+		
+		fp.write('<UL>\n')
+		for entry in self.book.index:
+			fp.write('<LI> <OBJECT type="text/sitemap">\n')
+			fp.write('<param name="Name" value="%s">\n' % self.escape(entry.name.encode('UTF-8')))
+			for link in entry.links:
+				fp.write('<param name="Local" value="%s">\n' % self.escape(link))
+			fp.write('</OBJECT> </LI>\n')
+		fp.write('</UL>\n')
+		
+		fp.write('</BODY>\n')
+		fp.write('</HTML>\n')
+
+	def escape(self, s):
+		"""Helper to add special character quoting."""
+		
+		if s is None:
+			return ''
+		
+		s = s.replace("&", "&amp;") # Must be first
+
+		s = s.replace("<", "&lt;")
+		s = s.replace(">", "&gt;")
+		s = s.replace("'", "&apos;")
+		s = s.replace('"', "&quot;")
+
+		return s
+		
+
+
 ########################################################################
 # Archive filters
 
