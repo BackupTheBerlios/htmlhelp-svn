@@ -1,0 +1,33 @@
+#!/bin/sh
+
+rsync \
+	-av \
+	--exclude '.svn' \
+	--exclude '/default.css' \
+	--delete \
+	"$@" \
+	~/projects/htmlhelp/www/php/ \
+	~/projects/htmlhelp/htdocs/web/php/
+
+rsync \
+	-av \
+	"$@" \
+	~/projects/htmlhelp/www/css/default.css \
+	~/projects/htmlhelp/htdocs/web/php/default.css
+
+rsync \
+	-rtv \
+	--exclude '/cgi-bin' \
+	--exclude '/web/php/config.inc.php' \
+	--delete \
+	"$@" \
+	~/projects/htmlhelp/htdocs/ \
+	jrfonseca@shell.berlios.de:/home/groups/htmlhelp/htdocs/
+
+rsync \
+	-rtv \
+	--delete \
+	--exclude 'awstats*.txt' \
+	"$@" \
+	~/projects/htmlhelp/htdocs/cgi-bin/ \
+	jrfonseca@shell.berlios.de:/home/groups/htmlhelp/cgi-bin/
