@@ -26,145 +26,62 @@ def store(book):
 #######################################################################
 # title and body plaintext extraction
 
+import re
 
-class HTMLExtractor(HTMLParser.HTMLParser):
+def normalize_space(s):
+	"""Normalize whitespace."""
 
-	# FIXME: detect the encoding from the HTML
-	encoding = 'iso8859-1'
+	return ' '.join(s.split())
 
-	ignore_tags = ('script',)
-	indent_tags = ('dd', 'ol', 'ul')
-	vspace_before_tags = ('dt', 'hr', 'pre', 'table',)
-	vspace_after_tags = ('h1', 'h2', 'h3', 'h4', 'h5', 'hr', 'pre', 'table',)
-	hspace_before_tags = ('td', 'th')
-	hspace_after_tags = ()
-	paragraph_tags = ('dt', 'h1', 'h2', 'h3', 'h4', 'h5', 'p')
-	annotation_tags = {'li': u'\xb7 ', 'br': u'\n', 'hr': u'\x2014'}
-	
-	def __init__(self):
-		HTMLParser.HTMLParser.__init__(self)
+
+html_entity_re = re.compile(r'&(?:([a-zA-Z][-.a-zA-Z0-9]*)|#(?:([0-9]+)|[xX]([0-9a-fA-F]+)));?')
+
+def html_entity_decode(s, encoding = 'iso-8859-1'):
+	r = []
+
+	p = 0
+	mo = html_entity_re.search(s, p)
+	while mo:
+		r.append(s[p:mo.start()].decode(encoding))
 		
-		self.title = None
-		self.body = None
-
-		self.in_title = 0
-		self.in_body = 0
-		self.ignore = 0
-		self.verbatim = 0
-
-		self.indent = 0
-
-		self.text_pieces = []
-		
-	def handle_starttag(self, tag, attrs):
-		attrs = dict(attrs)
-
-		if tag == 'title':
-			self.title = u''
-			self.in_title = 1
-		if tag == 'body':
-			self.body = u''
-			self.in_body = 1
-			
-		if tag == 'pre':
-			self.verbatim = 1
-			
-		if tag in self.ignore_tags:
-			self.ignore += 1
-		if self.ignore:
-			return
-		
-		if tag in self.vspace_before_tags:
-			self.do_verbatim(u'\n')
-
-		if tag in self.indent_tags:
-			self.indent += 1
-			
-		if tag in self.hspace_before_tags:
-			self.do_verbatim(u'\t')
-
-		if tag in self.paragraph_tags:
-			self.do_verbatim(u' '*self.indent)
-
-		if tag in self.annotation_tags:
-			self.do_verbatim(self.annotation_tags[tag])
-	
-	def handle_endtag(self, tag):
-		if tag == 'title':
-			self.do_flush()
-			self.in_title = 0
-		if tag == 'body':
-			self.do_flush()
-			self.in_body = 0
-
-		if tag == 'pre':
-			self.verbatim = 0
-		
-		if tag in self.ignore_tags:
-			self.ignore -= 1
-		if self.ignore:
-			return
-		
-		if tag in self.hspace_after_tags:
-			self.do_verbatim(u'\t')
-
-		if tag in self.paragraph_tags:
-			self.do_verbatim(u'\n')
-
-		if tag in self.indent_tags:
-			self.indent -= 1
-
-		if tag in self.vspace_after_tags:
-			self.do_verbatim(u'\n')
-
-	def handle_data(self, data):
-		if self.ignore:
-			return
-
-		text = data.decode(self.encoding)
-	
-		if self.verbatim:
-			self.do_verbatim(text)
+		i = mo.lastindex
+		e = mo.group(i)
+		if i == 1:
+			c = htmlentitydefs.name2codepoint[e]
+		elif i == 2:
+			c = int(e)
+		elif i == 3:
+			c = int(e, 16)
 		else:
-			self.do_text(text)
+			assert 0
+		r.append(unichr(c))
 
-	def handle_charref(self, name):
-		text = unichr(int(name))
+		p = mo.end()
+		mo = html_entity_re.search(s, p)
+	r.append(s[p:].decode(encoding))
+	
+	return u''.join(r)
 
-		self.do_text(text)
-			
-	def handle_entityref(self, name):
-		try:
-			text = unichr(htmlentitydefs.name2codepoint[name])
-		except KeyError:
-			return
 
-		self.do_text(text)
-			
-	def do_text(self, text):
-		self.text_pieces.append(text)
-
-	def do_flush(self):
-		text = u''.join(self.text_pieces)
-		self.do(u' '.join(text.strip().split()))
-		self.text_pieces = []
-		
-	def do_verbatim(self, text):
-		self.do_flush()
-		self.do(text)
-
-	def do(self, text):
-		if self.in_title:
-			self.title += text
-		if self.in_body:
-			self.body += text
-
+html_title_re = re.compile(r'<title(?:\s.*?)?>(.*?)</title>', re.IGNORECASE | re.DOTALL)
+html_body_re = re.compile(r'<body(?:\s.*?)?>(.*?)</body>', re.IGNORECASE | re.DOTALL)
+html_tag_re = re.compile(r'<.*?>', re.DOTALL)
 
 def extract_html(content):
-	parser = HTMLExtractor()
-	parser.feed(content)
 
-	return parser.title, parser.body
+	mo = html_title_re.search(content)
+	if mo:
+		title = normalize_space(html_entity_decode(mo.group(1)))
+	else:
+		title = None
+
+	mo = html_body_re.search(content)
+	if mo:
+		body = normalize_space(html_entity_decode(html_tag_re.sub(' ', mo.group(1))))
+	else:
+		body = None
+	
+	return title, body
 
 
 def guess_type(path):
@@ -191,9 +108,9 @@ def extract(path, content):
 def test_extract():
 	for arg in sys.argv[1:]:
 		title, body = extract_html(open(arg, "rt").read())
-		print title.encode('latin-1', 'ignore')
+		print `title`
 		print
-		print body.encode('latin-1', 'ignore')
+		print `body`
 		print
 		print
 
