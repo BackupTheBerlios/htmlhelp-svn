@@ -10,13 +10,15 @@
 
 	echo '<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">';
 
-	echo '<listbox flex="1">';
+	echo '<script src="_index.js"/>';
+	
+	echo '<listbox seltype="single" flex="1" onselect="onIndexSelect(event, ' . $book_id . ')">';
 	if($book_id = intval($_GET['book_id']))
 	{
 		$result = mysql_query('SELECT `term`, `path`, `anchor` FROM `index_entry`,`index_link` WHERE `index_entry`.`book_id`=' . $book_id . ' AND `index_link`.`book_id`=' . $book_id . ' AND `index_link`.`no`=`index_entry`.`no` ORDER BY `index_entry`.`term`');
 		while(list($term, $path, $anchor) = mysql_fetch_row($result))
 		{
-			echo '<listitem label="' . htmlspecialchars($term) . '" value="' . $book_id . '/' . $path . ($anchor ? '#' . $anchor : '') . '"/>';
+			echo '<listitem label="' . htmlspecialchars($term) . '" value="' . $path . ($anchor ? '#' . $anchor : '') . '"/>';
 		}
 	}
 	echo '</listbox>';
