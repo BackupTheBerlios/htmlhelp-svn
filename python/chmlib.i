@@ -40,12 +40,13 @@ void chm_close(struct chmFile *h);
 
 void chm_set_param(struct chmFile *h, int paramType, int paramVal);
 
+/*
 %typemap(in, numinputs=0) struct chmUnitInfo *ui {
 	$1 = (struct chmUnitInfo *) calloc(1, sizeof(struct chmUnitInfo));
 }
 
 %typemap(argout) struct chmUnitInfo *ui {
-	Py_XDECREF($result);	/* Blow away any previous result */
+	Py_XDECREF($result);	// Blow away any previous result
 	printf("%i", result);
 	if (result != CHM_RESOLVE_SUCCESS) {
 		Py_INCREF(Py_None); 
@@ -54,14 +55,11 @@ void chm_set_param(struct chmFile *h, int paramType, int paramVal);
 	$result = SWIG_NewPointerObj((void *) $1, $1_descriptor, 1);
 }
 
-
-
 int chm_resolve_object(struct chmFile *h,
                        const char *objPath,
                        struct chmUnitInfo *ui);
+*/
 
-
-/*
 %rename(chm_resolve_object) python_chm_resolve_object;
 
 %inline %{
@@ -81,7 +79,6 @@ PyObject *python_chm_resolve_object(struct chmFile *h, const char *objPath) {
 }
 
 %}
-*/
 
 /*
 LONGINT64 chm_retrieve_object(struct chmFile *h,
