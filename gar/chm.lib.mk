@@ -42,7 +42,7 @@ endif
 
 
 %.chm: htmlhelp.%
-	cd $< && $(HHC) $(*F).hhp
+	cd $< && $(HHC) $(basename $(wildcard $</*.hhp))
 	mv $</$(@F) $@
 
 
