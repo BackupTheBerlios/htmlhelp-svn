@@ -46,15 +46,18 @@ def html_entity_decode(s, encoding = 'iso-8859-1'):
 		
 		i = mo.lastindex
 		e = mo.group(i)
-		if i == 1:
-			c = htmlentitydefs.name2codepoint[e]
-		elif i == 2:
-			c = int(e)
-		elif i == 3:
-			c = int(e, 16)
-		else:
-			assert 0
-		r.append(unichr(c))
+		try:
+			if i == 1:
+				c = htmlentitydefs.name2codepoint[e]
+			elif i == 2:
+				c = int(e)
+			elif i == 3:
+				c = int(e, 16)
+			else:
+				assert 0
+			r.append(unichr(c))
+		except KeyError:
+			r.append(mo.group(0))
 
 		p = mo.end()
 		mo = html_entity_re.search(s, p)
