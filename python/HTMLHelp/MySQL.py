@@ -138,6 +138,8 @@ def dump_book(book):
 	
 	dump_index(book)
 
+	dump_metadata(book)
+
 	dump_archive(book)
 	
 
@@ -194,6 +196,19 @@ def dump_index(book):
 	sys.stdout.write(';\n')
 
 
+def dump_metadata(book):
+	if not len(book.metadata):
+		return
+
+	sys.stdout.write('INSERT INTO `metadata` (`book_id`, `name`, `value`) VALUES')
+	cont = 0
+	for name, value in book.metadata.iteritems():
+		sys.stdout.write(cont and ',\n ' or '\n ')
+		sys.stdout.write('(' + ', '.join(quote(literal('@book_id'), name, value)) + ')')
+		cont = 1
+	sys.stdout.write(';\n')
+
+	
 def compress(data):
 	fp = StringIO()
 	gz = gzip.GzipFile(None, 'wb', 9, fp)
@@ -208,11 +223,12 @@ def dump_archive(book):
 		title, body = Plaintext.extract(path, content)
 
 		compressed = 0
-		compressed_content = compress(content)
-		ratio = float(len(compressed_content))/float(len(content))
-		if ratio < 0.98:
-			compressed = 1
-			content = compressed_content
+		if content:
+			compressed_content = compress(content)
+			ratio = float(len(compressed_content))/float(len(content))
+			if ratio < 0.98:
+				compressed = 1
+				content = compressed_content
 		
 		sys.stdout.write('INSERT INTO `page` (book_id, path, compressed, content, title, body) VALUES\n')
 		sys.stdout.write(' (' + ',\n  '.join(quote(literal('@book_id'), path, compressed, content, title, body)) + ')')
