@@ -3,7 +3,7 @@
 
 <window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-	<script src="main.js"/>
+	<script src="index.js"/>
 
 	<hbox>
 		<menulist label="Book">
@@ -54,7 +54,7 @@
 				<spacer flex="1" />
 				<button label="Sync TOC"/>
 			</hbox>
-			<browser id="body" name="body" src="/" flex="1"/>
+			<browser id="body" name="body" src="about.php" flex="1"/>
 		</vbox>
 	</hbox>
 </window>
