@@ -17,7 +17,7 @@
 	$book = new Book($_GET['book_id']);
 	$query = $_GET['query'];
 	
-	echo '<textbox id="query" type="autocomplete" value="' . htmlspecialchars($query) . '" onkeypress="onQueryKeypress(event, ' . $book_id . ')"/>';
+	echo '<textbox id="query" type="autocomplete" value="' . htmlspecialchars($query) . '" onkeypress="onQueryKeypress(event, ' . $book->id . ')"/>';
 	
 	echo '<listbox seltype="single" flex="1" onselect="onSearchSelect(event, ' . $book->id . ')">';
 	if($query)
