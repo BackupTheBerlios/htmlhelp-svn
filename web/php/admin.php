@@ -6,7 +6,7 @@
 	$password = $_COOKIE['Password'];
 	if(isset($password))
 	{
-		if($password == $secret)
+		if($password == $admin_password)
 			$authenticated = 1;
 		else
 			setcookie("Password", "", time() - 3600);
@@ -16,7 +16,7 @@
 	if($action == 'login')
 	{
 		$password = $_POST['password'];
-		if($password == $secret)
+		if($password == $admin_password)
 		{
 			$authenticated = 1;
 			setcookie('Password', $password);
@@ -35,18 +35,40 @@
 	
 	echo '<div class="header">Administration</div>';
 
+	function mysql_import($file)
+	{
+		// FIXME: do not rely on the mysql executable
+
+		global $admin_mysql, $db_server, $db_username, $db_password, $db_database;
+		
+		echo '<p>Importing ' . $file . '...</p>';
+		echo '<pre>';
+		echo "$admin_mysql -h $db_server -u $db_username -pXXXXXXXX $db_database < $file\n";
+		$handle = popen("$admin_mysql -h $db_server -u $db_username -p$db_password -e \"source $file\" $db_database", 'r');
+		do {
+			$data = fread($handle, 8192);
+			if(!strlen($data))
+				break;
+			echo htmlspecialchars($data);
+		} while (true);
+		echo '</pre>';
+		echo '<p>Exit code: ' . pclose($handle) . '</p>';
+	}
+	
 	echo '<div>';
 	if($authenticated)
 	{
-		if($action == 'insert')
+		if($action == 'import')
 		{
-			$file = $_FILES['sqldump']['tmp_name'];
+			$file = $admin_directory . '/' . $_POST['file'];
+			mysql_import($file);
+		}
+		
+		if($action == 'upload')
+		{
+			$file = $_FILES['file']['tmp_name'];
 			if(is_uploaded_file($file))
-			{
-				echo '<pre>';
-				echo `$mysql -h$db_server -u$db_username -p$db_password $db_database < $file`;
-				echo '</pre>';
-			}
+				mysql_import($file);
 		}
 		
 		if($action == 'delete')
@@ -73,17 +95,33 @@
 	}
 	else
 	{
+		if($admin_directory)
+		{
+			echo '<p>';
+			echo '<form action="admin.php" method="post">';
+			echo '<input type="hidden" name="action" value="import"/>';
+			echo '<select name="file">';
+			$dir = dir($admin_directory);
+			$ext = '.sql';
+			while(false !== ($entry = $dir->read()))
+				if(substr($entry, -strlen($ext)) == $ext)
+					echo '<option value="' . $entry . '">' . substr($entry, 0, -strlen($ext)) . '</option>';
+			echo '</select>';
+			echo '<input type="submit" value="Import">';
+			echo '</form>';
+			echo '</p>';
+		}
 		
 		echo '<p>';
 		echo '<form enctype="multipart/form-data" action="admin.php" method="POST">';
-		echo '<input type="hidden" name="action" value="insert"/>';
+		echo '<input type="hidden" name="action" value="upload"/>';
 		$MAX_FILE_SIZE = ini_get('upload_max_filesize');
 		if(substr($MAX_FILE_SIZE, -1) == 'M')
 			$MAX_FILE_SIZE = intval(substr($MAX_FILE_SIZE, 0, -1))*1024*1024;
 		if($MAX_FILE_SIZE)
 			echo '<input type="hidden" name="MAX_FILE_SIZE" value="' . $MAX_FILE_SIZE . '">';
-		echo '<input type="file" name="sqldump">';
-		echo '<input type="submit" value="Insert">';
+		echo '<input type="file" name="file">';
+		echo '<input type="submit" value="Upload">';
 		echo '</form>';
 		echo '</p>';
 
