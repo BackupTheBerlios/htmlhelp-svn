@@ -5,7 +5,7 @@ function onTocSelect(event, book_id)
 	var tree = event.target;
 	var link = tree.view.getCellValue(tree.currentIndex, "name");
 
-	if(!noSelect)
+	if(!noSelect && link)
 		parent.content.location.href = "page.php/" + book_id + "/" + link;
 }
 

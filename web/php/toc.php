@@ -76,7 +76,11 @@
 				
 			echo '<ul class="tree">';
 			echo '<li class="expanded">';
-			echo '<a href="page.php/' . $book_id . '/' . $path . ($anchor ? '#' . $anchor : '') . '">' . htmlspecialchars($name, ENT_NOQUOTES, $encoding) . '</a>';
+			if($path)
+				echo '<a href="page.php/' . $book_id . '/' . $path . ($anchor ? '#' . $anchor : '') . '">' . htmlspecialchars($name, ENT_NOQUOTES, $encoding) . '</a>';
+			else
+				echo htmlspecialchars($name, ENT_NOQUOTES, $encoding);
+			
 			walk_children(query_toc($number), $depth - 1);
 			echo '</li>';
 			echo '</ul>';
