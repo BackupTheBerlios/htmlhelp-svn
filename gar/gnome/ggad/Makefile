@@ -1,7 +1,8 @@
 GARNAME = ggad
-GARVERSION = 1.0
+MASTER_SITES = cvs://anonymous@anoncvs.gnome.org/cvs/gnome/
+DISTFILES = GGAD
 
-#BOOKS = $(WORKSRC)/ggad.sgml
+BOOKS = $(WORKDIR)/GGAD/DocBook/ggad.sgml
 
 DSSSL = book-html.dsl
 
@@ -9,15 +10,10 @@ FIGURES = figures/*
 
 include ../../gar.mk
 
-#post-extract:
-#	cvs -d:pserver:anonymous@anoncvs.gnome.org:/cvs/gnome co GGAD/figures
-#	cvs -d:pserver:anonymous@anoncvs.gnome.org:/cvs/gnome co GGAD/DocBook
-#	cp -a $(FILEDIR) $(WORKSRC)
+checksum-GGAD:
+	$(DONADA)
 
-#JADE_FLAGS += -c $(WORKSRC)/catalog
+JADE_FLAGS += -c $(WORKSRC)/catalog
 
-#$(WORKSRC)/ggad.sgml: $(WORKSRC)/book.sgml
-#	sed -e '1s/1\.0/1.1/' $< > $@
-	
-#post-clean:
-#	rm -f ggad.sgml
+$(WORKDIR)/GGAD/DocBook/ggad.sgml: $(WORKDIR)/GGAD/DocBook/book.sgml
+	sed -e '1s/1\.0/1.1/' $< > $@
