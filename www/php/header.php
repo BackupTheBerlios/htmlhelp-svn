@@ -7,7 +7,7 @@
 	include 'header.inc.php';
 ?>
 	<body>
-		<div id="search">
+		<div class="search">
 			<form action="search.php" target="side">
 				<input type="hidden" name="book_id" value="<?php echo $book->id; ?>" />
 				<input type="text" name="query" value="<?php echo $query; ?>"/>

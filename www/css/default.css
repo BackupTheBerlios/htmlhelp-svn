@@ -52,9 +52,10 @@ a {
 
 /* Search */
 
-#search {
+.search {
 	margin-top: 18px;
 	margin-right: 6px;
+
 	float: right;
 	clear: none;
 }
@@ -64,6 +65,7 @@ a {
 
 div.sidebar {
 	width: 256px;
+
 	float: left;
 	clear: left;
 }
@@ -102,6 +104,7 @@ div.sidebar {
 
 #catalog {
 	font-size: 16px;
+
 	margin-top: 128px;
 	margin-bottom: 128px;
 	margin-left: 256px;
