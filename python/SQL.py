@@ -13,7 +13,7 @@ if 0:
 			
 	connection.close()
 
-import os.path, posixpath, mimetypes
+import os.path, posixpath, mimetypes, sys
 
 import Book
 
@@ -26,8 +26,22 @@ def guess_type(path):
 		return 'application/octet-stream'
 
 
-def quote(str):
-	return repr(str)
+def quote(s):
+
+	s = s.replace('\\', '\\\\')
+	
+	s = s.replace('\0', '\\0')
+	s = s.replace('\b', '\\b')
+	s = s.replace('\n', '\\n')
+	s = s.replace('\r', '\\r')
+	s = s.replace('\t', '\\t')
+	s = s.replace('\z', '\\z')
+
+	s = s.replace("'", "\\'")
+	s = s.replace('"', '\\"')
+
+	return "'" + s + "'"
+
 
 #######################################################################
 # Dump a book into a SQL language file
@@ -48,21 +62,17 @@ def dump_book(book):
 
 def dump_contents(contents):
 	print "INSERT INTO `toc` (`book_id`, `parent_id`, `number`, `name`, `link`) VALUES"
-	parent_id = 0
-	id = parent_id + 1
-	for entry in contents:
-		id = dump_contents_entry(entry, id, parent_id)
-	print ";"
+	id = dump_contents_entry(contents, 0, 1)
 
 	print "UPDATE `toc` SET `parent_id` = LAST_INSERT_ID() + `parent_id` - 1 WHERE `book_id` = @book_id AND `parent_id` != 1;"
 	
 	
-def dump_contents_entry(entry, id, parent_id):
-	print "  (@book_id, %d, %d, %s, %s)," % (parent_id, entry.number, quote(entry.name.encode('utf-8')), quote(entry.link.encode('utf-8')))
-	parent_id = id
+def dump_contents_entry(entry, parent_id, last):
 	id = parent_id + 1
 	for subentry in entry:
-		id = dump_contents_entry(subentry, id, parent_id)
+		sublast = last and subentry is entry[-1]
+		print "  (@book_id, %d, %d, %s, %s)%s" % (parent_id, subentry.number, quote(subentry.name.encode('utf-8')), quote(subentry.link.encode('utf-8')), (sublast and not len(subentry)) and ";" or ",")
+		id = dump_contents_entry(subentry, id, sublast)
 	
 	return id
 	
@@ -84,16 +94,16 @@ def dump_index_entry(entry, id, parent_id):
 
 
 def dump_archive(archive):
-	print "INSERT INTO `pages` (book_id, path, data) VALUES"
-	for path in archive.list():
-		data = archive.open(path).read()
-		print "  (@book_id, %s, %s)," % (quote(path.encode('utf-8')), quote(data))
-	print ";"
+	print "INSERT INTO `pages` (book_id, path, content) VALUES"
+	paths = archive.list()
+	for path in paths:
+		last = path is paths[-1]
+		content = archive.open(path).read()
+		print "  (@book_id, %s, %s)%s" % (quote(path.encode('utf-8')), quote(content), last and ';' or ',')
 
 
 def main():
-	import sys
-	from DevHelp import factory
+	from HTB import factory
 	
 	for arg in sys.argv[1:]:
 		try:
