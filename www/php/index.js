@@ -10,4 +10,7 @@ function onBookCommand(event)
 
   var index = document.getElementById("index");
   index.setAttribute("src", "_index.xul.php?book_id=" + book_id);
+  
+  var search = document.getElementById("search");
+  search.setAttribute("src", "search.xul.php?book_id=" + book_id);
 }

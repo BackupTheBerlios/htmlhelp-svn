@@ -36,9 +36,7 @@
 				
 				<iframe id="index" src="_index.xul.php" flex="1"/>
 				
-				<tabpanel>
-					<listbox flex="1"/>
-				</tabpanel>
+				<iframe id="search" src="search.xul.php" flex="1"/>
 			</tabpanels>
 		</tabbox>
 		
