@@ -31,7 +31,6 @@ def _extract_callback(h, ui, base_path):
 		remain = ui.length
 		while remain:
 			buffer = chmlib.chm_retrieve_object(h, ui, offset, 32768)
-			print "hi"
 			if buffer:
 				fout.write(buffer)
 				print len(buffer)
@@ -41,6 +40,7 @@ def _extract_callback(h, ui, base_path):
 				remain -= len(buffer)
 			else:
 				sys.stderr.write("incomplete file: %s\n" % ui.path);
+				break
 	
 	else:
 		if rmkdir(path) == -1:
