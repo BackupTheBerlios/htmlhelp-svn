@@ -79,11 +79,8 @@ XSLTPROC = xsltproc
 XSLTPROC_FLAGS = \
 	--docbook
 XSLTPROC_FLAGS_DEVHELP = \
-	--stringparam "generate.toc" "" \
-	--stringparam "devhelp.spec" "book.devhelp" \
 	--stringparam "devhelp.name" "$(*F)" \
-	--stringparam "devhelp.version" "$(GARVERSION)" \
-	--param devhelp.autolabel 1
+	--stringparam "devhelp.version" "$(GARVERSION)"
 
 DEVHELP_XSL = $(GARDIR)/stylesheets/devhelp.xsl
 
@@ -100,8 +97,6 @@ devhelp.%: %.xml
 	rm -rf $@
 	mkdir -p $@
 	$(XSLTPROC) $(XSLTPROC_FLAGS) $(XSLTPROC_FLAGS_DEVHELP) -o $@/ $(XSL_) $<
-	mkdir -p $@/book
-	mv $@/*.html $@/book
 ifdef FIGURES
 	cp -r $(FIGURES) $@/book
 endif

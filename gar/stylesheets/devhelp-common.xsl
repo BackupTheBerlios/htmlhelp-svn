@@ -12,7 +12,7 @@
 
 <!-- Parameters -->
 
-<xsl:param name="devhelp.autolabel" select="0"/>
+<xsl:param name="devhelp.autolabel" select="1"/>
 <xsl:param name="devhelp.default.topic" select="''"/>
 <xsl:param name="devhelp.encoding" select="'iso-8859-1'"/>
 <xsl:param name="devhelp.chapters.section.depth" select="5"/>
