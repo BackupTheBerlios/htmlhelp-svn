@@ -22,9 +22,12 @@
 	echo '<textbox id="query" type="autocomplete" value="' . htmlspecialchars($query) . '" onkeypress="onQueryKeypress(event, ' . $book_id . ')"/>';
 	
 	echo '<listbox seltype="single" flex="1" onselect="onSearchSelect(event, ' . $book_id . ')">';
-	$result = mysql_query('SELECT `path`, `title` FROM `page` WHERE book_id=' . $book_id . ' AND MATCH (`title`, `body`) AGAINST (\'' . mysql_escape_string($query) . '\'' . (boolean_mode ? ' IN BOOLEAN MODE' : '') . ')');
-	while(list($path, $title) = mysql_fetch_row($result))
-		echo '<listitem label="' . htmlspecialchars($title) . '" value="' . $path .'"/>';
+	if($query)
+	{
+		$result = mysql_query('SELECT `path`, `title` FROM `page` WHERE book_id=' . $book_id . ' AND MATCH (`title`, `body`) AGAINST (\'' . mysql_escape_string($query) . '\'' . ($boolean_mode ? ' IN BOOLEAN MODE' : '') . ')');
+		while(list($path, $title) = mysql_fetch_row($result))
+			echo '<listitem label="' . htmlspecialchars($title) . '" value="' . $path .'"/>';
+	}
 	echo '</listbox>';
 
 	echo '</window>';
