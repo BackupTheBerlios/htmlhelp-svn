@@ -1,5 +1,9 @@
 #!/usr/bin/python
+# -*- coding: iso8859-1 -*-
 """Modified CGI HTTP server to handle PHP scripts."""
+
+
+__author__ = "José Fonseca"
 
 
 import os
@@ -8,7 +12,7 @@ import CGIHTTPServer
 import posixpath
 
 
-class MyRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
+class PHPHTTPRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
 
 	indices = [
 		'index.html', 
@@ -85,4 +89,4 @@ class MyRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
 
 
 if __name__ == '__main__':
-	CGIHTTPServer.test(MyRequestHandler)
+	CGIHTTPServer.test(PHPHTTPRequestHandler)

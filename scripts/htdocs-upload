@@ -2,6 +2,7 @@
 
 rsync \
 	-rtzv \
+	--exclude '.*.sw*' \
 	--exclude '/cgi-bin' \
 	--exclude '/books/download' \
 	--exclude '/web/php' \
@@ -13,6 +14,7 @@ rsync \
 rsync \
 	-rtzv \
 	--delete \
+	--exclude '.*.sw*' \
 	--exclude 'awstats*.txt' \
 	"$@" \
 	~/projects/htmlhelp/htdocs/cgi-bin/ \
@@ -21,8 +23,10 @@ rsync \
 rsync \
 	-rtzv \
 	--delete \
+	--exclude '.*.sw*' \
 	--exclude '.svn' \
 	--exclude 'config.inc.php' \
+	--exclude 'tmp' \
 	"$@" \
 	~/projects/htmlhelp/web/php/ \
 	jrfonseca@shell.berlios.de:/home/groups/htmlhelp/htdocs/web/php/
