@@ -1,18 +1,16 @@
 /*!
  * \file book.hpp
- * HTML help book abstraction.
+ * \brief HTML help book abstraction.
  */
 
 #ifndef BOOK_HPP
 #define BOOK_HPP
 
 
-#include <iostream>
-#include <list>
-#include <memory>
 #include <string>
 
 
+//! HTML help library namespace
 namespace htmlhelp {
 
 	
@@ -24,170 +22,159 @@ typedef std::wstring name;
 typedef std::string link;
 
 
-//! Shared by TOC and index entry 
-class entry
+typedef unsigned number;
+
+
+class cursor
 {
-	protected:
-		name _name;
-		link _link;
-
 	public:
-		entry(void)
-		{
-		}
-
-		entry(const name n, const link l) : _name(n), _link(l)
-		{
-		}
-		
-		//! Set the name of this entry
-		void set_name(const name & n)
-		{
-			_name = n;
-		}
-		
-		//! Get the name of this entry
-		const name & get_name(void) const
-		{
-			return _name;
-		}
-		
-		//! Set the link of this entry
-		void set_link(const link & l)
-		{
-			_link = l;
-		}
-		
-		//! Get the link of this entry
-		const link & get_link(void) const
-		{
-			return _link;
-		}
+		//! Destructor
+		virtual ~cursor() {}
 } ;
+
+
+class slist_cursor: public cursor
+{
+	public:
+		//! Advance to the next entry
+		virtual bool next(void){ return false; }
+} ;
+
+class list_cursor: public slist_cursor
+{
+	public:
+		//! Advance to the previous entry
+		virtual bool prev(void){ return false; }
+} ;
+
+class tree_cursor: public list_cursor
+{
+	public:
+		//! Advance to the parent entry
+		virtual bool parent(void) { return false; }
 		
+		//! Advance to the first children entry
+		virtual bool children(void) { return false; }
+} ;
 
 //! Entry in a table of contents
-class contents_entry: public entry
+class contents_cursor: public cursor
 {
-	protected:
-		typedef std::list<contents_entry> contents_entry_list;
-		
-		contents_entry_list _children;
-
 	public:
-		typedef contents_entry_list::iterator iterator;
+		//! Copy
+		virtual contents_cursor * copy(void) const = 0;
 		
-		typedef contents_entry_list::const_iterator const_iterator;
-			
-		iterator begin(void)
-		{
-			return _children.begin();
-		}
+		//! Get the entry number
+		virtual number get_number(void) const = 0;
 		
-		const_iterator begin(void) const
-		{
-			return _children.begin();
-		}
-
-		iterator end(void)
-		{
-			return _children.end();
-		}
+		//! Get the entry name
+		virtual name get_name(void) const = 0;
 		
-		const_iterator end(void) const
-		{
-			return _children.end();
-		}
-		
-		void push_back(contents_entry c)
-		{
-			_children.push_back(c);
-		}
-		
+		//! Get the entry link
+		virtual link get_link(void) const = 0;
 } ;
 
 
-//! Book table of contents
-typedef contents_entry contents;
+//! Link in an index entry
+class index_link_cursor: list_cursor
+{
+	public:
+		//! Get the link of this entry
+		virtual link get_link(void) const = 0;
+} ;
 
 
 //! Entry in an index
-typedef entry index_entry;
-
-
-//! Book index
-typedef std::list<index_entry> index;
-
-
-//! A resource (HTML page, image, etc.) in a book
-typedef std::istream resource;
-
-
-//! Abstract HTML help book
-class book
+class index_cursor: tree_cursor
 {
-	protected:
-		contents _contents;
-		index _index;
-		
 	public:
-		book ();
-
-		virtual ~book();
-
-		//! Get the book's title
-		const name & get_title(void) const
-		{
-			return _contents.get_name();
-		}
+		//! Copy
+		virtual contents_cursor * copy(void) const = 0;
 		
-		//! Get the default link
-		const link & get_default_link(void) const
-		{
-			return _contents.get_link();
-		}
+		//! Get the entry name
+		virtual name get_name(void) const = 0;
+		
+		//! Get the links of this entry
+		virtual index_link_cursor * get_links(void) const = 0;
 
-		//! Get the book table of contents
-		const contents & get_contents(void) const
-		{
-			return _contents;
-		}
-
-		//! Get the book index
-		const index & get_index(void) const
-		{
-			return _index;
-		}
-
-		//! Get a resource
-		virtual resource get_resource(const link & link) const = 0;
 } ;
 
 
-//! Reference counted pointer to a book;
-//typedef auto_ptr<const book> book_reference;
-typedef const book * book_reference;
+typedef std::string type;
+
+
+typedef std::size_t length;
+
+
+//! Book page (HTML page, image, etc.)
+class page_cursor: list_cursor
+{
+	public:
+		//! Get the link associated with the resource
+		virtual link get_link(void) const = 0;
+
+		//! Get the content type
+		virtual type get_type(void) const = 0;
+
+		//! Get the content length
+		virtual length get_length(void) const = 0;
+
+		//! Read a buffer
+		virtual length read(void * buffer, std::size_t length) = 0;
+} ;
+
+
+//! Abstract HTML help book
+class book_cursor: list_cursor
+{
+	public:
+		//! Get the book title
+		virtual name get_title(void) const = 0;
+		
+		//! Get the default link
+		virtual link get_default_link(void) const = 0;
+
+		//! Get the book table of contents
+		virtual contents_cursor * get_contents(void) const = 0;
+
+		//! Get the book index
+		virtual index_cursor * get_index(void) const = 0;
+
+		//! Get the archive containing the book resources
+		virtual page_cursor * get_page(const link & _link) const = 0;
+		
+		virtual page_cursor * get_pages(void) const = 0;
+} ;
+
+
+typedef std::string path;
 
 
 //! A book factory
 class factory
 {
-	private:
-		typedef std::list<const factory *> factory_list;
-
-		static factory_list _factories;
-	
 	public:
-		factory();
-		
-		virtual ~factory();
+		//! Destructor
+		virtual ~factory() {}
 
-		virtual bool can_open(const std::string &f) const = 0;
-		
-		virtual book_reference open(const std::string &f) const = 0;
-			
-		static book_reference create(const std::string &f);
+		//! Attempt to open a book
+		virtual book_cursor * operator() (const path &filename) const = 0;
 } ;
+
+
+//! A catalog entry
+catalog
+{
+	public:
+		//! Destructor
+		virtual ~catalog_entry() {}
+
+		virtual book_cursor * get_books(void) const = 0;
+} ;
+
+
+//! A book catalog
+typedef catalog_entry catalog;
 
 
 }

@@ -9,14 +9,14 @@
 
 #include <iostream>
 
-#include "book.hpp"
+#include "generic.hpp"
 
 
 namespace htmlhelp {
 
 	
 //! DevHelp book
-class devhelp_book: public book
+class devhelp_book: public generic_book
 {
 	public:
 		virtual ~devhelp_book();
@@ -30,9 +30,9 @@ class devhelp_book: public book
 class devhelp_factory: public factory
 {
 	public:
-		bool can_open(const std::string &f) const;
+		virtual ~devhelp_factory();
 		
-		book_reference open(const std::string &f) const;
+		virtual book * operator() (const path &filename) = 0;
 } ;
 
 

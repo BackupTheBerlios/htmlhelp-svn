@@ -1,0 +1,40 @@
+# SConstruct
+
+
+env = Environment(
+	CCFLAGS = '-Wall -pedantic',
+	CPPPATH = [
+		'.', 
+		'/usr/include/libxml2'])
+
+htmlhelp = env.StaticLibrary(
+	target = 'htmlhelp', 
+	source = [
+		'book.cpp',
+		'devhelp.cpp',
+		'generic.cpp',
+		'sax.cpp',
+		'utf.cpp'])
+
+
+Default(htmlhelp)
+
+
+wxenv = env.Copy()
+import os
+for flag in os.popen('wx-config --cxxflags').read().split():
+    if(flag[:2]=='-D'):
+	wxenv.Append(CCFLAGS = ' ' + flag)
+    elif(flag[:2]=='-I'):
+	wxenv.Append(CPPPATH = [flag[2:]])
+for flag in os.popen('wx-config --libs').read().split():
+    if(flag[:2]=='-l'):
+	wxenv.Append(LIBS = [flag[2:]])
+    elif(flag[:2]=='-I'):
+	wxenv.Append(LIBPATH = [flag[2:]])
+
+
+env.Command(
+	target = 'doxygen', 
+	source = 'Doxyfile', 
+	action = ['doxygen'])
