@@ -8,8 +8,8 @@
 	
 	header('Content-type: application/vnd.mozilla.xul+xml');
 
-	echo '<?xml version="1.0" encoding="UTF-8"?' . '>';
-	echo '<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>';
+	echo '<?xml version="1.0" encoding="UTF-8"?>';
+	echo '<?xml-stylesheet href="skin.css" type="text/css"?>';
 
 	echo '
 <!-- 
@@ -48,15 +48,13 @@
 
 	echo '<vbox flex="3">';
 	
-	echo '<hbox>';
-	echo  '<button label="Back" oncommand="goBack(event);"/>';
-	echo  '<button label="Forward" oncommand="goForward(event);"/>';
-	echo  '<button label="Home" oncommand="goHome(event, ' . $book_id . ');"/>';
-	/*
-	echo  '<spacer flex="1" />';
-	echo  '<button label="Sync TOC"/>';
-	*/
-	echo '</hbox>';
+	echo '<toolbar>';
+	echo   '<toolbarbutton id="back-button" label="Back" oncommand="goBack(event);"/>';
+	echo   '<toolbarbutton id="forward-button" label="Forward" oncommand="goForward(event);"/>';
+	echo   '<toolbarbutton id="home-button" label="Home" oncommand="goHome(event, ' . $book_id . ');"/>';
+	echo   '<spacer flex="1" />';
+	echo   '<toolbarbutton id="print-button" label="Print" oncommand="print();"/>';
+	echo '</toolbar>';
 	
 	// Browser window
 	echo '<browser name="content" type="content-primary" src="page.php/' . $book_id . '/" flex="1"/>';

@@ -1,19 +1,22 @@
-Things to be done (by no particular order):
+			       To-do List
+
+
+Things to be done, by no particular order:
 
 - Be nicer to web caches for bandwith saving since generated TOCs and indexes
   can be quite big. Some resources are:
 
-  * http://www.mnot.net/cache_docs/
+  - http://www.mnot.net/cache_docs/
 
-  * http://www.ircache.net/cgi-bin/cacheability.py 
+  - http://www.ircache.net/cgi-bin/cacheability.py 
 
 - Better error handling (detection- and recovery-wise).
 
 - Work on usability, especially:
 
-  * Facilitate the navigation with lesser clicks.
+  - Facilitate the navigation with lesser clicks.
 
-  * Beautify the stylesheet to ease the reading.
+  - Beautify the stylesheet to ease the reading.
 
 - More commenting.
 
