@@ -126,7 +126,7 @@ class HTML:
 				f.write('<li class="closed">')
 			else:
 				f.write('<li class="none">')
-			f.write('<a href="%s" target="mainfrm">%s</a>' % (entry.link(), entry.title()))
+			f.write('<a href="%s" target="main">%s</a>' % (entry.link(), entry.title()))
 			if childs:
 				f.write('\n')
 				self.tree(f, childs, level + 1)
