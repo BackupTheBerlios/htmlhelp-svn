@@ -267,14 +267,14 @@ class BookResource(Resource):
 			'</head>\n'
 			'<body>\n' % encode(self.book.title))
 
-		self.walk_tree(request, self.book.contents, level = 1)
+		self.walk_contents(request, self.book.contents, level = 1)
 		
 		request.write(
 			'</body>\n'
 			'</html>\n')
 		request.finish()
 	
-	def walk_tree(self, f, entry, level = 1):
+	def walk_contents(self, f, entry, level = 1):
 		f.write('\t'*level)
 		if level == 1:
 			f.write('<ul>\n')
@@ -289,10 +289,50 @@ class BookResource(Resource):
 			f.write('<a href="%s" target="main">%s</a>' % (escape(child.link), encode(child.name)))
 			if child.children:
 				f.write('\n')
-				self.walk_tree(f, child, level + 1)
+				self.walk_contents(f, child, level + 1)
 				f.write('\t'*(level + 1))
 			f.write('</li>\n')
 		f.write('\t'*level + '</ul>\n')
+	
+	def render_index(self, request):
+		request.set_response(200)
+		request.set_header('Content-Type', 'text/html')
+		request.write(
+			'<html>\n'
+			'<head>\n'
+			'\t<title>%s</title>\n'
+			'\t<link href="../styles/tree.css" type="text/css" rel="stylesheet" />\n'
+			'\t<script type="text/javascript" src="../scripts/tree.js" />\n'
+			'</head>\n'
+			'<body>\n' % encode(self.book.title))
+
+		self.walk_index(request, self.book.index, level = 1)
+		
+		request.write(
+			'</body>\n'
+			'</html>\n')
+		request.finish()
+	
+	def walk_index(self, f, entry, level = 1):
+		f.write('\t'*level)
+		if level == 1:
+			f.write('<ul>\n')
+		else:
+			f.write('<ul class="closed">\n')
+		for child in entry:
+			f.write('\t'*(level + 1))
+			if len(child):
+				f.write('<li class="closed">')
+			else:
+				f.write('<li class="none">')
+			f.write('<a href="%s" target="main">%s</a>' % (escape(child.link), encode(child.name)))
+			if child.children:
+				f.write('\n')
+				self.walk_index(f, child, level + 1)
+				f.write('\t'*(level + 1))
+			f.write('</li>\n')
+		f.write('\t'*level + '</ul>\n')
+	
 
 
 class CatalogResource(Resource):
