@@ -5,7 +5,7 @@ MASTER_SITES =
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
 PATCHFILES = 
 # put your e-mail address in here, as in: 	Foo Bar <foo@bar.com>
-MAINTAINER =
+MAINTAINER = Unclaimed Package <lnx-bbc-devel@zork.net>
 # GPL, GPL2, BSD, MIT, etc. Or add the URL to any custom license
 LICENSE = 
 
@@ -20,7 +20,7 @@ endef
 # LIBDEPS are for libraries, and DEPENDS are for everything else
 LIBDEPS =
 DEPENDS =
-# Builddeps are installed in $(BUILD_PREFIX) in their entirety
+# Builddeps are installed in the build DESTIMG
 BUILDDEPS =
 
 

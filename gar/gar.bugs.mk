@@ -1,6 +1,5 @@
 #-*- mode: Fundamental; tab-width: 4; -*-
 # ex:ts=4
-# $Id: gar.bugs.mk,v 1.19 2002/11/15 02:41:02 nick Exp $
 
 # Copyright (C) 2001 Nick Moffitt
 # 
@@ -18,7 +17,7 @@ BUGMAINT ?= $(WORKDIR)/Maintainers
 BUGDESC ?= $(WORKDIR)/pseudo-packages.description
 MAINTAINER ?= Unclaimed Package <lnx-bbc-devel@zork.net>
 DESCRIPTION ?= This package has no description.  Please mail $(MAINTAINER) and ask that one be added.
-CVSURL ?= http://gar.lnx-bbc.org/cvs/gar/
+CVSURL ?= http://cvs.lnx-bbc.org/cvs/gar/
 
 debbugs:
 	@echo "	Package: $(GARNAME)"
@@ -102,6 +101,29 @@ export HTMLTEMPLATE
 webpages:
 	@echo -e $${HTMLTEMPLATE} > $(HTMLDIR)/$(GARNAME).html
 	@echo "<li><dt><a href=\"$(CATEGORYURL)$(GARNAME).html\">$(GARNAME)</a> </dt><dd> $(DESCRIPTION)</blockquote></dd></li>" >> $(HTMLINDEX)
+
+
+htmldeps:
+	@echo "<html><head> <title>Dependency tree for $(GARNAME)</title>"
+	@echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"bbc.css\"> </head><body>"
+	@echo "<h1>$(GARNAME) Dependency Tree</h1>"
+	@echo "<h2>Color Legend:</h2><ul>"
+	@echo "<li class=\"main\">main</li>"
+	@echo "<li class=\"singularity\">singularity</li>"
+	@echo "<li class=\"build\">build</li>"
+	@echo "<li class=\"rootbin\">rootbin</li>"
+	@echo "<li class=\"lnximg\">lnximg</li></ul>"
+	@echo "<h2>Dependency Tree:</h2> <ol>"
+	@$(MAKE) -s htmldep
+	@echo "</ol></body></html>"
+
+htmldep:
+	@$(foreach IMG,$(IMGDEPS),for dep in $(filter-out $($(IMG)_NODEPEND),$($(IMG)_DEPENDS)); \
+	do echo -e "<li class=\"$(IMG)\"><span class=\"lynxonly\">$(IMG): </span>$$dep</li>"; \
+	echo -e "<ol>"; \
+	$(MAKE) -s -C $(GARDIR)/$$dep DESTIMG=$(IMG) htmldep; \
+	echo -e "</ol>"; \
+	done ;) true
 
 webtest:
 	@echo -e $${HTMLTEMPLATE}
