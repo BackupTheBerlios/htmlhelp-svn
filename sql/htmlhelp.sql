@@ -1,11 +1,11 @@
 # phpMyAdmin SQL Dump
-# version 2.5.3-rc3
+# version 2.5.3
 # http://www.phpmyadmin.net
 #
 # Host: localhost
-# Generation Time: Oct 01, 2003 at 05:37 PM
-# Server version: 4.0.14
-# PHP Version: 4.3.3RC3
+# Generation Time: Oct 30, 2003 at 11:18 PM
+# Server version: 4.0.16
+# PHP Version: 4.3.3
 # 
 # Database : `htmlhelp`
 # 
@@ -17,16 +17,13 @@
 #
 
 CREATE TABLE `books` (
-  `id` int(11) unsigned NOT NULL auto_increment,
-  `title` text NOT NULL,
-  `default_link` text NOT NULL,
-  PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
-
-#
-# Dumping data for table `books`
-#
-
+  `id` smallint(11) unsigned NOT NULL auto_increment,
+  `title` tinytext NOT NULL,
+  `default_path` varchar(255) binary NOT NULL default '',
+  `default_anchor` varchar(31) binary NOT NULL default '',
+  PRIMARY KEY  (`id`),
+  FULLTEXT KEY `title` (`title`)
+) TYPE=MyISAM;
 
 # --------------------------------------------------------
 
@@ -35,19 +32,14 @@ CREATE TABLE `books` (
 #
 
 CREATE TABLE `index` (
-  `id` int(11) unsigned NOT NULL auto_increment,
-  `book_id` int(10) unsigned NOT NULL default '0',
-  `parent_id` int(11) unsigned NOT NULL default '0',
-  `number` int(10) unsigned NOT NULL default '0',
-  `term` text NOT NULL,
+  `id` mediumint(11) unsigned NOT NULL auto_increment,
+  `book_id` smallint(10) unsigned NOT NULL default '0',
+  `parent_id` mediumint(11) unsigned NOT NULL default '0',
+  `term` tinytext NOT NULL,
   PRIMARY KEY  (`id`),
-  KEY `parent_id` (`book_id`,`parent_id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
-
-#
-# Dumping data for table `index`
-#
-
+  KEY `parent_id` (`book_id`,`parent_id`),
+  FULLTEXT KEY `term` (`term`)
+) TYPE=MyISAM;
 
 # --------------------------------------------------------
 
@@ -56,14 +48,11 @@ CREATE TABLE `index` (
 #
 
 CREATE TABLE `index_links` (
-  `index_id` int(11) NOT NULL default '0',
-  `link` text NOT NULL
+  `index_id` mediumint(11) NOT NULL default '0',
+  `path` varchar(255) binary NOT NULL default '',
+  `anchor` varchar(31) binary NOT NULL default '',
+  KEY `index_id` (`index_id`)
 ) TYPE=MyISAM;
-
-#
-# Dumping data for table `index_links`
-#
-
 
 # --------------------------------------------------------
 
@@ -72,18 +61,14 @@ CREATE TABLE `index_links` (
 #
 
 CREATE TABLE `pages` (
-  `id` int(11) NOT NULL auto_increment,
-  `book_id` int(11) NOT NULL default '0',
+  `book_id` smallint(11) NOT NULL default '0',
   `path` varchar(255) binary NOT NULL default '0',
   `content` mediumblob NOT NULL,
-  PRIMARY KEY  (`id`),
-  KEY `path` (`book_id`,`path`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
-
-#
-# Dumping data for table `pages`
-#
-
+  `title` text,
+  `plaintext` mediumtext,
+  PRIMARY KEY  (`book_id`,`path`),
+  FULLTEXT KEY `fulltext` (`title`,`plaintext`)
+) TYPE=MyISAM;
 
 # --------------------------------------------------------
 
@@ -92,17 +77,13 @@ CREATE TABLE `pages` (
 #
 
 CREATE TABLE `toc` (
-  `id` int(11) unsigned NOT NULL auto_increment,
-  `book_id` int(10) unsigned NOT NULL default '0',
-  `parent_id` int(11) unsigned NOT NULL default '0',
-  `number` int(10) unsigned NOT NULL default '0',
+  `book_id` int(11) unsigned NOT NULL default '0',
+  `number` smallint(11) unsigned NOT NULL default '0',
+  `parent_number` smallint(11) unsigned NOT NULL default '0',
   `name` text NOT NULL,
-  `link` text NOT NULL,
-  PRIMARY KEY  (`id`),
-  KEY `parent_id` (`book_id`,`parent_id`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
-
-#
-# Dumping data for table `toc`
-#
-
+  `path` varchar(255) binary NOT NULL default '',
+  `anchor` varchar(31) binary NOT NULL default '',
+  PRIMARY KEY  (`book_id`,`number`),
+  KEY `parent_number` (`book_id`,`parent_number`),
+  KEY `path` (`book_id`,`path`)
+) TYPE=MyISAM;
