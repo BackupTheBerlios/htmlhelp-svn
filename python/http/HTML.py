@@ -14,7 +14,7 @@ else:
 
 
 def guess_type(path):
-        base, ext = posixpath.splitext(path)
+	base, ext = posixpath.splitext(path)
 	if ext in mimetypes.types_map:
 		return mimetypes.types_map[ext]
 	else:
