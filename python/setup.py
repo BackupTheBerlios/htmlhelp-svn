@@ -5,7 +5,7 @@ from distutils.core import setup, Extension
  
 chmlib = Extension(
 	'_chmlib', 
-	sources = ['chmlib/chmlib.i'],
+	sources = ['chmlib.i'],
 	libraries = ['chm'])
 
 setup(
@@ -15,7 +15,6 @@ setup(
 	author = 'José Fonseca',
 	author_email = 'jrfonseca@users.berlios.de',
 	url = 'http://htmlhelp.berlios.de/',
-	package_dir = {'': 'chmlib', 'HTMLHelp': 'HTMLHelp'},
 	packages = ['HTMLHelp'],
 	py_modules = ['chmlib'],
 	ext_modules = [chmlib])
