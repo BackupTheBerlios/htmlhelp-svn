@@ -25,13 +25,13 @@
 		echo '| <a href="toc.php?book_id=' . $book_id . '">Contents</a>';
 		echo '| <a href="_index.php?book_id=' . $book_id . '">Index</a>';
 	}
+	echo '| <a href="search.php?book_id=' . $book_id . '">Search</a>';
 	echo '</span>';
+	/*
 	echo '<span class="right">';
 	echo '<form class="search" action="search.php">';
 	
-	/*
-	echo '<input type="hidden" name="book_id" value="' . $book_id .'"/>';
-	*/
+	//echo '<input type="hidden" name="book_id" value="' . $book_id .'"/>';
 	$books = mysql_query('SELECT `id`, `title` FROM `book`');
 	echo '<select name="book_id">';
 	echo '<option value="0">All</option>';
@@ -50,6 +50,7 @@
 	
 	echo '</form>';
 	echo '</span>';
+	*/
 	echo '</div>';
 	echo '</body>';
 	
