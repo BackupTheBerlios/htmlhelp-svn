@@ -1,7 +1,6 @@
 <?php
 	include 'config.inc.php';
-	include 'mysql.inc.php';
-	include 'mysql_version.inc.php';
+	include 'book.inc.php';
 
 	# Enable HTTP compression
 	ob_start("ob_gzhandler");
@@ -15,18 +14,20 @@
 
 	echo '<script src="search.js"/>';
 	
-	$book_id = intval($_GET['book_id']);
+	$book = new Book($_GET['book_id']);
 	$query = $_GET['query'];
-	$boolean_mode = intval($_GET['boolean_mode']) && mysql_check_version('4.0.1');
 	
 	echo '<textbox id="query" type="autocomplete" value="' . htmlspecialchars($query) . '" onkeypress="onQueryKeypress(event, ' . $book_id . ')"/>';
 	
-	echo '<listbox seltype="single" flex="1" onselect="onSearchSelect(event, ' . $book_id . ')">';
+	echo '<listbox seltype="single" flex="1" onselect="onSearchSelect(event, ' . $book->id . ')">';
 	if($query)
 	{
-		$result = mysql_query('SELECT `path`, `title` FROM `page` WHERE book_id=' . $book_id . ' AND MATCH (`title`, `body`) AGAINST (\'' . mysql_escape_string($query) . '\'' . ($boolean_mode ? ' IN BOOLEAN MODE' : '') . ')');
-		while(list($path, $title) = mysql_fetch_row($result))
+		$entries = $book->search($query);
+		foreach($entries as $entry)
+		{
+			list($title, $path) = $entry;
 			echo '<listitem label="' . htmlspecialchars($title) . '" value="' . $path .'"/>';
+		}
 	}
 	echo '</listbox>';
 

@@ -1,7 +1,6 @@
 <?php
 	
 	include 'config.inc.php';
-	include 'mysql.inc.php';
 
 	// For link backward compatability
 	if($book_id = intval($_GET['book_id']))

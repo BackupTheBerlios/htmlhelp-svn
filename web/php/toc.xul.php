@@ -1,6 +1,6 @@
 <?php
 	include 'config.inc.php';
-	include 'mysql.inc.php';
+	include 'book.inc.php';
 
 	# Enable HTTP compression
 	ob_start("ob_gzhandler");
@@ -14,48 +14,48 @@
 
 	echo '<script src="toc.js"/>';
 
-	$book_id = intval($_GET['book_id']);
+	$book = new Book($_GET['book_id']);
 	
 	echo '<button label="Sync" oncommand="onButtonCommand(event)"/>';
 						
-	echo '<tree id="tree" flex="1" seltype="single" hidecolumnpicker="true" onselect="onTocSelect(event, ' . $book_id . ')">';
+	echo '<tree id="tree" flex="1" seltype="single" hidecolumnpicker="true" onselect="onTocSelect(event, ' . $book->id . ')">';
 
 	echo '<treecols>';
 	echo '<treecol id="name" hideheader="true" primary="true" flex="1"/>';
 	echo '</treecols>';
 
-	function walk_toc($book_id, $number, $title, $path, $anchor)
+	function walk_toc_entry($title, $link, $children)
 	{
-		$result = mysql_query('SELECT `no`, `title`, `path`, `anchor` FROM `toc_entry` WHERE `book_id`=' . $book_id . ' AND `parent_no`=' . $number . ' ORDER BY `no`');
-		
-		if(mysql_num_rows($result))
+		if(count($children))
 			echo '<treeitem container="true">';
 		else
 			echo '<treeitem>';
 			
 		echo '<treerow>';
-		echo '<treecell label="' . htmlspecialchars($title) . '" value = "' . $path . ($anchor ? '#' . $anchor : '') . '"/>';
+		echo '<treecell label="' . htmlspecialchars($title) . '" value = "' . $link . '"/>';
 		echo '</treerow>';
 
-		if(mysql_num_rows($result))
-		{
-			echo '<treechildren>';
-			while(list($number, $title, $path, $anchor) = mysql_fetch_row($result))
-				walk_toc($book_id, $number, $title, $path, $anchor);
-			echo '</treechildren>';
-		}
+		walk_toc_entries($children);
 		
 		echo '</treeitem>';
 	}
 
-	$result = mysql_query('SELECT `no`, `title`, `path`, `anchor` FROM `toc_entry` WHERE `book_id`=' . $book_id . ' AND `parent_no`=0 ORDER BY `no`');
-	if(mysql_num_rows($result))
+	function walk_toc_entries($entries)
 	{
-		echo '<treechildren>';
-		while(list($number, $title, $path, $anchor) = mysql_fetch_row($result))
-			walk_toc($book_id, $number, $title, $path, $anchor);
-		echo '</treechildren>';
+		if(count($entries))
+		{
+			echo '<treechildren>';
+			foreach($entries as $entry)
+			{
+				list($title, $link, $children) = $entry;
+				walk_toc_entry($title, $link, $children);
+			}
+			echo '</treechildren>';
+		}
 	}
+
+	$entries = $book->toc();
+	walk_toc_entries($entries);
 	
 	echo '</tree>';
 	

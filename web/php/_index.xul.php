@@ -1,7 +1,7 @@
 <?php
 	
 	include 'config.inc.php';
-	include 'mysql.inc.php';
+	include 'book.inc.php';
 
 	# Enable HTTP compression
 	ob_start("ob_gzhandler");
@@ -15,17 +15,20 @@
 
 	echo '<script src="_index.js"/>';
 	
-	$book_id = intval($_GET['book_id']);
+	$book = new Book($_GET['book_id']);
 	$query = $_GET['query'];
 	
 	echo '<textbox id="query" type="autocomplete" value="' . htmlspecialchars($query) . '" onkeypress="onQueryKeypress(event, ' . $book_id . ')"/>';
 	
-	echo '<listbox seltype="single" flex="1" onselect="onIndexSelect(event, ' . $book_id . ')">';
+	echo '<listbox seltype="single" flex="1" onselect="onIndexSelect(event, ' . $book->id . ')">';
 	if(isset($query))
 	{
-		$result = mysql_query('SELECT `term`, `path`, `anchor` FROM `index_entry`,`index_link` WHERE `index_entry`.`book_id`=' . $book_id . ' AND `index_link`.`book_id`=' . $book_id . ' AND `index_link`.`no`=`index_entry`.`no`' . ($query ? ' AND LOCATE(\'' . mysql_escape_string($query) . '\', `term`)' : '') . ' ORDER BY `index_entry`.`term`');
-		while(list($term, $path, $anchor) = mysql_fetch_row($result))
-			echo '<listitem label="' . htmlspecialchars($term) . '" value="' . $path . ($anchor ? '#' . $anchor : '') . '"/>';
+		$entries = $book->index($query);
+		foreach($entries as $entry)
+		{
+			list($term, $link) = $entry;
+			echo '<listitem label="' . htmlspecialchars($term) . '" value="' . $link . '"/>';
+		}
 	}
 	echo '</listbox>';
 

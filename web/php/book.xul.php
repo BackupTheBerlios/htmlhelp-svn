@@ -1,7 +1,7 @@
 <?php
 	
 	include 'config.inc.php';
-	include 'mysql.inc.php';
+	include 'book.inc.php';
 
 	// Enable HTTP compression
 	ob_start("ob_gzhandler");
@@ -17,10 +17,8 @@
 -->
 ';
 
-	$book_id = intval($_GET['book_id']);
-	$books = mysql_query('SELECT * FROM `book` WHERE `id`=' . $book_id);
-	$book = mysql_fetch_object($books);
-	$title = htmlspecialchars($book->title);
+	$book = new Book($_GET['book_id']);
+	$title = htmlspecialchars($book->title());
 
 	echo '<window id="wnd" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" title="' . $title . '" width="640" height="420" persist="width height screenX screenY sizemode">';
 	echo '<script type="text/javascript">document.title = "' . $title . '";</script>';
@@ -37,9 +35,9 @@
 	echo   '<tab label="Search"/>';
 	echo  '</tabs>';
 	echo  '<tabpanels flex="1">';
-	echo   '<iframe id="toc" src="toc.xul.php?book_id=' . $book_id .'" flex="1"/>';
-	echo   '<iframe id="index" src="_index.xul.php?book_id=' . $book_id .'" flex="1"/>';
-	echo   '<iframe id="search" src="search.xul.php?book_id=' . $book_id .'" flex="1"/>';
+	echo   '<iframe id="toc" src="toc.xul.php?book_id=' . $book->id .'" flex="1"/>';
+	echo   '<iframe id="index" src="_index.xul.php?book_id=' . $book->id .'" flex="1"/>';
+	echo   '<iframe id="search" src="search.xul.php?book_id=' . $book->id .'" flex="1"/>';
 	echo  '</tabpanels>';
 	echo '</tabbox>';
 		
@@ -51,13 +49,13 @@
 	echo '<toolbar>';
 	echo   '<toolbarbutton id="back-button" label="Back" oncommand="goBack(event);"/>';
 	echo   '<toolbarbutton id="forward-button" label="Forward" oncommand="goForward(event);"/>';
-	echo   '<toolbarbutton id="home-button" label="Home" oncommand="goHome(event, ' . $book_id . ');"/>';
+	echo   '<toolbarbutton id="home-button" label="Home" oncommand="goHome(event, ' . $book->id . ');"/>';
 	echo   '<spacer flex="1" />';
 	echo   '<toolbarbutton id="print-button" label="Print" oncommand="print();"/>';
 	echo '</toolbar>';
 	
 	// Browser window
-	echo '<browser name="content" type="content-primary" src="page.php/' . $book_id . '/" flex="1"/>';
+	echo '<browser name="content" type="content-primary" src="page.php/' . $book->id . '/" flex="1"/>';
 
 	echo '</vbox>';
 
