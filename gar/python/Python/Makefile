@@ -1,24 +1,30 @@
-GARNAME = Python
-GARVERSION = 2.2.1
-MASTER_SITES = http://www.python.org/ftp/python/doc/$(GARVERSION)/
-DISTFILES = html-$(GARVERSION).tar.bz2
-
-DEVHELP_TARGETS = $(WORKDIR)/$(GARNAME)-$(GARVERSION).tgz
-
-include ../../gar.mk
-
 # See also:
 # 
 #  http://www.orgmf.com.ar/condor/pytstuff.html
 #  http://alldunn.com/python/
 
-$(WORKDIR)/book:
-	rmdir $(WORKDIR)/$(GARNAME)-$(GARVERSION)
-	mkdir $(WORKDIR)/book
-	-mv $(WORKDIR)/* $(WORKDIR)/book
+GARNAME = Python
+GARVERSION = 2.2.1
+MASTER_SITES = http://www.python.org/ftp/python/doc/$(GARVERSION)/
+DISTFILES = html-$(GARVERSION).tar.bz2
 
-$(WORKDIR)/book.devhelp: $(FILEDIR)/py2devhelp.py $(WORKDIR)/book
-	cd $(WORKDIR)/book && python ../../$(FILEDIR)/py2devhelp.py ../book
+EXTRACTDIR = $(WORKDIR)/html
 
-$(WORKDIR)/$(GARNAME)-$(GARVERSION).tgz: $(WORKDIR)/book.devhelp $(WORKDIR)/book
-	tar -czf $@  -C $(WORKDIR) book book.devhelp
+DEVHELP_EXTRA_TARGETS = $(WORKDIR)/$(GARNAME).tgz
+CHM_EXTRA_TARGETS = $(WORKDIR)/$(GARNAME).chm
+HTB_EXTRA_TARGETS = $(WORKDIR)/$(GARNAME).htb
+
+
+include ../../gar.mk
+
+
+$(WORKDIR)/devhelp.$(GARNAME): $(FILEDIR)/py2devhelp.py
+	rm -rf $@
+	mkdir -p $@
+	cp -a $(WORKDIR)/html $@/book
+	cd $@/book && python ../../../$(FILEDIR)/py2devhelp.py ../book
+
+$(WORKDIR)/htmlhelp.$(GARNAME): $(FILEDIR)/pythlp.py
+	rm -rf $@
+	cp -a $(WORKDIR)/html $@
+	cd $@ && python ../../$(FILEDIR)/pythlp.py $(GARNAME)

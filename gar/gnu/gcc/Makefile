@@ -19,6 +19,8 @@ BOOKS = \
 NODIST_BOOKS = \
 	$(WORKSRC)/libiberty/libiberty.texi
 
+CHM_EXTRA_TARGETS = $(WORKDIR)/html_user/libstdc++.chm
+
 include ../../gar.mk
 
 MAKEINFO_FLAGS += --force
@@ -35,20 +37,11 @@ $(WORKSRC)/libstdc++-v3/docs/doxygen/user.cfg: $(WORKSRC)/libstdc++-v3/docs/doxy
 		-e "s=@do_html@=YES=" \
 		-e "s=@do_man@=NO=" \
 		-e "/GENERATE_HTMLHELP/s=NO=YES=" \
-		-e "/CHM_FILE/s=$$=libstdc++-$(GARVERSION).chm=" \
+		-e "/CHM_FILE/s=$$=libstdc++.chm=" \
 		$< > $@
 
 $(WORKDIR)/html_user/index.hhp: $(WORKSRC)/libstdc++-v3/docs/doxygen/user.cfg
 	cd $(WORKSRC)/libstdc++-v3 && doxygen docs/doxygen/user.cfg
 
-$(WORKDIR)/html_user/libstdc++-$(GARVERSION).chm: $(WORKDIR)/html_user/index.hhp
+$(WORKDIR)/html_user/libstdc++.chm: $(WORKDIR)/html_user/index.hhp
 	cd $(<D) && $(HHC) $(<F)
-
-post-htmlhelp: htmlhelp-here
-
-htmlhelp-here: $(WORKDIR)/html_user/libstdc++-$(GARVERSION).chm
-
-post-install: install-here
-
-install-here:
-	[ -f $(WORKDIR)/html_user/libstdc++-$(GARVERSION).chm ] && cp -a $(WORKDIR)/html_user/libstdc++-$(GARVERSION).chm $(DESTDIR)/chm
