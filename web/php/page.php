@@ -1,6 +1,7 @@
 <?php
 	include 'config.inc.php';
 	include 'mysql.inc.php';
+	include 'mimetypes.inc.php';
 
 	// For this to work with the CGI version of PHP4, the "cgi.fix_pathinfo=1"
 	// option in php.ini must be set.
@@ -23,22 +24,7 @@
 	$result = mysql_query('SELECT `content` FROM `page` WHERE `book_id`=' . $book_id . ' AND `path`=\'' . mysql_escape_string($path) . '\'');
 	list($content) = mysql_fetch_row($result);
 	
-	// Determine the MIME content-type from the file extension.
-	// FIXME: This is very incomplete - we should rely on the PHP library for this.
-	function _mime_content_type($path)
-	{
-		$ext = strrchr($path, '.');
-		
-		if($ext == '.html' or $ext == '.htm')
-			return 'text/html';
-
-		if($ext == '.css')
-			return 'text/css';
-
-		return 'application/octet-stream';
-	}	
-	
-	$content_type = _mime_content_type($path);
+	$content_type = mime_content_type($path);
 	
 	header('Content-Type: ' . $content_type);
 	header('Content-Length: ' . strlen($content));
