@@ -75,7 +75,7 @@ CREATE TABLE `pages` (
   `id` int(11) NOT NULL auto_increment,
   `book_id` int(11) NOT NULL default '0',
   `path` varchar(255) binary NOT NULL default '0',
-  `data` mediumblob NOT NULL,
+  `content` mediumblob NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `path` (`book_id`,`path`)
 ) TYPE=MyISAM AUTO_INCREMENT=1 ;

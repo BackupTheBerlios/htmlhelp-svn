@@ -1,0 +1,4 @@
+TRUNCATE TABLE `pages`;
+TRUNCATE TABLE `toc`;
+TRUNCATE TABLE `books`;
+TRUNCATE TABLE `index`;
