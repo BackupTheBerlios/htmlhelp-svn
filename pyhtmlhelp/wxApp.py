@@ -1,15 +1,16 @@
 #!/usr/bin/python
 
+
 from wxPython.wx import *
 from wxPython.html import *
 import os
+
 
 wxHF_TOOLBAR = 0x0001
 wxHF_CONTENTS = 0x0002
 wxHF_INDEX = 0x0004
 wxHF_SEARCH = 0x0008
 wxHF_BOOKMARKS = 0x0010
-wxHF_OPEN_FILES = 0x0020
 wxHF_PRINT = 0x0040
 wxHF_FLAT_TOOLBAR = 0x0080
 wxHF_MERGE_BOOKS = 0x0100
@@ -63,18 +64,20 @@ class MyFrame(wxFrame):
 
 		self.CreateStatusBar()
 
-		toolBar = self.CreateToolBar(wxNO_BORDER | wxTB_HORIZONTAL | wxTB_DOCKABLE | wxTB_FLAT)
-		toolBar.SetMargins((2, 2))
+		toolBar = self.CreateToolBar(wxNO_BORDER | wxTB_HORIZONTAL | wxTB_FLAT)
 		self.AddToolBarButtons(toolBar, style)
 		toolBar.Realize()
+		EVT_TOOL_RANGE(self, wxID_HTML_PANEL, wxID_HTML_OPTIONS, self.OnToolbar)
 
 		if style & (wxHF_CONTENTS | wxHF_INDEX | wxHF_SEARCH):
 			# traditional help controller; splitter window with html page on the
 			# right and a notebook containing various pages on the left
 			m_Splitter = wxSplitterWindow(self, -1)
+			self.m_Splitter = m_Splitter
 
 			m_HtmlWin = MyHtmlHelpHtmlWindow(self, m_Splitter)
 			m_NavigPan = wxPanel(m_Splitter, -1)
+			self.m_NavigPan = m_NavigPan
 			m_NavigNotebook = wxNotebook(m_NavigPan, wxID_HTML_NOTEBOOK, wxDefaultPosition, wxDefaultSize)
 			nbs = wxNotebookSizer(m_NavigNotebook)
 			
@@ -86,108 +89,78 @@ class MyFrame(wxFrame):
 		else:
 			# only html window, no notebook with index,contents etc
 			m_HtmlWin = wxHtmlWindow(self)
+		self.m_HtmlWin = m_HtmlWin
 
-		self.m_TitleFormat = ''
+		self.m_TitleFormat = '%s'
 		m_HtmlWin.SetRelatedFrame(self, self.m_TitleFormat)
 		m_HtmlWin.SetRelatedStatusBar(0)
 
-		notebook_page = 0
-
 		# contents tree panel?
 		if style & wxHF_CONTENTS:
-			dummy = wxPanel(m_NavigNotebook, wxID_HTML_INDEXPAGE)
+			panel = wxPanel(m_NavigNotebook, wxID_HTML_INDEXPAGE)
 			topsizer = wxBoxSizer(wxVERTICAL)
 			
-			topsizer.Add(0, 10)
-			
-			dummy.SetAutoLayout(TRUE)
-			dummy.SetSizer(topsizer)
+			panel.SetAutoLayout(TRUE)
+			panel.SetSizer(topsizer)
 
-			if style & wxHF_BOOKMARKS and 0:
-				m_Bookmarks = wxComboBox(dummy, wxID_HTML_BOOKMARKSLIST, '', wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_READONLY | wxCB_SORT)
-				m_Bookmarks.Append("(bookmarks)")
-				for i in range(m_BookmarksNames.GetCount()):
-					m_Bookmarks.Append(m_BookmarksNames[i])
-				m_Bookmarks.SetSelection(0)
-
-				bmpbt1 = wxBitmapButton(dummy, wxID_HTML_BOOKMARKSADD, wxArtProvider.GetBitmap(wxART_ADD_BOOKMARK, wxART_HELP_BROWSER))
-				bmpbt2 = wxBitmapButton(dummy, wxID_HTML_BOOKMARKSREMOVE, wxArtProvider.GetBitmap(wxART_DEL_BOOKMARK, wxART_HELP_BROWSER))
-				bmpbt1.SetToolTipString("Add current page to bookmarks")
-				bmpbt2.SetToolTipString("Remove current page from bookmarks")
-
-				sizer = wxBoxSizer(wxHORIZONTAL)
-				
-				sizer.Add(m_Bookmarks, 1, wxALIGN_CENTRE_VERTICAL | wxRIGHT, 5)
-				sizer.Add(bmpbt1, 0, wxALIGN_CENTRE_VERTICAL | wxRIGHT, 2)
-				sizer.Add(bmpbt2, 0, wxALIGN_CENTRE_VERTICAL, 0)
-				
-				topsizer.Add(sizer, 0, wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT, 10)
-
-			m_ContentsBox = wxTreeCtrl(dummy, wxID_HTML_TREECTRL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxTR_HAS_BUTTONS | wxTR_HIDE_ROOT | wxTR_LINES_AT_ROOT)
-
+			m_ContentsBox = wxTreeCtrl(panel, wxID_HTML_TREECTRL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxTR_HAS_BUTTONS | wxTR_HIDE_ROOT | wxTR_LINES_AT_ROOT)
 			#m_ContentsBox.AssignImageList(ContentsImageList)
 			
-			topsizer.Add(m_ContentsBox, 1, wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT, 2)
+			topsizer.Add(m_ContentsBox, 1, wxEXPAND | wxALL)
 
-			m_NavigNotebook.AddPage(dummy, "Contents")
-			m_ContentsPage = notebook_page
-			notebook_page += 1
+			m_NavigNotebook.AddPage(panel, "Contents")
 
-		# index listbox panel?
+		# index list panel?
 		if style & wxHF_INDEX:
-			dummy = wxPanel(m_NavigNotebook, wxID_HTML_INDEXPAGE);	   
+			panel = wxPanel(m_NavigNotebook, wxID_HTML_INDEXPAGE);	   
 			topsizer = wxBoxSizer(wxVERTICAL)
 
-			dummy.SetAutoLayout(TRUE)
-			dummy.SetSizer(topsizer)
+			panel.SetAutoLayout(TRUE)
+			panel.SetSizer(topsizer)
 
-			m_IndexText = wxTextCtrl(dummy, wxID_HTML_INDEXTEXT, '', wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER)
-			m_IndexButton = wxButton(dummy, wxID_HTML_INDEXBUTTON, "Find")
-			m_IndexButtonAll = wxButton(dummy, wxID_HTML_INDEXBUTTONALL, "Show all")
-			m_IndexCountInfo = wxStaticText(dummy, wxID_HTML_COUNTINFO, '', wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT | wxST_NO_AUTORESIZE)
-			m_IndexList = wxListBox(dummy, wxID_HTML_INDEXLIST, wxDefaultPosition, wxDefaultSize, style=wxLB_SINGLE)
+			m_IndexText = wxTextCtrl(panel, wxID_HTML_INDEXTEXT, '', wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER)
+			m_IndexList = wxListBox(panel, wxID_HTML_INDEXLIST, wxDefaultPosition, wxDefaultSize, style=wxLB_SINGLE)
 
-			m_IndexButton.SetToolTipString("Display all index items that contain given substring. Search is case insensitive.")
-			m_IndexButtonAll.SetToolTipString("Show all items in index")
+			topsizer.Add(m_IndexText, 0, wxEXPAND | wxALL)
+			topsizer.Add(m_IndexList, 1, wxEXPAND | wxALL)
 
-			topsizer.Add(m_IndexText, 0, wxEXPAND | wxALL, 10)
-			btsizer = wxBoxSizer(wxHORIZONTAL)
-			btsizer.Add(m_IndexButton, 0, wxRIGHT, 2)
-			btsizer.Add(m_IndexButtonAll)
-			topsizer.Add(btsizer, 0, wxALIGN_RIGHT | wxLEFT | wxRIGHT | wxBOTTOM, 10)
-			topsizer.Add(m_IndexCountInfo, 0, wxEXPAND | wxLEFT | wxRIGHT, 2)
-			topsizer.Add(m_IndexList, 1, wxEXPAND | wxALL, 2)
-
-			m_NavigNotebook.AddPage(dummy, "Index")
-			m_IndexPage = notebook_page
-			notebook_page += 1
+			m_NavigNotebook.AddPage(panel, "Index")
 
 		# search list panel?
 		if style & wxHF_SEARCH:
-			dummy = wxPanel(m_NavigNotebook, wxID_HTML_INDEXPAGE);	   
+			panel = wxPanel(m_NavigNotebook, wxID_HTML_INDEXPAGE);	   
 			sizer = wxBoxSizer(wxVERTICAL)
 
-			dummy.SetAutoLayout(TRUE)
-			dummy.SetSizer(sizer)
+			panel.SetAutoLayout(TRUE)
+			panel.SetSizer(sizer)
 
-			m_SearchText = wxTextCtrl(dummy, wxID_HTML_SEARCHTEXT, '', wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER)
-			m_SearchChoice = wxChoice(dummy, wxID_HTML_SEARCHCHOICE, wxDefaultPosition, wxDefaultSize)
-			m_SearchCaseSensitive = wxCheckBox(dummy, -1, "Case sensitive")
-			m_SearchWholeWords = wxCheckBox(dummy, -1, "Whole words only")
-			m_SearchButton = wxButton(dummy, wxID_HTML_SEARCHBUTTON, "Search")
-			m_SearchButton.SetToolTipString("Search contents of help book(s) for all occurences of the text you typed above")
-			m_SearchList = wxListBox(dummy, wxID_HTML_SEARCHLIST, wxDefaultPosition, wxDefaultSize, style=wxLB_SINGLE)
+			m_SearchText = wxTextCtrl(panel, wxID_HTML_SEARCHTEXT, '', wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER)
+			m_SearchChoice = wxChoice(panel, wxID_HTML_SEARCHCHOICE, wxDefaultPosition, wxDefaultSize)
+			m_SearchCaseSensitive = wxCheckBox(panel, -1, "Case sensitive")
+			m_SearchWholeWords = wxCheckBox(panel, -1, "Whole words only")
+			m_SearchList = wxListBox(panel, wxID_HTML_SEARCHLIST, wxDefaultPosition, wxDefaultSize, style=wxLB_SINGLE)
 										 
-			sizer.Add(m_SearchText, 0, wxEXPAND | wxALL, 10)
-			sizer.Add(m_SearchChoice, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 10)
-			sizer.Add(m_SearchCaseSensitive, 0, wxLEFT | wxRIGHT, 10)
-			sizer.Add(m_SearchWholeWords, 0, wxLEFT | wxRIGHT, 10)
-			sizer.Add(m_SearchButton, 0, wxALL | wxALIGN_RIGHT, 8)
-			sizer.Add(m_SearchList, 1, wxALL | wxEXPAND, 2)
+			sizer.Add(m_SearchText, 0, wxEXPAND | wxALL)
+			sizer.Add(m_SearchChoice, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM)
+			sizer.Add(m_SearchCaseSensitive, 0, wxLEFT | wxRIGHT)
+			sizer.Add(m_SearchWholeWords, 0, wxLEFT | wxRIGHT)
+			sizer.Add(m_SearchList, 1, wxEXPAND | wxALL)
 
-			m_NavigNotebook.AddPage(dummy, "Search")
-			m_SearchPage = notebook_page
-			notebook_page += 1
+			m_NavigNotebook.AddPage(panel, "Search")
+
+		# bookmar list panel?
+		if style & wxHF_BOOKMARKS:
+			panel = wxPanel(m_NavigNotebook, wxID_HTML_INDEXPAGE);	   
+			topsizer = wxBoxSizer(wxVERTICAL)
+
+			panel.SetAutoLayout(TRUE)
+			panel.SetSizer(topsizer)
+
+			m_BookmarksList = wxListBox(panel, wxID_HTML_INDEXLIST, wxDefaultPosition, wxDefaultSize, style=wxLB_SINGLE)
+
+			topsizer.Add(m_BookmarksList, 1, wxEXPAND | wxALL)
+
+			m_NavigNotebook.AddPage(panel, "Bookmarks")
 
 		m_HtmlWin.Show(TRUE)
 
@@ -226,9 +199,8 @@ class MyFrame(wxFrame):
 		wdownBitmap = wxArtProvider_GetBitmap(wxART_GO_DOWN, wxART_HELP_BROWSER)
 		wopenBitmap = wxArtProvider_GetBitmap(wxART_FILE_OPEN, wxART_HELP_BROWSER)
 		wprintBitmap = wxArtProvider_GetBitmap(wxART_PRINT, wxART_HELP_BROWSER)
-		woptionsBitmap = wxArtProvider_GetBitmap(wxART_HELP_SETTINGS, wxART_HELP_BROWSER)
 
-		assert wpanelBitmap.Ok() and wbackBitmap.Ok() and wforwardBitmap.Ok() and wupnodeBitmap.Ok() and wupBitmap.Ok() and wdownBitmap.Ok() and wopenBitmap.Ok() and wprintBitmap.Ok() and woptionsBitmap.Ok()
+		assert wpanelBitmap.Ok() and wbackBitmap.Ok() and wforwardBitmap.Ok() and wupnodeBitmap.Ok() and wupBitmap.Ok() and wdownBitmap.Ok() and wopenBitmap.Ok() and wprintBitmap.Ok()
 
 		toolBar.AddSimpleTool(wxID_HTML_PANEL, wpanelBitmap, "Show/hide navigation panel")
 
@@ -241,87 +213,29 @@ class MyFrame(wxFrame):
 		toolBar.AddSimpleTool(wxID_HTML_UP, wupBitmap, "Previous page")
 		toolBar.AddSimpleTool(wxID_HTML_DOWN, wdownBitmap, "Next page")
 
-		if style & wxHF_PRINT or style & wxHF_OPEN_FILES:
-			toolBar.AddSeparator()
-
-		if style & wxHF_OPEN_FILES:
-			toolBar.AddSimpleTool(wxID_HTML_OPENFILE, wopenBitmap, "Open HTML document")
-
 		if style & wxHF_PRINT:
 			toolBar.AddSimpleTool(wxID_HTML_PRINT, wprintBitmap, "Print this page")
-
-		toolBar.AddSeparator()
-		toolBar.AddSimpleTool(wxID_HTML_OPTIONS, woptionsBitmap, "Display options dialog")
+		
+		
+	def OnToolbar(self, event):
+		
+		if event.GetId() == wxID_HTML_PANEL:
+			if not (self.m_Splitter and self.m_NavigPan):
+				return
+		
+			if self.m_Splitter.IsSplit():
+				self.sashpos = self.m_Splitter.GetSashPosition()
+				self.m_Splitter.Unsplit(self.m_NavigPan);
+				#m_Cfg.navig_on = FALSE
+			else:
+				self.m_NavigPan.Show(TRUE)
+				self.m_HtmlWin.Show(TRUE)
+				self.m_Splitter.SplitVertically(self.m_NavigPan, self.m_HtmlWin, self.sashpos)
+				#m_Cfg.navig_on = TRUE
 		
 	
-ID_ABOUT=101
-ID_OPEN=102
-ID_BUTTON1=110
-ID_EXIT=200
-
-class MainWindow(wxFrame):
-    def __init__(self,parent,id,title):
-        self.dirname=''
-        wxFrame.__init__(self,parent,-4, title, style=wxDEFAULT_FRAME_STYLE|
-                                        wxNO_FULL_REPAINT_ON_RESIZE)
-        self.control = wxTextCtrl(self, 1, style=wxTE_MULTILINE)
-        self.CreateStatusBar() # A Statusbar in the bottom of the window 
-        # Setting up the menu. 
-        filemenu= wxMenu()
-        filemenu.Append(ID_OPEN, "&Open"," Open a file to edit")
-        filemenu.AppendSeparator()
-        filemenu.Append(ID_ABOUT, "&About"," Information about this program")
-        filemenu.AppendSeparator()
-        filemenu.Append(ID_EXIT,"E&xit"," Terminate the program")
-        # Creating the menubar. 
-        menuBar = wxMenuBar()
-        menuBar.Append(filemenu,"&File") # Adding the "filemenu" to the MenuBar 
-        self.SetMenuBar(menuBar)  # Adding the MenuBar to the Frame content. 
-        EVT_MENU(self, ID_ABOUT, self.OnAbout)
-        EVT_MENU(self, ID_EXIT, self.OnExit)
-        EVT_MENU(self, ID_OPEN, self.OnOpen)
-
-        self.sizer2 = wxBoxSizer(wxHORIZONTAL)
-        self.buttons=[]
-        for i in range(0,6):
-            self.buttons.append(wxButton(self, ID_BUTTON1+i, "Button &"+`i`))
-            self.sizer2.Add(self.buttons[i],1,wxEXPAND)
-
-        # Use some sizers to see layout options
-        self.sizer=wxBoxSizer(wxVERTICAL)
-        self.sizer.Add(self.control,1,wxEXPAND)
-        self.sizer.Add(self.sizer2,0,wxEXPAND)
-
-        #Layout sizers
-        self.SetSizer(self.sizer)
-        self.SetAutoLayout(1)
-        self.sizer.Fit(self)
-
-        self.Show(1)
-
-    def OnAbout(self,e):
-        d= wxMessageDialog( self, " A sample editor \n"
-                            " in wxPython","About Sample Editor", wxOK)
-                            # Create a message dialog box 
-        d.ShowModal() # Shows it 
-        d.Destroy() # finally destroy it when finished. 
-
-    def OnExit(self,e):
-        self.Close(true)  # Close the frame. 
-
-    def OnOpen(self,e):
-        """ Open a file"""
-        dlg = wxFileDialog(self, "Choose a file", self.dirname, "", "*.*", wxOPEN)
-        if dlg.ShowModal() == wxID_OK:
-            self.filename=dlg.GetFilename()
-            self.dirname=dlg.GetDirectory()
-            f=open(os.path.join(self.dirname, self.filename),'r')
-            self.control.SetValue(f.read())
-            f.close()
-        dlg.Destroy()
-
-
-app = wxPySimpleApp()
-frame = MyFrame(None, -1, "Sample editor")
-frame.Show(1)
-app.MainLoop()
+if __name__ == "__main__":
+	app = wxPySimpleApp()
+	frame = MyFrame(None, -1, "HTML Help Books")
+	frame.Show(TRUE)
+	app.MainLoop()
