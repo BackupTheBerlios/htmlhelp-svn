@@ -15,11 +15,10 @@
 
 	include 'header.inc.php';
 
-	// if displaying the frontpage and no 'nojs' param is given then embed a
-	// Javascript script to redirect Gecko-based browsers to the XUL-based
-	// interface
-	if(!$book_id && !intval($_GET['nojs']))
-		echo '<script type="text/javascript">if(navigator.userAgent.indexOf("Gecko") >= 0) document.location.href = "index.xul";</script>';
+	// Unless the 'noxul' param is given then embed a Javascript script to
+	// redirect Gecko-based browsers to the XUL-based interface
+	if(!intval($_GET['noxul']))
+		echo '<script type="text/javascript">if(navigator.userAgent.indexOf("Gecko") >= 0) document.location.href = "index.xul.php?book_id=' . $book_id . '";</script>';
 	
 	echo '<frameset rows="80,*">';
 	echo '<frame src="menu.php?book_id=' . $book_id . '" name="menu"/>';
