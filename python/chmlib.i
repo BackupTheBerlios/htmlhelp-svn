@@ -16,6 +16,14 @@ typedef long long          LONGINT64;
 #define CHM_UNCOMPRESSED (0)
 #define CHM_COMPRESSED   (1)
 
+
+%typemap(memberin) char [ANY] {
+	strncpy($1, $input, $1_dim0);
+}
+%typemap(out,fragment="SWIG_FromCharPtr") char [ANY] { 
+	$result = SWIG_FromCharPtr($1);
+}
+
 struct chmUnitInfo
 {
     LONGUINT64         start;
@@ -84,7 +92,7 @@ PyObject *python_chm_retrieve_object(struct chmFile *h, struct chmUnitInfo *ui, 
 #define CHM_ENUMERATOR_CONTINUE (1)
 #define CHM_ENUMERATOR_SUCCESS  (2)
 
-%{
+%inline %{
 
 struct python_context {
 	PyObject *eobj;

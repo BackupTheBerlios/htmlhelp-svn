@@ -96,7 +96,9 @@ else:
 			return result
 		
 		def enumerate(self, chm, ui, result):
-			result.append(ui.path[:ui.path.find('\0')])
+			assert ui.path.find('\0') == -1
+
+			result.append(ui.path)
 			
 			return chmlib.CHM_ENUMERATOR_CONTINUE
 
