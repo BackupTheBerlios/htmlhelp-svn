@@ -5,7 +5,7 @@ function onQueryKeypress(event, book_id)
     var text = event.target;
     var query = text.value;
 
-    document.location.href = "search.xul.php?book_id=" + book_id + "&query=" + query;
+    document.location.href = "search.xul.php?book_id=" + book_id + "&query=" + encodeURIComponent(query);
   }
 }
 
