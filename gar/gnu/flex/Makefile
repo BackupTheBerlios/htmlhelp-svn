@@ -5,7 +5,7 @@ DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
 
 BOOKS = $(WORKSRC)/MISC/texinfo/flex.texi
 
-WORKSRC = work/flex-2.5.4
+WORKSRC = $(WORKDIR)/flex-2.5.4
 
 include ../../gar.mk
 
