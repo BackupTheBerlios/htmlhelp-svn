@@ -52,7 +52,7 @@
 		if($depth || !$has_children)
 			echo '<a href="page.php/' . $book_id . '/' . $path . ($anchor ? '#' . $anchor : '') . '">';
 		else
-			echo '<a target="_self" href="toc.php?book_id=' . $book_id . '&toc_no=' . $number . '">';
+			echo '<a target="_self" href="toc.php?book_id=' . $book_id . '&amp;toc_no=' . $number . '">';
 		echo htmlspecialchars($name, ENT_NOQUOTES, $encoding) . '</a>';
 			
 		walk_children($result, $depth);
@@ -70,7 +70,7 @@
 			$result = mysql_query('SELECT `parent_no`, `title`, `path`, `anchor` FROM `toc_entry` WHERE `book_id`=' . $book_id . ' AND `no`=' . $number . ' ORDER BY `no`');
 			list($parent_number, $name, $path, $anchor) = mysql_fetch_row($result);
 			
-			echo '<ul><li class="collapsed"><a target="_self" href="toc.php?book_id=' . $book_id . '&toc_no=' . $parent_number . '">&hellip;</a>'; 
+			echo '<ul><li class="collapsed"><a target="_self" href="toc.php?book_id=' . $book_id . '&amp;toc_no=' . $parent_number . '">&hellip;</a>'; 
 				
 			echo '<ul>';
 			echo '<li class="expanded">';

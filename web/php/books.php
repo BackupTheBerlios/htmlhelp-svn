@@ -13,7 +13,7 @@
 	{
 		echo '<ul>';
 		while(list($book_id, $title) = mysql_fetch_row($result))
-			echo '<li><a href="index.php?book_id=' . $book_id . '">' . $title . '</a></li>';
+			echo '<li><a href="index.php?book_id=' . $book_id . '&amp;noxul=1">' . $title . '</a></li>';
 		echo '</ul>';
 	}
 
