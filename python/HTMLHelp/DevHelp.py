@@ -211,12 +211,15 @@ def read_spec(path):
 
 	basedir, spec = os.path.split(os.path.abspath(path))
 	
+	name = os.path.splitext(spec)[0]
+
 	archive = Archive.DirArchive(basedir)
 
 	parser = SpecParser()
 	parser.parse(file(path, 'rt'))
 
 	book = Book.Book(
+			name,
 			DirDevhelpFilterArchive(archive),
 			parser.contents,
 			parser.index,
@@ -228,12 +231,15 @@ def read_spec(path):
 def read_tgz(path):
 	"""A DevHelp book in a gzip'ed tarball."""
 
+	name = os.path.splitext(os.path.basename(path))[0]
+
 	archive = Archive.TarArchive(path)
 
 	parser = SpecParser()
 	parser.parse(archive['book.devhelp'])
 
 	book = Book.Book(
+			name,
 			TgzDevhelpFilterArchive(archive),
 			parser.contents,
 			parser.index,

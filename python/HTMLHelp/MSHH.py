@@ -335,10 +335,12 @@ class MshhFilterArchive(Archive.FilterArchive):
 def read_hhp(path):
 	"""Uncompressed HTML Help Book."""
 
-	basedir = os.path.dirname(os.path.abspath(path))
+	basedir, name = os.path.split(os.path.abspath(path))
+	name = os.path.splitext(name)[0]
+
 	archive = Archive.DirArchive(basedir)
 		
-	book = Book.Book(archive)
+	book = Book.Book(name, archive)
 	
 	parser = HHPParser(book)
 	parser.parse(open(path))

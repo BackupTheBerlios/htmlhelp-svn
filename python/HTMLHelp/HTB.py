@@ -21,9 +21,11 @@ import MSHH
 def read_htb(path):
 	"""wxWindows HTML Help Book."""
 
+	name = os.path.splitext(os.path.basename(path))[0]
+
 	archive = Archive.ZipArchive(path)
 		
-	book =  Book.Book(archive)
+	book =  Book.Book(name, archive)
 	
 	names = filter(
 			lambda name: name[-4:].lower() == '.hhp',

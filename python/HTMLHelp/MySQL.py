@@ -134,10 +134,11 @@ def dump_book(book):
 		no = len(path_map) + 1
 		path_map[path] = no
 	
+	alias = book.name
 	title = book.title
 	page_no, anchor  = split_link(book.default_link, path_map)
 	
-	sys.stdout.write('INSERT INTO `book` (`title`, `page_no`, `anchor`) VALUES (%s, %s, %s);\n' % quote(title, page_no, anchor))
+	sys.stdout.write('INSERT INTO `book` (`alias`, `title`, `page_no`, `anchor`) VALUES (%s, %s, %s, %s);\n' % quote(alias, title, page_no, anchor))
 	sys.stdout.write('SET @book_id = LAST_INSERT_ID();\n')
 
 	dump_contents(book, path_map)

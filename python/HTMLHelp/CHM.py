@@ -190,7 +190,9 @@ class ChmFilterArchive(Archive.FilterArchive):
 def read_chm(path):
 	archive = ChmArchive(path)
 
-	book = Book.Book(archive)
+	name = os.path.splitext(os.path.basename(path))[0]
+
+	book = Book.Book(name, archive)
 
 	SystemParser(book)
 	

@@ -17,7 +17,7 @@ class ContentsEntry(list):
 	# XXX: This is probably over-complicated, as it is unlikely that anything
 	# besides a top-down tree trasversal should be necessary.
 
-	def __init__(self, name = None, link = None):
+	def __init__(self, name=None, link=None):
 		list.__init__(self)
 		self.name = name
 		self.link = link
@@ -32,7 +32,7 @@ class ContentsEntry(list):
 	def __str__(self):
 		lines = [str(self.name) + '\t' + str(self.link)]
 		for child in self:
-			lines.extend(map(lambda s: ' ' + s, str(child).split('\n')))
+			lines.extend([' ' + line for line in str(child).split('\n')])
 		return '\n'.join(lines)
 	
 	def append(self, item):
@@ -76,10 +76,10 @@ class ContentsEntry(list):
 			return None	
 		return self[0]
 	
-	parent   = property(get_parent,   doc = """Parent entry.""")
-	prev     = property(get_prev,     doc = """Prev entry.""")
-	next     = property(get_next,     doc = """Next entry.""")
-	children = property(get_children, doc = """Sub-entries.""")
+	parent   = property(get_parent,   doc="""Parent entry.""")
+	prev     = property(get_prev,     doc="""Prev entry.""")
+	next     = property(get_next,     doc="""Next entry.""")
+	children = property(get_children, doc="""Sub-entries.""")
 
 
 class Contents(ContentsEntry):
@@ -93,7 +93,7 @@ class Contents(ContentsEntry):
 class IndexEntry(object):
 	"""Entry in an index."""
 
-	def __init__(self, name = None, link = None):
+	def __init__(self, name=None, link=None):
 		self.name = name
 
 		if link is not None:
@@ -108,7 +108,7 @@ class IndexEntry(object):
 		return hash(self.name)
 
 	def __str__(self):
-		return str(self.name) +  '\t' + ' '.join(map(str, self.links))
+		return str(self.name) + '\t' + ' '.join([str(link) for link in self.links])
 
 
 class Index(object):
@@ -142,7 +142,7 @@ class Index(object):
 		return self.__dict[term]
 
 	def __str__(self):
-		return '\n'.join(map(str, self.__list))
+		return '\n'.join([str(term) for term in self.__list])
 	
 	def append(self, entry):
 		"""Append an entry.
@@ -161,6 +161,8 @@ class Index(object):
 class Book(object):
 	"""Generic HTML Help book.
 	
+	@type name: str
+	@ivar name: Name of the book.
 	@type archive: L{Archive.Archive}
 	@ivar archive: Archive with the HTML files, pictures, etc.
 	@type contents: L{Contents}
@@ -169,7 +171,10 @@ class Book(object):
 	@ivar index: Index.
 	"""
 	
-	def __init__(self, archive = None, contents = None, index = None, metadata = None):
+	def __init__(self, name=None, archive=None, contents=None, index=None, 
+			metadata=None):
+		self.name = name
+		
 		if archive is None:
 			self.archive = Archive.EmptyArchive()
 		else:
@@ -195,14 +200,14 @@ class Book(object):
 
 		return self.contents.name
 
-	title = property(get_title, doc = """Book title.""")
+	title = property(get_title, doc="""Book title.""")
 
 	def get_default_link(self):
 		"""Get the book title, which is the link in the contents root entry."""
 
 		return self.contents.link
 
-	default_link = property(get_default_link, doc = """Default link.""")
+	default_link = property(get_default_link, doc="""Default link.""")
 	
 	def list(self):
 		"""List the pages in the book."""
