@@ -15,8 +15,8 @@ except ImportError:
 
 sys.path.insert(0, '.')
 sys.path.insert(0, '..')
-sys.path.insert(0, '../..')
-import Formats, HTML
+from HTMLHelp import Formats
+import HTML
 
 
 class Request(HTML.Request):

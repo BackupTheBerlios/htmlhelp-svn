@@ -3,7 +3,7 @@
 
 import os.path, posixpath, mimetypes
 
-import Book
+from HTMLHelp import Book
 
 
 if __name__ == '__main__':
