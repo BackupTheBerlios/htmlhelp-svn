@@ -200,7 +200,7 @@ class RawMshhBook(MshhBook):
 		self.archive = FilterArchive(archive)
 
 
-def factory(path):
+def read(path):
 	root, ext = os.path.splitext(path)
 	if ext.lower() == '.hhp':
 		return RawMshhBook(path)

@@ -6,7 +6,7 @@ import sys
 from wxPython.wx import *
 from wxPython.html import *
 
-from HTMLHelp import Formats
+from HTMLHelp.generic import read
 
 
 class file_wrapper:
@@ -355,7 +355,7 @@ def main():
 	for arg in sys.argv[1:]:
 		root, ext = os.path.splitext(arg)
 		name = os.path.basename(root)
-		book = Formats.factory(arg)
+		book = read(arg)
 		catalog[name] = book
 				
 	app = wxPySimpleApp()

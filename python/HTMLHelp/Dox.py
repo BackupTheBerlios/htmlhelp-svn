@@ -1,6 +1,4 @@
-"""Dox Books.
-
-See http://dox.berlios.de/ for more information about Dox."""
+"""Dox Books."""
 
 
 import os, os.path, urlparse, xml.parsers.expat

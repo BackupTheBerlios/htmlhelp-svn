@@ -27,7 +27,7 @@ class HtbBook(MSHH.MshhBook):
 		self.archive = MSHH.MshhFilterArchive(archive)
 
 
-def factory(path):
+def read(path):
 	root, ext = os.path.splitext(path)
 	if ext.lower() in ('.htb', '.zip'):
 		return HtbBook(path)

@@ -133,7 +133,7 @@ class ChmBook(Book.Book):
 		self.archive = ChmFilterArchive(archive)
 
 
-def factory(path):
+def read(path):
 	root, ext = os.path.splitext(path)
 	if ext.lower() == '.chm':
 		return ChmBook(path)

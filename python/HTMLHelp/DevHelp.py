@@ -254,9 +254,6 @@ def read(path):
 		raise ValueError, 'unknown DevHelp book extension \'%s\'' % ext
 
 
-factory = read
-
-
 #######################################################################
 # Writers
 
