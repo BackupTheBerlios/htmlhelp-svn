@@ -80,6 +80,18 @@ div.sidebar {
 	list-style-type: none;
 }
 
+li.expanded { 
+	list-style-image: url("minus.png") 
+}
+
+li.collapsed { 
+	list-style-image: url("plus.png") 
+}
+
+li.single { 
+	list-style-image: url("none.png") 
+}
+
 .sidebar ul {
 	margin: 0px;
 	padding-top: 1px;
@@ -89,7 +101,7 @@ div.sidebar {
 }
 
 .sidebar ul {
-	padding-left: 2px;
+	padding-left: 20px;
 }
 
 .sidebar ul ul {

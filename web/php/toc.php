@@ -52,7 +52,7 @@
 		if($depth || !$has_children)
 			echo '<a href="page.php/' . $book_id . '/' . $path . ($anchor ? '#' . $anchor : '') . '">';
 		else
-			echo '<a target="navigation" href="toc.php?book_id=' . $book_id . '&toc_no=' . $number . '">';
+			echo '<a target="_self" href="toc.php?book_id=' . $book_id . '&toc_no=' . $number . '">';
 		echo htmlspecialchars($name, ENT_NOQUOTES, $encoding) . '</a>';
 			
 		walk_children($result, $depth);
@@ -61,26 +61,25 @@
 
 	$book_id = intval($_GET['book_id']);
 	$number = intval($_GET['toc_no']);
-	$depth = 3;
+	$depth = 2;
 	
 	if($book_id)
 	{
 		if($number)
 		{
-			echo '<p><a target="navigation" href="toc.php?book_id=' . $book_id . '">Top</a></p>'; 
-			
 			$result = mysql_query('SELECT `parent_no`, `title`, `path`, `anchor` FROM `toc_entry` WHERE `book_id`=' . $book_id . ' AND `no`=' . $number . ' ORDER BY `no`');
 			list($parent_number, $name, $path, $anchor) = mysql_fetch_row($result);
 			
-			if($parent_number)
-				echo '<p><a target="navigation" href="toc.php?book_id=' . $book_id . '&toc_no=' . $parent_number . '">Up</a></p>'; 
+			echo '<ul><li class="collapsed"><a target="_self" href="toc.php?book_id=' . $book_id . '&toc_no=' . $parent_number . '">&hellip;</a>'; 
 				
 			echo '<ul>';
-			echo '<li>';
+			echo '<li class="expanded">';
 			echo '<a href="page.php/' . $book_id . '/' . $path . ($anchor ? '#' . $anchor : '') . '">' . htmlspecialchars($name, ENT_NOQUOTES, $encoding) . '</a>';
 			walk_children(query_toc($number), $depth - 1);
 			echo '</li>';
 			echo '</ul>';
+			
+			echo '</li></ul>';
 			
 		}
 		else
