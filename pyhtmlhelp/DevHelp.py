@@ -3,7 +3,7 @@
 See http://devhelp.codefactory.se/ for more information about DevHelp."""
 
 
-import os, os.path, xml.parsers.expat
+import os, os.path, urlparse, xml.parsers.expat
 import Book
 
 
@@ -18,7 +18,7 @@ class SpecParser:
 		if self.base is None:
 			return link
 		else:
-			return urlparse.urljoin(base, link)
+			return urlparse.urljoin(self.base, link)
 			
 	def start_book(self, name, title, link, base = None, **dummy):
 		assert len(self.contents_stack) == 1
@@ -28,7 +28,7 @@ class SpecParser:
 		
 		self.book.name = name
 		self.book.title = title
-		self.book.default = self.translate(link)
+		self.book.default = self.translate_link(link)
 	
 	def end_book(self):
 		assert len(self.contents_stack) == 1
@@ -82,9 +82,10 @@ class UncompressedDevHelpBook(DevHelpBook):
 		self.basedir = os.path.dirname(spec)
 
 		parser = SpecParser(self)
-		parser.parser(open(spec))
+		parser.parse(open(spec))
 	
 	def get(self, link):
+		print self.basedir, link
 		path = os.path.join(self.basedir, link)
 
 		return open(path)
