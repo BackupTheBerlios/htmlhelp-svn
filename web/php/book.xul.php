@@ -13,20 +13,16 @@
 
 	echo '
 <!-- 
-  You need a Gecko-based browser for viewing this page. 
+  You need a Gecko-based browser for viewing this page.
 -->
 ';
 
-	if($book_id = intval($_GET['book_id']))
-	{
-		$books = mysql_query('SELECT * FROM `book` WHERE `id`=' . $book_id);
-		$book = mysql_fetch_object($books);
-		$title = htmlspecialchars($book->title, ENT_NOQUOTES, $encoding);
-	}
-	else
-		$title = 'HTML Help Books';
+	$book_id = intval($_GET['book_id']);
+	$books = mysql_query('SELECT * FROM `book` WHERE `id`=' . $book_id);
+	$book = mysql_fetch_object($books);
+	$title = htmlspecialchars($book->title, ENT_NOQUOTES, $encoding);
 
-	echo '<window id="wnd" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" title="' . $title . '" width="640" height="420" screenX="100" screenY="100" persist="width height screenX screenY sizemode">';
+	echo '<window id="wnd" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" title="' . $title . '" width="640" height="420" persist="width height screenX screenY sizemode">';
 	echo '<script type="text/javascript">document.title = "' . $title . '";</script>';
 	
 	echo '<script src="book.js"/>';
