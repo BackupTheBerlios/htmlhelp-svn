@@ -146,7 +146,11 @@ def dump_book(book):
 
 	dump_metadata(book)
 	
-	dump_archive(book, path_map)
+	index = {}
+	
+	dump_archive(book, path_map, index)
+
+	dump_fulltext(path_map, index)
 
 
 def dump_contents(book, path_map):
@@ -223,12 +227,15 @@ def compress(data):
 	return fp.getvalue()
 
 
-def dump_archive(book, path_map):
+def dump_archive(book, path_map, index):
 	for path in book.archive:
 		no = path_map[path]
 
 		content = book.archive[path].read()
 		title, body = Plaintext.extract(path, content)
+
+		if body is not None:
+			Plaintext.fulltext_index(index, no, body)
 
 		compressed = 0
 		if content:
@@ -238,7 +245,31 @@ def dump_archive(book, path_map):
 				compressed = 1
 				content = compressed_content
 		
-		sys.stdout.write('INSERT INTO `page` (book_id, no, path, compressed, content, title, body) VALUES\n')
-		sys.stdout.write(' (' + ',\n  '.join(quote(literal('@book_id'), no, path, compressed, content, title, body)) + ')')
+		sys.stdout.write('INSERT INTO `page` (book_id, no, path, compressed, content, title) VALUES\n')
+		sys.stdout.write(' (' + ',\n  '.join(quote(literal('@book_id'), no, path, compressed, content, title)) + ')')
 		sys.stdout.write(';\n')
 
+
+def dump_fulltext(path_map, index):
+	if not index:
+		return
+	word_map = {}
+	sys.stdout.write('INSERT INTO `lexeme` (book_id, no, string) VALUES')
+	cont = 0
+	for word in index:
+		no = len(word_map) + 1
+		word_map[word] = no
+		sys.stdout.write(cont and ',\n ' or '\n ')
+		sys.stdout.write('(' + ', '.join(quote(literal('@book_id'), no, word)) + ')')
+		cont = 1
+	sys.stdout.write(';\n')
+		
+	sys.stdout.write('INSERT INTO `lexeme_link` (book_id, lexeme_no, page_no, count) VALUES')
+	cont = 0
+	for word, pages in index.iteritems():
+		no = word_map[word]
+		for page_no, count in pages.iteritems():
+			sys.stdout.write(cont and ',\n ' or '\n ')
+			sys.stdout.write('(' + ', '.join(quote(literal('@book_id'), no, page_no, min(count, 255))) + ')')
+			cont = 1
+	sys.stdout.write(';\n')

@@ -83,10 +83,12 @@
 
 		function search($query)
 		{
+			// FIXME: implement complex/boolean searches
 			$result = mysql_query('
 				SELECT `path`, `title` 
-				FROM `page` 
-				WHERE book_id=' . $this->id . ' AND MATCH (`title`, `body`) AGAINST (\'' . mysql_escape_string($query) . '\'' . ($boolean_mode ? ' IN BOOLEAN MODE' : '') . ')
+				FROM `lexeme`, `lexeme_link`, `page` 
+				WHERE `lexeme`.`book_id`=' . $this->id . ' AND `lexeme`.`string`=\'' . mysql_escape_string($query) . '\' AND `lexeme_link`.`book_id`=' . $this->id . ' AND `lexeme_no`=`lexeme`.`no` AND `page`.`book_id`=' . $this->id . ' AND `page`.`no` = `page_no`
+				ORDER BY `count` DESC
 			');
 			$entries = array();
 			while(list($path, $title) = mysql_fetch_row($result))
@@ -126,11 +128,13 @@
 		function delete()
 		{
 			mysql_query('DELETE FROM `book` WHERE `id`=' . $this->id);
+			mysql_query('DELETE FROM `metadata` WHERE `book_id`=' . $this->id);
 			mysql_query('DELETE FROM `toc_entry` WHERE `book_id`=' . $this->id);
 			mysql_query('DELETE FROM `index_entry` WHERE `book_id`=' . $this->id);
 			mysql_query('DELETE FROM `index_link` WHERE `book_id`=' . $this->id);
 			mysql_query('DELETE FROM `page` WHERE `book_id`=' . $this->id);
-			mysql_query('DELETE FROM `metadata` WHERE `book_id`=' . $this->id);
+			mysql_query('DELETE FROM `lexeme` WHERE `book_id`=' . $this->id);
+			mysql_query('DELETE FROM `lexeme_link` WHERE `book_id`=' . $this->id);
 		}
 	}
 

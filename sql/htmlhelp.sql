@@ -3,7 +3,7 @@
 # http://www.phpmyadmin.net
 #
 # Host: localhost
-# Generation Time: Mar 21, 2004 at 12:32 AM
+# Generation Time: Mar 21, 2004 at 02:44 AM
 # Server version: 4.0.18
 # PHP Version: 4.3.4
 # 
@@ -55,6 +55,33 @@ CREATE TABLE `index_link` (
 # --------------------------------------------------------
 
 #
+# Table structure for table `lexeme`
+#
+
+CREATE TABLE `lexeme` (
+  `book_id` smallint(5) unsigned NOT NULL default '0',
+  `no` smallint(5) unsigned NOT NULL default '0',
+  `string` varchar(32) NOT NULL default '',
+  PRIMARY KEY  (`book_id`,`string`)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+
+#
+# Table structure for table `lexeme_link`
+#
+
+CREATE TABLE `lexeme_link` (
+  `book_id` smallint(5) unsigned NOT NULL default '0',
+  `lexeme_no` smallint(5) unsigned NOT NULL default '0',
+  `page_no` smallint(5) unsigned NOT NULL default '0',
+  `count` tinyint(3) unsigned NOT NULL default '0',
+  KEY `book_id` (`book_id`,`lexeme_no`)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+
+#
 # Table structure for table `metadata`
 #
 
@@ -78,10 +105,8 @@ CREATE TABLE `page` (
   `compressed` tinyint(1) unsigned NOT NULL default '0',
   `content` mediumblob NOT NULL,
   `title` text,
-  `body` mediumtext,
   PRIMARY KEY  (`book_id`,`no`),
-  UNIQUE KEY `path` (`book_id`,`path`),
-  FULLTEXT KEY `fulltext` (`title`,`body`)
+  UNIQUE KEY `path` (`book_id`,`path`)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------

@@ -92,3 +92,24 @@ def extract(path, content):
 	else:
 		return None, None
 
+
+# FIXME: make this work for non-english languages, add stopwords, stemming, etc.
+_word_re = re.compile(r'^[_a-zA-Z][_a-zA-Z0-9]{2,}$')
+
+def word_count(string):
+	"""Word count."""
+	words = {}
+	for word in string.split():
+		if _word_re.match(word):
+			word = word.lower()[:32]
+			words[word] = words.get(word, 0) + 1
+	return words	
+
+
+def fulltext_index(index, path, string):
+	for word, count in word_count(string).iteritems():
+		if word in index:
+			index[word][path] = index[word].get(path, 0) + count
+		else:
+			index[word] = {path: count}
+
