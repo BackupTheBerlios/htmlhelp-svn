@@ -1,6 +1,6 @@
 GARNAME = perl
-GARVERSION = 5.8.2
-MASTER_SITES =http://www.cpan.org/src/
+GARVERSION = 5.8.6
+MASTER_SITES = http://www.cpan.org/src/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
 
 define BLURB

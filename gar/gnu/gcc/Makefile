@@ -1,5 +1,5 @@
 GARNAME = gcc
-GARVERSION = 3.3.2
+GARVERSION = 3.4.3
 MASTER_SITES = \
 	ftp://ftp.gnu.org/pub/gnu/$(GARNAME)/releases/$(GARNAME)-$(GARVERSION)/ \
 	ftp://gcc.gnu.org/pub/$(GARNAME)/releases/$(GARNAME)-$(GARVERSION)/ \

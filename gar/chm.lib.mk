@@ -25,11 +25,12 @@ HHC_FLAGS =
 WINE = wine
 WINE_FLAGS = 
 ifneq ($(shell which $(WINE)),)
-HHC := $(WINE) $(WINE_FLAGS) -- $(HHC)
+HHC := $(WINE) $(WINE_FLAGS) $(HHC)
 endif
 
 %.chm: %.mshh
-	-$(HHC) $(HHC_FLAGS) $(wildcard $<d/*.hhp)
+	#-$(HHC) $(HHC_FLAGS) $(wildcard $<d/*.hhp)
+	-cd $<d && $(HHC) $(HHC_FLAGS) $(notdir $(wildcard $<d/*.hhp))
 	mv -f $<d/$(@F) $@
 	@$(MAKECOOKIE)
 

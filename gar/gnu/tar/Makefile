@@ -1,7 +1,7 @@
 GARNAME = tar
-GARVERSION = 1.13
+GARVERSION = 1.15
 MASTER_SITES = ftp://ftp.gnu.org/pub/gnu/$(GARNAME)/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
+DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
 
 BOOKS = $(WORKSRC)/doc/tar.texi
 

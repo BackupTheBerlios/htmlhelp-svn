@@ -1,5 +1,5 @@
 GARNAME = Python
-GARVERSION = 2.3.2
+GARVERSION = 2.4
 MASTER_SITES = http://www.python.org/ftp/python/doc/$(GARVERSION)/
 DISTFILES = html-$(GARVERSION).tar.bz2
 
@@ -18,8 +18,8 @@ $(WORKDIR)/$(GARNAME).devhelp: $(FILEDIR)/py2devhelp.py
 	cd $@d/book && python ../../../../$(FILEDIR)/py2devhelp.py ../book
 	touch $@
 
-$(WORKDIR)/$(GARNAME).mshh: $(FILEDIR)/pythlp.py
+$(WORKDIR)/$(GARNAME).mshh:
 	rm -rf $@d
 	cp -a $(WORKSRC) $@d
-	cd $@d && python ../../../$(FILEDIR)/pythlp.py $(GARNAME)
+	cd $@d && python2.4 /usr/lib/python2.4/doc/tools/prechm.py -v $(GARVERSION) $(GARNAME)
 	touch $@

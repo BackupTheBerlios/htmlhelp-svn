@@ -1,5 +1,5 @@
 GARNAME = autoconf
-GARVERSION = 2.57
+GARVERSION = 2.59
 MASTER_SITES = ftp://ftp.gnu.org/pub/gnu/$(GARNAME)/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
 

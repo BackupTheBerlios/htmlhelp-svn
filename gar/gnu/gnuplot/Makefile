@@ -1,5 +1,5 @@
 GARNAME = gnuplot
-GARVERSION = 3.7.3
+GARVERSION = 4.0.0
 MASTER_SITES = ftp://ftp.gnuplot.info/pub/gnuplot/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
 

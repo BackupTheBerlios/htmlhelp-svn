@@ -37,11 +37,18 @@ HTMLHELP_XSL = /usr/share/sgml/docbook/stylesheet/xsl/nwalsh/htmlhelp/htmlhelp.x
 
 # Texinfo (using texi2html)
 
-TEXI2HTML = ~/projects/htmlhelp/texi2html/cvs/texi2html
+#TEXI2HTML = ~/projects/htmlhelp/texi2html/cvs/texi2html
+TEXI2HTML = texi2html
 TEXI2HTML_FLAGS = 
 TEXI2HTML_FLAGS_HTMLHELP = --init-file chm.init
 
 %.mshh: %.texi
+	@rm -rf $@d $*
+	cd $(<D) && $(TEXI2HTML) $(TEXI2HTML_FLAGS) $(TEXI2HTML_FLAGS_HTMLHELP) $(<F)
+	mv $* $@d
+	@touch $@
+	
+%.mshh: %.texinfo
 	@rm -rf $@d $*
 	cd $(<D) && $(TEXI2HTML) $(TEXI2HTML_FLAGS) $(TEXI2HTML_FLAGS_HTMLHELP) $(<F)
 	mv $* $@d

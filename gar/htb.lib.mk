@@ -25,6 +25,7 @@ htb-p:
 ##################### HTB RULES ###################
 
 %.htb: %.mshh
+	@rm -f $@
 	cd $<d && zip -r ../$(@F) .
 	@$(MAKECOOKIE)
 

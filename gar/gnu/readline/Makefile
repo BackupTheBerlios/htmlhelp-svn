@@ -1,5 +1,5 @@
 GARNAME = readline
-GARVERSION = 4.3
+GARVERSION = 5.0
 MASTER_SITES = ftp://ftp.gnu.org/pub/gnu/$(GARNAME)/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
 

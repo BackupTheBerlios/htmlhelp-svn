@@ -1,5 +1,5 @@
 GARNAME = bash
-GARVERSION = 2.05b
+GARVERSION = 3.0
 MASTER_SITES = ftp://ftp.gnu.org/pub/gnu/$(GARNAME)/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
 
