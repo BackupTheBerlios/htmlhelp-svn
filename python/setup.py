@@ -26,5 +26,5 @@ setup(
 	py_modules = py_modules,
 	ext_modules = ext_modules,
 	scripts = [
-		'scripts/hhconvert',
-		'scripts/hhsqldump'])
+		'hhconvert.py',
+		'hhsqldump.py'])
