@@ -3,6 +3,7 @@
 # See also:
 # 
 #   http://www.wxwindows.org/help.htm
+#   http://www.wxwindows.org/manuals/2.4.0/wx499.htm#helpformat
 
 all: htb
 
