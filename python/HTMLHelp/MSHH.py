@@ -167,20 +167,15 @@ class HHPParser:
 				self.handle_line(line)
 
 
-class MSHHFilterArchive(Archive.Archive):
-	"""Archive proxy which hides unwanted files from the client."""
+class MSHHFilterArchive(Archive.FilterArchive):
 
-	def __init__(self, archive):
-		self.archive = archive
-		
-	def __iter__(self):
-		for path in self.archive:
-			if path[-4:].lower() not in ('.hhp', '.hhc', '.hhk'):
-				yield path
-		raise StopIteration
+	def filter(self, path):
+		if path[-4:].lower() not in ('.hhp', '.hhc', '.hhk'):
+			return path
+		else:
+			return None
 
-	def __getitem__(self, path):
-		return self.archive[path]
+	translate = filter
 
 
 class MSHHBook(Book.Book):

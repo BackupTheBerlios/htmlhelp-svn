@@ -85,16 +85,14 @@ class DevHelpBook(Book.Book):
 	
 	
 class RawDevHelpFilterArchive(Archive.Archive):
-	"""Archive proxy which hides unwanted files from the client."""
-
-	def __init__(self, archive):
-		self.archive = archive
-		
-	def __iter__(self):
-		for path in self.archive:
-			if not path.endswidth('.devhelp'):
-				yield path
-		raise StopIteration
+	
+	def filter(self, path):
+		if not path.endswidth('.devhelp'):
+			return path
+		else:
+			return None
+	
+	translate = filter
 
 
 class RawDevHelpBook(DevHelpBook):
@@ -107,20 +105,17 @@ class RawDevHelpBook(DevHelpBook):
 
 		self.archive = RawDevHelpFilterArchive(archive)
 
-class TgzDevHelpFilterArchive(Archive.Archive):
-	"""Archive proxy which hides unwanted files from the client."""
 
-	def __init__(self, archive):
-		self.archive = archive
-		
-	def __iter__(self):
-		for path in self.archive:
-			if path.startswith('book/'):
-				yield path[5:]
-		raise StopIteration
+class TgzDevHelpFilterArchive(Archive.FilterArchive):
 
-	def __getitem__(self, path):
-		return self.archive['book/' + path]
+	def filter(self, path):
+		if path[:5] == 'book/':
+			return path[5:]
+		else:
+			return None
+
+	def translate(self, path):
+		return 'book/' + path
 
 
 class TgzDevHelpBook(DevHelpBook):

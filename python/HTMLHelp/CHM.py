@@ -1,7 +1,8 @@
 """Microsoft Compiled HTML Help (CHM)."""
 
 
-import os.path, struct
+import os.path
+import struct
 
 try:
 	from cStringIO import StringIO
@@ -9,7 +10,9 @@ except ImportError:
 	from StringIO import StringIO
 
 import chmlib
-import Book, Archive, MSHH
+import Archive
+import Book
+import MSHH
 
 
 class ChmArchive(Archive.Archive):
@@ -97,21 +100,16 @@ class SystemParser:
 			self.book.contents.name = data
 		
 
-class ChmFilterArchive(Archive.Archive):
-	"""Archive proxy which hides unwanted files from the client and translates
-	the paths."""
+class ChmFilterArchive(Archive.FilterArchive):
 
-	def __init__(self, archive):
-		self.archive = archive
-		
-	def __iter__(self):
-		for path in self.archive:
-			if path[:1] == '/' and not (path.lower().endswith('.hhc') or path.lower().endswith('.hhk')):
-				yield path[1:]
-		raise StopIteration
+	def filter(self, path):
+		if path[:1] == '/' and not (path.lower().endswith('.hhc') or path.lower().endswith('.hhk')):
+			return path[1:]
+		else:
+			return None
 
-	def __getitem__(self, path):
-		return self.archive['/' + path]
+	def translate(self, path):
+		return '/' + path
 
 
 class ChmBook(Book.Book):
@@ -142,20 +140,3 @@ def factory(path):
 	else:
 		raise ValueError, 'not a CHM file'
 
-
-#######################################################################
-# Test program
-
-
-def test():
-	import sys
-
-	for arg in sys.argv[1:]:
-		book = ChmBook(arg)
-		print book.archive.keys()
-		print book.contents
-		print book.index
-	
-
-if __name__ == '__main__':
-	test()
