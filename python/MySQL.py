@@ -1,7 +1,9 @@
-"""SQL database."""
+"""MySQL HTML help book database."""
 
 
 import sys
+import HTMLParser, htmlentitydefs
+import posixpath, mimetypes
 
 
 #######################################################################
@@ -23,10 +25,6 @@ def store(book):
 
 #######################################################################
 # title and plaintext extraction
-
-
-import HTMLParser, htmlentitydefs
-import posixpath, mimetypes
 
 
 class HTMLExtractor(HTMLParser.HTMLParser):
