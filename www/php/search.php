@@ -15,11 +15,12 @@
 	if($query)
 	{
 		$book_expr = $book_id ? ' book_id=' . $book_id : '1';
-		$against_expr = 'AGAINST ("' . mysql_escape_string($query) . '"' . (mysql_check_version('4.0.1') ? ' IN BOOLEAN MODE' : '') . ')';
+		$against_expr = 'AGAINST (\'' . mysql_escape_string($query) . '\'' . (mysql_check_version('4.0.1') ? ' IN BOOLEAN MODE' : '') . ')';
 
 		if($where == 'contents')
 		{
-			$result = mysql_query('SELECT `book_id`, `name`, `path`, `anchor` FROM `toc` WHERE ' . $book_expr . ' AND MATCH (`name`) ' . $against_expr);
+			#$result = mysql_query('SELECT `book_id`, `name`, `path`, `anchor` FROM `toc` WHERE ' . $book_expr . ' AND MATCH (`name`) ' . $against_expr);
+			$result = mysql_query('SELECT `book_id`, `name`, `path`, `anchor` FROM `toc` WHERE ' . $book_expr . ' AND LOCATE(\'' . mysql_escape_string($query) . '\', `name`)');
 			echo '<ul>';
 			while(list($book_id, $name, $path, $anchor) = mysql_fetch_row($result))
 				echo '<li><a href="page.php/' . $book_id . '/' . $path . '#' . $anchor . '" target="main">' . htmlentities($name, ENT_NOQUOTES, 'UTF-8') . '</a></li>';
@@ -28,7 +29,8 @@
 
 		if($where == 'index')
 		{
-			$result = mysql_query('SELECT `book_id`, `id`, `term` FROM `index` WHERE ' . $book_expr . ' AND MATCH (`term`) ' . $against_expr);
+			#$result = mysql_query('SELECT `book_id`, `id`, `term` FROM `index` WHERE ' . $book_expr . ' AND MATCH (`term`) ' . $against_expr);
+			$result = mysql_query('SELECT `book_id`, `id`, `term` FROM `index` WHERE ' . $book_expr . ' AND LOCATE(\'' . mysql_escape_string($query) . '\', `term`)');
 			echo '<ul>';
 			while(list($book_id, $id, $term) = mysql_fetch_row($result))
 			{
