@@ -5,7 +5,7 @@ diff --speed-large-files --minimal -Nru tmp/helpsrc/dsssl.hhp work/helpsrc/dsssl
  Full-text search=Yes
  Index file=Index.hhk
  Language=0x409 English (United States)
-+Title=DSSSL
++Title=Document Style Semantics and Specification Language (DSSSL)
  
  [FILES]
  notes.htm
