@@ -25,10 +25,10 @@ class GlobalFactory(Book.Factory):
 		for factory in self.__factories:
 			try:
 				return factory(path)
-			except InvalidBookError:
+			except Book.InvalidBookError:
 				pass
 
-		raise InvalidBookError('could not find an appropriate factory to open book %s' % path)
+		raise Book.InvalidBookError('could not find an appropriate factory to open book %s' % path)
 
 factory = GlobalFactory()
 factory.register(DevHelp.factory)
