@@ -2,6 +2,8 @@
 
 
 import os, os.path, zipfile, tarfile
+import Error
+
 
 try:
 	from cStringIO import StringIO
@@ -9,8 +11,32 @@ except ImportError:
 	from StringIO import StringIO
 
 
+class ArchiveError(Error.Error):
+	"""Base archive exception class."""
+
+	pass
+
+
+class InvalidArchiveError(ArchiveError):
+	"""Attempt to open an invalid archive."""
+	
+	pass
+
+
+class MissingMemberError(ArchiveError):
+	"""Attempt to get a non-existing member,"""
+
+	pass
+
+
 class Archive(object):
-	"""Base archive class."""
+	"""A dictionary-like view of a file archive."""
+
+	def __iter__(self):
+		return iter(self.list)
+
+	def __getitem__(self, path):
+		return self.open(path)
 
 	def list(self):
 		"""List archive contents."""
@@ -18,7 +44,7 @@ class Archive(object):
 		raise NotImplementedError
 		
 	def open(self, path):
-		"""Open file in archive."""
+		"""Get a file-like object for a member in the archive."""
 
 		raise NotImplementedError
 
@@ -27,11 +53,11 @@ class DirArchive(Archive):
 	"""Plain directory."""
 
 	def __init__(self, path):
-		self.path = os.path.abspath(path)
+		self.dir = os.path.abspath(path)
 
 	def _walkdir(self, head = ''):
 		result = []
-		abshead = os.path.join(self.path, head)
+		abshead = os.path.join(self.dir, head)
 		for tail in os.listdir(abshead):
 			path = os.path.join(head, tail)
 			abspath = os.path.join(abshead,tail)
@@ -45,7 +71,11 @@ class DirArchive(Archive):
 		return self._walkdir()
 
 	def open(self, path):
-		return open(os.path.join(self.path, path))
+		path = os.path.join(self.dir, path)
+		try:
+			return open(path)
+		except IOError:
+			raise MissingMemberError, 'could not open \'%s\'' % path
 
 
 class ZipArchive(Archive):
