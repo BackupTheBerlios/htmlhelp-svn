@@ -3,6 +3,7 @@
 
 import cgi, os.path, posixpath, sys, urllib, urlparse, BaseHTTPServer
 
+sys.path.insert(0, '..')
 import Formats, HTML
 
 

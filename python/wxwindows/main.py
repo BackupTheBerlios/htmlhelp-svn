@@ -1,9 +1,11 @@
 #!/usr/bin/python
 
+import sys
 
 from wxPython.wx import *
 from wxPython.html import *
 
+sys.path.insert(0, '..')
 import Formats
 
 

@@ -13,6 +13,9 @@ try:
 except ImportError:
 	from StringIO import StringIO
 
+sys.path.insert(0, '.')
+sys.path.insert(0, '..')
+sys.path.insert(0, '../..')
 import Formats, HTML
 
 
@@ -72,31 +75,6 @@ def main():
 	
 	resource.render(request)
 
-
-def test():
-	"""Test server.
-
-	To test from command line type:
-
-		python -c 'import CGI;CGI.test()'
-
-	"""
-	import CGIHTTPServer
-	
-	class MyRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
-
-		def is_cgi(self):
-			path = self.path
-
-			x = '/CGI.py'
-			i = len(x)
-			if path[:i] == x and (not path[i:] or path[i] == '/'):
-				self.cgi_info = '', path[1:]
-				return 1
-			return 0
-	
-	CGIHTTPServer.test(MyRequestHandler)
-	
 
 if __name__ == "__main__":
 	main()
