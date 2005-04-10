@@ -1,14 +1,14 @@
 """Abstract class for archives."""
 
 
-class Archive(object):
+class Archive:
 	"""Presents a dictionary-like view (so far read-only) of a file archive,
 	where the keys are file names and the values are file-like objects."""
 
 	# TODO: Add write support
 
 	def __contains__(self, path):
-		"""Whether a member with the given path is in the archive"""
+		"""Whether a member with the given path is in the archive or not."""
 
 		for _path in self:
 			if _path == path:
@@ -61,7 +61,7 @@ class Archive(object):
 		
 		return list(iter(self))
 	
-	def get(self, path, default = None):
+	def get(self, path, default=None):
 		"""Get a file-like object for a member in the archive."""
 		
 		try:

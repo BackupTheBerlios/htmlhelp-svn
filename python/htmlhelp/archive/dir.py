@@ -1,4 +1,4 @@
-"""Plain directory archive class."""
+"""Plain directory archives support."""
 
 
 import os.path
@@ -7,7 +7,7 @@ from htmlhelp.archive.base import Archive
 
 
 class DirArchive(Archive):
-	"""Plain directory archive."""
+	"""Treat directories as an archive."""
 
 	def __init__(self, path):
 		if not os.path.isdir(path):

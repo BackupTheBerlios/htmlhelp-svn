@@ -1,4 +1,4 @@
-"""Microsoft Compiled HTML Help (CHM) archives."""
+"""Microsoft Compiled HTML Help (CHM) archives support."""
 
 
 import sys
@@ -20,7 +20,9 @@ if sys.platform.startswith('win'):
 	from win32com import storagecon
 
 	class ChmArchive(Archive):
-		"""Compiled HTML Help (CHM) archive."""
+		"""Compiled HTML Help (CHM) archive.
+
+        This class is an adaptor for the chmlib bindings."""
 
 		def __init__(self, path):
 			# FIXME: implement the ChmArchive using istorage

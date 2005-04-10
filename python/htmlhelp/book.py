@@ -12,7 +12,12 @@ class ContentsEntry(list):
 	"""Entry in a table of contents.
 	
 	It presents a list-like interface but it also provides references to the
-	neighbour entries."""
+	neighbour entries.
+	
+	@type name: unicode
+	@ivar name: name of the entry
+	@ivar link: link of the entry
+	"""
 
 	# XXX: This is probably over-complicated, as it is unlikely that anything
 	# besides a top-down tree trasversal should be necessary.
@@ -36,6 +41,8 @@ class ContentsEntry(list):
 		return '\n'.join(lines)
 	
 	def append(self, item):
+		"""Append a new child entry."""
+		
 		assert isinstance(item, ContentsEntry)
 
 		item.parentref = weakref.ref(self)
@@ -43,17 +50,28 @@ class ContentsEntry(list):
 		list.append(self, item)
 
 	def renumber(self):
+		"""Renumber the children.  
+		
+		It should be called whenever the chidren are removed/inserted, but it is
+		not necessary when appended and replacing children."""
+
+		# XXX: This should actually be called for the insert and remove methods.
+		
 		number = 1
 		for item in self:
 			item.number = number
 			number += 1
 	
 	def get_parent(self):
+		"""Get the parent entry."""
+
 		if self.parentref is None:
 			return None
 		return self.parentref()
 	
 	def get_prev(self):
+		"""Get the previous sibling."""
+
 		parent = self.get_parent()
 		if parent is None:
 			return None
@@ -63,6 +81,8 @@ class ContentsEntry(list):
 		return parent[index]
 			
 	def get_next(self):
+		"""Get the next sibling."""
+
 		parent = self.get_parent()
 		if parent is None:
 			return None
@@ -72,6 +92,8 @@ class ContentsEntry(list):
 		return parent[index]
 	
 	def get_children(self):
+		"""Get the first child."""
+
 		if not len(self):
 			return None	
 		return self[0]
@@ -90,8 +112,14 @@ class Contents(ContentsEntry):
 	pass
 
 
-class IndexEntry(object):
-	"""Entry in an index."""
+class IndexEntry:
+	"""Entry in an index.
+	
+	@type name: unicode
+	@ivar name: entry name
+	@type links: list
+	@ivar links: list of links for this entry
+	"""
 
 	def __init__(self, name=None, link=None):
 		self.name = name
@@ -111,7 +139,7 @@ class IndexEntry(object):
 		return str(self.name) + '\t' + ' '.join([str(link) for link in self.links])
 
 
-class Index(object):
+class Index:
 	"""Book index.
 
 	It is a mixture between a dictionary and a list where entries are kept sorted
@@ -158,7 +186,7 @@ class Index(object):
 			self.__list.sort()
 
 
-class Book(object):
+class Book:
 	"""Generic HTML Help book.
 	
 	@ivar name: Name of the book.

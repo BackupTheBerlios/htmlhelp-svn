@@ -1,4 +1,4 @@
-"""Archive filtering."""
+"""Archive filtering support."""
 
 
 import os.path
@@ -28,12 +28,16 @@ class FilterArchive(Archive):
 
 	def filter(self, path):
 		"""It should return name under which this file should be seen by the
-		client, or None if should be hidden."""
+		client, or None if should be hidden.
+
+        It should be overriden by inherited classes."""
 
 		return path
 
 	def translate(self, path):
 		"""It should return the real of the file, or None if access should be
-		denied."""
-		
+		denied.
+
+        It should be overriden by inherited classes."""
+
 		return path

@@ -1,4 +1,4 @@
-"""Tarballs archives."""
+"""Tarballs archives support."""
 
 
 import os.path
@@ -8,7 +8,9 @@ from htmlhelp.archive.base import Archive
 
 
 class TarArchive(Archive):
-	"""TAR-ball archive."""
+	"""Tarball archive.
+
+    This class is an adaptor for the python tarfile module."""
 
 	def __init__(self, path):
 		self.tar = tarfile.open(path, 'r')

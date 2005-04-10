@@ -1,4 +1,4 @@
-"""Zip archives."""
+"""Zip archives support."""
 
 
 import os.path
@@ -13,7 +13,9 @@ from htmlhelp.archive.base import Archive
 
 
 class ZipArchive(Archive):
-	"""ZIP archive."""
+	"""Zip archives.
+
+    This class is an adaptor for the python zipfile module."""
 
 	def __init__(self, path):
 		try:

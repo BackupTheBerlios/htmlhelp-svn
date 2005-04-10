@@ -1,4 +1,4 @@
-"""Dummy archives."""
+"""Dummy archives support."""
 
 
 from htmlhelp.archive.base import Archive

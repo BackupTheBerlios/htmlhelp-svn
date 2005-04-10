@@ -4,7 +4,7 @@
 import os.path, weakref
 
 
-class CatalogEntry(object):
+class CatalogEntry:
 
 	def __init__(self, name, factory, path):
 		self.name = name
@@ -30,7 +30,7 @@ class CatalogEntry(object):
 			doc = """The book associated with this entry.""")
 
 		
-class Catalog(object):
+class Catalog:
 	"""A collection of books."""
 
 	def __contains__(self, name):
