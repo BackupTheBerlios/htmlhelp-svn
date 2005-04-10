@@ -4,7 +4,7 @@
 import os.path
 import tarfile
 
-from htmlhelp.archive.base import Archive
+from htmlhelp.archive import Archive
 
 
 class TarArchive(Archive):

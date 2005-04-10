@@ -9,7 +9,7 @@ try:
 except ImportError:
 	from StringIO import StringIO
 
-from htmlhelp.archive.base import Archive
+from htmlhelp.archive import Archive
 
 
 class ZipArchive(Archive):

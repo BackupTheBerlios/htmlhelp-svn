@@ -190,7 +190,7 @@ class Book:
 	"""Generic HTML Help book.
 	
 	@ivar name: Name of the book.
-	@type archive: L{htmlhelp.archive.base.Archive}
+	@type archive: L{htmlhelp.archive.Archive}
 	@ivar archive: Archive with the HTML files, pictures, etc.
 	@type contents: L{Contents}
 	@ivar contents: Table of Contents.

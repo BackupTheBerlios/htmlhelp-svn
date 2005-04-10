@@ -1,7 +1,7 @@
 """Dummy archives support."""
 
 
-from htmlhelp.archive.base import Archive
+from htmlhelp.archive import Archive
 
 
 class DummyArchive(Archive):

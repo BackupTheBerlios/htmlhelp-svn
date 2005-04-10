@@ -3,7 +3,7 @@
 
 import os.path
 
-from htmlhelp.archive.base import Archive
+from htmlhelp.archive import Archive
 
 
 class DirArchive(Archive):
