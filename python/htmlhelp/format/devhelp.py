@@ -21,7 +21,6 @@ from htmlhelp.archive.tar import TarArchive
 from htmlhelp.archive.filter import FilterArchive
 from htmlhelp.book import Book, Contents, ContentsEntry, Index, IndexEntry
 from htmlhelp.format import Format
-from htmlhelp.catalog import Catalog
 
 
 #######################################################################
@@ -216,6 +215,14 @@ class DevhelpFormat(Format):
 	def __init__(self):
 		Format.__init__(self, 'devhelp')
 		
+		self.path = []
+
+		if 'HOME' in os.environ:
+			self.path.append(os.path.join(os.environ['HOME'], '.devhelp', 'books'))
+		
+		self.path.append('/usr/share/gtk-doc/html')
+		self.path.append('/usr/local/share/gtk-doc/html')
+
 	def read_spec(self, path):
 		"""Read a DevHelp book on a plain directory."""
 	
@@ -295,31 +302,13 @@ class DevhelpFormat(Format):
 			raise NotImplemented
 		self.write_tgz(book, path, name=None)
 
-
-#######################################################################
-# Catalog
-
-
-class DevhelpCatalog(Catalog):
-
-	def __init__(self):
-		Catalog.__init__(self)
-		
-		self.path = []
-
-		if 'HOME' in os.environ:
-			self.path.append(os.path.join(os.environ['HOME'], '.devhelp', 'books'))
-		
-		self.path.append('/usr/share/gtk-doc/html')
-		self.path.append('/usr/local/share/gtk-doc/html')
-	
-	def __iter__(self):
+	def list(self, **options):
+		result = []
 		for dir in self.path:
 			if os.path.isdir(dir):
 				for name in os.listdir(dir):
 					path = os.path.join(dir, name, name + '.devhelp')
 					if os.path.isfile(path):
-						yield Catalog.CatalogEntry(name, read, path)
-		raise StopIteration
+						result.append(path)
+		return result
 
-catalog = DevhelpCatalog()

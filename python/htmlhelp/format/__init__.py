@@ -34,3 +34,8 @@ class Format:
 		"""
 		
 		raise NotImplementedError
+
+	def list(self, **options):
+		"""List available books in this format."""
+		
+		return []
