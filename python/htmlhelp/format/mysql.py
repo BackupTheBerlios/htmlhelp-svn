@@ -33,28 +33,35 @@ def store(book):
 # SQL literals quoting
 
 
-class literal(str):
+class literal:
 	"""A SQL literal."""
 
-	pass
+	def __init__(self, s):
+		self.s = s
+
+	def __str__(self):
+		return str(self.s)
+
+	def __repr__(self):
+		return repr(self.s)
 
 
 def quote_int(i):
 	"""Quote a integer literal."""
 
-	return literal('%i' % i)
+	return str('%i' % i)
 
 
 def quote_long(l):
 	"""Quote a long integer literal."""
 
-	return literal('%li' % l)
+	return str('%li' % l)
 
 
 def quote_float(f):
 	"""Quote a floating point literal."""
 
-	return literal('%f' % f)
+	return str('%f' % f)
 
 
 def quote_str(s):
@@ -72,7 +79,7 @@ def quote_str(s):
 	s = s.replace("'", "\\'")
 	s = s.replace('"', '\\"')
 
-	return literal("'" + s + "'")
+	return str("'" + s + "'")
 
 
 def quote_unicode(u, encoding = 'UTF-8'):
@@ -89,7 +96,7 @@ def quote(*args):
 		if arg is None:
 			result.append('NULL')
 		elif isinstance(arg, literal):
-			result.append(arg)
+			result.append(str(arg))
 		elif isinstance(arg, int):
 			result.append(quote_int(arg))
 		elif isinstance(arg, long):

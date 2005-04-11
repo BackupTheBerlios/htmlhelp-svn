@@ -8,7 +8,7 @@ import weakref
 from htmlhelp.archive.dummy import DummyArchive
 
 
-class ContentsEntry(list):
+class ContentsEntry:
 	"""Entry in a table of contents.
 	
 	It presents a list-like interface but it also provides references to the
@@ -23,16 +23,22 @@ class ContentsEntry(list):
 	# besides a top-down tree trasversal should be necessary.
 
 	def __init__(self, name=None, link=None):
-		list.__init__(self)
 		self.name = name
 		self.link = link
 		self.number = None
-		self.parentref = None
+		self._parentref = None
+		self._children = []
 
+	def __len__(self):
+		return len(self._children)
+
+	def __getitem__(self, index):
+		return self._children[index]
+		
 	def __setitem__(self, index, item):
-		item.parentref = weakref.ref(self)
+		item._parentref = weakref.ref(self)
 		item.number = index + 1
-		list.__setitem__(self, index, item)
+		self._children[index] = item
 	
 	def __str__(self):
 		lines = [str(self.name) + '\t' + str(self.link)]
@@ -45,11 +51,11 @@ class ContentsEntry(list):
 		
 		assert isinstance(item, ContentsEntry)
 
-		item.parentref = weakref.ref(self)
+		item._parentref = weakref.ref(self)
 		item.number = len(self)
-		list.append(self, item)
+		self._children.append(item)
 
-	def renumber(self):
+	def _renumber(self):
 		"""Renumber the children.  
 		
 		It should be called whenever the chidren are removed/inserted, but it is
@@ -62,12 +68,17 @@ class ContentsEntry(list):
 			item.number = number
 			number += 1
 	
+	def insert(self, index, item):
+		item._parentref = weakred.ref(self)
+		item.number = index + 1
+		self._children.insert(index, item)
+			
 	def get_parent(self):
 		"""Get the parent entry."""
 
-		if self.parentref is None:
+		if self._parentref is None:
 			return None
-		return self.parentref()
+		return self._parentref()
 	
 	def get_prev(self):
 		"""Get the previous sibling."""
