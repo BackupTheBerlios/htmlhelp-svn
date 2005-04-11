@@ -6,19 +6,18 @@
 import sys
 import os.path
 
-from htmlhelp.format.generic import read, write
+from htmlhelp.format.generic import GenericFormat
 
 
 def main():
+	format = GenericFormat()
+
 	input = sys.argv[1]
 	output = sys.argv[2]
 	
-	book = read(input)
+	book = format.read(input)
 
-	basedir, basename = os.path.split(os.path.abspath(input))
-	name, ext = os.path.splitext(basename)
-	
-	write(book, output, name)
+	format.write(book, output)
 
 
 if __name__ == '__main__':

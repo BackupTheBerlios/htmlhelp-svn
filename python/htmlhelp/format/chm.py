@@ -8,14 +8,10 @@ import struct
 import tempfile
 import shutil
 
-try:
-	from cStringIO import StringIO
-except ImportError:
-	from StringIO import StringIO
-
 from htmlhelp.book import Book
 from htmlhelp.archive.chm import ChmArchive
 from htmlhelp.archive.filter import FilterArchive
+from htmlhelp.format import Format
 from htmlhelp.format.mshh import HHCParser, HHKParser, Formatter
 
 
@@ -81,84 +77,78 @@ class ChmFilterArchive(FilterArchive):
 
 
 #######################################################################
-# Readers
+# Format
 
 
-def read_chm(path):
-	archive = ChmArchive(path)
+class ChmFormat(Format):
 
-	name = os.path.splitext(os.path.basename(path))[0]
+	def __init__(self):
+		Format.__init__(self, 'chm')
 
-	book = Book(name, archive)
+	def read_chm(self, path):
+		archive = ChmArchive(path)
 
-	SystemParser(book)
-	
-	for name in archive:
-		if name.lower().endswith('.hhc') and not len(book.contents):
-			parser = HHCParser(book)
-			parser.parse(archive[name])
-		elif name.lower().endswith('.hhk') and not len(book.index):
-			parser = HHKParser(book)
-			parser.parse(archive[name])
+		name = os.path.splitext(os.path.basename(path))[0]
 
-	book.archive = ChmFilterArchive(archive)
+		book = Book(name, archive)
 
-	return book
-
-
-def read(path):
-	root, ext = os.path.splitext(path)
-	if ext.lower() == '.chm':
-		return read_chm(path)
-	else:
-		raise ValueError, 'not a CHM file'
-
-
-#######################################################################
-# Writers
-
-
-def write_chm(book, path, name = None):
-	if not sys.platform.startswith('win'):
-		raise ValueError, 'Only supported on Windows platform'
-	
-	dir = tempfile.mkdtemp()
-	
-	if name is None:
-		# TODO: choose a better default here
-		name = 'book'
+		SystemParser(book)
 		
-	formatter = Formatter(book, name)
-	
-	hhp_name = os.path.join(dir, name + '.hhp')
-	fp = file(hhp_name, 'wt')
-	formatter.write_hhp(fp)
-	fp.close()
-	
-	fp = file(os.path.join(dir, name + '.hhc'), 'wt')
-	formatter.write_hhc(fp)
-	fp.close()
-	
-	fp = file(os.path.join(dir, name + '.hhk'), 'wt')
-	formatter.write_hhk(fp)
-	fp.close()
-	
-	for pname in book.archive:
-		# FIXME: make parent dirs
-		fp = file(os.path.join(dir, pname), 'wb')
-		fp.write(book.archive[pname].read())
+		for name in archive:
+			if name.lower().endswith('.hhc') and not len(book.contents):
+				parser = HHCParser(book)
+				parser.parse(archive[name])
+			elif name.lower().endswith('.hhk') and not len(book.index):
+				parser = HHKParser(book)
+				parser.parse(archive[name])
+
+		book.archive = ChmFilterArchive(archive)
+
+		return book
+
+	def read(self, path, **options):
+		if path.endswith('.chm'):
+			return self.read_chm(path)
+		else:
+			raise ValueError, 'not a CHM file'
+
+	def write_chm(self, book, path):
+		if not sys.platform.startswith('win'):
+			raise NotImplementedError, 'Only supported on Windows platform'
+		
+		dir_ = tempfile.mkdtemp()
+		
+		name = book.name
+			
+		formatter = Formatter(book, name)
+		
+		hhp_name = os.path.join(dir_, name + '.hhp')
+		fp = file(hhp_name, 'wt')
+		formatter.write_hhp(fp)
 		fp.close()
+		
+		fp = file(os.path.join(dir_, name + '.hhc'), 'wt')
+		formatter.write_hhc(fp)
+		fp.close()
+		
+		fp = file(os.path.join(dir_, name + '.hhk'), 'wt')
+		formatter.write_hhk(fp)
+		fp.close()
+		
+		for pname in book.archive:
+			# FIXME: make parent dirs
+			fp = file(os.path.join(dir_, pname), 'wb')
+			fp.write(book.archive[pname].read())
+			fp.close()
 
-	os.spawnl(os.P_WAIT, 'C:\\Program Files\\HTML Help Workshop\\hhc.exe', 'hhc.exe', hhp_name)
+		os.spawnl(os.P_WAIT, 'C:\\Program Files\\HTML Help Workshop\\hhc.exe', 'hhc.exe', hhp_name)
 
-	shutil.move(os.path.join(dir, name + '.chm'), path)
-	
-	shutil.rmtree(dir)
+		shutil.move(os.path.join(dir_, name + '.chm'), path)
+		
+		shutil.rmtree(dir_)
 
-
-def write(book, path, name=None):
-	if not path.endswith('.chm'):
-		raise ValueError
-	write_chm(book, path, name)
-
+	def write(self, book, path, **options):
+		if not path.endswith('.chm'):
+			raise NotImplementedError
+		self.write_chm(book, path)
 

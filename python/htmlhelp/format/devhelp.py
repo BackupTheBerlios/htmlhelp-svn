@@ -1,6 +1,7 @@
 """DevHelp Books.
 
-See http://www.imendio.com/projects/devhelp/ for more information about DevHelp."""
+See http://www.imendio.com/projects/devhelp/ for more information about DevHelp.
+"""
 
 
 import os
@@ -19,6 +20,7 @@ from htmlhelp.archive.dir import DirArchive
 from htmlhelp.archive.tar import TarArchive
 from htmlhelp.archive.filter import FilterArchive
 from htmlhelp.book import Book, Contents, ContentsEntry, Index, IndexEntry
+from htmlhelp.format import Format
 from htmlhelp.catalog import Catalog
 
 
@@ -118,9 +120,9 @@ class SpecFormatter:
 	
 	def book(self, book, name = None):
 		if name is None:
-			if 'name' not in book.metadata:
+			if book.name is None:
 				raise ValueError, 'Required book name not specified.'
-			name = book.metadata['name']
+			name = book.name
 
 		self.fp.write('<book name="%s" title="%s" link="%s"' % (self.escape(name), self.escape(book.contents.name), self.escape(book.contents.link)))
 		if 'version' in book.metadata:
@@ -182,20 +184,21 @@ class SpecFormatter:
 
 
 class DirDevhelpFilterArchive(FilterArchive):
+	"""Hides the spec file from the client."""
 	
 	def filter(self, path):
 		if not path.endswith('.devhelp'):
 			return path
 		else:
 			return None
-	
-	translate = filter
 
 
 class TgzDevhelpFilterArchive(FilterArchive):
+	""""HTML pages in DevHelp tgz books  are stored in the 'book' subdirectory.
+	This filter hides that from the client."""
 
 	def filter(self, path):
-		if path[:5] == 'book/':
+		if path.startswith('book/'):
 			return path[5:]
 		else:
 			return None
@@ -205,97 +208,92 @@ class TgzDevhelpFilterArchive(FilterArchive):
 
 
 #######################################################################
-# Readers
+# Format
 
 
-def read_spec(path):
-	"""Read a DevHelp book on a plain directory."""
-
-	basedir, spec = os.path.split(os.path.abspath(path))
+class DevhelpFormat(Format):
 	
-	name = os.path.splitext(spec)[0]
-
-	archive = DirArchive(basedir)
-
-	parser = SpecParser()
-	parser.parse(file(path, 'rt'))
-
-	book = Book(
-			name,
-			DirDevhelpFilterArchive(archive),
-			parser.contents,
-			parser.index,
-			parser.metadata)
-
-	return book
-
-
-def read_tgz(path):
-	"""A DevHelp book in a gzip'ed tarball."""
-
-	name = os.path.splitext(os.path.basename(path))[0]
-
-	archive = TarArchive(path)
-
-	parser = SpecParser()
-	parser.parse(archive['book.devhelp'])
-
-	book = Book(
-			name,
-			TgzDevhelpFilterArchive(archive),
-			parser.contents,
-			parser.index,
-			parser.metadata)
-
-	return book
+	def __init__(self):
+		Format.__init__(self, 'devhelp')
+		
+	def read_spec(self, path):
+		"""Read a DevHelp book on a plain directory."""
 	
-
-def read(path):
-	"""Attempt to open a DevHelp book from the given path."""
+		basedir, spec = os.path.split(os.path.abspath(path))
+		
+		name = os.path.splitext(spec)[0]
 	
-	root, ext = os.path.splitext(path)
-	if ext == '.devhelp':
-		return read_spec(path)
-	elif ext == '.tgz':
-		return read_tgz(path)
-	else:
-		raise ValueError, 'unknown DevHelp book extension \'%s\'' % ext
-
-
-#######################################################################
-# Writers
-
-
-def _addfile(tar, name, fp):
-	tarinfo = tarfile.TarInfo(name)
+		archive = DirArchive(basedir)
 	
-	fp.seek(0, 2)
-	tarinfo.size = fp.tell()
-	fp.seek(0)
+		parser = SpecParser()
+		parser.parse(file(path, 'rt'))
 	
-	tarinfo.mtime = time.time()
+		book = Book(
+				name,
+				DirDevhelpFilterArchive(archive),
+				parser.contents,
+				parser.index,
+				parser.metadata)
 	
-	tar.addfile(tarinfo, fp)
+		return book
 	
-
-def write_tgz(book, path, name = None):
-
-	tar = tarfile.open(path, "w:gz")
-
-	fp = StringIO()
-	formatter = SpecFormatter(fp)
-	formatter.book(book, name)
-	_addfile(tar, 'book.devhelp', fp)
-
-	for name in book.archive:
-		fp = book.archive[name]
-		_addfile(tar, 'book/' + name, fp)
+	def read_tgz(self, path):
+		"""A DevHelp book in a gzip'ed tarball."""
 	
+		name = os.path.splitext(os.path.basename(path))[0]
+	
+		archive = TarArchive(path)
+	
+		parser = SpecParser()
+		parser.parse(archive['book.devhelp'])
+	
+		book = Book(
+				name,
+				TgzDevhelpFilterArchive(archive),
+				parser.contents,
+				parser.index,
+				parser.metadata)
+	
+		return book
 
-def write(book, path, name=None):
-	if not path.endswith('.tgz'):
-		raise ValueError
-	write_tgz(book, path, name=None)
+	def read(self, path, **options):
+		"""Attempt to open a DevHelp book from the given path."""
+		
+		root, ext = os.path.splitext(path)
+		if ext == '.devhelp':
+			return self.read_spec(path)
+		elif ext == '.tgz':
+			return self.read_tgz(path)
+		else:
+			raise ValueError, 'unknown DevHelp book extension \'%s\'' % ext
+
+	def _addfile(self, tar, name, fp):
+		tarinfo = tarfile.TarInfo(name)
+		
+		fp.seek(0, 2)
+		tarinfo.size = fp.tell()
+		fp.seek(0)
+		
+		tarinfo.mtime = time.time()
+		
+		tar.addfile(tarinfo, fp)
+	
+	def write_tgz(self, book, path, name = None):
+		tar = tarfile.open(path, "w:gz")
+	
+		fp = StringIO()
+		formatter = SpecFormatter(fp)
+		formatter.book(book, name)
+		self._addfile(tar, 'book.devhelp', fp)
+	
+		for name in book.archive:
+			fp = book.archive[name]
+			self._addfile(tar, 'book/' + name, fp)
+	
+	def write(self, book, path, name=None):
+		if not path.endswith('.tgz'):
+			raise NotImplemented
+		self.write_tgz(book, path, name=None)
 
 
 #######################################################################

@@ -9,6 +9,7 @@ import HTMLParser
 from htmlhelp.book import Book, ContentsEntry, IndexEntry
 from htmlhelp.archive.dir import DirArchive
 from htmlhelp.archive.filter import FilterArchive
+from htmlhelp.format import Format
 
 
 #######################################################################
@@ -330,37 +331,34 @@ class MshhFilterArchive(FilterArchive):
 
 
 ########################################################################
-# Readers
+# Format
 
 
-def read_hhp(path):
-	"""Uncompressed HTML Help """
-
-	basedir, name = os.path.split(os.path.abspath(path))
-	name = os.path.splitext(name)[0]
-
-	archive = DirArchive(basedir)
-		
-	book = Book(name, archive)
+class MshhFormat(Format):
 	
-	parser = HHPParser(book)
-	parser.parse(open(path))
+	def __init__(self):
+		Format.__init__(self, 'mshh')
 		
-	book.archive = MshhFilterArchive(archive)
-
-	return book
-
-
-def read(path):
-	root, ext = os.path.splitext(path)
-	if ext.lower() == '.hhp':
-		return read_hhp(path)
-	else:
-		raise ValueError, 'not a HTML Help Project file'
-
-
-########################################################################
-# Writers
-
-
-
+	def read_hhp(self, path):
+		"""Uncompressed HTML Help """
+	
+		basedir, name = os.path.split(os.path.abspath(path))
+		name = os.path.splitext(name)[0]
+	
+		archive = DirArchive(basedir)
+			
+		book = Book(name, archive)
+		
+		parser = HHPParser(book)
+		parser.parse(open(path))
+			
+		book.archive = MshhFilterArchive(archive)
+	
+		return book
+	
+	def read(self, path):
+		root, ext = os.path.splitext(path)
+		if ext.lower() == '.hhp':
+			return self.read_hhp(path)
+		else:
+			raise ValueError, 'not a HTML Help Project file'

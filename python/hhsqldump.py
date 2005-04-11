@@ -5,13 +5,15 @@
 
 import sys
 
-from htmlhelp.format.generic import read
+from htmlhelp.format.generic import GenericFormat
 from htmlhelp.format.mysql import dump
 
 
 def main():
+	format = GenericFormat()
+
 	for arg in sys.argv[1:]:
-		book = read(arg)
+		book = format.read(arg)
 
 		dump(book)
 
