@@ -7,7 +7,7 @@ from distutils.core import setup, Extension
 py_modules = []
 ext_modules = []
 
-if not sys.platform.startswith('win'):
+if 1:
 	chmlib = Extension(
 		'_chmlib', 
 		sources = ['chmlib.i'],
