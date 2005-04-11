@@ -1,8 +1,6 @@
 """Archive filtering support."""
 
 
-import os.path
-
 from htmlhelp.archive import Archive
 
 
@@ -11,6 +9,8 @@ class FilterArchive(Archive):
 	translates the paths."""
 
 	def __init__(self, archive):
+		Archive.__init__(self)
+
 		self.archive = archive
 		
 	def __iter__(self):
@@ -27,7 +27,7 @@ class FilterArchive(Archive):
 		return self.archive[path]
 
 	def filter(self, path):
-		"""It should return name under which this file should be seen by the
+		"""It should return the path under which this file should be seen by the
 		client, or None if should be hidden.
 
         It should be overriden by inherited classes."""
@@ -35,8 +35,8 @@ class FilterArchive(Archive):
 		return path
 
 	def translate(self, path):
-		"""It should return the real of the file, or None if access should be
-		denied.
+		"""It should return the real path of the file, or None if access should
+		be denied.
 
         It should be overriden by inherited classes."""
 

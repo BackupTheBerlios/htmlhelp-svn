@@ -1,7 +1,6 @@
 """Zip archives support."""
 
 
-import os.path
 import zipfile
 
 try:
@@ -18,6 +17,8 @@ class ZipArchive(Archive):
     This class is an adaptor for the python zipfile module."""
 
 	def __init__(self, path):
+		Archive.__init__(self)
+		
 		try:
 			self.zip = zipfile.ZipFile(path, "r")
 		except zipfile.BadZipfile, msg:

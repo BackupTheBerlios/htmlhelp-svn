@@ -25,6 +25,8 @@ if sys.platform.startswith('win'):
         This class is an adaptor for the chmlib bindings."""
 
 		def __init__(self, path):
+			Archive.__init__(self)
+			
 			# FIXME: implement the ChmArchive using istorage
 			# See:
 			#  http://bonedaddy.net/pabs3/code/#istorage
@@ -78,6 +80,8 @@ else:
 		"""Compiled HTML Help (CHM) archive."""
 
 		def __init__(self, path):
+			Archive.__init__(self)
+			
 			self.chm = chmlib.chm_open(path)
 
 		def __del__(self):

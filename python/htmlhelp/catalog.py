@@ -33,6 +33,9 @@ class CatalogEntry:
 class Catalog:
 	"""A collection of books."""
 
+	def __init__(self):
+		pass
+		
 	def __contains__(self, name):
 		for entry in self:
 			if entry.name == name:

@@ -6,6 +6,9 @@ class Archive:
 	where the keys are file names and the values are file-like objects."""
 
 	# TODO: Add write support
+	
+	def __init__(self):
+		pass
 
 	def __contains__(self, path):
 		"""Whether a member with the given path is in the archive or not."""

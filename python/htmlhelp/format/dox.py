@@ -1,8 +1,6 @@
 """Dox Books."""
 
 
-import os
-import os.path
 import urlparse
 import xml.parsers.expat
 

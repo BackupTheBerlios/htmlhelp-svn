@@ -1,7 +1,6 @@
 """Tarballs archives support."""
 
 
-import os.path
 import tarfile
 
 from htmlhelp.archive import Archive
@@ -13,6 +12,8 @@ class TarArchive(Archive):
     This class is an adaptor for the python tarfile module."""
 
 	def __init__(self, path):
+		Archive.__init__(self)
+
 		self.tar = tarfile.open(path, 'r')
 
 	def __iter__(self):
