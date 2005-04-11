@@ -72,18 +72,19 @@ class ContentsEntry:
 		item._parentref = weakred.ref(self)
 		item.number = index + 1
 		self._children.insert(index, item)
+		self._renumber()
 			
-	def get_parent(self):
+	def _get_parent(self):
 		"""Get the parent entry."""
 
 		if self._parentref is None:
 			return None
 		return self._parentref()
 	
-	def get_prev(self):
+	def _get_prev(self):
 		"""Get the previous sibling."""
 
-		parent = self.get_parent()
+		parent = self._get_parent()
 		if parent is None:
 			return None
 		index = self.number - 2
@@ -91,10 +92,10 @@ class ContentsEntry:
 			return None
 		return parent[index]
 			
-	def get_next(self):
+	def _get_next(self):
 		"""Get the next sibling."""
 
-		parent = self.get_parent()
+		parent = self._get_parent()
 		if parent is None:
 			return None
 		index = self.number
@@ -102,25 +103,21 @@ class ContentsEntry:
 			return None
 		return parent[index]
 	
-	def get_children(self):
+	def _get_children(self):
 		"""Get the first child."""
 
-		if not len(self):
+		if not len(self._children):
 			return None	
-		return self[0]
+		return self,_children[0]
 	
-	parent   = property(get_parent,   doc="""Parent entry.""")
-	prev     = property(get_prev,     doc="""Prev entry.""")
-	next     = property(get_next,     doc="""Next entry.""")
-	children = property(get_children, doc="""Sub-entries.""")
+	parent   = property(_get_parent,   doc="""Parent entry.""")
+	prev     = property(_get_prev,     doc="""Prev entry.""")
+	next     = property(_get_next,     doc="""Next entry.""")
+	children = property(_get_children, doc="""First child.""")
 
 
-class Contents(ContentsEntry):
-	"""Book table of contents.
-	
-	The full contents is itself an node - the root node."""
-
-	pass
+# The full contents is itself an node - the root node.
+Contents = ContentsEntry
 
 
 class IndexEntry:
@@ -207,6 +204,8 @@ class Book:
 	@ivar contents: Table of Contents.
 	@type index: L{Index}
 	@ivar index: Index.
+	@type metadata: dict
+	@ivar metadata: Book metadata.
 	"""
 	
 	def __init__(self, name=None, archive=None, contents=None, index=None, 
@@ -233,19 +232,19 @@ class Book:
 		else:
 			self.metadata = metadata
 		
-	def get_title(self):
+	def _get_title(self):
 		"""Get the book title, which is the name in the contents root entry."""
 
 		return self.contents.name
 
-	title = property(get_title, doc="""Book title.""")
+	title = property(_get_title, doc="""Book title.""")
 
-	def get_default_link(self):
+	def _get_default_link(self):
 		"""Get the book title, which is the link in the contents root entry."""
 
 		return self.contents.link
 
-	default_link = property(get_default_link, doc="""Default link.""")
+	default_link = property(_get_default_link, doc="""Default link.""")
 	
 	def list(self):
 		"""List the pages in the book."""
