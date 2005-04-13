@@ -12,6 +12,7 @@ class DummyArchive(Archive):
 		
 	def __iter__(self):
 		raise StopIteration
+		yield None
 
 	def __getitem__(self, path):
 		raise KeyError
