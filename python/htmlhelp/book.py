@@ -69,7 +69,7 @@ class ContentsEntry:
 			number += 1
 	
 	def insert(self, index, item):
-		item._parentref = weakred.ref(self)
+		item._parentref = weakref.ref(self)
 		item.number = index + 1
 		self._children.insert(index, item)
 		self._renumber()
@@ -108,7 +108,7 @@ class ContentsEntry:
 
 		if not len(self._children):
 			return None	
-		return self,_children[0]
+		return self._children[0]
 	
 	parent   = property(_get_parent,   doc="""Parent entry.""")
 	prev     = property(_get_prev,     doc="""Prev entry.""")
