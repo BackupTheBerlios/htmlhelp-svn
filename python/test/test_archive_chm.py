@@ -12,7 +12,7 @@ class SampleFilterArchive(FilterArchive):
 
 	def filter(self, path):
 		if path[:8] == '/sample/':
-			return path[1:]
+			return path[8:]
 		else:
 			return None
 
