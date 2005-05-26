@@ -1,3 +1,5 @@
+HHC = wine "C:\\Program File\\HTML Help Workshop\\hhc.exe"
+
 all: \
 	sample.zip \
 	sample.tar \
@@ -23,8 +25,7 @@ sample.tar: sample
 	cd $< && tar -cf ../$@ *
 
 sample.chm: sample.hhp
-	#$(WINE) "C:\\Program File\\HTML Help Workshop\\hhc.exe" $<
-	touch $@
+	$(HHC) $<
 
 sample.hhp: sample
 	echo "[OPTIONS]" > $@
@@ -35,4 +36,7 @@ sample.hhp: sample
 clean:
 	rm -f sample
 
-.PHONY: all clean
+purge:
+	rm -f sample.zip sample.tar sample.tgz sample.chm
+
+.PHONY: all clean purge
