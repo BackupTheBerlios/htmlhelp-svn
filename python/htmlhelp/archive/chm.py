@@ -29,6 +29,13 @@ if 1:
 
 	import chmlib
 
+	def _enumerate(chm, ui, result):
+		assert ui.path.find('\0') == -1
+	
+		result.append(ui.path)
+		
+		return chmlib.CHM_ENUMERATOR_CONTINUE
+
 	class ChmArchive(Archive):
 		"""Compiled HTML Help (CHM) archive."""
 
@@ -62,19 +69,10 @@ if 1:
 			fp.seek(0)
 			return fp
 
-		def __iter__(self):
-			return iter(self.keys())
-			
 		def keys(self):
 			result = []
-			chmlib.chm_enumerate(self.chm, chmlib.CHM_ENUMERATE_NORMAL | chmlib.CHM_ENUMERATE_FILES, self.enumerate, result)
+			chmlib.chm_enumerate(self.chm, chmlib.CHM_ENUMERATE_NORMAL | chmlib.CHM_ENUMERATE_FILES, _enumerate, result)
 			return result
 		
-		def enumerate(self, chm, ui, result):
-			assert ui.path.find('\0') == -1
-
-			result.append(ui.path)
-			
-			return chmlib.CHM_ENUMERATOR_CONTINUE
 
 

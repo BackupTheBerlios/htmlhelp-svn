@@ -21,9 +21,9 @@ class Archive:
 	def __iter__(self):
 		"""Iterate over the member file names.
 		
-		Must be overrided by derived classes."""
+		Should be overrided by derived classes."""
 		
-		return self.iterkeys()
+		return iter(self.keys())
 
 	def __len__(self):
 		count = 0
@@ -44,12 +44,12 @@ class Archive:
 	def has_key(self, path):
 		"""Whether a member with the given path is in the archive."""
 
-		return path in self.keys()
+		return path in self
 
 	def iterkeys(self):
 		"""Iterate over the member file names."""
 		
-		return iter(self.keys())
+		return iter(self)
 
 	def iteritems(self):
 		"""Iterate over the member file names."""
