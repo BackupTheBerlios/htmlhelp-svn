@@ -26,12 +26,6 @@ class ZipArchive(Archive):
 		except IOError, msg:
 			raise ValueError, msg
 
-	def __contains__(self, path):
-		return bool(self.zip.getinfo(path))
-
-	def __iter__(self):
-		return iter(self.keys())
-	
 	def __getitem__(self, path):
 		return StringIO(self.zip.read(path))
 
