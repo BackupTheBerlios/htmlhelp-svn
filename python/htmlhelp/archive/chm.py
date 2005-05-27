@@ -52,6 +52,8 @@ if 1:
 
 		def __getitem__(self, path):
 			ui = chmlib.chm_resolve_object(self.chm, path)
+			if ui is None:
+				raise KeyError, "missing file: %s" % path
 
 			fp = StringIO()
 
