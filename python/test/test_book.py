@@ -6,15 +6,21 @@ import unittest
 from htmlhelp.book import *
 
 
-class ContentsEntryTestCase(unittest.TestCase):
+class ContentsTestCase(unittest.TestCase):
 	
 	def setUp(self):
 		self.parent = ContentsEntry()
-		self.child = ContentsEntry()
+		self.child = ContentsEntry(u"Name", u"link")
 		self.sibling = ContentsEntry()
 		self.parent.append(self.child)
 		self.parent.append(self.sibling)
 	
+	def testName(self):
+		self.failUnless(self.parent.name is None)
+		self.failUnless(self.parent.link is None)
+		self.failUnlessEqual(self.child.name, u"Name")
+		self.failUnlessEqual(self.child.link, u"link")
+		
 	def testAppend(self):
 		self.failUnlessEqual(self.child.number, 1)
 		self.failUnlessEqual(self.sibling.number, 2)
@@ -68,7 +74,41 @@ class ContentsEntryTestCase(unittest.TestCase):
 		self.failUnless(self.sibling.prev is self.child)
 		self.failUnless(self.child.prev is None)
 		self.failUnless(self.parent.prev is None)
+
+
+class IndexTestCase(unittest.TestCase):
 	
+	def setUp(self):
+		self.empty = Index()
+		self.index = Index()
+		self.index.append(IndexEntry("term1"))
+		self.index.append(IndexEntry("term2", "link1"))
+		self.index.append(IndexEntry("term3", "link2"))
+		self.index.append(IndexEntry("term3", "link3"))
+
+	def testLen(self):
+		self.failUnlessEqual(len(self.empty), 0)
+		self.failUnlessEqual(len(self.index), 3)
+
+	def testIter(self):
+		names = [term.name for term in self.index]
+		self.failUnlessEqual(names, ["term1", "term2", "term3"])
+	
+	def testContains(self):
+		self.failUnless("term1" in self.index)
+		self.failUnless("term0" not in self.index)
+	
+	def testGetItem(self):
+		entry = IndexEntry("term3", "link2")
+		entry.links.append("link3")
+		self.failUnlessEqual(self.index["term3"], entry)
+		
+		try:
+			self.index["term0"]
+			self.fail()
+		except KeyError:
+			pass
+			
 
 if __name__ == '__main__':
 	unittest.main()
