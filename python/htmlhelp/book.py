@@ -52,8 +52,8 @@ class ContentsEntry:
 		assert isinstance(item, ContentsEntry)
 
 		item._parentref = weakref.ref(self)
-		item.number = len(self)
 		self._children.append(item)
+		item.number = len(self)
 
 	def _renumber(self):
 		"""Renumber the children.  
