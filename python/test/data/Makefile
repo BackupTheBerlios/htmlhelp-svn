@@ -1,42 +1,49 @@
 HHC = wine "C:\\Program File\\HTML Help Workshop\\hhc.exe"
 
 all: \
-	sample.zip \
-	sample.tar \
-	sample.tgz \
-	sample.chm
+	sample_archive \
+	sample_archive.zip \
+	sample_archive.tar \
+	sample_archive.tgz \
+	sample_archive.chm
 
-sample:
-	mkdir sample
-	touch sample/empty
-	echo "Sample..." > sample/file
-	mkdir sample/dir
-	echo "Sample..." > sample/dir/file
-	mkdir sample/dir/subdir
-	echo "Sample..." > sample/dir/subdir/file
+sample_archive:
+	mkdir $@
+	touch $@/empty
+	echo "Sample..." > $@/file
+	mkdir $@/dir
+	echo "Sample..." > $@/dir/file
+	mkdir $@/dir/subdir
+	echo "Sample..." > $@/dir/subdir/file
 
-sample.zip: sample
+sample_archive.zip: sample_archive
 	cd $< && zip -r ../$@ *
 
-sample.tgz: sample
+sample_archive.tgz: sample_archive
 	cd $< && tar -czf ../$@ *
 
-sample.tar: sample
+sample_archive.tar: sample_archive
 	cd $< && tar -cf ../$@ *
 
-sample.chm: sample.hhp
+sample_archive.chm: sample_archive.hhp
 	$(HHC) $<
 
-sample.hhp: sample
+sample_archive.hhp: sample_archive
 	echo "[OPTIONS]" > $@
 	echo "" >> $@
 	echo "[FILES]" >> $@
-	find sample -type f -not -name .svn >> $@
+	find $< -type f -not -name .svn >> $@
 
 clean:
-	rm -f sample
+	rm -f \
+		sample_archive.hhp
 
 purge:
-	rm -f sample.zip sample.tar sample.tgz sample.chm
+	rm -f \
+		sample_archive \
+		sample_archive.zip \
+		sample_archive.tar \
+		sample_archive.tgz \
+		sample_archive.chm
 
 .PHONY: all clean purge

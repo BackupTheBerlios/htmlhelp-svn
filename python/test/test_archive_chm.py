@@ -10,20 +10,22 @@ from htmlhelp.archive.filter import FilterArchive
 
 class SampleFilterArchive(FilterArchive):
 
+	root = '/sample_archive/'
+
 	def filter(self, path):
-		if path[:8] == '/sample/':
-			return path[8:]
+		if path.startswith(self.root):
+			return path[len(self.root):]
 		else:
 			return None
 
 	def translate(self, path):
-		return '/sample/' + path
+		return self.root + path
 
 
 class ChmArchiveTestCase(archivetest.SampleArchiveTestCase):
 	
 	def setUp(self):
-		self.archive = SampleFilterArchive(ChmArchive('data/sample.chm'))
+		self.archive = SampleFilterArchive(ChmArchive('data/sample_archive.chm'))
 	
 
 if __name__ == '__main__':

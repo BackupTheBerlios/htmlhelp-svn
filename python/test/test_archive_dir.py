@@ -10,7 +10,7 @@ from htmlhelp.archive.dir import DirArchive
 class DirArchiveTestCase(archivetest.SampleArchiveTestCase):
 	
 	def setUp(self):
-		self.archive = DirArchive('data/sample')
+		self.archive = DirArchive('data/sample_archive')
 	
 
 if __name__ == '__main__':
