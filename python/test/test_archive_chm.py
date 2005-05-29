@@ -10,7 +10,7 @@ from htmlhelp.archive.filter import FilterArchive
 
 class SampleFilterArchive(FilterArchive):
 
-	root = '/sample_archive/'
+	root = '/'
 
 	def filter(self, path):
 		if path.startswith(self.root):
