@@ -12,7 +12,7 @@ class DevhelpTestCase(formattest.SampleFormatTestCase):
 	format = DevhelpFormat()
 	
 	paths = [
-		#'data/sample_book.devhelp',
+		'data/sample_book.devhelp',
 		'data/sample_book.tgz']
 
 	def failUnlessEqualMetadata(self, a, b):

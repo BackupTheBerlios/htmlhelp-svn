@@ -13,11 +13,10 @@ class FormatTestCase(unittest.TestCase):
 		self.setUpFormat()
 	
 	def failUnlessEqualArchive(self, a, b):
-		self.failUnlessEqual(len(a), len(b))
-		for aname, bname in zip(a, b):
-			self.failUnlessEqual(aname, bname)
-			afile = a[aname]
-			bfile = b[bname]
+		self.failUnless(len(a) >= len(b))
+		for name in a, b:
+			afile = a[name]
+			bfile = b[name]
 			self.failUnlessEqual(afile.read(), bfile.read())
 		
 	def failUnlessEqualContents(self, a, b):
