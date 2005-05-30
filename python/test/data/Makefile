@@ -6,6 +6,7 @@ all: \
 	sample_archive.tar \
 	sample_archive.tgz \
 	sample_archive.chm \
+	sample_book.py \
 	sample_book \
 	sample_book.devhelp \
 	sample_book.hhp \
@@ -59,6 +60,9 @@ sample_book: $(SAMPLE_BOOK_FILES)
 	@rm -rf $@
 	mkdir $@
 	cp --parent $^ $@
+
+%.py: %.xml
+	xsltproc python.xsl $< > $@
 
 %.devhelp: %.xml
 	xsltproc devhelp.xsl $< > $@

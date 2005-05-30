@@ -8,7 +8,8 @@
 	</contents>
 	<index>
 		<index_entry name="term0" link="page1.html#anchor" />
-		<index_entry name="terma" link="dir/page2.html" />
+		<index_entry name="term1" link="dir/page2.html" />
+		<index_entry name="term1" link="dir/page2.html#anchor" />
 	</index>
 	<pages>
 		<page path="page1.html"/>
