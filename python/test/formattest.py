@@ -6,12 +6,6 @@ import unittest
 
 class FormatTestCase(unittest.TestCase):
 
-	def setUpFormat(self):
-		raise NotImplementedMethod
-	
-	def setUp(self):
-		self.setUpFormat()
-	
 	def failUnlessEqualArchive(self, a, b):
 		self.failUnless(len(a) >= len(b))
 		for name in a, b:

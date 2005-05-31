@@ -23,6 +23,11 @@ class ArchiveTestCase(unittest.TestCase):
 				'tell']:
 			self.failUnless(hasattr(fp, method), "'%s' method is missing from '%s' file" % (method, path))
 			self.failUnless(callable(getattr(fp, method)), "'%s' method is not callable '%s' file" % (method, path))
+	
+	def setUp(self):
+		"""Must be overriden by subclasses and set self.archive."""
+		
+		raise NotImplementedError
 		
 	def testContains(self):
 		for path in self.archive:
