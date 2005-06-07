@@ -14,6 +14,8 @@ class DevhelpTestCase(formattest.SampleFormatTestCase):
 	paths = [
 		'data/sample_book.devhelp',
 		'data/sample_book.tgz']
+	
+	exts = ['tgz']
 
 	def failUnlessEqualMetadata(self, a, b):
 		pass

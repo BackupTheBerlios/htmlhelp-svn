@@ -13,6 +13,8 @@ class HtbTestCase(formattest.SampleFormatTestCase):
 	
 	paths = [
 		'data/sample_book.htb']
+	
+	exts = ['htb']
 
 	def failUnlessEqualMetadata(self, a, b):
 		pass

@@ -8,7 +8,7 @@ class FormatTestCase(unittest.TestCase):
 
 	def failUnlessEqualArchive(self, a, b):
 		self.failUnless(len(a) >= len(b))
-		for name in a, b:
+		for name in b:
 			afile = a[name]
 			bfile = b[name]
 			self.failUnlessEqual(afile.read(), bfile.read())
@@ -38,7 +38,7 @@ class FormatTestCase(unittest.TestCase):
 		
 		
 class SampleFormatTestCase(FormatTestCase):
-	
+
 	def setUp(self):
 		sample_book = __import__("data/sample_book")
 		self.sample_book = sample_book.book
@@ -48,9 +48,10 @@ class SampleFormatTestCase(FormatTestCase):
 			self.failUnlessEqualBook(book, self.sample_book)
 	
 	def testWrite(self):
-		pass
-	
-
-	
+		for ext in self.exts:
+			path = '/tmp/test.' + ext
+			self.format.write(self.sample_book, path)
+			book = self.format.read(path)
+			self.failUnlessEqualBook(book, self.sample_book)
 
 

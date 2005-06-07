@@ -14,6 +14,8 @@ class MshhTestCase(formattest.SampleFormatTestCase):
 	paths = [
 		'data/sample_book.hhp']
 
+	exts = []
+
 	def failUnlessEqualMetadata(self, a, b):
 		pass
 	

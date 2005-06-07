@@ -14,6 +14,8 @@ class ChmTestCase(formattest.SampleFormatTestCase):
 	paths = [
 		'data/sample_book.chm']
 
+	exts = []
+
 	def failUnlessEqualMetadata(self, a, b):
 		pass
 	
