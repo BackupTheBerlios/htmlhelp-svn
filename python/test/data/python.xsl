@@ -43,5 +43,3 @@ index = Index()
 <xsl:template match="text()" />
 
 </xsl:stylesheet>
-
-<!-- vim: set noai: -->

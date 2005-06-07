@@ -21,5 +21,3 @@ Default topic=<xsl:value-of select="@default_link" />
 <xsl:template match="text()" />
 
 </xsl:stylesheet>
-
-<!-- vim: set noai: -->

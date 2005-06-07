@@ -26,5 +26,3 @@
 	<xsl:template match="text()" />
 
 </xsl:stylesheet>
-
-<!-- vim: set sw=2 ts=2 noet: -->
