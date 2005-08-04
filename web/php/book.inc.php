@@ -85,13 +85,12 @@
 			return $entries;
 		}
 
-		function search($query)
+		function search($lexeme)
 		{
-			// FIXME: implement complex/boolean searches
 			$result = mysql_query('
 				SELECT `path`, `title` 
 				FROM `lexeme`, `lexeme_link`, `page` 
-				WHERE `lexeme`.`book_id`=' . $this->id . ' AND `lexeme`.`string`=\'' . mysql_escape_string($query) . '\' AND `lexeme_link`.`book_id`=' . $this->id . ' AND `lexeme_no`=`lexeme`.`no` AND `page`.`book_id`=' . $this->id . ' AND `page`.`no` = `page_no`
+				WHERE `lexeme`.`book_id`=' . $this->id . ' AND `lexeme`.`string`=\'' . mysql_escape_string($lexeme) . '\' AND `lexeme_link`.`book_id`=' . $this->id . ' AND `lexeme_no`=`lexeme`.`no` AND `page`.`book_id`=' . $this->id . ' AND `page`.`no` = `page_no`
 				ORDER BY `count` DESC
 			');
 			$entries = array();
