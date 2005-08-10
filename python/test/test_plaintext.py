@@ -3,7 +3,7 @@
 
 import unittest
 
-from htmlhelp.plaintext import *
+from htmlhelp.util.plaintext import *
 
 
 class PlaintextTestCase(unittest.TestCase):

@@ -9,7 +9,7 @@ try:
 except ImportError:
 	from StringIO import StringIO
 
-from htmlhelp.plaintext import extract, fulltext_index
+from htmlhelp.util.plaintext import extract, fulltext_index
 
 
 #######################################################################

@@ -7,7 +7,6 @@ See http://www.imendio.com/projects/devhelp/ for more information about DevHelp.
 import os
 import os.path
 import urlparse
-import xml.parsers.expat
 import tarfile
 import time
 
@@ -20,6 +19,7 @@ from htmlhelp.archive.dir import DirArchive
 from htmlhelp.archive.tar import TarArchive
 from htmlhelp.archive.filter import FilterArchive
 from htmlhelp.book import Book, Contents, ContentsEntry, Index, IndexEntry
+from htmlhelp.util.xml_ import XmlParser, XmlFormatter
 from htmlhelp.format import Format
 
 
@@ -31,7 +31,7 @@ from htmlhelp.format import Format
 # - http://cvs.gnome.org/lxr/source/devhelp/README
 
 
-class SpecParser:
+class SpecParser(XmlParser):
 	"""DevHelp spec file parser."""
 
 	def __init__(self):
@@ -88,94 +88,50 @@ class SpecParser:
 	def start_function(self, name, link, **dummy):
 		entry = IndexEntry(name, self.translate_link(link))
 		self.index.append(entry)
-		
-	def handle_element_start(self, name, attributes):
-		method = 'start_' + name
-		if hasattr(self, method):
-			_attributes = {}
-			for key, value in attributes.items():
-				_attributes[key.encode()] = value
-			apply(getattr(self, method), (), _attributes)
-	
-	def handle_element_end(self, name):
-		method = 'end_' + name
-		if hasattr(self, method):
-			apply(getattr(self, method))
-	
-	def parse(self, fp):
-		parser = xml.parsers.expat.ParserCreate()
-		parser.StartElementHandler = self.handle_element_start
-		parser.EndElementHandler = self.handle_element_end
-		parser.ParseFile(fp)
 
 
-class SpecFormatter:
+class SpecFormatter(XmlFormatter):
 
-	def __init__(self, fp, encoding = 'utf-8'):
-		self.fp = fp
-		self.encoding = encoding
-
-		self.fp.write('<?xml version="1.0" encoding="%s"?>\n' % self.encoding)
-	
 	def book(self, book, name = None):
 		if name is None:
 			if book.name is None:
 				raise ValueError, 'Required book name not specified.'
 			name = book.name
 
-		self.fp.write('<book name="%s" title="%s" link="%s"' % (self.escape(name), self.escape(book.contents.name), self.escape(book.contents.link)))
+		attrs = {}
 		if 'version' in book.metadata:
-			self.fp.write(' version="%s"' % self.escape(book.metadata['version']))
+			attrs['version'] = book.metadata['version']
 		if 'author' in book.metadata:
-			self.fp.write(' author="%s"' % self.escape(book.metadata['author']))
-		self.fp.write('>\n')
+			attrs['author'] = book.metadata['author']
+		self.start_tag('book', name=name, title=book.contents.name, link=book.contents.link)
 		self.chapters(book.contents)
 		self.functions(book.index)
-		self.fp.write('</book>\n')
+		self.end_tag('book')
 
 	def chapters(self, contents):
-		self.fp.write('<chapters>\n')
+		self.start_tag('chapters')
 		self.chapter(contents)
-		self.fp.write('</chapters>\n')
+		self.end_tag('chapters')
 
 	def chapter(self, parent):
 		for child in parent:
-			self.fp.write('<sub name="%s" link="%s"' % (self.escape(child.name), self.escape(child.link)))
 			if len(child):
-				self.fp.write('>\n')
+				self.start_tag('sub', name=child.name, link=child.link)
 				self.chapter(child)
-				self.fp.write('</sub>\n')
+				self.end_tag('sub')
 			else:
-				self.fp.write('/>\n')
+				self.tag('sub', name=child.name, link=child.link)
 
 	def functions(self, index):
-		self.fp.write('<functions>\n')
+		self.start_tag('functions')
 		for entry in index:
 			self.function(entry)
-		self.fp.write('</functions>\n')
+		self.end_tag('functions')
 
 	def function(self, entry):
 		name = entry.name
 		for link in entry.links:
-			self.fp.write('<function name="%s" link="%s"/>\n' % (self.escape(name), self.escape(link)))
-
-	def escape(self, s):
-		"""Helper to add special character quoting."""
-		
-		if s is None:
-			return ''
-		
-		s = s.replace("&", "&amp;") # Must be first
-
-		if isinstance(s, unicode):
-			s = s.encode(self.encoding, 'xmlcharrefreplace')
-
-		s = s.replace("<", "&lt;")
-		s = s.replace(">", "&gt;")
-		s = s.replace("'", "&apos;")
-		s = s.replace('"', "&quot;")
-
-		return s
+			self.tag('function', name=name, link=link)
 
 
 #######################################################################
