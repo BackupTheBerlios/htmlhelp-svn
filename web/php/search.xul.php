@@ -1,7 +1,6 @@
 <?php
 	include 'config.inc.php';
 	include 'book.inc.php';
-	include 'search.inc.php';
 
 	# Enable HTTP compression
 	ob_start("ob_gzhandler");
@@ -23,8 +22,7 @@
 	echo '<listbox seltype="single" flex="1" onselect="onSearchSelect(event, \'' . htmlspecialchars($book->alias) . '\')">';
 	if($query)
 	{
-		$search = parse_search($query);
-		$entries = $search->apply($book);
+		$entries = $book->search($query);
 		foreach($entries as $entry)
 		{
 			list($title, $path) = $entry;

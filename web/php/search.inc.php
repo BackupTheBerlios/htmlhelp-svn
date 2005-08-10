@@ -1,8 +1,39 @@
 <?php
 
+class Searchable
+{
+	// Should be overriden by derived classes
+	function search_lexeme($lexeme)
+	{
+		return array();
+	}
+
+	function search($query)
+	{
+		$search = Search::parse($query);
+		return $search->apply($this);
+	}
+}
+
 class Search
 {
-	function apply($book)
+	// Class method to parse query
+	function parse($query)
+	{
+		// TODO: implement more complex searches
+		$terms = explode(' ', $query);
+
+		$search = new TermSearch($terms[0]);
+		unset($terms[0]);
+		foreach($terms as $term)
+		{
+			$search = new AndSearch($search, new TermSearch($term));
+		}
+		return $search;
+	}
+
+	// Should be overriden by derived classes
+	function apply($searchable)
 	{
 		// TODO: include score
 		return array();
@@ -20,7 +51,7 @@ class TermSearch extends Search
 
 	function apply($book)
 	{
-		return $book->search($this->term);
+		return $book->search_lexeme($this->term);
 	}
 }
 
@@ -54,21 +85,6 @@ class AndSearch extends Search
 		}
 		return $entries;
 	}
-}
-
-
-function parse_search($query)
-{
-	// TODO: implement more complex searches
-	$terms = explode(' ', $query);
-
-	$search = new TermSearch($terms[0]);
-	unset($terms[0]);
-	foreach($terms as $term)
-	{
-		$search = new AndSearch($search, new TermSearch($term));
-	}
-	return $search;
 }
 
 ?>

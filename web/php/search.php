@@ -1,7 +1,6 @@
 <?php
 	include 'config.inc.php';
 	include 'book.inc.php';
-	include 'search.inc.php';
 
 	$book = new Book($_GET['book']);
 	
@@ -36,8 +35,7 @@
 
 	if($query)
 	{
-		$search = parse_search($query);
-		$entries = $search->apply($book);
+		$entries = $book->search($query);
 		if(count($entries))
 		{
 			echo '<ul class="list">';

@@ -1,6 +1,7 @@
 <?php
 
 	include 'mysql.inc.php';
+	include 'search.inc.php';
 
 	function book_catalog()
 	{
@@ -10,9 +11,10 @@
 			$entries[$book_alias] = $book_title;
 		return $entries;
 	}
-	
-	class Book
+
+	class Book extends Searchable
 	{
+		var $alias;
 		var $id;
 
 		function Book($alias)
@@ -85,7 +87,7 @@
 			return $entries;
 		}
 
-		function search($lexeme)
+		function search_lexeme($lexeme)
 		{
 			$result = mysql_query('
 				SELECT `path`, `title` 
