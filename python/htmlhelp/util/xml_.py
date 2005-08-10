@@ -1,6 +1,7 @@
 '''Utilities for dealing with XML files.'''
 
 
+import base64
 import xml.parsers.expat
 
 
@@ -69,5 +70,6 @@ class XmlFormatter:
 	
 		return s
 
-
+	def binary(self, s):
+		self.fp.write(base64.encodestring(s))
 

@@ -23,6 +23,8 @@ class GenericFormat(Format):
 		self.register(HtbFormat())
 		from htmlhelp.format.mshh import MshhFormat
 		self.register(MshhFormat())
+		from htmlhelp.format.xml_ import XmlFormat
+		self.register(XmlFormat())
 	
 	def register(self, format):
 		"""Register this format."""
