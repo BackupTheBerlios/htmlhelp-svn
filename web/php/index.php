@@ -1,6 +1,6 @@
 <?php
-	include 'config.inc.php';
-	include 'book.inc.php';
+	require_once 'config.inc.php';
+	require_once 'book.inc.php';
 
 	// For link backward compatability
 	if($book = intval($_GET['book']))
@@ -11,7 +11,7 @@
 	
 	// Unless the 'noxul' param is given then embed a Javascript script to
 	$title = 'HTML Help Books';
-	include 'header.inc.php';
+	require_once 'header.inc.php';
 
 	echo '<body>';
 	
@@ -33,10 +33,10 @@
 	echo '</div>';
 
 	echo '<div>';
-	include 'frontpage.inc.php';
+	require_once 'frontpage.inc.php';
 	echo '</div>';
 	
 	echo '</body>';
 	
-	include 'footer.inc.php';
+	require_once 'footer.inc.php';
 ?>

@@ -1,6 +1,6 @@
 <?php
 
-	include 'mysql.inc.php';
+	require_once 'mysql.inc.php';
 	require_once 'search.inc.php';
 
 	function book_catalog()

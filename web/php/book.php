@@ -1,12 +1,12 @@
 <?php
-	include 'config.inc.php';
-	include 'book.inc.php';
+	require_once 'config.inc.php';
+	require_once 'book.inc.php';
 
 	$book = new Book($_GET['book']);
 	
 	$doctype = 'frameset';
 	$title = htmlspecialchars($book->title(), ENT_NOQUOTES);
-	include 'header.inc.php';
+	require_once 'header.inc.php';
 
 	// Unless the 'noxul' param is given then embed a Javascript script to
 	// redirect Gecko-based browsers to the XUL-based interface
@@ -21,5 +21,5 @@
 	echo '<noframes>A frames-capable web browser is required.</noframes>';
 	echo '</frameset>';
 	
-	include 'footer.inc.php';
+	require_once 'footer.inc.php';
 ?>

@@ -1,7 +1,7 @@
 <?php
 	
-	include 'config.inc.php';
-	include 'book.inc.php';
+	require_once 'config.inc.php';
+	require_once 'book.inc.php';
 
 	// Enable HTTP compression
 	ob_start("ob_gzhandler");
