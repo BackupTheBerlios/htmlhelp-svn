@@ -4,6 +4,7 @@ class SearchResult
 {
 	// TODO: write another version of this class which compiles SQL statements
 
+	// FIXME: use sets
 	var $entries;
 
 	function SearchResult($entries) 
