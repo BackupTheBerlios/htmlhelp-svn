@@ -1,7 +1,7 @@
 <?php
 
 	include 'mysql.inc.php';
-	include 'search.inc.php';
+	require_once 'search.inc.php';
 
 	function book_catalog()
 	{
@@ -98,7 +98,7 @@
 			$entries = array();
 			while(list($path, $title) = mysql_fetch_row($result))
 				$entries[] = array($title, $path);
-			return $entries;
+			return new SearchResult($entries);
 		}
 
 		function metadata()

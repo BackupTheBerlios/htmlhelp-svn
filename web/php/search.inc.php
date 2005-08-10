@@ -1,17 +1,62 @@
 <?php
 
+class SearchResult
+{
+	// TODO: write another version of this class which compiles SQL statements
+
+	var $entries;
+
+	function SearchResult($entries) 
+	{
+		// FIXME: use references instead of copies where applicable
+		$this->entries = $entries;
+	}
+
+	function union($other) 
+	{
+		// FIXME: implement this
+	}
+
+	function intersection($other)
+	{
+		$entries = array();
+		foreach($this->entries as $lentry)
+		{
+			foreach($other->entries as $rentry)
+			{
+				if($lentry[0] == $rentry[0])
+				{
+					$entries[] = $lentry;
+					break;
+				}
+			}
+		}
+		return new SearchResult($entries);
+	}
+
+	function subtraction($other)
+	{
+		// FIXME: implement this
+	}
+
+	function list_()
+	{
+		return $this->entries;
+	}
+}
+
 class Searchable
 {
 	// Should be overriden by derived classes
 	function search_lexeme($lexeme)
 	{
-		return array();
+		return new SearchResult(array());
 	}
 
 	function search($query)
 	{
 		$search = Search::parse($query);
-		return $search->apply($this);
+		return $search->apply($this)->list_();
 	}
 }
 
@@ -49,9 +94,9 @@ class TermSearch extends Search
 		$this->term = $term;
 	}
 
-	function apply($book)
+	function apply($searchable)
 	{
-		return $book->search_lexeme($this->term);
+		return $searchable->search_lexeme($this->term);
 	}
 }
 
@@ -66,24 +111,9 @@ class AndSearch extends Search
 		$this->right = $right;
 	}
 
-	function apply($book)
+	function apply($searchable)
 	{
-		$lentries = $this->left->apply($book);
-		$rentries = $this->right->apply($book);
-
-		$entries = array();
-		foreach($lentries as $lentry)
-		{
-			foreach($rentries as $rentry)
-			{
-				if($lentry[0] == $rentry[0])
-				{
-					$entries[] = $lentry;
-					break;
-				}
-			}
-		}
-		return $entries;
+		return $this->left->apply($searchable)->intersection($this->right->apply($searchable));
 	}
 }
 
