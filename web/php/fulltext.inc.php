@@ -1,15 +1,9 @@
 <?php
 
-require_once 'config.inc.php';
-require_once 'mysql.inc.php';
 require_once 'mimetypes.inc.php';
 
 class Index
 {
-	function Index()
-	{
-	}
-
 	function store_title($page, $title) {}
 
 	function store_lexemes($page, $lexemes) {}
@@ -64,6 +58,8 @@ class Indexer
 
 	function tokenize($str)
 	{
+		// TODO: Improve this like http://svn.apache.org/repos/asf/lucene/java/trunk/src/java/org/apache/lucene/analysis/standard/StandardTokenizer.jj
+		// TODO: This may be better in a separate class
 		$lexemes = preg_split('/\s/', $s, -1, PREG_SPLIT_NO_EMPTY);
 		return $lexemes;
 	}

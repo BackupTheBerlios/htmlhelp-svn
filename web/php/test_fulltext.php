@@ -1,6 +1,6 @@
 <?php
 
-require_once 'indexer.inc.php';
+require_once 'fulltext.inc.php';
 require_once 'PHPUnit.php';
 
 class IndexTest extends PHPUnit_TestCase
@@ -26,34 +26,6 @@ class IndexTest extends PHPUnit_TestCase
 		);
 		foreach($testcases as $path => $class)
 			$this->assertTrue(is_a($this->index->indexer($path), $class), $class);
-	}
-}
-
-class IndexStub extends Index
-{
-	var $title;
-	var $lexemes;
-
-	function IndexStub()
-	{
-		$this->reset();
-	}
-	
-	function reset()
-	{
-		$this->title = NULL;
-		$this->lexemes = array();
-	}
-
-	function store_title($page, $title)
-	{
-		$this->title = $title;
-	}
-
-	function store_lexemes($page, $lexemes)
-	{
-		foreach($lexemes as $lexeme)
-			$this->lexemes[$lexeme] += 1;
 	}
 }
 
