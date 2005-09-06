@@ -2,31 +2,45 @@
 
 require_once 'mimetypes.inc.php';
 
+// Index interface
 class Fulltext_Index
 {
-	function store_title($page, $title) {}
 
-	function store_lexemes($page, $lexemes) {}
+	// Set page title (should be overriden by derived classes)
+	function set_title($title) {}
 
-	// Indexer Factory Method
-	function indexer($path, $page)
+	// Add lexemes in order (should be overriden by derived classes)
+	function add_lexemes($lexemes) {}
+
+	// Begin a new page
+	function new_page() {}
+
+	// Finished with the page
+	function finish_page() {}
+
+	// Fulltext_Indexer Factory Method
+	function indexer_factory($path)
 	{
 		$content_type = guess_type($path);
 		if($content_type == "text/plain")
-			return new Fulltext_TextIndexer($this, $page);
+			return new Fulltext_TextIndexer($this);
 		elseif($content_type == "text/html")
-			return new Fulltext_HtmlIndexer($this, $page);
+			return new Fulltext_HtmlIndexer($this);
 		return NULL;
 	}
 
-	function index($path, $page, $content)
+	// Index a page
+	function index_page($path, $content)
 	{
-		$indexer = $this->indexer($path, $page);
+		$indexer = $this->indexer_factory($path);
+		$this->start_page();
 		if(!is_null($indexer))
 			$indexer->feed($content);
+		$this->finish_page();
 	}
 }
 
+// Simple in-memory index
 class Fulltext_SimpleIndex extends Fulltext_Index
 {
 	var $titles;
@@ -38,7 +52,7 @@ class Fulltext_SimpleIndex extends Fulltext_Index
 		$this->lexemes = array();
 	}
 
-	function store_title($page, $title) 
+	function set_title($page, $title) 
 	{
 		$this->titles[$page] = $title;
 	}
@@ -54,25 +68,24 @@ class Fulltext_SimpleIndex extends Fulltext_Index
 	}
 }
 
+// Extracts title and lexemes from documents
 class Fulltext_Indexer
 {
 	var $index;
-	var $page;
 
-	function Fulltext_Indexer($index, $page)
+	function Fulltext_Indexer($index)
 	{
 		$this->index = $index;
-		$this->page = $page;
 	}
 
 	function feed_title($title)
 	{
-		$this->index->store_title($this->page, $this->normalize($title));
+		$this->index->set_title($this->normalize($title));
 	}
 
 	function feed_body($body)
 	{
-		$this->index->store_lexemes($this->page, $this->tokenize($body));
+		$this->index->add_lexemes($this->tokenize($body));
 	}
 
 	function feed($content) {}
@@ -85,13 +98,16 @@ class Fulltext_Indexer
 
 	function tokenize($str)
 	{
-		// TODO: Improve this like http://svn.apache.org/repos/asf/lucene/java/trunk/src/java/org/apache/lucene/analysis/standard/StandardTokenizer.jj
+		// TODO: Improve this like in
+		// http://svn.apache.org/repos/asf/lucene/java/trunk/src/java/org/apache/lucene/analysis/standard/StandardTokenizer.jj
+		// or in http://openfts.sourceforge.net/primer.html
 		// TODO: This may be better in a separate class
 		$lexemes = preg_split('/\s/', $str, -1, PREG_SPLIT_NO_EMPTY);
 		return $lexemes;
 	}
 }
 
+// Indexes plain-text documents
 class Fulltext_TextIndexer extends Fulltext_Indexer
 {
 	function feed($content)
@@ -100,6 +116,7 @@ class Fulltext_TextIndexer extends Fulltext_Indexer
 	}
 }
 
+// Indexes HTML documents
 class Fulltext_HtmlIndexer extends Fulltext_Indexer
 {
 	function feed($content)
@@ -115,7 +132,7 @@ class Fulltext_HtmlIndexer extends Fulltext_Indexer
 
 	function extract_encoding($html)
 	{
-		// FIXME: determine HTML encoding
+		// FIXME: determine and use HTML encoding
 		return "ISO8859-1";
 	}
 

@@ -14,6 +14,86 @@
 		return $entries;
 	}
 
+	class Book_Fulltext_Index extends Fulltext_Index
+	{
+		var $book_id;
+		var $page_no;
+
+		// Cache of the lexeme numbers
+		var $lexeme_nos;
+
+		// The lexemes of the current page
+		var $page_lexemes;
+
+		function Book_Fulltext_Index($book_id)
+		{
+			$this->book_id = $book_id;
+			$this->lexeme_nos = array();
+			
+			mysql_query('DELETE FROM `lexeme_link` WHERE `book_id`=' . $this->book_id);
+			mysql_query('DELETE FROM `lexeme` WHERE `book_id`=' . $this->book_id);
+			mysql_query('UPDATE `page` SET `title`="" WHERE `book_id`=' . $this->book_id);
+		}
+
+		function set_page_no($page_no)
+		{
+			$this->page_no = $page_no;
+		}
+
+		function start_page()
+		{
+			assert(isset($this->page_no));
+
+			$this->page_lexemes = array();
+		}
+
+		function set_title($title) 
+		{
+			mysql_query('
+				UPDATE `page`
+				SET `title`="' . mysql_escape_string($title) . '"
+				WHERE `book_id`=' . $this->book_id . ' AND `no`=' . $this->page_no . '
+			');
+		}
+
+		function add_lexemes($lexemes)
+		{
+			foreach($lexemes as $lexeme)
+			{
+				// get this lexeme number
+				if(isset($this->lexeme_nos[$lexeme]))
+					$lexeme_no = $this->lexeme_nos[$lexeme];
+				else
+				{
+					$lexeme_no = count($this->lexeme_nos) + 1;
+					mysql_query('
+						INSERT INTO `lexeme` 
+						(book_id, no, string) VALUES 
+						('. $this->book_id . ', ' . $lexeme_no . ', \'' . mysql_escape_string($lexeme) . '\')
+					');
+					$this->lexeme_nos[$lexeme] = $lexeme_no;
+				}
+
+				$this->page_lexemes[$lexeme_no] += 1;
+			}
+		}
+
+		function finish_page()
+		{
+			foreach($this->page_lexemes as $lexeme_no => $count)
+			{
+				mysql_query('
+					INSERT INTO `lexeme_link` 
+					(book_id, lexeme_no, page_no, count) VALUES 
+					('. $this->book_id . ', ' . $lexeme_no . ', ' . $this->page_no . ', ' . $count . ')
+				');
+			}
+			
+			unset($this->page_lexemes);
+			unset($this->page_no);
+		}
+	}
+
 	class Book extends Searchable
 	{
 		var $alias;
@@ -150,47 +230,19 @@
 
 		function index_fulltext()
 		{
-			mysql_query('DELETE FROM `lexeme_link` WHERE `book_id`=' . $this->id);
-			mysql_query('DELETE FROM `lexeme` WHERE `book_id`=' . $this->id);
-			mysql_query('UPDATE `page` SET `title`="" WHERE `book_id`=' . $this->id);
+			$index = new Book_Fulltext_Index($this->id);
 
-			$index = new Fulltext_SimpleIndex();
 			$result = mysql_query('
 				SELECT `no`, `path`, `compressed`, `content` 
 				FROM `page` 
 				WHERE book_id=' . $this->id .'
 			');
-			while(list($no, $path, $compressed, $content) = mysql_fetch_row($result))
+			while(list($page_no, $path, $compressed, $content) = mysql_fetch_row($result))
 			{
 				if($compressed)
 					$content = gzinflate(substr($content, 10, -4));
-				$indexer = $index->index($path, $no, $content);
-			}
-
-			foreach($index->titles as $page_no => $page_title)
-			{
-				mysql_query('
-					UPDATE `page` 
-					SET `title`=\'' . mysql_escape_string($page_title) . '\' 
-					WHERE `book_id`=' . $this->id . ' AND `no`=' . $page_no . '
-				');
-			}
-
-			$lexeme_no = 0;
-			foreach($index->lexemes as $lexeme => $occurrences)
-			{
-				$lexeme_no += 1;
-				mysql_query('
-					INSERT INTO `lexeme` 
-					(book_id, no, string) VALUES 
-					('. $this->id . ', ' . $lexeme_no . ', \'' . mysql_escape_string($lexeme) . '\')
-				');
-				foreach($occurrences as $page_no => $count)
-					mysql_query('
-						INSERT INTO `lexeme_link` 
-						(book_id, lexeme_no, page_no, count) VALUES 
-						('. $this->id . ', ' . $lexeme_no . ', ' . $page_no . ', ' . $count . ')
-					');
+				$index->set_page_no($page_no);
+				$indexer = $index->index_page($path, $content);
 			}
 		}
 	}
