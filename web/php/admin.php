@@ -80,6 +80,16 @@
 				$book->delete();
 			}
 		}
+		
+		if($action == 'index')
+		{
+			$books = $_POST['books'];
+			foreach($books as $book)
+			{
+				$book = new Book($book);
+				$book->index_fulltext();
+			}
+		}
 	}
 	echo '</div>';
 	
@@ -133,6 +143,18 @@
 			echo '<option value="' . $book . '">' . $title . '</option>';
 		echo '</select>';
 		echo '<input type="submit" value="Delete">';
+		echo '</form>';
+		echo '</p>';
+
+		echo '<p>';
+		echo '<form action="admin.php" method="post">';
+		echo '<input type="hidden" name="action" value="index"/>';
+		echo '<select name="books[]" multiple="yes">';
+		$entries = book_catalog();	
+		foreach($entries as $book => $title)
+			echo '<option value="' . $book . '">' . $title . '</option>';
+		echo '</select>';
+		echo '<input type="submit" value="Index">';
 		echo '</form>';
 		echo '</p>';
 	}

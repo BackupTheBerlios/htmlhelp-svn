@@ -2,6 +2,7 @@
 
 	require_once 'mysql.inc.php';
 	require_once 'search.inc.php';
+	require_once 'fulltext.inc.php';
 
 	function book_catalog()
 	{
@@ -145,6 +146,52 @@
 			mysql_query('DELETE FROM `page` WHERE `book_id`=' . $this->id);
 			mysql_query('DELETE FROM `lexeme` WHERE `book_id`=' . $this->id);
 			mysql_query('DELETE FROM `lexeme_link` WHERE `book_id`=' . $this->id);
+		}
+
+		function index_fulltext()
+		{
+			mysql_query('DELETE FROM `lexeme_link` WHERE `book_id`=' . $this->id);
+			mysql_query('DELETE FROM `lexeme` WHERE `book_id`=' . $this->id);
+			mysql_query('UPDATE `page` SET `title`="" WHERE `book_id`=' . $this->id);
+
+			$index = new Index();
+			$result = mysql_query('
+				SELECT `no`, `path`, `compressed`, `content` 
+				FROM `page` 
+				WHERE book_id=' . $this->id .'
+			');
+			while(list($no, $path, $compressed, $content) = mysql_fetch_row($result))
+			{
+				if($compressed)
+					$content = gzinflate(substr($content, 10, -4));
+				$indexer = $index->index_($path, $no, $content);
+			}
+
+			foreach($index->titles as $page_no => $page_title)
+			{
+				mysql_query('
+					UPDATE `page` 
+					SET `title`=\'' . mysql_escape_string($page_title) . '\' 
+					WHERE `book_id`=' . $this->id . ' AND `no`=' . $page_no . '
+				');
+			}
+
+			$lexeme_no = 0;
+			foreach($index->lexemes as $lexeme => $occurrences)
+			{
+				$lexeme_no += 1;
+				mysql_query('
+					INSERT INTO `lexeme` 
+					(book_id, no, string) VALUES 
+					('. $this->id . ', ' . $lexeme_no . ', \'' . mysql_escape_string($lexeme) . '\')
+				');
+				foreach($occurrences as $page_no => $count)
+					mysql_query('
+						INSERT INTO `lexeme_link` 
+						(book_id, lexeme_no, page_no, count) VALUES 
+						('. $this->id . ', ' . $lexeme_no . ', ' . $page_no . ', ' . $count . ')
+					');
+			}
 		}
 	}
 

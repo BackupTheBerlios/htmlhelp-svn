@@ -25,7 +25,7 @@ class IndexTest extends PHPUnit_TestCase
 			'abc.html' => 'HtmlIndexer',
 		);
 		foreach($testcases as $path => $class)
-			$this->assertTrue(is_a($this->index->indexer($path), $class), $class);
+			$this->assertTrue(is_a($this->index->indexer($path, $path), $class), $class);
 	}
 }
 

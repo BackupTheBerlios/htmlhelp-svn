@@ -4,14 +4,34 @@ require_once 'mimetypes.inc.php';
 
 class Index
 {
-	function store_title($page, $title) {}
+	var $titles;
+	var $lexemes;
 
-	function store_lexemes($page, $lexemes) {}
+	function Index()
+	{
+		$this->titles = array();
+		$this->lexemes = array();
+	}
+
+	function store_title($page, $title) 
+	{
+		$this->titles[$page] = $title;
+	}
+
+	function store_lexemes($page, $lexemes)
+	{
+		foreach($lexemes as $lexeme)
+		{
+			if(!isset($this->lexemes[$lexeme]))
+				$this->lexemes[$lexeme] = array();
+			$this->lexemes[$lexeme][$page] += 1;
+		}
+	}
 
 	// Indexer Factory Method
-	function indexer($page)
+	function indexer($path, $page)
 	{
-		$content_type = guess_type($page);
+		$content_type = guess_type($path);
 		if($content_type == "text/plain")
 			return new TextIndexer($this, $page);
 		elseif($content_type == "text/html")
@@ -19,9 +39,9 @@ class Index
 		return NULL;
 	}
 
-	function index_($page, $content)
+	function index_($path, $page, $content)
 	{
-		$indexer = $this->indexer($page);
+		$indexer = $this->indexer($path, $page);
 		if(!is_null($indexer))
 			$indexer->feed($content);
 	}
@@ -60,7 +80,7 @@ class Indexer
 	{
 		// TODO: Improve this like http://svn.apache.org/repos/asf/lucene/java/trunk/src/java/org/apache/lucene/analysis/standard/StandardTokenizer.jj
 		// TODO: This may be better in a separate class
-		$lexemes = preg_split('/\s/', $s, -1, PREG_SPLIT_NO_EMPTY);
+		$lexemes = preg_split('/\s/', $str, -1, PREG_SPLIT_NO_EMPTY);
 		return $lexemes;
 	}
 }
@@ -77,11 +97,11 @@ class HtmlIndexer extends Indexer
 {
 	function feed($content)
 	{
-		$title = $this->extract_title($html);
+		$title = $this->extract_title($content);
 		if($title)
 			$this->feed_title($title);
 
-		$body = $this->extract_body($html);
+		$body = $this->extract_body($content);
 		if($body)
 			$this->feed_body($body);
 	}
