@@ -154,7 +154,7 @@
 			mysql_query('DELETE FROM `lexeme` WHERE `book_id`=' . $this->id);
 			mysql_query('UPDATE `page` SET `title`="" WHERE `book_id`=' . $this->id);
 
-			$index = new Index();
+			$index = new Fulltext_SimpleIndex();
 			$result = mysql_query('
 				SELECT `no`, `path`, `compressed`, `content` 
 				FROM `page` 
@@ -164,7 +164,7 @@
 			{
 				if($compressed)
 					$content = gzinflate(substr($content, 10, -4));
-				$indexer = $index->index_($path, $no, $content);
+				$indexer = $index->index($path, $no, $content);
 			}
 
 			foreach($index->titles as $page_no => $page_title)

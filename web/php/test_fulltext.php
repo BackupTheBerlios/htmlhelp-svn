@@ -9,7 +9,7 @@ class IndexTest extends PHPUnit_TestCase
 
 	function setUp()
 	{
-		$this->index = new Index();
+		$this->index = new Fulltext_Index();
 	}
 
 	function tearDown()
@@ -20,9 +20,9 @@ class IndexTest extends PHPUnit_TestCase
 	function testIndexer()
 	{
 		$testcases = array(
-			'abc.txt' => 'TextIndexer',
-			'abc.htm' => 'HtmlIndexer',
-			'abc.html' => 'HtmlIndexer',
+			'abc.txt' => 'Fulltext_TextIndexer',
+			'abc.htm' => 'Fulltext_HtmlIndexer',
+			'abc.html' => 'Fulltext_HtmlIndexer',
 		);
 		foreach($testcases as $path => $class)
 			$this->assertTrue(is_a($this->index->indexer($path, $path), $class), $class);
@@ -41,7 +41,7 @@ class IndexerTest extends PHPUnit_TestCase
 			"a  house" => "a house",
 		);
 		foreach($testcases as $string => $result)
-			$this->assertEquals($result, TextIndexer::normalize($string));
+			$this->assertEquals($result, Fulltext_TextIndexer::normalize($string));
 	}
 }
 
@@ -58,7 +58,7 @@ class HtmlIndexerTest extends PHPUnit_TestCase
 			"<title\n\n>\nNewlines\n</title\n\n>" => "\nNewlines\n",
 		);
 		foreach($testcases as $html => $title)
-			$this->assertEquals($title, HtmlIndexer::extract_title($html));
+			$this->assertEquals($title, Fulltext_HtmlIndexer::extract_title($html));
 	}
 
 	function testExtractBody()
@@ -73,7 +73,7 @@ class HtmlIndexerTest extends PHPUnit_TestCase
 			"<body\n\n>\nNewlines\n</body\n\n>" => "\nNewlines\n",
 		);
 		foreach($testcases as $html => $body)
-			$this->assertEquals($body, HtmlIndexer::extract_body($html));
+			$this->assertEquals($body, Fulltext_HtmlIndexer::extract_body($html));
 	}
 }
 

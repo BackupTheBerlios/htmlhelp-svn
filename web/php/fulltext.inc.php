@@ -2,12 +2,37 @@
 
 require_once 'mimetypes.inc.php';
 
-class Index
+class Fulltext_Index
+{
+	function store_title($page, $title) {}
+
+	function store_lexemes($page, $lexemes) {}
+
+	// Indexer Factory Method
+	function indexer($path, $page)
+	{
+		$content_type = guess_type($path);
+		if($content_type == "text/plain")
+			return new Fulltext_TextIndexer($this, $page);
+		elseif($content_type == "text/html")
+			return new Fulltext_HtmlIndexer($this, $page);
+		return NULL;
+	}
+
+	function index($path, $page, $content)
+	{
+		$indexer = $this->indexer($path, $page);
+		if(!is_null($indexer))
+			$indexer->feed($content);
+	}
+}
+
+class Fulltext_SimpleIndex extends Fulltext_Index
 {
 	var $titles;
 	var $lexemes;
 
-	function Index()
+	function Fulltext_SimpleIndex()
 	{
 		$this->titles = array();
 		$this->lexemes = array();
@@ -27,32 +52,14 @@ class Index
 			$this->lexemes[$lexeme][$page] += 1;
 		}
 	}
-
-	// Indexer Factory Method
-	function indexer($path, $page)
-	{
-		$content_type = guess_type($path);
-		if($content_type == "text/plain")
-			return new TextIndexer($this, $page);
-		elseif($content_type == "text/html")
-			return new HtmlIndexer($this, $page);
-		return NULL;
-	}
-
-	function index_($path, $page, $content)
-	{
-		$indexer = $this->indexer($path, $page);
-		if(!is_null($indexer))
-			$indexer->feed($content);
-	}
 }
 
-class Indexer
+class Fulltext_Indexer
 {
 	var $index;
 	var $page;
 
-	function Indexer($index, $page)
+	function Fulltext_Indexer($index, $page)
 	{
 		$this->index = $index;
 		$this->page = $page;
@@ -85,7 +92,7 @@ class Indexer
 	}
 }
 
-class TextIndexer extends Indexer
+class Fulltext_TextIndexer extends Fulltext_Indexer
 {
 	function feed($content)
 	{
@@ -93,7 +100,7 @@ class TextIndexer extends Indexer
 	}
 }
 
-class HtmlIndexer extends Indexer
+class Fulltext_HtmlIndexer extends Fulltext_Indexer
 {
 	function feed($content)
 	{
