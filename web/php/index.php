@@ -26,7 +26,7 @@
 	{
 		echo '<ul class="list">';
 		foreach($entries as $book => $title)
-			echo '<li><a href="book.php?book=' . $book . '" onclick="return openBook(\'' . $book . '\');" target="_blank">' . $title . '</a></li>';
+			echo '<li><a href="book.php?book=' . $book . '" onclick="return openBook(\'' . $book . '\');" target="_blank">' . htmlspecialchars($title, ENT_NOQUOTES) . '</a></li>';
 		echo '</ul>';
 	}
 
