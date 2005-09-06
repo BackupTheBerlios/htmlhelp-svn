@@ -5,7 +5,8 @@
 
 	function book_catalog()
 	{
-		$result = mysql_query('SELECT `alias`, `title` FROM `book` ORDER BY `title`');
+		# FIXME: deal with books with multiple versions
+		$result = mysql_query('SELECT `metadata`.`value`, `title` FROM `book`, `metadata` WHERE `book`.`id`=`metadata`.`book_id` AND `metadata`.`name`=\'name\' ORDER BY `title`');
 		$entries = array();
 		while(list($book_alias, $book_title) = mysql_fetch_row($result))
 			$entries[$book_alias] = $book_title;
@@ -19,7 +20,11 @@
 
 		function Book($alias)
 		{
-			$result = mysql_query('SELECT `id` FROM `book` WHERE `alias`=\'' . mysql_escape_string($alias) . '\'');
+			$result = mysql_query('
+				SELECT `book_id` 
+				FROM `metadata` 
+				WHERE `name`=\'name\' AND `value`=\'' . mysql_escape_string($alias) . '\'
+			');
 			list($id) = mysql_fetch_row($result);
 			
 			$this->alias = $alias;
