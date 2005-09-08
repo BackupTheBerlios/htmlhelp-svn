@@ -35,7 +35,13 @@ class IndexerTest extends PHPUnit_TestCase
 	{
 		$testcases = array(
 			"" => "",
-			" \n\t " => "",
+
+			// white space
+			" \t\r\n" => "",
+			
+			// U+00A0 NO-BREAK SPACE
+			"\xC2\xA0" => "",
+
 			"  a house" => "a house",
 			" a   house " => "a house",
 			"a  house" => "a house",
@@ -92,6 +98,25 @@ class HtmlIndexerTest extends PHPUnit_TestCase
 		);
 		foreach($testcases as $html => $title)
 			$this->assertEquals($title, Fulltext_HtmlIndexer::extract_encoding($html, NULL), $html);
+	}
+
+	function testDecode()
+	{
+		$testcases = array(
+			// Basic HTML entities
+			'&amp;' => '&',
+			'&lt;' => '<',
+			'&gt;' => '>',
+			'&quot;' => '"',
+
+			// Latin capital letter A with grave (U+00C0)
+			"&Agrave;" => "\xC3\x80",
+			"&#192;" => "\xC3\x80",
+			"&#xC0;" => "\xC3\x80",
+			"\xC0" => "\xC3\x80",
+		);
+		foreach($testcases as $html => $title)
+			$this->assertEquals($title, Fulltext_HtmlIndexer::decode($html));
 	}
 
 	function testExtractTitle()

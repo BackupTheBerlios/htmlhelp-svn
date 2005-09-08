@@ -90,10 +90,10 @@ class Fulltext_Indexer
 
 	function feed($content) {}
 
-	// Normalize whitespace
-	function normalize($str)
+	// Normalize whitespace. Expects and produces a UTF-8 string
+	function normalize($string)
 	{
-		return implode(' ', preg_split('/\s/', $str, -1, PREG_SPLIT_NO_EMPTY));
+		return implode(' ', preg_split('/[\s\p{Zs}]/U', $string, -1, PREG_SPLIT_NO_EMPTY));
 	}
 
 	function tokenize($str)
@@ -171,18 +171,20 @@ class Fulltext_HtmlIndexer extends Fulltext_Indexer
 {
 	function feed($content)
 	{
-		$title = $this->extract_title($content);
+		$encoding = $this->extract_encoding($content);
+
+		$title = $this->extract_title($content, $encoding);
 		if($title)
 			$this->feed_title($title);
 
-		$body = $this->extract_body($content);
+		$body = $this->extract_body($content, $encoding);
 		if($body)
 			$this->feed_body($body);
 	}
 
 	function extract_encoding($html, $default_encoding='iso8859-1')
 	{
-		// FIXME: determine and use HTML encoding
+		// extract encoding from XML header
 		if(preg_match(
 				'/^<\?xml' . 
 					// other attributes
@@ -196,7 +198,8 @@ class Fulltext_HtmlIndexer extends Fulltext_Indexer
 			$encoding = $matches[1] . $matches[2];
 			return trim($encoding);
 		}
-		// per http://www.w3.org/TR/html401/charset.html#h-5.2.2
+		// extract encoding from HTML META declaration, per
+		// http://www.w3.org/TR/html401/charset.html#h-5.2.2
 		elseif(preg_match(
 				'/<META' .
 					// other attributes
@@ -221,8 +224,27 @@ class Fulltext_HtmlIndexer extends Fulltext_Indexer
 		return $default_encoding;
 	}
 
-	function extract_title($html)
+	// Decode HTML text into UTF-8
+	function decode($text, $encoding="iso8859-1")
 	{
+		if(function_exists('iconv'))
+			$decoded_text = iconv($encoding, "utf-8", $text);
+		elseif(preg_match('/^iso-?8859-(1|15)$/i', $encoding))
+			// fallback for ISO-8859-1/15 encodings
+			$decoded_text = utf8_encode($encoding, "utf-8", $text);
+		else
+			// replace higher ASCII code by question mark
+			$decoded_text = preg_replace('/[\x80-\xff]/', '?', $text);
+
+		// decode HTML entities
+		return html_entity_decode($decoded_text, ENT_COMPAT, 'utf-8');
+	}
+
+	function extract_title($html, $encoding=NULL)
+	{
+		if(!isset($encoding))
+			$encoding = Fulltext_HtmlIndexer::extract_encoding($html);
+
 		if(preg_match(
 				// body start tag
 				'/<TITLE(?:\s+[^>]*)?>' . 
@@ -230,13 +252,16 @@ class Fulltext_HtmlIndexer extends Fulltext_Indexer
 				'(.*?)' . 
 				// body end tag
 				'<\/TITLE\s*>/is', $html, $matches))
-			return html_entity_decode($matches[1]);
+			return Fulltext_HtmlIndexer::decode($matches[1], $encoding);
 		else
 			return NULL;
 	}
 
-	function extract_body($html)
+	function extract_body($html, $encoding=NULL)
 	{
+		if(!isset($encoding))
+			$encoding = Fulltext_HtmlIndexer::extract_encoding($html);
+
 		if(preg_match(
 				// body start tag
 				'/<BODY(?:\s+[^>]*)?>' . 
@@ -244,7 +269,7 @@ class Fulltext_HtmlIndexer extends Fulltext_Indexer
 				'(.*?)' . 
 				// body end tag
 				'<\/BODY\s*>/is', $html, $matches))
-			return html_entity_decode(preg_replace('/<[^>]*>/', '', $matches[1]));
+			return Fulltext_HtmlIndexer::decode(preg_replace('/<[^>]*>/', '', $matches[1]), $encoding);
 		else
 			return NULL;
 	}
