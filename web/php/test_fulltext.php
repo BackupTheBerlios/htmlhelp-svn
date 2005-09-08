@@ -63,6 +63,37 @@ class IndexerTest extends PHPUnit_TestCase
 
 class HtmlIndexerTest extends PHPUnit_TestCase
 {
+	function testExtractEncoding()
+	{
+		$testcases = array(
+			"" => NULL,
+
+			// Based from http://search.cpan.org/~bjoern/HTML-Encoding-0.52/lib/HTML/Encoding.pm
+			"<?xml version='1.0'>"                    => NULL,
+			"<?xml version='1.0' encoding='utf-8'?>"  => 'utf-8',
+			"<?xml encoding='utf-8'?>"                => 'utf-8',
+			"<?xml encoding=\"utf-8\"?>"              => 'utf-8',
+			"<?xml foo='bar' encoding='utf-8'?>"      => 'utf-8',
+			"<?xml encoding='a' encoding='b'?>"       => 'a',
+			"<?xml-stylesheet encoding='utf-8'?>"     => NULL,
+			" <?xml encoding='utf-8'?>"               => NULL,
+			"<?xml encoding = 'utf-8'?>"              => 'utf-8',
+			"<?xml version='1.0' encoding=utf-8?>"    => NULL,
+			"<?xml x='encoding=\"a\"' encoding='b'?>" => 'b',
+
+			'<META http-equiv="Content-Type" content="text/html">'                           => NULL,
+			'<META http-equiv="Content-Type" content="text/html,text/plain;charset=utf-8">'  => NULL,
+			'<META http-equiv="Content-Type" content="text/html;charset=">'                  => NULL,
+			'<META http-equiv="Content-Type" id="test" content="text/html;charset=utf-8">'   => 'utf-8',
+			'<META http-equiv="Content-Type" content="text/html;charset=\'utf-8\'">'         => 'utf-8',
+			'<META http-equiv="Content-Type" content=\'text/html;charset="UTF-8"\'>'         => 'UTF-8',
+			'<META http-equiv="Content-Type" content="text/html;charset=&quot;UTF-8&quot;">' => 'UTF-8',
+
+		);
+		foreach($testcases as $html => $title)
+			$this->assertEquals($title, Fulltext_HtmlIndexer::extract_encoding($html, NULL), $html);
+	}
+
 	function testExtractTitle()
 	{
 		$testcases = array(

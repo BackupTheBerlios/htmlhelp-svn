@@ -180,15 +180,56 @@ class Fulltext_HtmlIndexer extends Fulltext_Indexer
 			$this->feed_body($body);
 	}
 
-	function extract_encoding($html)
+	function extract_encoding($html, $default_encoding='iso8859-1')
 	{
 		// FIXME: determine and use HTML encoding
-		return "ISO8859-1";
+		if(preg_match(
+				'/^<\?xml' . 
+					// other attributes
+					'(?:\s+[-a-zA-Z0-9._:]+\s*=\s*(?:"[^"]*"|\'[^\']*\'))*?' . 
+					// encoding attribute
+					'\s+encoding\s*=\s*(?:"([^"]*)"|\'([^\']*)\')' .
+					// other attributes
+					'(?:\s+[-a-zA-Z0-9._:]+\s*=\s*(?:"[^"]*"|\'[^\']*\'))*?' . 
+				'\s*\?>/', $html, $matches))
+		{
+			$encoding = $matches[1] . $matches[2];
+			return trim($encoding);
+		}
+		// per http://www.w3.org/TR/html401/charset.html#h-5.2.2
+		elseif(preg_match(
+				'/<META' .
+					// other attributes
+					'(?:\s+[-a-zA-Z0-9._:]+\s*=\s*(?:[-a-zA-Z0-9._:]+|"[^"]*"|\'[^\']*\'))*?' . 
+					// http-equiv attribute
+					'\s+http-equiv\s*=\s*(?:Content-Type|"Content-Type"|\'Content-Type\')' .
+					// other attributes
+					'(?:\s+[-a-zA-Z0-9._:]+\s*=\s*(?:[-a-zA-Z0-9._:]+|"[^"]*"|\'[^\']*\'))*?' .
+					// content attribute
+					'\s+content\s*=\s*(?:([-a-zA-Z0-9._:]+)|"([^"]*)"|\'([^\']*)\')' .
+					// other attributes
+					'(?:\s+[-a-zA-Z0-9._:]+\s*=\s*(?:[-a-zA-Z0-9._:]+|"[^"]*"|\'[^\']*\'))*?' .
+				'\s*>/i', $html, $matches))
+		{
+			$http_equiv = html_entity_decode($matches[1] . $matches[2] . $matches[3]);
+			if(preg_match('/^text\/html;\s*charset=(?:([-a-zA-Z0-9._:]+)|"([^"]*)"|\'([^\']*)\')/', $http_equiv, $matches))
+			{
+				$encoding = $matches[1] . $matches[2] . $matches[3];
+				return $encoding;
+			}
+		}
+		return $default_encoding;
 	}
 
 	function extract_title($html)
 	{
-		if(preg_match("/<title(?:\s.*?)?>(.*?)<\/title\s*>/is", $html, $matches))
+		if(preg_match(
+				// body start tag
+				'/<TITLE(?:\s+[^>]*)?>' . 
+				// body text
+				'(.*?)' . 
+				// body end tag
+				'<\/TITLE\s*>/is', $html, $matches))
 			return html_entity_decode($matches[1]);
 		else
 			return NULL;
@@ -196,8 +237,14 @@ class Fulltext_HtmlIndexer extends Fulltext_Indexer
 
 	function extract_body($html)
 	{
-		if(preg_match("/<body(?:\s.*?)?>(.*?)<\/body\s*>/is", $html, $matches))
-			return html_entity_decode(preg_replace("/<.*?>/s", "", $matches[1]));
+		if(preg_match(
+				// body start tag
+				'/<BODY(?:\s+[^>]*)?>' . 
+				// body text
+				'(.*?)' . 
+				// body end tag
+				'<\/BODY\s*>/is', $html, $matches))
+			return html_entity_decode(preg_replace('/<[^>]*>/', '', $matches[1]));
 		else
 			return NULL;
 	}
