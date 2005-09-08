@@ -98,12 +98,62 @@ class Fulltext_Indexer
 
 	function tokenize($str)
 	{
-		// TODO: Improve this like in
-		// http://svn.apache.org/repos/asf/lucene/java/trunk/src/java/org/apache/lucene/analysis/standard/StandardTokenizer.jj
-		// or in http://openfts.sourceforge.net/primer.html
-		// TODO: This may be better in a separate class
-		$lexemes = preg_split('/\s/', $str, -1, PREG_SPLIT_NO_EMPTY);
-		return $lexemes;
+		// NOTE: Based on http://svn.apache.org/repos/asf/lucene/java/trunk/src/java/org/apache/lucene/analysis/standard/StandardTokenizer.jj
+		$token_patterns = array(
+			// basic word: a sequence of letters and digits
+			"[\w\d]+", 
+
+			// acronyms
+			"\w\.(\w\.)+",
+
+			// company names
+			"\w+(&|@)\w+",
+
+			// email addresses
+			"[\w\d][-_.\w\d]*@[\w\d]+([-.][\w\d]+)+",
+
+			// hostnames
+			//"\w[\w\d]*(\.\w[\w\d]*)+",
+
+			// identifiers
+			"[_\w][_\w\d]*",
+
+			// floating point
+			"(\d+\.\d*|\d*\.\d+)([eE][-+]?\d+)?",
+
+			// dates, versions, ip numbers
+			"[\d\w]*\d[\d\w]*([-.,\/_][\d\w]*\d[\d\w]*)+",
+
+			// paths
+			//"((\.|\.\.|[^\s:]+)\/)+[^\s:]+",
+			
+			// character
+		);
+
+		$string = $str;
+		$tokens = array();
+		while(strlen($string))
+		{
+			if(preg_match("/^\s+/", $string, $matches))
+			{
+				// remove whitespace
+				$string = substr($string, strlen($matches[0]));
+			}
+			else
+			{
+				$longest_token = 1;
+
+				foreach($token_patterns as $token_pattern)
+					if(preg_match('/^(' . $token_pattern . ')/', $string, $matches))
+						if(strlen($matches[0]) > $longest_token)
+							$longest_token = strlen($matches[0]);
+
+				$tokens[] = substr($string, 0, $longest_token);
+				$string = substr($string, $longest_token);
+			}
+		}
+
+		return $tokens;
 	}
 }
 
