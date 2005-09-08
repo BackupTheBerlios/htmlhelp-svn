@@ -14,13 +14,21 @@
 		return $entries;
 	}
 
+	function is_valid_utf8($string)
+	{
+		// taken from http://pt.php.net/manual/en/function.utf8-decode.php
+		if(preg_match('/^([\x00-\x7f]|[\xc0-\xdf][\x80-\xbf]|[\xe0-\xef][\x80-\xbf]{2}|[\xf0-\xf7][\x80-\xbf]{3}|[\xf8-\xfb][\x80-\xbf]{4}|[\xfc-\xfd][\x80-\xbf]{5})*$/', $string))
+			return TRUE;
+		else
+			return FALSE;
+	}
+
 	class Book_Fulltext_Index extends Fulltext_Index
 	{
 		var $book_id;
 		var $page_no;
 
-		// Cache of the lexeme numbers
-		var $lexeme_nos;
+		var $last_lexeme_no;
 
 		// The lexemes of the current page
 		var $page_lexemes;
@@ -28,7 +36,7 @@
 		function Book_Fulltext_Index($book_id)
 		{
 			$this->book_id = $book_id;
-			$this->lexeme_nos = array();
+			$this->last_lexeme_no = 0;
 			
 			mysql_query('DELETE FROM `lexeme_link` WHERE `book_id`=' . $this->book_id);
 			mysql_query('DELETE FROM `lexeme` WHERE `book_id`=' . $this->book_id);
@@ -49,6 +57,12 @@
 
 		function set_title($title) 
 		{
+			if(!is_valid_utf8($title))
+			{
+				echo "<p>book_id#$this->book_id:page_no#$this->page_no: invalid UTF-8 in lexeme \"" . htmlspecialchars($title, ENT_NOQUOTES, 'utf-8') . "\"</p>";
+				return;
+			}
+
 			mysql_query('
 				UPDATE `page`
 				SET `title`="' . mysql_escape_string($title) . '"
@@ -58,35 +72,47 @@
 
 		function add_lexemes($lexemes)
 		{
+			// TODO: add stop words lists somewhere to reduce table size
+			// TODO: store lexeme positions instead of lexeme counts
+				
 			foreach($lexemes as $lexeme)
-			{
-				// get this lexeme number
-				if(isset($this->lexeme_nos[$lexeme]))
-					$lexeme_no = $this->lexeme_nos[$lexeme];
-				else
-				{
-					$lexeme_no = count($this->lexeme_nos) + 1;
-					mysql_query('
-						INSERT INTO `lexeme` 
-						(book_id, no, string) VALUES 
-						('. $this->book_id . ', ' . $lexeme_no . ', \'' . mysql_escape_string($lexeme) . '\')
-					');
-					$this->lexeme_nos[$lexeme] = $lexeme_no;
-				}
-
-				$this->page_lexemes[$lexeme_no] += 1;
-			}
+				$this->page_lexemes[$lexeme] += 1;
 		}
 
 		function finish_page()
 		{
-			foreach($this->page_lexemes as $lexeme_no => $count)
+			foreach($this->page_lexemes as $lexeme => $count)
 			{
-				mysql_query('
-					INSERT INTO `lexeme_link` 
+				if(!is_valid_utf8($lexeme))
+				{
+					echo "<p>book_id#$this->book_id:page_no#$this->page_no: invalid UTF-8 in lexeme \"" . htmlspecialchars($lexeme, ENT_NOQUOTES, 'utf-8') . "\"</p>";
+					continue;
+				}
+
+				// get this lexeme number
+				$result = mysql_query(
+					"SELECT `no`
+				 	FROM `lexeme` 
+					WHERE `book_id`=$this->book_id AND `string`='" . mysql_escape_string($lexeme) . "'"
+				) or print(__FILE__ . ':' . __LINE__ . ': ' .  htmlspecialchars($lexeme, ENT_NOQUOTES, 'utf-8') . ':' . ord($lexeme) . ':' . mysql_error() . "\n");
+				if(mysql_num_rows($result))
+					list($lexeme_no) = mysql_fetch_row($result);
+				else
+				{
+					$this->last_lexeme_no += 1;
+					$lexeme_no = $this->last_lexeme_no;
+					mysql_query(
+						"INSERT INTO `lexeme` 
+						(book_id, no, string) VALUES 
+						($this->book_id, $lexeme_no, '" . mysql_escape_string($lexeme) . "')"
+					);
+				}
+
+				mysql_query(
+					"INSERT INTO `lexeme_link` 
 					(book_id, lexeme_no, page_no, count) VALUES 
-					('. $this->book_id . ', ' . $lexeme_no . ', ' . $this->page_no . ', ' . $count . ')
-				');
+					($this->book_id, $lexeme_no, $this->page_no, $count)"
+				);
 			}
 			
 			unset($this->page_lexemes);
