@@ -57,6 +57,8 @@
 	echo '<div>';
 	if($authenticated)
 	{
+		set_time_limit(0);
+
 		if($action == 'import')
 		{
 			$files = $_POST['files'];
@@ -112,9 +114,13 @@
 			echo '<select name="files[]" multiple="yes">';
 			$dir = dir($admin_directory);
 			$ext = '.sql';
+			$entries = array();
 			while(false !== ($entry = $dir->read()))
 				if(substr($entry, -strlen($ext)) == $ext)
-					echo '<option value="' . $entry . '">' . substr($entry, 0, -strlen($ext)) . '</option>';
+					$entries[] = $entry;
+			natcasesort($entries);
+			foreach($entries as $entry)
+				echo '<option value="' . $entry . '">' . substr($entry, 0, -strlen($ext)) . '</option>';
 			echo '</select>';
 			echo '<input type="submit" value="Import">';
 			echo '</form>';
