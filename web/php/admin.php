@@ -58,6 +58,7 @@
 	if($authenticated)
 	{
 		set_time_limit(0);
+		$start_time = time();
 
 		if($action == 'import')
 		{
@@ -92,6 +93,10 @@
 				$book->index_fulltext();
 			}
 		}
+
+		$finish_time = time();
+		$ellapsed_time = $finish_time - $start_time;
+		echo "<p>Ellapsed time: $ellapsed_time sec</p>\n";
 	}
 	echo '</div>';
 	
