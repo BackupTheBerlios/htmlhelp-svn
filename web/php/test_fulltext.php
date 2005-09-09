@@ -54,13 +54,14 @@ class IndexerTest extends PHPUnit_TestCase
 	{
 		$testcases = array(
 			"" => array(),
-			"a word" => array("a", "word"),
+			"two words" => array("two", "words"),
 			"an A.B.C. acronym" => array("an", "A.B.C.", "acronym"),
-			"a strange_email.address@somewhere1.com email" => array("a", "strange_email.address@somewhere1.com", "email"),
-			"package-1.2.3.4a.ext" => array("package", "-", "1.2.3.4a", ".", "ext"),
-			"some .1+2.-3.456789E-123 numbers" => array("some", ".1", "+", "2.", "-", "3.456789E-123", "numbers"),
+			"one strange_email.address@somewhere1.com email" => array("one", "strange_email.address@somewhere1.com", "email"),
+			"package-1.2.3.4a.ext" => array("package", "1.2.3.4a", "ext"),
+			"some 1 .2 3.456789E-123 numbers" => array("some", "1", ".2", "3.456789E-123", "numbers"),
 			"ip 196.168.0.1 number" => array("ip", "196.168.0.1", "number"),
 			"some 1234-12-23 07/06/00 dates" => array("some", "1234-12-23", "07/06/00", "dates"),
+			"Eagle \xC3\x80guia" => array("Eagle", "\xC3\x80guia"),
 		);
 		foreach($testcases as $string => $result)
 			$this->assertEquals($result, Fulltext_TextIndexer::Tokenize($string));

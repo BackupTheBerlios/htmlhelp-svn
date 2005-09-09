@@ -2,6 +2,8 @@
 
 require_once 'mimetypes.inc.php';
 
+mb_internal_encoding('utf-8');
+
 // Index interface
 class Fulltext_Index
 {
@@ -93,65 +95,124 @@ class Fulltext_Indexer
 	// Normalize whitespace. Expects and produces a UTF-8 string
 	function normalize($string)
 	{
-		return implode(' ', preg_split('/[\s\p{Zs}]/U', $string, -1, PREG_SPLIT_NO_EMPTY));
+		return implode(' ', preg_split('/[\s\pZ]+/u', $string, -1, PREG_SPLIT_NO_EMPTY));
 	}
 
-	function tokenize($str)
+	function tokenize($string)
 	{
 		// NOTE: Based on http://svn.apache.org/repos/asf/lucene/java/trunk/src/java/org/apache/lucene/analysis/standard/StandardTokenizer.jj
 		$token_patterns = array(
 			// basic word: a sequence of letters and digits
-			"[\w\d]+", 
+			"[\pL\pN]{2,}", 
 
 			// acronyms
-			"\w\.(\w\.)+",
+			"\p{Lu}\.(\p{Lu}\.)+",
 
 			// company names
 			"\w+(&|@)\w+",
 
-			// email addresses
-			"[\w\d][-_.\w\d]*@[\w\d]+([-.][\w\d]+)+",
+			// email addresses (according to http://www.developer.com/lang/php/article.php/3290141)
+			"[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*\.[a-zA-Z]{2,4}\b",
 
-			// hostnames
-			//"\w[\w\d]*(\.\w[\w\d]*)+",
+			// urls
+			"[a-z]+:\/\/[^\s]+",
 
 			// identifiers
-			"[_\w][_\w\d]*",
+			"[_a-zA-Z][_a-zA-Z0-9]+",
 
-			// floating point
-			"(\d+\.\d*|\d*\.\d+)([eE][-+]?\d+)?",
+			// numbers
+			"\d+|\d*[.,]\d+",
+			"(\d+|\d+[.,]\d*|\d*[.,]\d+)[eE][-+]?\d+",
 
-			// dates, versions, ip numbers
-			"[\d\w]*\d[\d\w]*([-.,\/_][\d\w]*\d[\d\w]*)+",
+			// dates
+			"\d+-\d+-\d+|\d+\/\d+\/\d+",
+
+			// versions and ip numbers
+			"\w*\d\w*(\.\w*\d\w*)+",
 
 			// paths
-			//"((\.|\.\.|[^\s:]+)\/)+[^\s:]+",
-			
-			// character
+			#"\.{0,2}(\/(\.{0,2}|[_a-zA-Z0-9-]+))+",
 		);
 
-		$string = $str;
+		/**/
 		$tokens = array();
 		while(strlen($string))
 		{
-			if(preg_match("/^\s+/", $string, $matches))
+			if(preg_match("/^[\s\pZ\pP\pS]+/u", $string, $matches))
 			{
 				// remove whitespace
 				$string = substr($string, strlen($matches[0]));
 			}
 			else
 			{
-				$longest_token = 1;
+				$longest_token = 0;
 
 				foreach($token_patterns as $token_pattern)
-					if(preg_match('/^(' . $token_pattern . ')/', $string, $matches))
+					if(preg_match('/^(' . $token_pattern . ')/u', $string, $matches))
 						if(strlen($matches[0]) > $longest_token)
 							$longest_token = strlen($matches[0]);
 
-				$tokens[] = substr($string, 0, $longest_token);
-				$string = substr($string, $longest_token);
+				if($longest_token)
+				{
+					$tokens[] = substr($string, 0, $longest_token);
+					$string = substr($string, $longest_token);
+				}
+				else
+				{
+					// no token found; advance one character
+					$character_length = strlen(mb_substr($string, $offset, 1));
+					if($character_length)
+						$string = substr($string, $character_length);
+					else
+						$string = substr($string, 1);
+				}
 			}
 		}
+		/**/
+
+		/*
+		$length = strlen($string);
+		$offset = 0;
+		$tokens = array();
+		while($offset < $length)
+		{
+			$last_offset = $offset;
+
+			if(preg_match("/\G\d[\s\pZ]+/u", $string, $matches, NULL, $offset))
+			{
+				// remove whitespace
+				assert(strlen($matches[0]));
+				$offset += strlen($matches[0]);
+			}
+			else
+			{
+				$longest_token = 0;
+
+				// TODO: dot not use substrings and assert tokens are separated by whitespace or separators
+				foreach($token_patterns as $token_pattern)
+					if(preg_match('/\G\d(' . $token_pattern . ')(?=[^\pL\pN]|$)/u', $string, $matches, NULL, $offset))
+						if(strlen($matches[0]) > $longest_token)
+							$longest_token = strlen($matches[0]);
+
+				if($longest_token)
+				{
+					$tokens[] = substr($string, $offset, $longest_token);
+					$offset += $longest_token;
+				}
+				else
+				{
+					// no token found; advance one character
+					$character_length = strlen(mb_substr($string, $offset, 1));
+					if($character_length)
+						$offset += $character_length;
+					else
+						$offset += 1;
+				}
+			}
+
+			assert($offset != $last_offset);
+		}
+		*/
 
 		return $tokens;
 	}
@@ -177,9 +238,9 @@ class Fulltext_HtmlIndexer extends Fulltext_Indexer
 		if($title)
 			$this->feed_title($title);
 
-		$body = $this->extract_body($content, $encoding);
-		if($body)
-			$this->feed_body($body);
+		$body_parts = $this->extract_body_parts($content, $encoding);
+		foreach($body_parts as $body_part)
+			$this->feed_body($body_part);
 	}
 
 	function extract_encoding($html, $default_encoding='iso8859-1')
@@ -257,21 +318,28 @@ class Fulltext_HtmlIndexer extends Fulltext_Indexer
 			return NULL;
 	}
 
-	function extract_body($html, $encoding=NULL)
+	function extract_body_parts($html, $encoding=NULL)
 	{
 		if(!isset($encoding))
 			$encoding = Fulltext_HtmlIndexer::extract_encoding($html);
 
-		if(preg_match(
-				// body start tag
-				'/<BODY(?:\s+[^>]*)?>' . 
-				// body text
-				'(.*?)' . 
-				// body end tag
-				'<\/BODY\s*>/is', $html, $matches))
-			return Fulltext_HtmlIndexer::decode(preg_replace('/<[^>]*>/', '', $matches[1]), $encoding);
-		else
-			return NULL;
+		$parts = preg_split(
+				// everything till body start tag
+				'/^.*<BODY(?:\s+[^>]*)?>' . 
+				// everything after body end tag
+				'|<\/BODY\s*>.*$' .
+				// any tag
+				'|<[^>]*>/is', $html, -1, PREG_SPLIT_NO_EMPTY);
+				
+		$result = array();
+		foreach($parts as $part)
+			$result[] = Fulltext_HtmlIndexer::decode($part, $encoding);
+		return $result;
+	}
+
+	function extract_body($html, $encoding=NULL)
+	{
+		return implode('', Fulltext_HtmlIndexer::extract_body_parts($html, $encoding));
 	}
 }
 
