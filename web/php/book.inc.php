@@ -33,10 +33,22 @@
 		// The lexemes of the current page
 		var $page_lexemes;
 
+		var $stop_words;
+
 		function Book_Fulltext_Index($book_id)
 		{
 			$this->book_id = $book_id;
 			$this->last_lexeme_no = 0;
+
+			# NOTE: from http://en.wikipedia.org/wiki/Stop_words
+			$this->stop_words = array();
+			$handle = fopen("stop_words.txt", "rt");
+			while(!feof($handle))
+			{
+				 $word = trim(fgets($handle, 4096));
+				 $this->stop_words[$word] = true;
+			}
+			fclose($handle);
 			
 			mysql_query('DELETE FROM `lexeme_link` WHERE `book_id`=' . $this->book_id);
 			mysql_query('DELETE FROM `lexeme` WHERE `book_id`=' . $this->book_id);
@@ -76,19 +88,21 @@
 			// TODO: store lexeme positions instead of lexeme counts
 				
 			foreach($lexemes as $lexeme)
+			{
+				if(!is_valid_utf8($lexeme))
+					continue;
+
+				if($this->stop_words[mb_strtolower($lexeme, 'utf-8')])
+					continue;
+
 				$this->page_lexemes[$lexeme] += 1;
+			}
 		}
 
 		function finish_page()
 		{
 			foreach($this->page_lexemes as $lexeme => $count)
 			{
-				if(!is_valid_utf8($lexeme))
-				{
-					echo "<p>book_id#$this->book_id:page_no#$this->page_no: invalid UTF-8 in lexeme \"" . htmlspecialchars($lexeme, ENT_NOQUOTES, 'utf-8') . "\"</p>";
-					continue;
-				}
-
 				// get this lexeme number
 				$result = mysql_query(
 					"SELECT `no`
