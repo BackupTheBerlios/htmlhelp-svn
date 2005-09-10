@@ -70,49 +70,51 @@ class Fulltext_SimpleIndex extends Fulltext_Index
 	}
 }
 
-// Some ideas from
+// Based on Lucene's standard tokenizer
 // http://svn.apache.org/repos/asf/lucene/java/trunk/src/java/org/apache/lucene/analysis/standard/StandardTokenizer.jj
-
 // NOTE: order *does* matter: first match is chosen
+// NOTE: branches '|' should be inside subpatterns '(?: ... )'
 $token_patterns = array(
 	// acronyms
-	"\p{Lu}\.(\p{Lu}\.)+",
+	'\p{Lu}\.(?:\p{Lu}\.)+',
 
 	// email addresses (according to http://www.developer.com/lang/php/article.php/3290141)
-	"[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*\.[a-zA-Z]{2,4}",
+	'[_a-zA-Z0-9-]+(?:\.[_a-zA-Z0-9-]+)*@[_a-zA-Z0-9-]+(?:\.[_a-zA-Z0-9-]+)*\.[a-zA-Z]{2,4}',
 
 	// company names
-	"\w+(&|@)\w+",
+	'\pL+[&@]\pL+',
 
-	// urls
-	"[a-z]+:\/\/[^\s]+",
+	// internal apostrophes
+	'\pL+(?:\'\pL+)+',
 
 	// floating point numbers
-	"(\d+|\d+[.,]\d*|\d*[.,]\d+)[eE][-+]?\d+",
+	'(?:\d+|\d+[.,]\d*|\d*[.,]\d+)[eE][-+]?\d+',
 
 	// versions and ip numbers
-	"\w*\d\w*(\.\w*\d\w*)+",
+	'[a-zA-Z]*\d+[a-zA-Z]*(?:\.[a-zA-Z]*\d+[a-zA-Z]*)+',
 
 	// dates
-	"\d+-\d+-\d+|\d+\/\d+\/\d+",
+	'\d+-\d+-\d+|\d+\/\d+\/\d+',
 
 	// decimal numbers
-	"\d*[.,]\d+",
+	'\d*[.,]\d+',
 
-	// paths
-	#"\.{0,2}(\/(\.{0,2}|[_a-zA-Z0-9-]+))+",
+	// paths?
 
 	// identifiers
-	"[_a-zA-Z][_a-zA-Z0-9]+",
+	'[_a-zA-Z][_a-zA-Z0-9]+',
 
 	// basic word: a sequence of letters and digits
-	"[\pL\pN]{2,}",
+	'[\pL\pN]{2,}',
 
+	// Chinese, Japanese, and Korean ideographs
+	'[\x{3040}-\x{318f}\x{3300}-\x{337f}\x{3400}-\x{3d2d}\x{4e00}-\x{9fff}\x{f900}-\x{faff}]',
+	
 	// integers
-	"\d+",	
+	'\d+',	
 );
 
-$tokens_pattern = '/^((' . implode(')|(',  $token_patterns) . '))/u';
+$tokens_pattern = '/' . implode('|',  $token_patterns) . '/u';
 
 // Extracts title and lexemes from documents
 class Fulltext_Indexer
@@ -144,39 +146,10 @@ class Fulltext_Indexer
 
 	function tokenize($string)
 	{
-		$tokens = array();
-		while(strlen($string))
-		{
-			if(preg_match("/^[\s\pZ\pP\pS]+/u", $string, $matches))
-			{
-				// remove whitespace
-				$string = substr($string, strlen($matches[0]));
-			}
-			else
-			{
-				$longest_token = 0;
+		global $tokens_pattern;
 
-				global $tokens_pattern;
-				if(preg_match($tokens_pattern, $string, $matches))
-					$longest_token = strlen($matches[0]);
-
-				if($longest_token)
-				{
-					$tokens[] = substr($string, 0, $longest_token);
-					$string = substr($string, $longest_token);
-				}
-				else
-				{
-					// no token found; advance one character
-					$character_length = strlen(mb_substr($string, $offset, 1));
-					if($character_length)
-						$string = substr($string, $character_length);
-					else
-						$string = substr($string, 1);
-				}
-			}
-		}
-
+		preg_match_all($tokens_pattern,  $string, $matches, PREG_PATTERN_ORDER);
+		$tokens = $matches[0];
 		return $tokens;
 	}
 }
