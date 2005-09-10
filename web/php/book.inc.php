@@ -55,6 +55,36 @@
 			mysql_query('UPDATE `page` SET `title`="" WHERE `book_id`=' . $this->book_id);
 		}
 
+		function cleanup()
+		{
+			// drop lexemes which start with a digit and appear only once
+			mysql_query(<<<EOSQL
+				CREATE TEMPORARY TABLE delete_lexeme
+					SELECT string
+						FROM lexeme
+							LEFT JOIN lexeme_link ON lexeme.no = lexeme_link.lexeme_no
+						WHERE lexeme.book_id = $this->book_id
+							AND string >= '0' AND string < 'A'
+							AND lexeme_link.book_id = $this->book_id
+						GROUP BY lexeme.book_id, string
+						HAVING SUM(count) = 1
+EOSQL
+			);
+			mysql_query(<<<EOSQL
+				DELETE lexeme, lexeme_link
+					FROM lexeme, delete_lexeme
+						LEFT JOIN lexeme_link ON lexeme.no = lexeme_link.lexeme_no
+					WHERE lexeme.book_id = $this->book_id
+						AND lexeme.string IN (delete_lexeme.string)
+						AND lexeme_link.book_id = $this->book_id
+EOSQL
+			);
+			mysql_query(<<<EOSQL
+				DROP TEMPORARY TABLE delete_lexeme 
+EOSQL
+			);
+		}
+
 		function set_page_no($page_no)
 		{
 			$this->page_no = $page_no;
@@ -284,6 +314,8 @@
 				$index->set_page_no($page_no);
 				$indexer = $index->index_page($path, $content);
 			}
+
+			$index->cleanup();
 		}
 	}
 
