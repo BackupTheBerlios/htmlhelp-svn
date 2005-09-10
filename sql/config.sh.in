@@ -1,7 +1,0 @@
-# config.sh.in - configureation
-
-MYSQL=mysql
-
-HOSTNAME=localhost
-DATABASE=htmlhelp
-USERNAME=htmlhelp

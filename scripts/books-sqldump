@@ -1,6 +1,0 @@
-#!/bin/sh
-
-for FILE
-do
-	PYTHONPATH=~/projects/htmlhelp/python/:$PYTHONPATH python ~/projects/htmlhelp/python/scripts/hhsqldump $FILE > ${FILE%.*}.sql || rm -f ${FILE%.*}
-done

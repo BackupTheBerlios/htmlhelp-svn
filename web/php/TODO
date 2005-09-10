@@ -18,6 +18,8 @@ Things to be done, by no particular order:
 
   - Beautify the stylesheet to ease the reading.
 
+  - Revamp the start page.
+
 - More commenting.
 
 - Internationalization.
@@ -25,10 +27,10 @@ Things to be done, by no particular order:
 - Tabbed browsing in the XUL interface (via the <tabbrowser> tag). (It might
   not be possible at all with remote XUL.)
 
-- Advanced search/filtering.
-
 - Add a book "about" page, with metadata and some statistics.
 
 - Add "Previous", "Next" and "Up" buttons to the page navigation.
 
 - Highlight the search terms in pages.
+
+- SQL database versioning.
