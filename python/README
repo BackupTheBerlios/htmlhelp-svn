@@ -1,0 +1,5 @@
+Requirements:
+
+- python 2.3 or greater
+
+- PyCHM python bindings for chmlib, from http://gnochm.sourceforge.net/pychm.html

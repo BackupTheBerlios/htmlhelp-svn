@@ -9,7 +9,7 @@ import tempfile
 import shutil
 
 from htmlhelp.book import Book
-from htmlhelp.archive.chm import ChmArchive
+from htmlhelp.archive.chm_ import ChmArchive
 from htmlhelp.archive.filter import FilterArchive
 from htmlhelp.format import Format
 from htmlhelp.format.mshh import HHCParser, HHKParser, Formatter

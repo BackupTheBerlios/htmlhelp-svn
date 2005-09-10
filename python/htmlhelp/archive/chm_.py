@@ -10,24 +10,15 @@ except ImportError:
 
 from htmlhelp.archive import Archive
 
-
-#######################################################################
-# Windows platforms
-
-
-# TODO: implement the ChmArchive using istorage
+# TODO: Implement the ChmArchive using istorage for Windows platforms
 # See:
 #  http://bonedaddy.net/pabs3/code/#istorage
 #  http://www.oreilly.com/catalog/pythonwin32/chapter/ch12.html
-
-
-#######################################################################
-# Chmlib SWIG bindings
-	
-
 if 1:
 
-	import chmlib
+	# NOTE: Use PyCHM - Python bindings for CHMLIB
+	# http://gnochm.sourceforge.net/pychm.html
+	from chm import chmlib
 
 	def _enumerate(chm, ui, result):
 		assert ui.path.find('\0') == -1
@@ -51,23 +42,17 @@ if 1:
 			return path in self.keys()
 
 		def __getitem__(self, path):
-			ui = chmlib.chm_resolve_object(self.chm, path)
-			if ui is None:
+			result, ui = chmlib.chm_resolve_object(self.chm, path)
+			if result != chmlib.CHM_RESOLVE_SUCCESS:
 				raise KeyError, "missing file: %s" % path
 
+			size, buffer = chmlib.chm_retrieve_object(self.chm, ui, 0L, ui.length)
+			
+			if size != ui.length:
+				raise IOError, "incomplete file: %s\n" % ui.path
+
 			fp = StringIO()
-
-			offset = 0L
-			remain = ui.length
-			while remain:
-				buffer = chmlib.chm_retrieve_object(self.chm, ui, offset, 32768)
-				if buffer:
-					fp.write(buffer)	
-					offset += len(buffer)
-					remain -= len(buffer)
-				else:
-					raise IOError, "incomplete file: %s\n" % ui.path
-
+			fp.write(buffer)	
 			fp.seek(0)
 			return fp
 

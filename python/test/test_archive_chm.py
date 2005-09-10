@@ -4,7 +4,7 @@
 import unittest
 import archivetest
 
-from htmlhelp.archive.chm import ChmArchive
+from htmlhelp.archive.chm_ import ChmArchive
 from htmlhelp.archive.filter import FilterArchive
 
 
