@@ -56,7 +56,7 @@ class IndexerTest extends PHPUnit_TestCase
 			"" => array(),
 			"two words" => array("two", "words"),
 			"an A.B.C. acronym" => array("an", "A.B.C.", "acronym"),
-			"one strange_email.address@somewhere1.com email" => array("one", "strange_email.address@somewhere1.com", "email"),
+			"some simple@email.com strange_email.address@somewhere1.com emails" => array("some", "simple@email.com", "strange_email.address@somewhere1.com", "emails"),
 			"package-1.2.3.4a.ext" => array("package", "1.2.3.4a", "ext"),
 			"some 1 .2 3.456789E-123 numbers" => array("some", "1", ".2", "3.456789E-123", "numbers"),
 			"ip 196.168.0.1 number" => array("ip", "196.168.0.1", "number"),

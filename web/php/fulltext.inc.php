@@ -70,6 +70,50 @@ class Fulltext_SimpleIndex extends Fulltext_Index
 	}
 }
 
+// Some ideas from
+// http://svn.apache.org/repos/asf/lucene/java/trunk/src/java/org/apache/lucene/analysis/standard/StandardTokenizer.jj
+
+// NOTE: order *does* matter: first match is chosen
+$token_patterns = array(
+	// acronyms
+	"\p{Lu}\.(\p{Lu}\.)+",
+
+	// email addresses (according to http://www.developer.com/lang/php/article.php/3290141)
+	"[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*\.[a-zA-Z]{2,4}",
+
+	// company names
+	"\w+(&|@)\w+",
+
+	// urls
+	"[a-z]+:\/\/[^\s]+",
+
+	// floating point numbers
+	"(\d+|\d+[.,]\d*|\d*[.,]\d+)[eE][-+]?\d+",
+
+	// versions and ip numbers
+	"\w*\d\w*(\.\w*\d\w*)+",
+
+	// dates
+	"\d+-\d+-\d+|\d+\/\d+\/\d+",
+
+	// decimal numbers
+	"\d*[.,]\d+",
+
+	// paths
+	#"\.{0,2}(\/(\.{0,2}|[_a-zA-Z0-9-]+))+",
+
+	// identifiers
+	"[_a-zA-Z][_a-zA-Z0-9]+",
+
+	// basic word: a sequence of letters and digits
+	"[\pL\pN]{2,}",
+
+	// integers
+	"\d+",	
+);
+
+$tokens_pattern = '/^((' . implode(')|(',  $token_patterns) . '))/u';
+
 // Extracts title and lexemes from documents
 class Fulltext_Indexer
 {
@@ -100,41 +144,6 @@ class Fulltext_Indexer
 
 	function tokenize($string)
 	{
-		// NOTE: Based on http://svn.apache.org/repos/asf/lucene/java/trunk/src/java/org/apache/lucene/analysis/standard/StandardTokenizer.jj
-		$token_patterns = array(
-			// basic word: a sequence of letters and digits
-			"[\pL\pN]{2,}", 
-
-			// acronyms
-			"\p{Lu}\.(\p{Lu}\.)+",
-
-			// company names
-			"\w+(&|@)\w+",
-
-			// email addresses (according to http://www.developer.com/lang/php/article.php/3290141)
-			"[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*\.[a-zA-Z]{2,4}\b",
-
-			// urls
-			"[a-z]+:\/\/[^\s]+",
-
-			// identifiers
-			"[_a-zA-Z][_a-zA-Z0-9]+",
-
-			// numbers
-			"\d+|\d*[.,]\d+",
-			"(\d+|\d+[.,]\d*|\d*[.,]\d+)[eE][-+]?\d+",
-
-			// dates
-			"\d+-\d+-\d+|\d+\/\d+\/\d+",
-
-			// versions and ip numbers
-			"\w*\d\w*(\.\w*\d\w*)+",
-
-			// paths
-			#"\.{0,2}(\/(\.{0,2}|[_a-zA-Z0-9-]+))+",
-		);
-
-		/**/
 		$tokens = array();
 		while(strlen($string))
 		{
@@ -147,10 +156,9 @@ class Fulltext_Indexer
 			{
 				$longest_token = 0;
 
-				foreach($token_patterns as $token_pattern)
-					if(preg_match('/^(' . $token_pattern . ')/u', $string, $matches))
-						if(strlen($matches[0]) > $longest_token)
-							$longest_token = strlen($matches[0]);
+				global $tokens_pattern;
+				if(preg_match($tokens_pattern, $string, $matches))
+					$longest_token = strlen($matches[0]);
 
 				if($longest_token)
 				{
@@ -168,51 +176,6 @@ class Fulltext_Indexer
 				}
 			}
 		}
-		/**/
-
-		/*
-		$length = strlen($string);
-		$offset = 0;
-		$tokens = array();
-		while($offset < $length)
-		{
-			$last_offset = $offset;
-
-			if(preg_match("/\G\d[\s\pZ]+/u", $string, $matches, NULL, $offset))
-			{
-				// remove whitespace
-				assert(strlen($matches[0]));
-				$offset += strlen($matches[0]);
-			}
-			else
-			{
-				$longest_token = 0;
-
-				// TODO: dot not use substrings and assert tokens are separated by whitespace or separators
-				foreach($token_patterns as $token_pattern)
-					if(preg_match('/\G\d(' . $token_pattern . ')(?=[^\pL\pN]|$)/u', $string, $matches, NULL, $offset))
-						if(strlen($matches[0]) > $longest_token)
-							$longest_token = strlen($matches[0]);
-
-				if($longest_token)
-				{
-					$tokens[] = substr($string, $offset, $longest_token);
-					$offset += $longest_token;
-				}
-				else
-				{
-					// no token found; advance one character
-					$character_length = strlen(mb_substr($string, $offset, 1));
-					if($character_length)
-						$offset += $character_length;
-					else
-						$offset += 1;
-				}
-			}
-
-			assert($offset != $last_offset);
-		}
-		*/
 
 		return $tokens;
 	}
