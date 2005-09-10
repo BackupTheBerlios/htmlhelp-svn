@@ -12,7 +12,7 @@
 
 	echo '<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">';
 
-	echo '<script src="toc.js"/>';
+	echo '<script src="js/toc.js"/>';
 
 	$book = new Book($_GET['book']);
 	

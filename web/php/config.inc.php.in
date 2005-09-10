@@ -1,6 +1,6 @@
 <?php
 	// HTML style-sheet
-	$css = 'default.css';
+	$css = 'css/default.css';
 	
 	// MySQL server settings
 	$db_server = 'localhost';

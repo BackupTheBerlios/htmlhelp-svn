@@ -9,7 +9,7 @@
 	header('Content-type: application/vnd.mozilla.xul+xml');
 
 	echo '<?xml version="1.0" encoding="UTF-8"?>';
-	echo '<?xml-stylesheet href="skin.css" type="text/css"?>';
+	echo '<?xml-stylesheet href="css/skin.css" type="text/css"?>';
 
 	echo '
 <!-- 
@@ -23,7 +23,7 @@
 	echo '<window id="wnd" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" title="' . $title . '" width="640" height="420" persist="width height screenX screenY sizemode">';
 	echo '<script type="text/javascript">document.title = "' . $title . '";</script>';
 	
-	echo '<script src="book.js"/>';
+	echo '<script src="js/book.js"/>';
 	
 	echo '<hbox flex="1">';
 		

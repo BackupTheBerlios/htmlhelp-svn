@@ -15,7 +15,7 @@
 
 	echo '<body>';
 	
-	echo '<script src="index.js"></script>';
+	echo '<script src="js/index.js"></script>';
 
 	echo '<div class="header">HTML Help Books</div>';
 	

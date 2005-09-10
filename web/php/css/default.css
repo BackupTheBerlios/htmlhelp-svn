@@ -95,15 +95,15 @@ ul.tree ul.tree {
 }
 
 li.expanded { 
-	list-style-image: url("minus.png") 
+	list-style-image: url("../icons/minus.png") 
 }
 
 li.collapsed { 
-	list-style-image: url("plus.png") 
+	list-style-image: url("../icons/plus.png") 
 }
 
 li.single { 
-	list-style-image: url("none.png") 
+	list-style-image: url("../icons/none.png") 
 }
 
 
