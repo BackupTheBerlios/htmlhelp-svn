@@ -7,7 +7,13 @@
 	function book_catalog()
 	{
 		# FIXME: deal with books with multiple versions
-		$result = mysql_query('SELECT `metadata`.`value`, `title` FROM `book`, `metadata` WHERE `book`.`id`=`metadata`.`book_id` AND `metadata`.`name`=\'name\' ORDER BY `title`');
+		$result = mysql_query("
+			SELECT metadata.value, title 
+			FROM book 
+				LEFT JOIN metadata ON metadata.book_id = book.id
+			WHERE metadata.name = 'name' 
+			ORDER BY title
+		");
 		$entries = array();
 		while(list($book_alias, $book_title) = mysql_fetch_row($result))
 			$entries[$book_alias] = $book_title;
@@ -50,9 +56,9 @@
 			}
 			fclose($handle);
 			
-			mysql_query('DELETE FROM `lexeme_link` WHERE `book_id`=' . $this->book_id);
-			mysql_query('DELETE FROM `lexeme` WHERE `book_id`=' . $this->book_id);
-			mysql_query('UPDATE `page` SET `title`="" WHERE `book_id`=' . $this->book_id);
+			mysql_query("DELETE FROM lexeme_link WHERE book_id = $this->book_id");
+			mysql_query("DELETE FROM lexeme WHERE book_id = $this->book_id");
+			mysql_query("UPDATE page SET title='' WHERE book_id = $this->book_id");
 		}
 
 		function cleanup()
@@ -60,22 +66,22 @@
 			// drop lexemes which start with a digit and appear only once
 			mysql_query(<<<EOSQL
 				CREATE TEMPORARY TABLE delete_lexeme
-					SELECT string
-						FROM lexeme
+					SELECT lexeme 
+						FRO lexeme
 							LEFT JOIN lexeme_link ON lexeme.no = lexeme_link.lexeme_no
 						WHERE lexeme.book_id = $this->book_id
-							AND string >= '0' AND string < 'A'
+							AND lexeme >= '0' AND lexeme < 'A'
 							AND lexeme_link.book_id = $this->book_id
-						GROUP BY lexeme.book_id, string
+						GROUP BY lexeme.book_id, lexeme
 						HAVING SUM(count) = 1
 EOSQL
 			);
 			mysql_query(<<<EOSQL
 				DELETE lexeme, lexeme_link
 					FROM lexeme, delete_lexeme
-						LEFT JOIN lexeme_link ON lexeme.no = lexeme_link.lexeme_no
+						LEFT JOIN lexeme_link ON lexeme.no = lexeme_link.no
 					WHERE lexeme.book_id = $this->book_id
-						AND lexeme.string IN (delete_lexeme.string)
+						AND lexeme.lexeme IN (delete_lexeme.lexeme)
 						AND lexeme_link.book_id = $this->book_id
 EOSQL
 			);
@@ -105,11 +111,12 @@ EOSQL
 				return;
 			}
 
-			mysql_query('
-				UPDATE `page`
-				SET `title`="' . mysql_escape_string($title) . '"
-				WHERE `book_id`=' . $this->book_id . ' AND `no`=' . $this->page_no . '
-			');
+			mysql_query("
+				UPDATE page
+				SET title='" . mysql_escape_string($title) . "'
+				WHERE book_id = $this->book_id 
+					AND no = $this->page_no
+			");
 		}
 
 		function add_lexemes($lexemes)
@@ -134,11 +141,11 @@ EOSQL
 			foreach($this->page_lexemes as $lexeme => $count)
 			{
 				// get this lexeme number
-				$result = mysql_query(
-					"SELECT `no`
-				 	FROM `lexeme` 
-					WHERE `book_id`=$this->book_id AND `string`='" . mysql_escape_string($lexeme) . "'"
-				) or print(__FILE__ . ':' . __LINE__ . ': ' .  htmlspecialchars($lexeme, ENT_NOQUOTES, 'utf-8') . ':' . ord($lexeme) . ':' . mysql_error() . "\n");
+				$result = mysql_query("
+					SELECT no
+				 	FROM lexeme 
+					WHERE book_id=$this->book_id AND lexeme='" . mysql_escape_string($lexeme) . "'
+				") or print(__FILE__ . ':' . __LINE__ . ': ' .  htmlspecialchars($lexeme, ENT_NOQUOTES, 'utf-8') . ':' . ord($lexeme) . ':' . mysql_error() . "\n");
 				if(mysql_num_rows($result))
 					list($lexeme_no) = mysql_fetch_row($result);
 				else
@@ -146,15 +153,15 @@ EOSQL
 					$this->last_lexeme_no += 1;
 					$lexeme_no = $this->last_lexeme_no;
 					mysql_query(
-						"INSERT INTO `lexeme` 
-						(book_id, no, string) VALUES 
+						"INSERT INTO lexeme 
+						(book_id, no, lexeme) VALUES 
 						($this->book_id, $lexeme_no, '" . mysql_escape_string($lexeme) . "')"
 					);
 				}
 
 				mysql_query(
-					"INSERT INTO `lexeme_link` 
-					(book_id, lexeme_no, page_no, count) VALUES 
+					"INSERT INTO lexeme_link 
+					(book_id, no, page_no, count) VALUES 
 					($this->book_id, $lexeme_no, $this->page_no, $count)"
 				);
 			}
@@ -171,11 +178,12 @@ EOSQL
 
 		function Book($alias)
 		{
-			$result = mysql_query('
-				SELECT `book_id` 
-				FROM `metadata` 
-				WHERE `name`=\'name\' AND `value`=\'' . mysql_escape_string($alias) . '\'
-			');
+			$result = mysql_query("
+				SELECT book_id 
+				FROM metadata 
+				WHERE name='name' 
+					AND value='" . mysql_escape_string($alias) . "'
+			");
 			list($id) = mysql_fetch_row($result);
 			
 			$this->alias = $alias;
@@ -184,18 +192,24 @@ EOSQL
 
 		function title()
 		{
-			$result = mysql_query('SELECT `title` FROM `book` WHERE `id`=' . $this->id);
+			$result = mysql_query("
+				SELECT title 
+				FROM book 
+				WHERE id = $this->id
+			");
 			list($title) = mysql_fetch_row($result);
 			return $title;
 		}
 
 		function default_link()
 		{
-			$result = mysql_query('
-				SELECT CONCAT_WS("#", `path`, NULLIF(`anchor`, "")) 
-				FROM `book`, `page` 
-				WHERE `id`=' . $this->id . ' AND `book_id`=' . $this->id . ' AND `page`.`no`=`page_no`
-			');
+			$result = mysql_query("
+				SELECT CONCAT_WS('#', path, NULLIF(anchor, '')) 
+				FROM book
+					LEFT JOIN page ON page.no = page_no
+				WHERE id = $this->id 
+					AND book_id = $this->id
+			");
 			list($link) = mysql_fetch_row($result);
 			return $link;
 		}
@@ -206,12 +220,15 @@ EOSQL
 			$entries = array();
 			if($depth)
 			{
-				$result = mysql_query('
-					SELECT `toc_entry`.`no`, `toc_entry`.`title`, CONCAT_WS("#", `path`, NULLIF(`anchor`, "")) 
-					FROM `toc_entry`, `page` 
-					WHERE `toc_entry`.`book_id`=' . $this->id . ' AND `parent_no`=' . $parent_number . ' AND `page`.`book_id`=' . $this->id . ' AND `page`.`no` = `page_no` 
-					ORDER BY `toc_entry`.`no`
-				');
+				$result = mysql_query("
+					SELECT toc_entry.no, toc_entry.title, CONCAT_WS('#', path, NULLIF(anchor, '')) 
+					FROM toc_entry
+				 		LEFT JOIN page ON page.no = page_no
+					WHERE toc_entry.book_id = $this->id 
+						AND parent_no = $parent_number 
+						AND page.book_id =  $this->id
+					ORDER BY toc_entry.no
+				");
 				while(list($number, $title, $link) = mysql_fetch_row($result))
 					$entries[$number] = array($title, $link, $this->toc($number, $depth - 1));
 			}
@@ -220,23 +237,31 @@ EOSQL
 
 		function toc_entry($number)
 		{
-			$result = mysql_query('
-				SELECT `parent_no`, `toc_entry`.`title`, CONCAT_WS("#", `path`, NULLIF(`anchor`, "")) 
-				FROM `toc_entry`, `page` 
-				WHERE `toc_entry`.`book_id`=' . $this->id . ' AND `toc_entry`.`no`=' . $number . ' AND `page`.`book_id`=' . $this->id . ' AND `page`.`no` = `page_no`
-			');
+			$result = mysql_query("
+				SELECT parent_no, toc_entry.title, CONCAT_WS('#', path, NULLIF(anchor, '')) 
+				FROM toc_entry
+					LEFT JOIN page ON page.no = page_no
+				WHERE toc_entry.book_id = $this->id 
+					AND toc_entry.no = $number 
+					AND page.book_id = $this->id
+			");
 			list($parent_number, $title, $link) = mysql_fetch_row($result);
 			return array($parent_number, $title, $link);
 		}
 
 		function index($query = '')
 		{
-			$result = mysql_query('
-				SELECT `term`, CONCAT_WS("#", `path`, NULLIF(`anchor`, ""))
-				FROM `index_entry`, `index_link`, `page` 
-				WHERE `index_entry`.`book_id`=' . $this->id . ' AND `index_link`.`book_id`=' . $this->id . ' AND `page`.`book_id`=' . $this->id . ' AND `index_link`.`no`=`index_entry`.`no` AND `page`.`no`=`page_no`' . ($query ? ' AND LOCATE(\'' . mysql_escape_string($query) . '\', `term`)' : '') . ' 
-				ORDER BY `index_entry`.`no`
-			');
+			$result = mysql_query("
+				SELECT term, CONCAT_WS('#', path, NULLIF(anchor, ''))
+				FROM index_entry
+					LEFT JOIN index_link ON index_link.no = index_entry.no
+					LEFT JOIN page ON page.no = index_link.page_no
+				WHERE index_entry.book_id = $this->id
+					AND index_link.book_id = $this->id 
+					AND page.book_id = $this->id 
+					" . ($query ? "AND LOCATE('" . mysql_escape_string($query) . "', term)" : "")  . "
+				ORDER BY index_entry.no
+			");
 			$entries = array();
 			while(list($term, $link) = mysql_fetch_row($result))
 				$entries[] = array($term, $link);
@@ -245,12 +270,17 @@ EOSQL
 
 		function search_lexeme($lexeme)
 		{
-			$result = mysql_query('
-				SELECT `path`, `title` 
-				FROM `lexeme`, `lexeme_link`, `page` 
-				WHERE `lexeme`.`book_id`=' . $this->id . ' AND `lexeme`.`string`=\'' . mysql_escape_string($lexeme) . '\' AND `lexeme_link`.`book_id`=' . $this->id . ' AND `lexeme_no`=`lexeme`.`no` AND `page`.`book_id`=' . $this->id . ' AND `page`.`no` = `page_no`
-				ORDER BY `count` DESC
-			');
+			$result = mysql_query("
+				SELECT path, title 
+				FROM lexeme
+					LEFT JOIN lexeme_link ON lexeme_link.no = lexeme.no 
+					LEFT JOIN page ON page.no = lexeme_link.page_no 
+				WHERE lexeme='" . mysql_escape_string($lexeme) . "'
+					AND lexeme.book_id = $this->id 
+					AND lexeme_link.book_id = $this->id 
+					AND page.book_id = $this->id
+				ORDER BY count DESC
+			");
 			$entries = array();
 			while(list($path, $title) = mysql_fetch_row($result))
 				$entries[] = array($title, $path);
@@ -259,11 +289,11 @@ EOSQL
 
 		function metadata()
 		{
-			$result = mysql_query('
-				SELECT `name`, `value` 
-				FROM `metadata` 
-				WHERE book_id=' . $this->id .'
-			');
+			$result = mysql_query("
+				SELECT name, value 
+				FROM metadata 
+				WHERE book_id = $this->id
+			");
 			$entries = array();
 			while(list($name, $value) = mysql_fetch_row($result))
 				$entries[$name] = $value;
@@ -272,11 +302,11 @@ EOSQL
 
 		function page($path)
 		{
-			$result = mysql_query('
-				SELECT `compressed`, `content` 
-				FROM `page` 
-				WHERE `book_id`=' . $this->id . ' AND `path`=\'' . mysql_escape_string($path) . '\'
-			');
+			$result = mysql_query("
+				SELECT compressed, content 
+				FROM page 
+				WHERE book_id = $this->id AND path = '" . mysql_escape_string($path) . "'
+			");
 			if(mysql_num_rows($result))
 			{
 				list($compressed, $content) = mysql_fetch_row($result);
@@ -288,25 +318,25 @@ EOSQL
 		
 		function delete()
 		{
-			mysql_query('DELETE FROM `book` WHERE `id`=' . $this->id);
-			mysql_query('DELETE FROM `metadata` WHERE `book_id`=' . $this->id);
-			mysql_query('DELETE FROM `toc_entry` WHERE `book_id`=' . $this->id);
-			mysql_query('DELETE FROM `index_entry` WHERE `book_id`=' . $this->id);
-			mysql_query('DELETE FROM `index_link` WHERE `book_id`=' . $this->id);
-			mysql_query('DELETE FROM `page` WHERE `book_id`=' . $this->id);
-			mysql_query('DELETE FROM `lexeme` WHERE `book_id`=' . $this->id);
-			mysql_query('DELETE FROM `lexeme_link` WHERE `book_id`=' . $this->id);
+			mysql_query("DELETE FROM book WHERE id = $this->id");
+			mysql_query("DELETE FROM metadata WHERE book_id = $this->id");
+			mysql_query("DELETE FROM toc_entry WHERE book_id = $this->id");
+			mysql_query("DELETE FROM index_entry WHERE book_id = $this->id");
+			mysql_query("DELETE FROM index_link WHERE book_id = $this->id");
+			mysql_query("DELETE FROM page WHERE book_id = $this->id");
+			mysql_query("DELETE FROM lexeme WHERE book_id = $this->id");
+			mysql_query("DELETE FROM lexeme_link WHERE book_id = $this->id");
 		}
 
 		function index_fulltext()
 		{
 			$index = new Book_Fulltext_Index($this->id);
 
-			$result = mysql_query('
-				SELECT `no`, `path`, `compressed`, `content` 
-				FROM `page` 
-				WHERE book_id=' . $this->id .'
-			');
+			$result = mysql_query("
+				SELECT no, path, compressed, content
+				FROM page 
+				WHERE book_id = $this->id
+			");
 			while(list($page_no, $path, $compressed, $content) = mysql_fetch_row($result))
 			{
 				if($compressed)
