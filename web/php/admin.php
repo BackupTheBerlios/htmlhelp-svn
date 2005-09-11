@@ -1,6 +1,7 @@
 <?php
 	require_once 'config.inc.php';
 	require_once 'book.inc.php';
+	require_once 'mysql_util.inc.php';
 
 	$authenticated = 0;
 	$password = $_COOKIE['Password'];
@@ -35,25 +36,6 @@
 	
 	echo '<div class="header">Administration</div>';
 
-	function mysql_import($file)
-	{
-		// FIXME: do not rely on the mysql executable
-
-		global $admin_mysql, $db_server, $db_username, $db_password, $db_database;
-		
-		echo '<p>Importing ' . $file . '...</p>';
-		echo '<pre>';
-		$handle = popen("$admin_mysql -h $db_server -u $db_username -p$db_password -e \"source $file\" $db_database", 'r');
-		do {
-			$data = fread($handle, 8192);
-			if(!strlen($data))
-				break;
-			echo htmlspecialchars($data);
-		} while (true);
-		echo '</pre>';
-		echo '<p>Exit code: ' . pclose($handle) . '</p>';
-	}
-	
 	echo '<div>';
 	if($authenticated)
 	{
@@ -64,7 +46,7 @@
 		{
 			$files = $_POST['files'];
 			foreach($files as $file)
-				mysql_import($admin_directory . '/' .$file);
+				mysql_import_dump($admin_directory . '/' .$file);
 		}
 		
 		if($action == 'upload')

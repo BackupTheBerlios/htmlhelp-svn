@@ -10,6 +10,5 @@
 	
 	// Administrative settings
 	$admin_password = '';
-	$admin_mysql = 'mysql';
 	$admin_directory = '';
 ?>
