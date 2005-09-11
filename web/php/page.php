@@ -10,12 +10,13 @@
 	$path = $_SERVER['PATH_INFO'];
 	while(!$alias and $path)
 		list($alias, $path) = explode('/', $path, 2);
-	$book = new Book($alias);
+	$catalog = new Book_Catalog();
+	$book = $catalog->get_book_from_alias($alias);
 
 	// If the 'path' param is not given then redirect to the book's front page.
 	if(!$path)
 	{
-		header('Location: http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/' . htmlspecialchars($book->alias) . '/' . $book->default_link());
+		header('Location: http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/' . htmlspecialchars($alias) . '/' . $book->default_link());
 		exit;
 	}
 

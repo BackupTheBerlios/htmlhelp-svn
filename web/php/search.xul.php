@@ -14,12 +14,14 @@
 
 	echo '<script src="js/search.js"/>';
 	
-	$book = new Book($_GET['book']);
+	$catalog = new Book_Catalog();
+	$alias = $_GET['book'];
+	$book = $catalog->get_book_from_alias($alias);
 	$query = $_GET['query'];
 	
-	echo '<textbox id="query" type="autocomplete" value="' . htmlspecialchars($query) . '" onkeypress="onQueryKeypress(event, \'' . htmlspecialchars($book->alias) . '\')"/>';
+	echo '<textbox id="query" type="autocomplete" value="' . htmlspecialchars($query) . '" onkeypress="onQueryKeypress(event, \'' . htmlspecialchars($alias) . '\')"/>';
 	
-	echo '<listbox seltype="single" flex="1" onselect="onSearchSelect(event, \'' . htmlspecialchars($book->alias) . '\')">';
+	echo '<listbox seltype="single" flex="1" onselect="onSearchSelect(event, \'' . htmlspecialchars($alias) . '\')">';
 	if($query)
 	{
 		$entries = $book->search($query);

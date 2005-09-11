@@ -21,12 +21,13 @@
 	
 	echo '<div>';
 	
-	$entries = book_catalog();	
+	$catalog = new Book_Catalog();
+	$entries = $catalog->enumerate_aliases();	
 	if(count($entries))
 	{
 		echo '<ul class="list">';
-		foreach($entries as $book => $title)
-			echo '<li><a href="book.php?book=' . $book . '" onclick="return openBook(\'' . $book . '\');" target="_blank">' . htmlspecialchars($title, ENT_NOQUOTES) . '</a></li>';
+		foreach($entries as $alias => $title)
+			echo '<li><a href="book.php?book=' . $alias . '" onclick="return openBook(\'' . $alias . '\');" target="_blank">' . htmlspecialchars($title, ENT_NOQUOTES) . '</a></li>';
 		echo '</ul>';
 	}
 

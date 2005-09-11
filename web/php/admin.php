@@ -1,7 +1,6 @@
 <?php
 	require_once 'config.inc.php';
 	require_once 'book.inc.php';
-	require_once 'mysql_util.inc.php';
 
 	$authenticated = 0;
 	$password = $_COOKIE['Password'];
@@ -36,6 +35,8 @@
 	
 	echo '<div class="header">Administration</div>';
 
+	$catalog = new Book_Catalog();
+	
 	echo '<div>';
 	if($authenticated)
 	{
@@ -58,20 +59,20 @@
 		
 		if($action == 'delete')
 		{
-			$books = $_POST['books'];
-			foreach($books as $book)
+			$book_ids = $_POST['books'];
+			foreach($book_ids as $book_id)
 			{
-				$book = new Book($book);
+				$book = new Book($book_id);
 				$book->delete();
 			}
 		}
 		
 		if($action == 'index')
 		{
-			$books = $_POST['books'];
-			foreach($books as $book)
+			$book_ids = $_POST['books'];
+			foreach($book_ids as $book_id)
 			{
-				$book = new Book($book);
+				$book = new Book($book_id);
 				$book->index_fulltext();
 			}
 		}
@@ -131,9 +132,9 @@
 		echo '<form action="admin.php" method="post">';
 		echo '<input type="hidden" name="action" value="delete"/>';
 		echo '<select name="books[]" multiple="yes">';
-		$entries = book_catalog();	
-		foreach($entries as $book => $title)
-			echo '<option value="' . $book . '">' . $title . '</option>';
+		$entries = $catalog->enumerate_ids();	
+		foreach($entries as $book_id => $title)
+			echo '<option value="' . $book_id . '">' . $title . '</option>';
 		echo '</select>';
 		echo '<input type="submit" value="Delete">';
 		echo '</form>';
@@ -143,9 +144,9 @@
 		echo '<form action="admin.php" method="post">';
 		echo '<input type="hidden" name="action" value="index"/>';
 		echo '<select name="books[]" multiple="yes">';
-		$entries = book_catalog();	
-		foreach($entries as $book => $title)
-			echo '<option value="' . $book . '">' . $title . '</option>';
+		$entries = $catalog->enumerate_ids();	
+		foreach($entries as $book_id => $title)
+			echo '<option value="' . $book_id . '">' . $title . '</option>';
 		echo '</select>';
 		echo '<input type="submit" value="Index">';
 		echo '</form>';

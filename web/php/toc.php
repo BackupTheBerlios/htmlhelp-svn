@@ -2,7 +2,9 @@
 	require_once 'config.inc.php';
 	require_once 'book.inc.php';
 
-	$book = new Book($_GET['book']);
+	$catalog = new Book_Catalog();
+	$alias = $_GET['book'];
+	$book = $catalog->get_book_from_alias($alias);
 	
 	# Enable HTTP compression
 	ob_start("ob_gzhandler");
@@ -15,15 +17,15 @@
 	echo '<head>';
 	echo  '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>';
 	echo  '<title>Table of contents</title>';
-	echo  '<base href="http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/page.php/' . htmlspecialchars($book->alias) . '/" target="main"/>';
+	echo  '<base href="http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/page.php/' . htmlspecialchars($alias) . '/" target="main"/>';
 	echo  '<link href="../../' . $css . '" type="text/css" rel="stylesheet"/>';
 	echo '</head>';
 	echo '<body id="toc" class="sidebar">';
 
 	echo '<div class="menubar">';
-	echo  '<a href="../../toc.php?book=' . htmlspecialchars($book->alias) . '" target="_self">Contents</a> | ';
-	echo  '<a href="../../_index.php?book=' . htmlspecialchars($book->alias) . '" target="_self">Index</a> | ';
-	echo  '<a href="../../search.php?book=' . htmlspecialchars($book->alias) . '" target="_self">Search</a>';
+	echo  '<a href="../../toc.php?book=' . htmlspecialchars($alias) . '" target="_self">Contents</a> | ';
+	echo  '<a href="../../_index.php?book=' . htmlspecialchars($alias) . '" target="_self">Index</a> | ';
+	echo  '<a href="../../search.php?book=' . htmlspecialchars($alias) . '" target="_self">Search</a>';
 	echo '</div>';
 
 	function walk_children($entries, $depth)
@@ -42,7 +44,7 @@
 	
 	function walk_toc($number, $name, $link, $children, $depth)
 	{
-		global $book;
+		global $book, $alias;
 		
 		$has_children = count($children);
 
@@ -59,7 +61,7 @@
 		if($depth || !$has_children)
 			echo '<a href="' . $link . '">';
 		else
-			echo '<a href="../../toc.php?book=' . htmlspecialchars($book->alias) . '&amp;toc_no=' . $number . '" target="_self">';
+			echo '<a href="../../toc.php?book=' . htmlspecialchars($alias) . '&amp;toc_no=' . $number . '" target="_self">';
 		echo htmlspecialchars($name, ENT_NOQUOTES) . '</a>';
 			
 		walk_children($children, $depth);
@@ -73,7 +75,7 @@
 	{
 		list($parent_number, $title, $link) = $book->toc_entry($number);
 		
-		echo '<ul class="tree"><li class="collapsed"><a href="../../toc.php?book=' . htmlspecialchars($book->alias) . '&amp;toc_no=' . $parent_number . '" target="_self">&hellip;</a>'; 
+		echo '<ul class="tree"><li class="collapsed"><a href="../../toc.php?book=' . htmlspecialchars($alias) . '&amp;toc_no=' . $parent_number . '" target="_self">&hellip;</a>'; 
 			
 		echo '<ul class="tree">';
 		echo '<li class="expanded">';

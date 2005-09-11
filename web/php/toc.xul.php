@@ -14,11 +14,13 @@
 
 	echo '<script src="js/toc.js"/>';
 
-	$book = new Book($_GET['book']);
+	$catalog = new Book_Catalog();
+	$alias = $_GET['book'];
+	$book = $catalog->get_book_from_alias($alias);
 	
 	echo '<button label="Sync" oncommand="onButtonCommand(event)"/>';
 						
-	echo '<tree id="tree" flex="1" seltype="single" hidecolumnpicker="true" onselect="onTocSelect(event, \'' . htmlspecialchars($book->alias) . '\')">';
+	echo '<tree id="tree" flex="1" seltype="single" hidecolumnpicker="true" onselect="onTocSelect(event, \'' . htmlspecialchars($alias) . '\')">';
 
 	echo '<treecols>';
 	echo '<treecol id="name" hideheader="true" primary="true" flex="1"/>';

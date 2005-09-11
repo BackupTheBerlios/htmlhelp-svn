@@ -1,23 +1,61 @@
 <?php
 
 	require_once 'mysql.inc.php';
+	require_once 'mysql_util.inc.php';
 	require_once 'search.inc.php';
 	require_once 'fulltext.inc.php';
 
-	function book_catalog()
+	class Book_Catalog
 	{
-		# FIXME: deal with books with multiple versions
-		$result = mysql_query("
-			SELECT metadata.value, title 
-			FROM book 
-				LEFT JOIN metadata ON metadata.book_id = book.id
-			WHERE metadata.name = 'name' 
-			ORDER BY title
-		");
-		$entries = array();
-		while(list($book_alias, $book_title) = mysql_fetch_row($result))
-			$entries[$book_alias] = $book_title;
-		return $entries;
+		function import_book($filename)
+		{
+			mysql_import_dump($filename);
+		}		
+		
+		function enumerate_ids()
+		{
+			$result = mysql_query("
+				SELECT id, title 
+				FROM book 
+				ORDER BY title
+			");
+			$entries = array();
+			while(list($book_id, $book_title) = mysql_fetch_row($result))
+				$entries[$book_id] = $book_title;
+			return $entries;
+		}
+		
+		function enumerate_aliases()
+		{
+			# FIXME: deal with books with multiple versions
+			$result = mysql_query("
+				SELECT metadata.value, title 
+				FROM book 
+					LEFT JOIN metadata ON metadata.book_id = book.id
+				WHERE metadata.name = 'name' 
+				ORDER BY title
+			");
+			$entries = array();
+			while(list($book_alias, $book_title) = mysql_fetch_row($result))
+				$entries[$book_alias] = $book_title;
+			return $entries;
+		}
+		
+		function get_book_from_alias($alias)
+		{
+			// FIXME: handle multiple versions
+			$result = mysql_query("
+				SELECT book_id 
+				FROM metadata 
+				WHERE name='name' 
+					AND value='" . mysql_escape_string($alias) . "'
+			");
+			if(!mysql_num_rows($result))
+				return NULL;
+				
+			list($id) = mysql_fetch_row($result);
+			return new Book($id);			
+		}
 	}
 
 	function is_valid_utf8($string)
@@ -173,21 +211,42 @@ EOSQL
 
 	class Book extends Searchable
 	{
-		var $alias;
 		var $id;
 
-		function Book($alias)
+		function Book($id)
 		{
-			$result = mysql_query("
-				SELECT book_id 
-				FROM metadata 
-				WHERE name='name' 
-					AND value='" . mysql_escape_string($alias) . "'
-			");
-			list($id) = mysql_fetch_row($result);
-			
-			$this->alias = $alias;
+
 			$this->id = $id;
+		}
+		
+		function alias()
+		{
+			$name = $this->metadata('name');
+			if(!$name)
+				return $this->id;			
+			$result = mysql_query("
+				SELECT COUNT(DISTINC book_id) 
+				FROM metadata 
+				WHERE name = " . mysql_escape_string($name) . "
+			");
+			list($count) = mysql_fetch_row($result);
+			if($count == 1)
+				return $name;
+
+			$version = $this->metadata('version');
+			if(!$version)
+				return $this->id;
+			$result = mysql_query("
+				SELECT COUNT(DISTINC book_id) 
+				FROM metadata 
+				WHERE name = '" . mysql_escape_string($name) . "'
+					AND version = '" . mysql_escape_string($version) . "'
+			");
+			list($count) = mysql_fetch_row($result);
+			if($count == 1)
+				return $name . '_' . $version;
+
+			list($id) = mysql_fetch_row($result);
 		}
 
 		function title()
@@ -287,17 +346,35 @@ EOSQL
 			return new Search_Result($entries);
 		}
 
-		function metadata()
+		function metadata($name = NULL)
 		{
-			$result = mysql_query("
-				SELECT name, value 
-				FROM metadata 
-				WHERE book_id = $this->id
-			");
-			$entries = array();
-			while(list($name, $value) = mysql_fetch_row($result))
-				$entries[$name] = $value;
-			return $entries;
+			if(isset($name))
+			{
+				$result = mysql_query("
+					SELECT value 
+					FROM metadata 
+					WHERE book_id = $this->id
+				");
+				if(mysql_num_rows($result))
+				{
+					list($value) = mysql_fetch_row($result);
+					return $value;
+				}
+				else
+					return NULL;
+			}
+			else
+			{
+				$result = mysql_query("
+					SELECT name, value 
+					FROM metadata 
+					WHERE book_id = $this->id
+				");
+				$entries = array();
+				while(list($name, $value) = mysql_fetch_row($result))
+					$entries[$name] = $value;
+				return $entries;
+			}
 		}
 
 		function page($path)
