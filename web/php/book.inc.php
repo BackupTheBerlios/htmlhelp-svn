@@ -254,7 +254,7 @@ EOSQL
 			$entries = array();
 			while(list($path, $title) = mysql_fetch_row($result))
 				$entries[] = array($title, $path);
-			return new SearchResult($entries);
+			return new Search_Result($entries);
 		}
 
 		function metadata()

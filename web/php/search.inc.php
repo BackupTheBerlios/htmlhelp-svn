@@ -1,13 +1,14 @@
 <?php
 
-class SearchResult
+class Search_Result
 {
-	// TODO: write another version of this class which compiles SQL statements
+	// TODO: write another version of this class which compiles SQL statements; 
+	// however it will be difficult not to resort to subselects...
 
 	// FIXME: use sets
 	var $entries;
 
-	function SearchResult($entries) 
+	function Search_Result($entries) 
 	{
 		// FIXME: use references instead of copies where applicable
 		$this->entries = $entries;
@@ -32,7 +33,7 @@ class SearchResult
 				}
 			}
 		}
-		return new SearchResult($entries);
+		return new Search_Result($entries);
 	}
 
 	function subtraction($other)
@@ -40,7 +41,7 @@ class SearchResult
 		// FIXME: implement this
 	}
 
-	function list_()
+	function enumerate()
 	{
 		return $this->entries;
 	}
@@ -51,33 +52,18 @@ class Searchable
 	// Should be overriden by derived classes
 	function search_lexeme($lexeme)
 	{
-		return new SearchResult(array());
+		return new Search_Result(array());
 	}
-
+	
 	function search($query)
 	{
-		$search = Search::parse($query);
-		return $search->apply($this)->list_();
+		$search = Search_Parser::parse($query);
+		return $search->apply($this)->enumerate();
 	}
 }
 
-class Search
+class Search_Node
 {
-	// Class method to parse query
-	function parse($query)
-	{
-		// TODO: implement more complex searches
-		$terms = explode(' ', $query);
-
-		$search = new TermSearch($terms[0]);
-		unset($terms[0]);
-		foreach($terms as $term)
-		{
-			$search = new AndSearch($search, new TermSearch($term));
-		}
-		return $search;
-	}
-
 	// Should be overriden by derived classes
 	function apply($searchable)
 	{
@@ -86,11 +72,11 @@ class Search
 	}
 }
 
-class TermSearch extends Search
+class Search_TermNode extends Search_Node
 {
 	var $term;
 
-	function TermSearch($term)
+	function Search_TermNode($term)
 	{
 		$this->term = $term;
 	}
@@ -101,20 +87,41 @@ class TermSearch extends Search
 	}
 }
 
-class AndSearch extends Search
+class Search_AndNode extends Search_Node
 {
-	var $left;
-	var $right;
+	var $left_node;
+	var $right_node;
 
-	function AndSearch($left, $right)
+	function Search_AndNode($left_node, $right_node)
 	{
-		$this->left = $left;
-		$this->right = $right;
+		$this->left_node = $left_node;
+		$this->right_node = $right_node;
 	}
 
 	function apply($searchable)
 	{
-		return $this->left->apply($searchable)->intersection($this->right->apply($searchable));
+		return 
+			$this->left_node->apply($searchable)->intersection(
+			$this->right_node->apply($searchable));
+	}
+}
+
+class Search_Parser
+{
+	// Class method to parse query
+	function parse($query)
+	{
+		// FIXME: tokenize $terms
+		// TODO: implement more complex searches
+		$terms = explode(' ', $query);
+
+		$search = new Search_TermNode($terms[0]);
+		unset($terms[0]);
+		foreach($terms as $term)
+		{
+			$search = new Search_AndNode($search, new Search_TermNode($term));
+		}
+		return $search;
 	}
 }
 

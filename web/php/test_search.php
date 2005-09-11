@@ -24,7 +24,7 @@ class TestSearchable extends Searchable
 		if(isset($this->lexemes[$lexeme]))
 			foreach($this->lexemes[$lexeme] as $page)
 				$entries[] = array($page);
-		return new SearchResult($entries);
+		return new Search_Result($entries);
 	}
 }
 
