@@ -132,9 +132,9 @@
 		echo '<form action="admin.php" method="post">';
 		echo '<input type="hidden" name="action" value="delete"/>';
 		echo '<select name="books[]" multiple="yes">';
-		$entries = $catalog->enumerate_ids();	
-		foreach($entries as $book_id => $title)
-			echo '<option value="' . $book_id . '">' . $title . '</option>';
+		$entries = $catalog->enumerate_books();	
+		foreach($entries as $title => $book)
+			echo '<option value="' . $book->id . '">' . $title . '</option>';
 		echo '</select>';
 		echo '<input type="submit" value="Delete">';
 		echo '</form>';
@@ -144,9 +144,9 @@
 		echo '<form action="admin.php" method="post">';
 		echo '<input type="hidden" name="action" value="index"/>';
 		echo '<select name="books[]" multiple="yes">';
-		$entries = $catalog->enumerate_ids();	
-		foreach($entries as $book_id => $title)
-			echo '<option value="' . $book_id . '">' . $title . '</option>';
+		$entries = $catalog->enumerate_books();	
+		foreach($entries as $title => $book)
+			echo '<option value="' . $book->id . '">' . $title . '</option>';
 		echo '</select>';
 		echo '<input type="submit" value="Index">';
 		echo '</form>';

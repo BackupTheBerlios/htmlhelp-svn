@@ -1,21 +1,14 @@
--- phpMyAdmin SQL Dump
--- version 2.6.2
--- http://www.phpmyadmin.net
--- 
--- Host: localhost
--- Generation Time: Sep 12, 2005 at 12:24 PM
--- Server version: 4.1.13
--- PHP Version: 5.0.4-3
--- 
--- Database: `htmlhelp`
--- 
+-- MySQL dump 10.9
+--
+-- Host: localhost    Database: htmlhelp
+-- ------------------------------------------------------
+-- Server version	4.1.13a-Debian_3-log
 
--- --------------------------------------------------------
-
--- 
+--
 -- Table structure for table `book`
--- 
+--
 
+DROP TABLE IF EXISTS `book`;
 CREATE TABLE `book` (
   `id` smallint(5) unsigned NOT NULL auto_increment,
   `title` varchar(255) NOT NULL default '',
@@ -25,12 +18,11 @@ CREATE TABLE `book` (
   KEY `title` (`title`(7))
 ) TYPE=MyISAM;
 
--- --------------------------------------------------------
-
--- 
+--
 -- Table structure for table `book_alias`
--- 
+--
 
+DROP TABLE IF EXISTS `book_alias`;
 CREATE TABLE `book_alias` (
   `alias` varchar(31) NOT NULL default '',
   `book_id` tinyint(3) unsigned NOT NULL default '0',
@@ -38,24 +30,22 @@ CREATE TABLE `book_alias` (
   KEY `book_id` (`book_id`)
 ) TYPE=MyISAM;
 
--- --------------------------------------------------------
-
--- 
+--
 -- Table structure for table `book_tag`
--- 
+--
 
+DROP TABLE IF EXISTS `book_tag`;
 CREATE TABLE `book_tag` (
   `tag_id` tinyint(3) unsigned NOT NULL default '0',
   `book_name` varchar(31) NOT NULL default '',
   KEY `tag_id` (`tag_id`)
 ) TYPE=MyISAM;
 
--- --------------------------------------------------------
-
--- 
+--
 -- Table structure for table `index_entry`
--- 
+--
 
+DROP TABLE IF EXISTS `index_entry`;
 CREATE TABLE `index_entry` (
   `book_id` smallint(5) unsigned NOT NULL default '0',
   `no` smallint(5) unsigned NOT NULL default '0',
@@ -63,12 +53,11 @@ CREATE TABLE `index_entry` (
   PRIMARY KEY  (`book_id`,`no`)
 ) TYPE=MyISAM;
 
--- --------------------------------------------------------
-
--- 
+--
 -- Table structure for table `index_link`
--- 
+--
 
+DROP TABLE IF EXISTS `index_link`;
 CREATE TABLE `index_link` (
   `book_id` smallint(5) unsigned NOT NULL default '0',
   `no` smallint(5) unsigned NOT NULL default '0',
@@ -77,12 +66,11 @@ CREATE TABLE `index_link` (
   KEY `index_id` (`book_id`,`no`)
 ) TYPE=MyISAM;
 
--- --------------------------------------------------------
-
--- 
+--
 -- Table structure for table `lexeme`
--- 
+--
 
+DROP TABLE IF EXISTS `lexeme`;
 CREATE TABLE `lexeme` (
   `book_id` smallint(5) unsigned NOT NULL default '0',
   `no` smallint(5) unsigned NOT NULL default '0',
@@ -90,12 +78,11 @@ CREATE TABLE `lexeme` (
   PRIMARY KEY  (`book_id`,`lexeme`)
 ) TYPE=MyISAM;
 
--- --------------------------------------------------------
-
--- 
+--
 -- Table structure for table `lexeme_link`
--- 
+--
 
+DROP TABLE IF EXISTS `lexeme_link`;
 CREATE TABLE `lexeme_link` (
   `book_id` smallint(5) unsigned NOT NULL default '0',
   `no` smallint(5) unsigned NOT NULL default '0',
@@ -104,25 +91,24 @@ CREATE TABLE `lexeme_link` (
   KEY `lexeme_id` (`book_id`,`no`)
 ) TYPE=MyISAM;
 
--- --------------------------------------------------------
-
--- 
+--
 -- Table structure for table `metadata`
--- 
+--
 
+DROP TABLE IF EXISTS `metadata`;
 CREATE TABLE `metadata` (
   `book_id` smallint(5) unsigned NOT NULL default '0',
   `name` enum('name','version','language','date','author','url') NOT NULL default 'name',
   `value` varchar(255) binary NOT NULL default '',
-  PRIMARY KEY  (`book_id`,`name`)
+  PRIMARY KEY  (`book_id`,`name`),
+  KEY `name` (`name`,`value`)
 ) TYPE=MyISAM;
 
--- --------------------------------------------------------
-
--- 
+--
 -- Table structure for table `page`
--- 
+--
 
+DROP TABLE IF EXISTS `page`;
 CREATE TABLE `page` (
   `book_id` smallint(5) NOT NULL default '0',
   `no` smallint(5) unsigned NOT NULL default '0',
@@ -134,23 +120,21 @@ CREATE TABLE `page` (
   UNIQUE KEY `path` (`book_id`,`path`)
 ) TYPE=MyISAM;
 
--- --------------------------------------------------------
-
--- 
+--
 -- Table structure for table `stop_word`
--- 
+--
 
+DROP TABLE IF EXISTS `stop_word`;
 CREATE TABLE `stop_word` (
   `lexeme` varchar(31) NOT NULL default '',
   PRIMARY KEY  (`lexeme`)
 ) TYPE=MyISAM;
 
--- --------------------------------------------------------
-
--- 
+--
 -- Table structure for table `tag`
--- 
+--
 
+DROP TABLE IF EXISTS `tag`;
 CREATE TABLE `tag` (
   `id` tinyint(3) unsigned NOT NULL auto_increment,
   `tag` varchar(31) NOT NULL default '',
@@ -158,12 +142,11 @@ CREATE TABLE `tag` (
   UNIQUE KEY `tag` (`tag`)
 ) TYPE=MyISAM;
 
--- --------------------------------------------------------
-
--- 
+--
 -- Table structure for table `toc_entry`
--- 
+--
 
+DROP TABLE IF EXISTS `toc_entry`;
 CREATE TABLE `toc_entry` (
   `book_id` smallint(5) unsigned NOT NULL default '0',
   `parent_no` smallint(5) unsigned NOT NULL default '0',
@@ -173,3 +156,5 @@ CREATE TABLE `toc_entry` (
   `anchor` varchar(255) binary NOT NULL default '',
   PRIMARY KEY  (`book_id`,`parent_no`,`no`)
 ) TYPE=MyISAM;
+
+

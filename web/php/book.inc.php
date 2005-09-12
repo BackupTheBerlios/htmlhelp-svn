@@ -44,33 +44,72 @@ EOSQL
 			);
 		}
 		
-		function enumerate_ids()
+		function update_tags()
 		{
+			// TODO: attemp
+		}
+		
+		function enumerate_tags()
+		{
+			$tags = array();
+			
 			$result = mysql_query("
+				SELECT tag, COUNT(DISTINCT book_name) AS count
+				FROM tag
+				LEFT JOIN book_tag ON book_tag.tag_id = tag.id
+				GROUP BY tag.id
+				-- HAVING count > 0
+				ORDER BY count DESC, tag ASC
+			");
+			while(list($tag, $count) = mysql_fetch_row($result))
+				$tags[$tag] = $count;
+			
+			// append a fake tag with the total book count
+			$result = mysql_query("SELECT COUNT(*) FROM book");
+			list($count) = mysql_fetch_row($result);
+				$tags['all'] = $count;
+
+			return $tags;
+		}
+		
+		// Internal function which enumerates books by a SQL query
+		//
+		// The query should return a (book_id, book_title) column table. 
+		function _enumerate_books_by_query($query)
+		{
+			$books = array();
+			$result = mysql_query($query);
+			if($result)
+				while(list($book_id, $book_title) = mysql_fetch_row($result))
+					$books[$book_title] = new Book($book_id);
+			return $books;
+		}
+		
+		function enumerate_books()
+		{
+			return $this->_enumerate_books_by_query("
 				SELECT id, title 
 				FROM book 
 				ORDER BY title
 			");
-			$entries = array();
-			while(list($book_id, $book_title) = mysql_fetch_row($result))
-				$entries[$book_id] = $book_title;
-			return $entries;
 		}
 		
-		function enumerate_aliases()
+		function enumerate_books_by_tag($tag)
 		{
-			# FIXME: deal with books with multiple versions
-			$result = mysql_query("
-				SELECT metadata.value, title 
-				FROM book 
-					LEFT JOIN metadata ON metadata.book_id = book.id
-				WHERE metadata.name = 'name' 
-				ORDER BY title
+			// fake tag
+			if($tag == 'all')
+				return $this->enumerate_books();
+
+			return $this->_enumerate_books_by_query("
+				SELECT book.id, book.title
+				FROM tag
+					LEFT JOIN book_tag ON book_tag.tag_id = tag.id
+					LEFT JOIN metadata ON metadata.value = book_tag.book_name
+					LEFT JOIN book ON book.id = metadata.book_id
+				WHERE tag.tag = '" . mysql_escape_string($tag) . "'
+					AND metadata.name = 'name'
+				ORDER BY book.title ASC
 			");
-			$entries = array();
-			while(list($book_alias, $book_title) = mysql_fetch_row($result))
-				$entries[$book_alias] = $book_title;
-			return $entries;
 		}
 		
 		function get_book_from_alias($alias)
@@ -122,26 +161,6 @@ EOSQL
 			$this->book_id = $book_id;
 			$this->last_lexeme_no = 0;
 
-			// import the stop words
-			$result = mysql_query("SELECT COUNT(*) FROM stop_word");
-			list($count) = mysql_fetch_row($result);
-			if(!$count)
-			{				
-				# NOTE: from http://en.wikipedia.org/wiki/Stop_words
-				$handle = fopen('misc/stop_words.txt', 'rt');
-				while(!feof($handle))
-				{
-					$word = trim(fgets($handle, 4096));
-					// TODO: use a single insert
-					mysql_query("
-						INSERT
-						INTO stop_word
-						VALUES ('" . mysql_escape_string($word) . "')
-					") or die(mysql_error());
-				}
-				fclose($handle);
-			}
-			
 			mysql_query("DELETE FROM lexeme_link WHERE book_id = $this->book_id");
 			mysql_query("DELETE FROM lexeme WHERE book_id = $this->book_id");
 			mysql_query("UPDATE page SET title='' WHERE book_id = $this->book_id");

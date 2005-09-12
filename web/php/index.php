@@ -19,18 +19,30 @@
 
 	echo '<div class="header">HTML Help Books</div>';
 	
-	echo '<div>';
-	
 	$catalog = new Book_Catalog();
-	$entries = $catalog->enumerate_aliases();	
-	if(count($entries))
+
+	echo '<div id="tags">';	
+	$tags = $catalog->enumerate_tags();
+	echo '<ul class="list">';
+	foreach($tags as $tag => $count)
+		echo '<li><a href="?tag=' . htmlspecialchars($tag) . '">' . htmlspecialchars($tag, ENT_NOQUOTES) . '</a> (' . $count . ')</li>';
+	echo '</ul>';	
+	echo '</div>';
+	
+	echo '<div>';
+	if($tag = $_GET['tag'])
+		$books = $catalog->enumerate_books_by_tag($tag);
+	else	
+		$books = $catalog->enumerate_books();	
+	if(count($books))
 	{
 		echo '<ul class="list">';
-		foreach($entries as $alias => $title)
-			echo '<li><a href="book.php?book=' . $alias . '" onclick="return openBook(\'' . $alias . '\');" target="_blank">' . htmlspecialchars($title, ENT_NOQUOTES) . '</a></li>';
+		foreach($books as $title => $book)
+			echo '<li><a href="book.php?book=' . htmlspecialchars($book->alias()) . '" onclick="return openBook(\'' . $alias . '\');" target="_blank">' . htmlspecialchars($title, ENT_NOQUOTES) . '</a></li>';
 		echo '</ul>';
 	}
-
+	else
+		echo '<p>No book found.</p>';
 	echo '</div>';
 
 	echo '<div>';
