@@ -5,6 +5,18 @@
 -- Server version	4.1.13a-Debian_3-log
 
 --
+-- Table structure for table `alias_tag`
+--
+
+DROP TABLE IF EXISTS `alias_tag`;
+CREATE TABLE `alias_tag` (
+  `tag_id` tinyint(3) unsigned NOT NULL default '0',
+  `alias` varchar(31) binary NOT NULL default '',
+  KEY `tag_id` (`tag_id`),
+  KEY `alias` (`alias`)
+) TYPE=MyISAM;
+
+--
 -- Table structure for table `book`
 --
 
@@ -28,17 +40,6 @@ CREATE TABLE `book_alias` (
   `book_id` tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (`alias`),
   KEY `book_id` (`book_id`)
-) TYPE=MyISAM;
-
---
--- Table structure for table `book_tag`
---
-
-DROP TABLE IF EXISTS `book_tag`;
-CREATE TABLE `book_tag` (
-  `tag_id` tinyint(3) unsigned NOT NULL default '0',
-  `book_name` varchar(31) NOT NULL default '',
-  KEY `tag_id` (`tag_id`)
 ) TYPE=MyISAM;
 
 --
@@ -100,7 +101,7 @@ CREATE TABLE `metadata` (
   `book_id` smallint(5) unsigned NOT NULL default '0',
   `name` enum('name','version','language','date','author','url') NOT NULL default 'name',
   `value` varchar(255) binary NOT NULL default '',
-  PRIMARY KEY  (`book_id`,`name`),
+  PRIMARY KEY  (`name`,`book_id`),
   KEY `name` (`name`,`value`)
 ) TYPE=MyISAM;
 

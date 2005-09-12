@@ -24,18 +24,20 @@
 			// 'name_version_language'
 			mysql_query(<<<EOSQL
 				REPLACE INTO book_alias
+				SELECT book.id AS book_id, book.id
+					FROM book
+				UNION
 					SELECT value AS alias, book_id
 					FROM metadata
 					WHERE name = 'name'
-					GROUP BY book_id
 				UNION
-					SELECT GROUP_CONCAT(value ORDER BY name SEPARATOR '_') AS alias, book_id
+					SELECT GROUP_CONCAT(value ORDER BY name SEPARATOR '-') AS alias, book_id
 					FROM metadata
 					WHERE name in ('name', 'version')
 					GROUP BY book_id
 					HAVING COUNT(DISTINCT name) = 2
 				UNION
-					SELECT GROUP_CONCAT(value ORDER BY name SEPARATOR '_') AS alias, book_id
+					SELECT GROUP_CONCAT(value ORDER BY name SEPARATOR '-') AS alias, book_id
 					FROM metadata
 					WHERE name in ('name', 'version', 'language')
 					GROUP BY book_id
@@ -46,17 +48,30 @@ EOSQL
 		
 		function update_tags()
 		{
-			// TODO: attemp
+			// TODO: attempt to semi-automate this process
 		}
 		
 		function enumerate_tags()
 		{
 			$tags = array();
 			$result = mysql_query("
+				SELECT tag
+				FROM tag
+				ORDER BY tag ASC
+			");
+			while(list($tag) = mysql_fetch_row($result))
+				$tags[] = $tag;			
+			return $tags;
+		}
+		
+		function count_tags()
+		{
+			$tags = array();
+			$result = mysql_query("
 				SELECT tag, COUNT(DISTINCT book_id) AS count
 				FROM tag
-					LEFT OUTER JOIN book_tag ON book_tag.tag_id = tag.id
-					LEFT OUTER JOIN metadata ON metadata.name = 'name' AND metadata.value = book_tag.book_name
+					LEFT JOIN alias_tag ON tag.id = tag_id
+					LEFT JOIN book_alias ON alias_tag.alias = book_alias.alias
 				GROUP BY tag.id
 				-- HAVING count > 0
 				ORDER BY count DESC, tag ASC
@@ -92,12 +107,11 @@ EOSQL
 		{
 			return $this->_enumerate_books_by_query("
 				SELECT book.id, book.title
-				FROM tag
-					LEFT JOIN book_tag ON book_tag.tag_id = tag.id
-					LEFT JOIN metadata ON metadata.value = book_tag.book_name
-					LEFT JOIN book ON book.id = metadata.book_id
+				FROM book
+					LEFT JOIN book_alias ON book_id = book.id
+					LEFT JOIN alias_tag ON alias_tag.alias = book_alias.alias 
+					LEFT JOIN tag ON tag.id = tag_id
 				WHERE tag.tag = '" . mysql_escape_string($tag) . "'
-					AND metadata.name = 'name'
 				ORDER BY book.title ASC
 			");
 		}
@@ -283,6 +297,7 @@ EOSQL
 				SELECT alias
 				FROM book_alias
 				WHERE book_id = $this->id
+					AND alias != $this->id
 				ORDER BY LENGTH(alias) ASC
 			");
 			if(mysql_num_rows($result))
@@ -443,7 +458,6 @@ EOSQL
 		{
 			mysql_query("DELETE FROM book WHERE id = $this->id");
 			mysql_query("DELETE FROM book_alias WHERE book_id = $this->id");
-			mysql_query("DELETE FROM book_tag WHERE book_id = $this->id");
 			mysql_query("DELETE FROM metadata WHERE book_id = $this->id");
 			mysql_query("DELETE FROM toc_entry WHERE book_id = $this->id");
 			mysql_query("DELETE FROM index_entry WHERE book_id = $this->id");
@@ -481,12 +495,11 @@ EOSQL
 				$values[] = "'" . mysql_escape_string($tag) . "'";			
 			mysql_query("
 				REPLACE 
-					INTO book_tag (tag_id, book_name)
-				SELECT tag.id, metadata.value
-					FROM tag, metadata
-				WHERE book_id=$this->id
-					AND metadata.name = 'name'
-				AND  tag IN (" . implode(',', $values) . ")
+					INTO alias_tag (tag_id, alias)
+				SELECT tag.id, alias
+					FROM tag, book_alias
+					WHERE book_id=$this->id
+						AND tag IN (" . implode(',', $values) . ")
 			");
 		}
 		
@@ -497,11 +510,12 @@ EOSQL
 			foreach($tags as $tag)
 				$values[] = "'" . mysql_escape_string($tag) . "'";
 			mysql_query("
-				DELETE book_tag
-				FROM tag
-					LEFT OUTER JOIN book_tag ON book_tag.tag_id = tag.id
-					LEFT OUTER JOIN metadata ON metadata.name = 'name' AND metadata.value = book_tag.book_name
-				WHERE tag IN (" . implode(',', $values) . ")
+				DELETE alias_tag
+				FROM book_alias
+					LEFT JOIN alias_tag ON alias_tag.alias = book_alias.alias
+					LEFT JOIN tag ON tag.id = tag_id
+				WHERE book_id=$this->id
+					AND tag IN (" . implode(',', $values) . ")
 			") or die(mysql_error());
 		}
 	}

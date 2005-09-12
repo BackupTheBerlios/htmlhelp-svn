@@ -34,7 +34,7 @@ export: \
 export-htmlhelp.sql: MYSQLDUMP_FLAGS += --add-drop-table --no-data
 
 export-tags.sql: MYSQLDUMP_FLAGS += --no-create-info
-export-tags.sql: TABLES = tag book_tag
+export-tags.sql: TABLES = tag alias_tag
 
 export-%:
 	$(MYSQLDUMP) \

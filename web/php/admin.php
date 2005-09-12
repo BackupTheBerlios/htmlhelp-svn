@@ -219,7 +219,7 @@
 			echo '</select>';
 			echo '<select name="tags[]" multiple="yes" size="20">';
 			$tags = $catalog->enumerate_tags();
-			foreach($tags as $tag => $count)
+			foreach($tags as $tag)
 				echo '<option value="' . htmlspecialchars($tag) . '">' . htmlspecialchars($tag, ENT_NOQUOTES) . '</option>';
 			echo '</select>';			
 			echo '<br/>';

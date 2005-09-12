@@ -24,7 +24,7 @@
 	echo '<div id="tags" class="sidebar">';
 	echo '<p><strong>Tags</strong></p>';
 	echo '<table>';
-	$tags = $catalog->enumerate_tags();
+	$tags = $catalog->count_tags();
 	foreach($tags as $tag => $count)
 		echo '<tr><td>' . $count . '</td><td><a href="?tag=' . htmlspecialchars($tag) . '">' . htmlspecialchars($tag, ENT_NOQUOTES) . '</a></td></tr>';
 	echo '</table>';
