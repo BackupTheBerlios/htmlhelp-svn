@@ -117,22 +117,30 @@ EOSQL
 		// The lexemes of the current page
 		var $page_lexemes;
 
-		var $stop_words;
-
 		function Book_Fulltext_Index($book_id)
 		{
 			$this->book_id = $book_id;
 			$this->last_lexeme_no = 0;
 
-			# NOTE: from http://en.wikipedia.org/wiki/Stop_words
-			$this->stop_words = array();
-			$handle = fopen("stop_words.txt", "rt");
-			while(!feof($handle))
-			{
-				 $word = trim(fgets($handle, 4096));
-				 $this->stop_words[$word] = true;
+			// import the stop words
+			$result = mysql_query("SELECT COUNT(*) FROM stop_word");
+			list($count) = mysql_fetch_row($result);
+			if(!$count)
+			{				
+				# NOTE: from http://en.wikipedia.org/wiki/Stop_words
+				$handle = fopen('misc/stop_words.txt', 'rt');
+				while(!feof($handle))
+				{
+					$word = trim(fgets($handle, 4096));
+					// TODO: use a single insert
+					mysql_query("
+						INSERT
+						INTO stop_word
+						VALUES ('" . mysql_escape_string($word) . "')
+					") or die(mysql_error());
+				}
+				fclose($handle);
 			}
-			fclose($handle);
 			
 			mysql_query("DELETE FROM lexeme_link WHERE book_id = $this->book_id");
 			mysql_query("DELETE FROM lexeme WHERE book_id = $this->book_id");
@@ -199,15 +207,16 @@ EOSQL
 
 		function add_lexemes($lexemes)
 		{
-			// TODO: add stop words lists somewhere to reduce table size
 			// TODO: store lexeme positions instead of lexeme counts
 				
 			foreach($lexemes as $lexeme)
 			{
-				if(!is_valid_utf8($lexeme))
-					continue;
-
-				if($this->stop_words[mb_strtolower($lexeme, 'utf-8')])
+				$result = mysql_query(
+					"SELECT COUNT(*) " .
+					"FROM stop_word " .
+					"WHERE lexeme = '" . mysql_escape_string($lexeme) . "'");
+				list($count) = mysql_fetch_row($result);
+				if($count)
 					continue;
 
 				$this->page_lexemes[$lexeme] += 1;
@@ -221,7 +230,7 @@ EOSQL
 				// get this lexeme number
 				$result = mysql_query("
 					SELECT no
-				 	FROM lexeme 
+				 	FROM lexeme
 					WHERE book_id=$this->book_id AND lexeme='" . mysql_escape_string($lexeme) . "'
 				") or print(__FILE__ . ':' . __LINE__ . ': ' .  htmlspecialchars($lexeme, ENT_NOQUOTES, 'utf-8') . ':' . ord($lexeme) . ':' . mysql_error() . "\n");
 				if(mysql_num_rows($result))

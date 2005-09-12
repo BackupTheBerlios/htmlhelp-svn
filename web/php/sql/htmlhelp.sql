@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Sep 12, 2005 at 11:47 AM
+-- Generation Time: Sep 12, 2005 at 12:24 PM
 -- Server version: 4.1.13
 -- PHP Version: 5.0.4-3
 -- 
@@ -132,6 +132,17 @@ CREATE TABLE `page` (
   `title` text,
   PRIMARY KEY  (`book_id`,`no`),
   UNIQUE KEY `path` (`book_id`,`path`)
+) TYPE=MyISAM;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `stop_word`
+-- 
+
+CREATE TABLE `stop_word` (
+  `lexeme` varchar(31) NOT NULL default '',
+  PRIMARY KEY  (`lexeme`)
 ) TYPE=MyISAM;
 
 -- --------------------------------------------------------
