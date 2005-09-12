@@ -7,10 +7,42 @@
 
 	class Book_Catalog
 	{
+		// Import a book into the bookshelf
 		function import_book($filename)
 		{
 			mysql_import_dump($filename);
-		}		
+			
+			$this->update_aliases();
+		}
+
+		// Update book aliases cache
+		//
+		// It should be called whenever the book metadata table is changed 		
+		function update_aliases()
+		{
+			// a book can be identified by its 'name', 'name_version', and 
+			// 'name_version_language'
+			mysql_query(<<<EOSQL
+				REPLACE INTO book_alias
+					SELECT value AS alias, book_id
+					FROM metadata
+					WHERE name = 'name'
+					GROUP BY book_id
+				UNION
+					SELECT GROUP_CONCAT(value ORDER BY name SEPARATOR '_') AS alias, book_id
+					FROM metadata
+					WHERE name in ('name', 'version')
+					GROUP BY book_id
+					HAVING COUNT(DISTINCT name) = 2
+				UNION
+					SELECT GROUP_CONCAT(value ORDER BY name SEPARATOR '_') AS alias, book_id
+					FROM metadata
+					WHERE name in ('name', 'version', 'language')
+					GROUP BY book_id
+					HAVING COUNT(DISTINCT name) = 3
+EOSQL
+			);
+		}
 		
 		function enumerate_ids()
 		{
@@ -43,18 +75,26 @@
 		
 		function get_book_from_alias($alias)
 		{
-			// FIXME: handle multiple versions
+			// search alias cache
 			$result = mysql_query("
 				SELECT book_id 
-				FROM metadata 
-				WHERE name='name' 
-					AND value='" . mysql_escape_string($alias) . "'
+				FROM book_alias 
+				WHERE alias='" . mysql_escape_string($alias) . "'
 			");
-			if(!mysql_num_rows($result))
-				return NULL;
-				
-			list($id) = mysql_fetch_row($result);
-			return new Book($id);			
+			if(mysql_num_rows($result))
+			{
+				list($id) = mysql_fetch_row($result);
+				return new Book($id);
+			}
+			
+			// fallback to numeric book ID
+			if(is_numeric($alias))
+			{
+				$id = intval($alias);
+				return new Book($id);
+			}
+			
+			return NULL;
 		}
 	}
 
@@ -221,32 +261,20 @@ EOSQL
 		
 		function alias()
 		{
-			$name = $this->metadata('name');
-			if(!$name)
-				return $this->id;			
 			$result = mysql_query("
-				SELECT COUNT(DISTINC book_id) 
-				FROM metadata 
-				WHERE name = " . mysql_escape_string($name) . "
+				SELECT alias
+				FROM book_alias
+				WHERE book_id = $this->id
+				ORDER BY LENGTH(alias) ASC
 			");
-			list($count) = mysql_fetch_row($result);
-			if($count == 1)
-				return $name;
-
-			$version = $this->metadata('version');
-			if(!$version)
-				return $this->id;
-			$result = mysql_query("
-				SELECT COUNT(DISTINC book_id) 
-				FROM metadata 
-				WHERE name = '" . mysql_escape_string($name) . "'
-					AND version = '" . mysql_escape_string($version) . "'
-			");
-			list($count) = mysql_fetch_row($result);
-			if($count == 1)
-				return $name . '_' . $version;
-
-			list($id) = mysql_fetch_row($result);
+			if(mysql_num_rows($result))
+			{
+				list($alias) = mysql_fetch_row($result);
+				return $alias;
+			}
+			
+			// fallback to the book numeric ID
+			return strval($this->id);
 		}
 
 		function title()
@@ -396,6 +424,8 @@ EOSQL
 		function delete()
 		{
 			mysql_query("DELETE FROM book WHERE id = $this->id");
+			mysql_query("DELETE FROM book_alias WHERE book_id = $this->id");
+			mysql_query("DELETE FROM book_tag WHERE book_id = $this->id");
 			mysql_query("DELETE FROM metadata WHERE book_id = $this->id");
 			mysql_query("DELETE FROM toc_entry WHERE book_id = $this->id");
 			mysql_query("DELETE FROM index_entry WHERE book_id = $this->id");

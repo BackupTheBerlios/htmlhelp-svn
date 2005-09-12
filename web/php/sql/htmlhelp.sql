@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Sep 11, 2005 at 11:34 AM
+-- Generation Time: Sep 12, 2005 at 11:47 AM
 -- Server version: 4.1.13
 -- PHP Version: 5.0.4-3
 -- 
@@ -23,6 +23,19 @@ CREATE TABLE `book` (
   `anchor` varchar(255) binary NOT NULL default '',
   PRIMARY KEY  (`id`),
   KEY `title` (`title`(7))
+) TYPE=MyISAM;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `book_alias`
+-- 
+
+CREATE TABLE `book_alias` (
+  `alias` varchar(31) NOT NULL default '',
+  `book_id` tinyint(3) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`alias`),
+  KEY `book_id` (`book_id`)
 ) TYPE=MyISAM;
 
 -- --------------------------------------------------------
@@ -99,7 +112,7 @@ CREATE TABLE `lexeme_link` (
 
 CREATE TABLE `metadata` (
   `book_id` smallint(5) unsigned NOT NULL default '0',
-  `name` varchar(31) NOT NULL default '',
+  `name` enum('name','version','language','date','author','url') NOT NULL default 'name',
   `value` varchar(255) binary NOT NULL default '',
   PRIMARY KEY  (`book_id`,`name`)
 ) TYPE=MyISAM;
