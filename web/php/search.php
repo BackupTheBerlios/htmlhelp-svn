@@ -20,7 +20,7 @@
 	echo  '<base href="http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/page.php/' . htmlspecialchars($alias) . '/" target="main"/>';
 	echo  '<link href="../../' . $css . '" type="text/css" rel="stylesheet"/>';
 	echo '</head>';
-	echo '<body id="search" class="sidebar">';
+	echo '<body id="search" class="sideframe">';
 
 	echo '<div class="menubar">';
 	echo  '<a href="../../toc.php?book=' . htmlspecialchars($alias) . '" target="_self">Contents</a> | ';

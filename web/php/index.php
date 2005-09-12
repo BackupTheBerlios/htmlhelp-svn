@@ -21,15 +21,16 @@
 	
 	$catalog = new Book_Catalog();
 
-	echo '<div id="tags">';	
+	echo '<div id="tags" class="sidebar">';
+	echo '<p><strong>Tags</strong></p>';
+	echo '<table>';
 	$tags = $catalog->enumerate_tags();
-	echo '<ul class="list">';
 	foreach($tags as $tag => $count)
-		echo '<li><a href="?tag=' . htmlspecialchars($tag) . '">' . htmlspecialchars($tag, ENT_NOQUOTES) . '</a> (' . $count . ')</li>';
-	echo '</ul>';	
+		echo '<tr><td>' . $count . '</td><td><a href="?tag=' . htmlspecialchars($tag) . '">' . htmlspecialchars($tag, ENT_NOQUOTES) . '</a></td></tr>';
+	echo '</table>';
 	echo '</div>';
 	
-	echo '<div>';
+	echo '<div class="content">';
 	if($tag = $_GET['tag'])
 		$books = $catalog->enumerate_books_by_tag($tag);
 	else	

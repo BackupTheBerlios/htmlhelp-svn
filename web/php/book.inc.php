@@ -52,23 +52,17 @@ EOSQL
 		function enumerate_tags()
 		{
 			$tags = array();
-			
 			$result = mysql_query("
-				SELECT tag, COUNT(DISTINCT book_name) AS count
+				SELECT tag, COUNT(DISTINCT book_id) AS count
 				FROM tag
-				LEFT JOIN book_tag ON book_tag.tag_id = tag.id
+					LEFT OUTER JOIN book_tag ON book_tag.tag_id = tag.id
+					LEFT OUTER JOIN metadata ON metadata.name = 'name' AND metadata.value = book_tag.book_name
 				GROUP BY tag.id
 				-- HAVING count > 0
 				ORDER BY count DESC, tag ASC
 			");
 			while(list($tag, $count) = mysql_fetch_row($result))
-				$tags[$tag] = $count;
-			
-			// append a fake tag with the total book count
-			$result = mysql_query("SELECT COUNT(*) FROM book");
-			list($count) = mysql_fetch_row($result);
-				$tags['all'] = $count;
-
+				$tags[$tag] = $count;			
 			return $tags;
 		}
 		
@@ -96,10 +90,6 @@ EOSQL
 		
 		function enumerate_books_by_tag($tag)
 		{
-			// fake tag
-			if($tag == 'all')
-				return $this->enumerate_books();
-
 			return $this->_enumerate_books_by_query("
 				SELECT book.id, book.title
 				FROM tag
@@ -482,6 +472,37 @@ EOSQL
 
 			$index->cleanup();
 		}
+		
+		// Tag this book with the given tags
+		function tag($tags)
+		{
+			$values = array();
+			foreach($tags as $tag)
+				$values[] = "'" . mysql_escape_string($tag) . "'";			
+			mysql_query("
+				REPLACE 
+					INTO book_tag (tag_id, book_name)
+				SELECT tag.id, metadata.value
+					FROM tag, metadata
+				WHERE book_id=$this->id
+					AND metadata.name = 'name'
+				AND  tag IN (" . implode(',', $values) . ")
+			");
+		}
+		
+		// Untag this book with given tags
+		function untag($tags)
+		{
+			$values = array();
+			foreach($tags as $tag)
+				$values[] = "'" . mysql_escape_string($tag) . "'";
+			mysql_query("
+				DELETE book_tag
+				FROM tag
+					LEFT OUTER JOIN book_tag ON book_tag.tag_id = tag.id
+					LEFT OUTER JOIN metadata ON metadata.name = 'name' AND metadata.value = book_tag.book_name
+				WHERE tag IN (" . implode(',', $values) . ")
+			") or die(mysql_error());
+		}
 	}
-
 ?>
