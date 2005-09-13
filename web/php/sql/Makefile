@@ -29,18 +29,22 @@ default: $(patsubst %.txt,%.sql,$(wildcard *.txt))
 
 export: \
 	export-htmlhelp.sql \
-	export-tags.sql
+	export-tags.txt
 
 export-htmlhelp.sql: MYSQLDUMP_FLAGS += --add-drop-table --no-data
 
-export-tags.sql: MYSQLDUMP_FLAGS += --no-create-info
-export-tags.sql: TABLES = tag alias_tag
+export-tags.txt:
+	$(MYSQL) \
+		$(MYSQL_FLAGS) \
+		-e 'SELECT tag FROM tag ORDER BY tag' \
+		$(DATABASE) \
+	| tail +2 > tags.txt
 
-export-%:
+export-%.sql:
 	$(MYSQLDUMP) \
 		$(MYSQLDUMP_FLAGS) \
 		$(DATABASE) $(TABLES) \
-	| sed -e '/^\/\*!.*\*\/;$$/d' > $*
+	| sed -e '/^\/\*!.*\*\/;$$/d' > $*.sql
 
 .PHONY: export export-%
 

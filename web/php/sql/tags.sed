@@ -1,4 +1,4 @@
-# convert a stop word list to SQL statements
+# convert a tag list to SQL statements
 
 # values
 s/'/\\'/g
@@ -7,8 +7,8 @@ s/.*/	('&'),/
 # insert statement
 1i\
 REPLACE\
-INTO stop_word\
-	(lexeme)\
+INTO tag\
+	(tag)\
 VALUES
 
 # replace last comma by a semi-colon
