@@ -2,9 +2,8 @@
 	require_once 'config.inc.php';
 	require_once 'book.inc.php';
 
-	$catalog = new Book_Catalog();
 	$alias = $_GET['book'];
-	$book = $catalog->get_book_from_alias($alias);
+	require 'get_book_from_alias.inc.php';
 	
 	# Enable HTTP compression
 	ob_start("ob_gzhandler");

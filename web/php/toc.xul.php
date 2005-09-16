@@ -2,6 +2,9 @@
 	require_once 'config.inc.php';
 	require_once 'book.inc.php';
 
+	$alias = $_GET['book'];
+	require 'get_book_from_alias.inc.php';
+
 	# Enable HTTP compression
 	ob_start("ob_gzhandler");
 	
@@ -14,10 +17,6 @@
 
 	echo '<script src="js/toc.js"/>';
 
-	$catalog = new Book_Catalog();
-	$alias = $_GET['book'];
-	$book = $catalog->get_book_from_alias($alias);
-	
 	echo '<button label="Sync" oncommand="onButtonCommand(event)"/>';
 						
 	echo '<tree id="tree" flex="1" seltype="single" hidecolumnpicker="true" onselect="onTocSelect(event, \'' . htmlspecialchars($alias) . '\')">';

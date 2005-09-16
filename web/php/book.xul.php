@@ -3,11 +3,16 @@
 	require_once 'config.inc.php';
 	require_once 'book.inc.php';
 
+	$alias = $_GET['book'];
+	require 'get_book_from_alias.inc.php'; 
+	
 	// Enable HTTP compression
 	ob_start("ob_gzhandler");
 	
 	header('Content-type: application/vnd.mozilla.xul+xml');
 
+	$title = htmlspecialchars($book->title());
+	
 	echo '<?xml version="1.0" encoding="UTF-8"?>';
 	echo '<?xml-stylesheet href="css/skin.css" type="text/css"?>';
 
@@ -16,12 +21,7 @@
   You need a Gecko-based browser for viewing this page.
 -->
 ';
-
-	$catalog = new Book_Catalog();
-	$alias = $_GET['book'];
-	$book = $catalog->get_book_from_alias($alias);
-	$title = htmlspecialchars($book->title());
-
+	
 	echo '<window id="wnd" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" title="' . $title . '" width="640" height="420" persist="width height screenX screenY sizemode">';
 	echo '<script type="text/javascript">document.title = "' . $title . '";</script>';
 	

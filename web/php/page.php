@@ -10,8 +10,7 @@
 	$path = $_SERVER['PATH_INFO'];
 	while(!$alias and $path)
 		list($alias, $path) = explode('/', $path, 2);
-	$catalog = new Book_Catalog();
-	$book = $catalog->get_book_from_alias($alias);
+	require 'get_book_from_alias.inc.php';
 
 	// If the 'path' param is not given then redirect to the book's front page.
 	if(!$path)

@@ -2,6 +2,9 @@
 	require_once 'config.inc.php';
 	require_once 'book.inc.php';
 
+	$alias = $_GET['book'];
+	require 'get_book_from_alias.inc.php';
+	
 	# Enable HTTP compression
 	ob_start("ob_gzhandler");
 	
@@ -13,14 +16,11 @@
 	echo '<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">';
 
 	echo '<script src="js/search.js"/>';
-	
-	$catalog = new Book_Catalog();
-	$alias = $_GET['book'];
-	$book = $catalog->get_book_from_alias($alias);
-	$query = $_GET['query'];
+
+	$query = $_GET['query'];	
 	
 	echo '<textbox id="query" type="autocomplete" value="' . htmlspecialchars($query) . '" onkeypress="onQueryKeypress(event, \'' . htmlspecialchars($alias) . '\')"/>';
-	
+
 	echo '<listbox seltype="single" flex="1" onselect="onSearchSelect(event, \'' . htmlspecialchars($alias) . '\')">';
 	if($query)
 	{

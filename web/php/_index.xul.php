@@ -3,6 +3,9 @@
 	require_once 'config.inc.php';
 	require_once 'book.inc.php';
 
+	$alias = $_GET['book'];
+	require_once 'get_book_from_alias.inc.php';
+	
 	# Enable HTTP compression
 	ob_start("ob_gzhandler");
 	
@@ -15,9 +18,6 @@
 
 	echo '<script src="js/_index.js"/>';
 	
-	$catalog = new Book_Catalog();
-	$alias = $_GET['book'];
-	$book = $catalog->get_book_from_alias($alias);
 	$query = $_GET['query'];
 	
 	echo '<textbox id="query" type="autocomplete" value="' . htmlspecialchars($query) . '" onkeypress="onQueryKeypress(event, \'' . htmlspecialchars($alias) . '\')"/>';
