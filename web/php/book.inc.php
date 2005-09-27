@@ -173,31 +173,38 @@ EOSQL
 		function cleanup()
 		{
 			// drop lexemes which start with a digit and appear only once
-			mysql_query(<<<EOSQL
+			mysql_query("
 				CREATE TEMPORARY TABLE delete_lexeme
 					SELECT lexeme 
-						FRO lexeme
-							LEFT JOIN lexeme_link ON lexeme.no = lexeme_link.lexeme_no
+						FROM lexeme
+							LEFT JOIN lexeme_link ON lexeme.no = lexeme_link.no
 						WHERE lexeme.book_id = $this->book_id
 							AND lexeme >= '0' AND lexeme < 'A'
 							AND lexeme_link.book_id = $this->book_id
 						GROUP BY lexeme.book_id, lexeme
 						HAVING SUM(count) = 1
-EOSQL
-			);
-			mysql_query(<<<EOSQL
+			") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+			mysql_query("
 				DELETE lexeme, lexeme_link
-					FROM lexeme, delete_lexeme
-						LEFT JOIN lexeme_link ON lexeme.no = lexeme_link.no
-					WHERE lexeme.book_id = $this->book_id
-						AND lexeme.lexeme IN (delete_lexeme.lexeme)
-						AND lexeme_link.book_id = $this->book_id
-EOSQL
-			);
-			mysql_query(<<<EOSQL
+				FROM lexeme, delete_lexeme
+					LEFT JOIN lexeme_link ON lexeme.no = lexeme_link.no
+				WHERE lexeme.book_id = $this->book_id
+					AND lexeme.lexeme IN (delete_lexeme.lexeme)
+					AND lexeme_link.book_id = $this->book_id
+			") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+			mysql_query("
 				DROP TEMPORARY TABLE delete_lexeme 
-EOSQL
-			);
+			") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+			
+			// eliminate stop words from index
+			$result = mysql_query("
+				DELETE lexeme, lexeme_link
+				FROM stop_word
+					LEFT JOIN lexeme ON lexeme.lexeme = stop_word.lexeme
+					LEFT JOIN lexeme_link ON lexeme_link.no = lexeme.no
+				WHERE lexeme.book_id = $this->book_id
+					AND lexeme_link.book_id = $this->book_id
+			") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		}
 
 		function set_page_no($page_no)
@@ -231,17 +238,8 @@ EOSQL
 		function add_lexemes($lexemes)
 		{
 			// TODO: store lexeme positions instead of lexeme counts
-				
 			foreach($lexemes as $lexeme)
 			{
-				$result = mysql_query(
-					"SELECT COUNT(*) " .
-					"FROM stop_word " .
-					"WHERE lexeme = '" . mysql_escape_string($lexeme) . "'");
-				list($count) = mysql_fetch_row($result);
-				if($count)
-					continue;
-
 				$this->page_lexemes[$lexeme] += 1;
 			}
 		}
@@ -255,7 +253,7 @@ EOSQL
 					SELECT no
 				 	FROM lexeme
 					WHERE book_id=$this->book_id AND lexeme='" . mysql_escape_string($lexeme) . "'
-				") or print(__FILE__ . ':' . __LINE__ . ': ' .  htmlspecialchars($lexeme, ENT_NOQUOTES, 'utf-8') . ':' . ord($lexeme) . ':' . mysql_error() . "\n");
+				") or print(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
 				if(mysql_num_rows($result))
 					list($lexeme_no) = mysql_fetch_row($result);
 				else
@@ -275,7 +273,7 @@ EOSQL
 					($this->book_id, $lexeme_no, $this->page_no, $count)"
 				);
 			}
-			
+
 			unset($this->page_lexemes);
 			unset($this->page_no);
 		}
