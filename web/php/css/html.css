@@ -1,0 +1,125 @@
+/* General */
+
+body {
+	color: black;
+	background-color: white;
+
+	font-family: verdana, tahoma, helvetica, arial, sans-serif;
+	font-size: 12px;
+
+	margin: 0px;
+}
+
+a {
+	text-decoration: none;
+}
+
+/* Header */
+
+.header {
+	margin: 0px;
+
+	padding-top: 4px;
+	padding-bottom: 4px;
+	padding-left: 8px;
+	padding-right: 8px;
+	
+	font-size: 36px;
+}
+
+/* Menubar */
+
+.menubar {
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+.menubar a, .menubar span {
+	font-weight: bold;
+	
+	padding-left: 8px;
+	padding-right: 8px;
+}  
+
+.left {
+	float: left;
+}
+
+.right {
+	float: right;
+}
+
+/* Sideframe */
+
+.sideframe {
+	font-size: 11px;
+}
+
+.sideframe ul a {
+	text-decoration: none;
+	display: block;
+}
+
+
+/* Lists */
+
+ul.list {
+	margin: 0px;
+	padding-top: 1px;
+	padding-bottom: 1px;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+ul.list li {
+	list-style-type: none;
+}
+
+
+/* Trees */
+
+ul.tree {
+	margin: 0px;
+	padding-top: 1px;
+	padding-bottom: 1px;
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-left: 20px;
+}
+
+ul.tree ul.tree {
+	padding-left: 16px;
+}
+
+li.expanded { 
+	list-style-image: url("../icons/minus.png") 
+}
+
+li.collapsed { 
+	list-style-image: url("../icons/plus.png") 
+}
+
+li.single { 
+	list-style-image: url("../icons/none.png") 
+}
+
+.sideframe form {
+	display: block;
+	margin: 0px;
+	padding: 0px;
+	text-align: center;
+}
+
+input#query {
+	width: 98%;
+	margin-top: 2px;
+	margin-bottom: 2px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+input#submit {
+	display: none;
+}

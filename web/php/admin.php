@@ -31,7 +31,7 @@
 	echo '<head>';
 	echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>';
 	echo '<title>Administration</title>';
-	echo '<link href="' . $css . '" type="text/css" rel="stylesheet"/>';
+	echo '<link href="css/default.css" type="text/css" rel="stylesheet"/>';
 	echo '</head>';
 	echo '<body>';
 	

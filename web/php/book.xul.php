@@ -14,7 +14,7 @@
 	$title = htmlspecialchars($book->title());
 	
 	echo '<?xml version="1.0" encoding="UTF-8"?>';
-	echo '<?xml-stylesheet href="css/skin.css" type="text/css"?>';
+	echo '<?xml-stylesheet href="css/xul.css" type="text/css"?>';
 
 	echo '
 <!-- 
@@ -64,5 +64,4 @@
 	echo '</hbox>';
 	
 	echo '</window>';
-
 ?>

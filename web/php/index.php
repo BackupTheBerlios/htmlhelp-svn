@@ -2,19 +2,18 @@
 	require_once 'include/config.inc.php';
 	require_once 'include/book.inc.php';
 
-	// XXX: for link backward compatability
-	if($book = $_GET['book'])
-	{
-		header(
-			'Location: http://' . 
-			$_SERVER['HTTP_HOST'] . 
-			dirname($_SERVER['REQUEST_URI']) . 
-			'/book.php?book=' . $book);
-		exit;
-	}
+	header('Content-Type: text/html; charset=utf-8');
+
+	echo '<?xml version="1.0" encoding="UTF-8"?>';
+	echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
 	
-	$title = 'HTML Help Books';
-	require 'include/header.inc.php';
+	echo '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">';
+	
+	echo '<head>';
+	echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>';
+	echo '<title>HTML Help Books</title>';
+	echo '<link href="css/default.css" type="text/css" rel="stylesheet"/>';
+	echo '</head>';
 
 	echo '<body>';
 	
@@ -24,8 +23,8 @@
 	
 	$catalog = new Book_Catalog();
 
-	echo '<div id="tags" class="sidebar">';
-	echo '<p><strong>Tags</strong></p>';
+	echo '<div id="tags" class="sidebox">';
+	echo '<span class="title">Tags</span>';
 	echo '<table>';
 	$tags = $catalog->count_tags();
 	foreach($tags as $tag => $count)
@@ -68,11 +67,7 @@
 		echo '<p>No book found.</p>';
 	echo '</div>';
 
-	echo '<div>';
-	require 'include/frontpage.inc.php';
-	echo '</div>';
-	
 	echo '</body>';
 	
-	require 'include/footer.inc.php';
+	echo '</html>';
 ?>

@@ -5,7 +5,7 @@ body {
 	background-color: white;
 
 	font-family: verdana, tahoma, helvetica, arial, sans-serif;
-	font-size: 12px;
+	font-size: 14px;
 
 	margin: 0px;
 }
@@ -17,133 +17,71 @@ a {
 /* Header */
 
 .header {
-	margin: 0px;
+	font-size: 36px;
 
 	padding-top: 4px;
 	padding-bottom: 4px;
 	padding-left: 8px;
 	padding-right: 8px;
-	
-	font-size: 36px;
-}
 
-/* Menubar */
-
-.menubar {
-	padding-left: 4px;
-	padding-right: 4px;
-	padding-top: 2px;
-	padding-bottom: 2px;
-}
-
-.menubar a, .menubar span {
-	font-weight: bold;
-	
-	padding-left: 8px;
-	padding-right: 8px;
-}  
-
-.left {
-	float: left;
-}
-
-.right {
-	float: right;
-}
-
-/* Sidebar */
-
-.sidebar {
-	background-color: #f0f0f0;
-	width: 15.5em;
 	border-bottom: 1px solid #999999;
-	border-right: 1px solid #999999;
+	
+	margin: 0px;
+}
+
+/* Sideboxes */
+
+.sidebox {
+	background-color: #f0f0f0;
+
+	font-size: 12px;
+	
+	width: 200px;
+
 	padding-top: 1em;
 	padding-bottom: 1em;
+	
+	border-bottom: 1px solid #999999;
+	border-right: 1px solid #999999;
+	
 	float: left;
 	clear: left;
 }
 
+.sidebox .title {
+	display: block;
+
+	font-size: 14px;
+	font-weight: bold;
+	
+	text-align: center;	
+}
+
+/* Main content */
+
 .content {
 	background-color: white;
+	
 	text-align: justify;
 	line-height: 1.5em;
-	margin: 0 0 0 15.5em;
+	
 	padding: 5mm 5mm 2mm 5mm;
-	border-left: 1px solid #999999;
 	padding: 1.5ex 1ex;
+	
+	border-left: 1px solid #999999;
+	
+	margin: 0 0 0 200px;
 }
 
-
-/* Sideframe */
-
-.sideframe {
-	font-size: 11px;
-}
-
-.sideframe ul a {
-	text-decoration: none;
-	display: block;
-}
-
-
-/* Lists */
-
-ul.list {
-	margin: 0px;
+.content ul {
 	padding-top: 1px;
 	padding-bottom: 1px;
 	padding-left: 2px;
 	padding-right: 2px;
+	
+	margin: 0px;	
 }
 
-ul.list li {
+.content ul li {
 	list-style-type: none;
-}
-
-
-/* Trees */
-
-ul.tree {
-	margin: 0px;
-	padding-top: 1px;
-	padding-bottom: 1px;
-	padding-left: 2px;
-	padding-right: 2px;
-	padding-left: 20px;
-}
-
-ul.tree ul.tree {
-	padding-left: 16px;
-}
-
-li.expanded { 
-	list-style-image: url("../icons/minus.png") 
-}
-
-li.collapsed { 
-	list-style-image: url("../icons/plus.png") 
-}
-
-li.single { 
-	list-style-image: url("../icons/none.png") 
-}
-
-.sideframe form {
-	display: block;
-	margin: 0px;
-	padding: 0px;
-	text-align: center;
-}
-
-input#query {
-	width: 98%;
-	margin-top: 2px;
-	margin-bottom: 2px;
-	margin-left: auto;
-	margin-right: auto;
-}
-
-input#submit {
-	display: none;
 }

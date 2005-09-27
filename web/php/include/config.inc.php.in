@@ -1,14 +1,13 @@
 <?php
-	// HTML style-sheet
-	$css = 'css/default.css';
-	
-	// MySQL server settings
-	$db_server = 'localhost';
-	$db_username = 'www';
-	$db_password = '';
-	$db_database = 'htmlhelp';
-	
-	// Administrative settings
-	$admin_password = '';
-	$admin_directory = '';
+
+// MySQL server settings
+$db_server = 'localhost';
+$db_username = 'www';
+$db_password = '';
+$db_database = 'htmlhelp';
+
+// Administrative settings
+$admin_password = '';
+$admin_directory = '';
+
 ?>

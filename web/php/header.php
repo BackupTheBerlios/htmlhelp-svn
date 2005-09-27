@@ -14,7 +14,7 @@
 	echo '<head>';
 	echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>';
 	echo '<title>' . $title . '</title>';
-	echo '<link href="' . $css . '" type="text/css" rel="stylesheet"/>';
+	echo '<link href="css/html.css" type="text/css" rel="stylesheet"/>';
 	echo '</head>';
 
 	echo '<body class="header">' . $title . '</body>';

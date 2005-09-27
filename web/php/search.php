@@ -17,7 +17,7 @@
 	echo  '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>';
 	echo  '<title>Search</title>';
 	echo  '<base href="http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/page.php/' . htmlspecialchars($alias) . '/" target="main"/>';
-	echo  '<link href="../../' . $css . '" type="text/css" rel="stylesheet"/>';
+	echo  '<link href="../../css/html.css" type="text/css" rel="stylesheet"/>';
 	echo '</head>';
 	echo '<body id="search" class="sideframe">';
 
