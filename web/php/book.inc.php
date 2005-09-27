@@ -235,7 +235,7 @@ EOSQL
 			");
 		}
 
-		function add_lexemes($lexemes)
+		function add_lexemes(&$lexemes)
 		{
 			// TODO: store lexeme positions instead of lexeme counts
 			foreach($lexemes as $lexeme)
@@ -486,7 +486,7 @@ EOSQL
 		}
 		
 		// Tag this book with the given tags
-		function tag($tags)
+		function tag(&$tags)
 		{
 			$values = array();
 			foreach($tags as $tag)
@@ -502,7 +502,7 @@ EOSQL
 		}
 		
 		// Untag this book with given tags
-		function untag($tags)
+		function untag(&$tags)
 		{
 			$values = array();
 			foreach($tags as $tag)

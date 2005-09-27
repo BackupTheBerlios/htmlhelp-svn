@@ -8,18 +8,17 @@ class Search_Result
 	// FIXME: use sets
 	var $entries;
 
-	function Search_Result($entries) 
+	function Search_Result(&$entries) 
 	{
-		// FIXME: use references instead of copies where applicable
-		$this->entries = $entries;
+		$this->entries = &$entries;
 	}
 
-	function union($other) 
+	function union(&$other) 
 	{
 		// FIXME: implement this
 	}
 
-	function intersection($other)
+	function intersection(&$other)
 	{
 		$entries = array();
 		foreach($this->entries as $lentry)
@@ -36,7 +35,7 @@ class Search_Result
 		return new Search_Result($entries);
 	}
 
-	function subtraction($other)
+	function subtraction(&$other)
 	{
 		// FIXME: implement this
 	}
@@ -57,7 +56,7 @@ class Searchable
 	
 	function search($query)
 	{
-		$search = Search_Parser::parse($query);
+		$search = & Search_Parser::parse($query);
 		return $search->apply($this)->enumerate();
 	}
 }
@@ -65,7 +64,7 @@ class Searchable
 class Search_Node
 {
 	// Should be overriden by derived classes
-	function apply($searchable)
+	function apply(&$searchable)
 	{
 		// TODO: include score
 		return array();
@@ -81,7 +80,7 @@ class Search_TermNode extends Search_Node
 		$this->term = $term;
 	}
 
-	function apply($searchable)
+	function apply(&$searchable)
 	{
 		return $searchable->search_lexeme($this->term);
 	}
@@ -92,17 +91,17 @@ class Search_AndNode extends Search_Node
 	var $left_node;
 	var $right_node;
 
-	function Search_AndNode($left_node, $right_node)
+	function Search_AndNode(&$left_node, &$right_node)
 	{
-		$this->left_node = $left_node;
-		$this->right_node = $right_node;
+		$this->left_node = &$left_node;
+		$this->right_node = &$right_node;
 	}
 
-	function apply($searchable)
+	function apply(&$searchable)
 	{
-		return 
-			$this->left_node->apply($searchable)->intersection(
-			$this->right_node->apply($searchable));
+		$lresult = & $this->left_node->apply($searchable);
+		$rresult = & $this->right_node->apply($searchable);
+		return $lresult->intersection($rresult);
 	}
 }
 
@@ -115,11 +114,11 @@ class Search_Parser
 		// TODO: implement more complex searches
 		$terms = explode(' ', $query);
 
-		$search = new Search_TermNode($terms[0]);
+		$search = & new Search_TermNode($terms[0]);
 		unset($terms[0]);
 		foreach($terms as $term)
 		{
-			$search = new Search_AndNode($search, new Search_TermNode($term));
+			$search = & new Search_AndNode($search, new Search_TermNode($term));
 		}
 		return $search;
 	}

@@ -12,7 +12,7 @@ class Fulltext_Index
 	function set_title($title) {}
 
 	// Add lexemes in order (should be overriden by derived classes)
-	function add_lexemes($lexemes) {}
+	function add_lexemes(&$lexemes) {}
 
 	// Begin a new page
 	function new_page() {}
@@ -34,7 +34,7 @@ class Fulltext_Index
 	// Index a page
 	function index_page($path, $content)
 	{
-		$indexer = $this->indexer_factory($path);
+		$indexer = & $this->indexer_factory($path);
 		$this->start_page();
 		if(!is_null($indexer))
 			$indexer->feed($content);
@@ -54,12 +54,12 @@ class Fulltext_SimpleIndex extends Fulltext_Index
 		$this->lexemes = array();
 	}
 
-	function set_title($page, $title) 
+	function set_title($title) 
 	{
 		$this->titles[$page] = $title;
 	}
 
-	function store_lexemes($page, $lexemes)
+	function add_lexemes(&$lexemes)
 	{
 		foreach($lexemes as $lexeme)
 		{
@@ -121,9 +121,9 @@ class Fulltext_Indexer
 {
 	var $index;
 
-	function Fulltext_Indexer($index)
+	function Fulltext_Indexer(&$index)
 	{
-		$this->index = $index;
+		$this->index = &$index;
 	}
 
 	function feed_title($title)
@@ -133,7 +133,8 @@ class Fulltext_Indexer
 
 	function feed_body($body)
 	{
-		$this->index->add_lexemes($this->tokenize($body));
+		$tokens = & $this->tokenize($body);
+		$this->index->add_lexemes($tokens);
 	}
 
 	function feed($content) {}
@@ -149,7 +150,7 @@ class Fulltext_Indexer
 		global $tokens_pattern;
 
 		preg_match_all($tokens_pattern,  $string, $matches, PREG_PATTERN_ORDER);
-		$tokens = $matches[0];
+		$tokens = & $matches[0];
 		return $tokens;
 	}
 }
