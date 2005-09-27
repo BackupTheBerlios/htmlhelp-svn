@@ -2,8 +2,6 @@
 
 require_once 'include/mimetypes.inc.php';
 
-mb_internal_encoding('utf-8');
-
 // Index interface
 class Fulltext_Index
 {
@@ -56,7 +54,7 @@ class Fulltext_SimpleIndex extends Fulltext_Index
 
 	function set_title($title) 
 	{
-		$this->titles[$page] = $title;
+		$this->titles[$this->page] = $title;
 	}
 
 	function add_lexemes(&$lexemes)
@@ -65,7 +63,7 @@ class Fulltext_SimpleIndex extends Fulltext_Index
 		{
 			if(!isset($this->lexemes[$lexeme]))
 				$this->lexemes[$lexeme] = array();
-			$this->lexemes[$lexeme][$page] += 1;
+			$this->lexemes[$lexeme][$this->page] += 1;
 		}
 	}
 }

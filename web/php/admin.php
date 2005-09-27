@@ -37,7 +37,7 @@
 	
 	echo '<div class="header">Administration</div>';
 	
-	echo '<div class="sidebar">';
+	echo '<div class="sidebox">';
 	echo  '<ul>';
 	echo   '<li><a href="?what=books">Books</a></li>';
 	echo   '<li><a href="?what=tags">Tags</a></li>';
