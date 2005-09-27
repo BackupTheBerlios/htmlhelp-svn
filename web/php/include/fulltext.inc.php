@@ -1,6 +1,6 @@
 <?php
 
-require_once 'mimetypes.inc.php';
+require_once 'include/mimetypes.inc.php';
 
 mb_internal_encoding('utf-8');
 

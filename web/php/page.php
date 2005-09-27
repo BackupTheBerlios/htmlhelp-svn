@@ -1,7 +1,7 @@
 <?php
-	require_once 'config.inc.php';
-	require_once 'book.inc.php';
-	require_once 'mimetypes.inc.php';
+	require_once 'include/config.inc.php';
+	require_once 'include/book.inc.php';
+	require_once 'include/mimetypes.inc.php';
 
 	// For this to work with the CGI version of PHP4, the "cgi.fix_pathinfo=1"
 	// option in php.ini must be set.
@@ -10,7 +10,7 @@
 	$path = $_SERVER['PATH_INFO'];
 	while(!$alias and $path)
 		list($alias, $path) = explode('/', $path, 2);
-	require 'get_book_from_alias.inc.php';
+	require 'include/get_book_from_alias.inc.php';
 
 	// If the 'path' param is not given then redirect to the book's front page.
 	if(!$path)

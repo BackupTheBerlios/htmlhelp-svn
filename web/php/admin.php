@@ -1,6 +1,6 @@
 <?php
-	require_once 'config.inc.php';
-	require_once 'book.inc.php';
+	require_once 'include/config.inc.php';
+	require_once 'include/book.inc.php';
 
 	$authenticated = 0;
 	$password = $_COOKIE['Password'];

@@ -1,6 +1,6 @@
 <?php
-	require_once 'config.inc.php';
-	require_once 'book.inc.php';
+	require_once 'include/config.inc.php';
+	require_once 'include/book.inc.php';
 
 	// XXX: for link backward compatability
 	if($book = $_GET['book'])
@@ -14,7 +14,7 @@
 	}
 	
 	$title = 'HTML Help Books';
-	require 'header.inc.php';
+	require 'include/header.inc.php';
 
 	echo '<body>';
 	
@@ -69,10 +69,10 @@
 	echo '</div>';
 
 	echo '<div>';
-	require 'frontpage.inc.php';
+	require 'include/frontpage.inc.php';
 	echo '</div>';
 	
 	echo '</body>';
 	
-	require 'footer.inc.php';
+	require 'include/footer.inc.php';
 ?>

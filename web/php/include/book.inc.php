@@ -1,9 +1,9 @@
 <?php
 
-	require_once 'mysql.inc.php';
-	require_once 'mysql_util.inc.php';
-	require_once 'search.inc.php';
-	require_once 'fulltext.inc.php';
+	require_once 'include/mysql.inc.php';
+	require_once 'include/mysql_util.inc.php';
+	require_once 'include/search.inc.php';
+	require_once 'include/fulltext.inc.php';
 
 	class Book_Catalog
 	{
