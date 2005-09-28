@@ -110,22 +110,14 @@
 			$book_ids = $_POST['books'];
 			$tags = $_POST['tags'];
 			if(isset($book_ids) and isset($tags))
-				foreach($book_ids as $book_id)
-				{
-					$book = $catalog->get_book_by_id($book_id);
-					$book->tag($tags);
-				}
+				$catalog->tag_books($book_ids, $tags);
 			break;
 			
 		case 'untag';
 			$book_ids = $_POST['books'];
 			$tags = $_POST['tags'];
 			if(isset($book_ids) and isset($tags))
-				foreach($book_ids as $book_id)
-				{
-					$book = $catalog->get_book_by_id($book_id);
-					$book->untag($tags);
-				}
+				$catalog->untag_books($book_ids, $tags);
 			break;
 	}
 	$finish_time = time();

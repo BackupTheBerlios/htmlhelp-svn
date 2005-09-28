@@ -10,29 +10,9 @@ class Book extends Searchable
 
 	function Book($id)
 	{
-
 		$this->id = $id;
 	}
 	
-	function alias()
-	{
-		$result = mysql_query("
-			SELECT alias
-			FROM book_alias
-			WHERE book_id = $this->id
-				AND alias != $this->id
-			ORDER BY LENGTH(alias) ASC
-		");
-		if(mysql_num_rows($result))
-		{
-			list($alias) = mysql_fetch_row($result);
-			return $alias;
-		}
-		
-		// fallback to the book numeric ID
-		return strval($this->id);
-	}
-
 	function title()
 	{
 		$result = mysql_query("
@@ -208,38 +188,6 @@ class Book extends Searchable
 		}
 
 		$index->cleanup();
-	}
-	
-	// Tag this book with the given tags
-	function tag(&$tags)
-	{
-		$values = array();
-		foreach($tags as $tag)
-			$values[] = "'" . mysql_escape_string($tag) . "'";			
-		mysql_query("
-			REPLACE 
-				INTO alias_tag (tag_id, alias)
-			SELECT tag.id, alias
-				FROM tag, book_alias
-				WHERE book_id=$this->id
-					AND tag IN (" . implode(',', $values) . ")
-		");
-	}
-	
-	// Untag this book with given tags
-	function untag(&$tags)
-	{
-		$values = array();
-		foreach($tags as $tag)
-			$values[] = "'" . mysql_escape_string($tag) . "'";
-		mysql_query("
-			DELETE alias_tag
-			FROM book_alias
-				LEFT JOIN alias_tag ON alias_tag.alias = book_alias.alias
-				LEFT JOIN tag ON tag.id = tag_id
-			WHERE book_id=$this->id
-				AND tag IN (" . implode(',', $values) . ")
-		") or die(mysql_error());
 	}
 }
 

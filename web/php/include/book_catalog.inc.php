@@ -14,13 +14,13 @@ class BookCatalog
 		$reader = & new DevhelpReader($filename);
 		$reader->read($builder);
 		
-		$this->_update_aliases();
+		$this->update_aliases();
 	}
 
 	// Update book aliases cache
 	//
 	// It should be called whenever the book metadata table is changed 		
-	function _update_aliases()
+	function update_aliases()
 	{
 		// a book can be identified by its 'name', 'name_version', and 
 		// 'name_version_language'
@@ -82,7 +82,26 @@ EOSQL
 			$tags[$tag] = $count;			
 		return $tags;
 	}
-	
+
+	function _get_book_alias($book_id)
+	{
+		$result = mysql_query("
+			SELECT alias
+			FROM book_alias
+			WHERE book_id = $book_id
+				AND alias != $book_id
+			ORDER BY LENGTH(alias) ASC
+		");
+		if(mysql_num_rows($result))
+		{
+			list($alias) = mysql_fetch_row($result);
+			return $alias;
+		}
+		
+		// fallback to the book numeric ID
+		return strval($this->id);
+	}
+
 	// Internal function which enumerates books by a SQL query
 	//
 	// The query should return a (book_id, book_title) column table. 
@@ -93,8 +112,7 @@ EOSQL
 		if($result)
 			while(list($book_id, $book_title) = mysql_fetch_row($result))
 			{
-				$book = new Book($book_id);
-				$book_alias = $book->alias();
+				$book_alias = $this->_get_book_alias($book_id);
 				$books[$book_alias] = $book_title;
 			}
 		return $books;
@@ -163,6 +181,44 @@ EOSQL
 		}
 		
 		return NULL;
+	}
+	
+	// Tag the books with the given tags
+	function tag_books(&$book_ids, &$tags)
+	{
+		$values = array();
+		foreach($tags as $tag)
+			$values[] = "'" . mysql_escape_string($tag) . "'";			
+		foreach($book_ids as $book_id)
+		{
+			mysql_query("
+				REPLACE 
+					INTO alias_tag (tag_id, alias)
+				SELECT tag.id, alias
+					FROM tag, book_alias
+					WHERE book_id=$book_id
+						AND tag IN (" . implode(',', $values) . ")
+			");
+		}
+	}
+	
+	// Untag the books with the given tags
+	function untag_books(&$book_ids, &$tags)
+	{
+		$values = array();
+		foreach($tags as $tag)
+			$values[] = "'" . mysql_escape_string($tag) . "'";
+		foreach($book_ids as $book_id)
+		{
+			mysql_query("
+				DELETE alias_tag
+				FROM book_alias
+					LEFT JOIN alias_tag ON alias_tag.alias = book_alias.alias
+					LEFT JOIN tag ON tag.id = tag_id
+				WHERE book_id=$book_id
+					AND tag IN (" . implode(',', $values) . ")
+			") or die(mysql_error());
+		}
 	}
 }
 
