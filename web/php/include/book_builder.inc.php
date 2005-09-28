@@ -1,6 +1,6 @@
 <?php
 
-require_once 'include/book_book.inc.php';
+require_once 'include/book.inc.php';
 
 class BookBuilder extends Book
 {

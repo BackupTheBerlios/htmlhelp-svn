@@ -1,7 +1,7 @@
 <?php
 
 require_once 'include/mysql.inc.php';
-require_once 'include/book_book.inc.php';
+require_once 'include/book.inc.php';
 require_once 'include/book_builder.inc.php';
 require_once 'include/devhelp.inc.php';
 
