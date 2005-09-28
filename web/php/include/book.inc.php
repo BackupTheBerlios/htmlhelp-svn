@@ -3,6 +3,7 @@
 require_once 'include/mysql.inc.php';
 require_once 'include/book_fulltext_index.inc.php';
 require_once 'include/fulltext_search.inc.php';
+require_once 'include/util.inc.php';
 
 class Book extends Searchable
 {
@@ -182,7 +183,7 @@ class Book extends Searchable
 		while(list($page_no, $path, $compressed, $content) = mysql_fetch_row($result))
 		{
 			if($compressed)
-				$content = gzinflate(substr($content, 10, -4));
+				$content = gzdecode($content);
 			$index->set_page_no($page_no);
 			$indexer = $index->index_page($path, $content);
 		}

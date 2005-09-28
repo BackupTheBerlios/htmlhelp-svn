@@ -33,4 +33,10 @@ function is_valid_utf8($string)
 		return FALSE;
 }
 
+function gzdecode($string)
+{
+	# FIXME: verify header here
+	return gzinflate(substr($string, 10, -4));
+}
+
 ?>

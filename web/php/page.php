@@ -1,6 +1,7 @@
 <?php
 	require_once 'include/config.inc.php';
 	require_once 'include/mimetypes.inc.php';
+	require_once 'include/util.inc.php';
 
 	// For this to work with the CGI version of PHP4, the "cgi.fix_pathinfo=1"
 	// option in php.ini must be set.
@@ -35,8 +36,7 @@
 			}
 			else
 			{
-				# FIXME: verify header here
-				$content = gzinflate(substr($content, 10, -4));
+				$content = gzdecode($content);
 				
 				header('Content-Type: ' . $content_type);
 				header('Content-Length: ' . strlen($content));

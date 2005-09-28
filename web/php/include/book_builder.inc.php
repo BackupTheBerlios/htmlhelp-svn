@@ -64,15 +64,26 @@ class BookBuilder extends Book
 	// are internally stored as a page reference plus an anchor.
 	function add_page($path, $content)
 	{
+		// gzip content
+		$gzcontent = gzencode($content);
+		if(strlen($gzcontent) < strlen($content))
+		{
+			$compressed = 1;
+			$content = $gzcontent;
+		}
+		else
+			$compressed = 0;
+		
 		$this->last_page_no += 1;
 		mysql_query(
 			'INSERT ' .
 			'INTO page ' . 
-			'(book_id, no, path, content) ' . 
+			'(book_id, no, path, compressed, content) ' . 
 			'VALUES (' . 
 				$this->id . ', ' .
 				$this->last_page_no . ', ' .
 				'"' . mysql_escape_string($path) . '", ' .
+				$compressed . ', ' .
 				'"' . mysql_escape_string($content) . '")' 
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 	}
