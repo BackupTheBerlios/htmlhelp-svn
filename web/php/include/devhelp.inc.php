@@ -1,5 +1,7 @@
 <?php
 
+require_once 'include/util.inc.php';
+
 class XmlParser
 {
     var $parser;
@@ -121,28 +123,6 @@ class DevhelpSpecParser extends XmlParser
     			break;    		
     	}
     }
-}
-
-// Creates a directory with a unique name at the specified with the specified 
-// prefix.
-//
-// Returns directory name on success, false otherwise
-function tmpdir($path, $prefix)
-{
-       // Use PHP's tmpfile function to create a temporary
-       // directory name. Delete the file and keep the name.
-       $tempname = tempnam($path,$prefix);
-       if (!$tempname)
-               return false;
-
-       if (!unlink($tempname))
-               return false;
-
-       // Create the temporary directory and returns its name.
-       if (mkdir($tempname))
-               return $tempname;
-
-       return false;
 }
 
 // XXX: requires an Unix-like OS with the 'tar' and 'rm' executables in the path

@@ -1,6 +1,8 @@
 <?php
 
-$catalog = new Book_Catalog();
+require_once 'include/book_catalog.inc.php';
+
+$catalog = new BookCatalog();
 $book = $catalog->get_book_from_alias($alias);
 if(!isset($book))
 {

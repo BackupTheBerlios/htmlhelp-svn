@@ -13,7 +13,7 @@ function explode_version($version)
 		$version = substr($version, 0, $pos);
 	return explode('.', $version);
 }
-	
+
 // Checks for a specified MySQL server version
 function mysql_check_version($version)
 {

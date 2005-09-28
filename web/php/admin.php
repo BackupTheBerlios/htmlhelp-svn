@@ -1,6 +1,6 @@
 <?php
 	require_once 'include/config.inc.php';
-	require_once 'include/book.inc.php';
+	require_once 'include/book_catalog.inc.php';
 
 	$authenticated = 0;
 	$password = $_COOKIE['Password'];
@@ -46,7 +46,7 @@
 
 	echo '<div class="content">';
 
-	$catalog = new Book_Catalog();
+	$catalog = new BookCatalog();
 	
 	echo '<div class="result">';
 	if(!$authenticated && $action != 'login')
@@ -215,7 +215,7 @@
 			echo '<select name="books[]" multiple="yes" size="20">';
 			$entries = $catalog->enumerate_books();	
 			foreach($entries as $title => $book)
-				echo '<option value="' . $book->id . '">' . $title . '</option>';
+				echo '<option value="' . $book->id . '">' . htmlspecialchars($title) . '</option>';
 			echo '</select>';
 			echo '<select name="tags[]" multiple="yes" size="20">';
 			$tags = $catalog->enumerate_tags();
@@ -234,7 +234,7 @@
 			echo '</form>';
 			break;
 
-		case 'book':			
+		case 'book':
 			$book_id = intval($_GET['book']);
 			$book = new Book($book_id);
 			echo '<form action="admin.php?what=book" method="POST">';

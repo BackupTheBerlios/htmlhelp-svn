@@ -2,15 +2,7 @@
 
 require_once 'include/mysql.inc.php';
 require_once 'include/fulltext_index.inc.php';
-
-function is_valid_utf8($string)
-{
-	// taken from http://pt.php.net/manual/en/function.utf8-decode.php
-	if(preg_match('/^([\x00-\x7f]|[\xc0-\xdf][\x80-\xbf]|[\xe0-\xef][\x80-\xbf]{2}|[\xf0-\xf7][\x80-\xbf]{3}|[\xf8-\xfb][\x80-\xbf]{4}|[\xfc-\xfd][\x80-\xbf]{5})*$/', $string))
-		return TRUE;
-	else
-		return FALSE;
-}
+require_once 'include/util.inc.php';
 
 class Book_Fulltext_Index extends Fulltext_Index
 {

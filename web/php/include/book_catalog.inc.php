@@ -5,7 +5,7 @@ require_once 'include/book_book.inc.php';
 require_once 'include/book_builder.inc.php';
 require_once 'include/devhelp.inc.php';
 
-class Book_Catalog
+class BookCatalog
 {
 	// Import a book into the bookshelf
 	function import_book($filename)
@@ -45,12 +45,12 @@ class Book_Catalog
 					GROUP BY book_id
 					HAVING COUNT(DISTINCT name) = 3
 EOSQL
-			);
-		}
-		
-		function update_tags()
-		{
-			// TODO: attempt to semi-automate this process
+		);
+	}
+	
+	function update_tags()
+	{
+		// TODO: attempt to semi-automate this process
 	}
 	
 	function enumerate_tags()

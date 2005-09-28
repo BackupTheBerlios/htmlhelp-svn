@@ -1,6 +1,5 @@
 <?php
 	require_once 'include/config.inc.php';
-	require_once 'include/book.inc.php';
 
 	$alias = $_GET['book'];
 	require 'include/get_book_from_alias.inc.php'; 	

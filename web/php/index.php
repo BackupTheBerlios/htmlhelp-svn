@@ -1,6 +1,6 @@
 <?php
 	require_once 'include/config.inc.php';
-	require_once 'include/book.inc.php';
+	require_once 'include/book_catalog.inc.php';
 
 	header('Content-Type: text/html; charset=utf-8');
 
@@ -21,7 +21,7 @@
 
 	echo '<div class="header">HTML Help Books</div>';
 	
-	$catalog = new Book_Catalog();
+	$catalog = new BookCatalog();
 
 	echo '<div id="tags" class="sidebox">';
 	echo '<span class="title">Tags</span>';

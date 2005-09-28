@@ -1,6 +1,5 @@
 <?php
 	require_once 'include/config.inc.php';
-	require_once 'include/book.inc.php';
 	require_once 'include/mimetypes.inc.php';
 
 	// For this to work with the CGI version of PHP4, the "cgi.fix_pathinfo=1"
