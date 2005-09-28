@@ -5,7 +5,6 @@ class Search_Result
 	// TODO: write another version of this class which compiles SQL statements; 
 	// however it will be difficult not to resort to subselects...
 
-	// FIXME: use sets
 	var $entries;
 
 	function Search_Result(&$entries) 
@@ -110,7 +109,7 @@ class Search_Parser
 	// Class method to parse query
 	function parse($query)
 	{
-		// FIXME: tokenize $terms
+		// FIXME: tokenize terms
 		// TODO: implement more complex searches
 		$terms = explode(' ', $query);
 

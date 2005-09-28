@@ -10,11 +10,35 @@ class BookCatalog
 	// Import a book into the catalog (database)
 	function import_book($filename)
 	{
-		$builder = & new BookBuilder();
+		$book = & new BookBuilder();
 		$reader = & new DevhelpReader($filename);
-		$reader->read($builder);
+		$reader->read($book);
 		
+		// auto metadata
+		if(!$book->metadata('name') and preg_match(
+			'/^(.*?)(?:-([0-9]+(?:\.[0-9]+[a-z]?)*))\.tgz$/', 
+			basename($filename), 
+			$matches)
+		)
+		{
+			$name = $matches[1];
+			$version = $matches[2];
+			
+			if($name)
+				$book->set_metadata('name', $name);
+			
+			if($version)
+				$book->set_metadata('version', $version);
+		}
+
 		$this->update_aliases();
+				
+		// auto tags
+		$book_ids = array($book->id);
+		$title = $book->title();
+		preg_match_all('/[\pL\pN]+/u', $title, $matches, PREG_PATTERN_ORDER);
+		$tags = & $matches[0];
+		$this->tag_books($book_ids, $tags);
 	}
 
 	// Update book aliases cache
@@ -46,11 +70,6 @@ class BookCatalog
 					HAVING COUNT(DISTINCT name) = 3
 EOSQL
 		);
-	}
-	
-	function update_tags()
-	{
-		// TODO: attempt to semi-automate this process
 	}
 	
 	function enumerate_tags()
@@ -147,7 +166,7 @@ EOSQL
 			SELECT book.id, book.title
 			FROM book
 				LEFT JOIN book_alias ON book_id = book.id
-				LEFT JOIN book_tag ON book_tag.alias = book_alias.alias 
+				LEFT JOIN book_tag ON book_name = alias 
 				LEFT JOIN tag ON tag.id = tag_id
 			WHERE tag.tag = '" . mysql_escape_string($tag) . "'
 			ORDER BY book.title ASC
