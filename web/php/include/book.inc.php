@@ -142,7 +142,7 @@ class Book extends Searchable
 		}
 	}
 
-	function page($path)
+	function page($path, $allow_compressed = FALSE)
 	{
 		$result = mysql_query("
 			SELECT compressed, content 
@@ -150,12 +150,17 @@ class Book extends Searchable
 			WHERE book_id = $this->id AND path = '" . mysql_escape_string($path) . "'
 		");
 		if(mysql_num_rows($result))
-		{
 			list($compressed, $content) = mysql_fetch_row($result);
-			return array($compressed, $content);
-		}
 		else
 			return NULL;
+		
+		if($allow_compressed)
+			return array($compressed, $content);
+		else
+			if($compressed)
+				return gzdecode($content);
+			else
+				return $content;
 	}
 	
 	function delete()
