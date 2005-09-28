@@ -72,8 +72,8 @@ EOSQL
 		$result = mysql_query("
 			SELECT tag, COUNT(DISTINCT book_id) AS count
 			FROM tag
-				LEFT JOIN alias_tag ON tag.id = tag_id
-				LEFT JOIN book_alias ON alias_tag.alias = book_alias.alias
+				LEFT JOIN book_tag ON tag.id = tag_id
+				LEFT JOIN book_alias ON book_name = alias
 			GROUP BY tag.id
 			-- HAVING count > 0
 			ORDER BY count DESC, tag ASC
@@ -147,7 +147,7 @@ EOSQL
 			SELECT book.id, book.title
 			FROM book
 				LEFT JOIN book_alias ON book_id = book.id
-				LEFT JOIN alias_tag ON alias_tag.alias = book_alias.alias 
+				LEFT JOIN book_tag ON book_tag.alias = book_alias.alias 
 				LEFT JOIN tag ON tag.id = tag_id
 			WHERE tag.tag = '" . mysql_escape_string($tag) . "'
 			ORDER BY book.title ASC
@@ -193,12 +193,16 @@ EOSQL
 		{
 			mysql_query("
 				REPLACE 
-					INTO alias_tag (tag_id, alias)
-				SELECT tag.id, alias
-					FROM tag, book_alias
-					WHERE book_id=$book_id
+					INTO book_tag (tag_id, book_name)
+				SELECT tag.id, value
+					FROM tag, metadata
+					WHERE book_id = $book_id
+						AND name = 'name'
 						AND tag IN (" . implode(',', $values) . ")
-			");
+				UNION SELECT tag.id, $book_id
+					FROM tag
+					WHERE tag IN (" . implode(',', $values) . ")
+			") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		}
 	}
 	
@@ -211,13 +215,13 @@ EOSQL
 		foreach($book_ids as $book_id)
 		{
 			mysql_query("
-				DELETE alias_tag
+				DELETE book_tag
 				FROM book_alias
-					LEFT JOIN alias_tag ON alias_tag.alias = book_alias.alias
+					LEFT JOIN book_tag ON book_name = alias
 					LEFT JOIN tag ON tag.id = tag_id
 				WHERE book_id=$book_id
 					AND tag IN (" . implode(',', $values) . ")
-			") or die(mysql_error());
+			") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		}
 	}
 }
