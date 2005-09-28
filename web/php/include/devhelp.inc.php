@@ -125,7 +125,8 @@ class DevhelpSpecParser extends XmlParser
     }
 }
 
-// XXX: requires an Unix-like OS with the 'tar' and 'rm' executables in the path
+// XXX: This function requires an Unix-like OS with the 'tar', 'gzip' and 'rm' 
+// executables in the path
 class DevhelpReader
 {
 	function DevhelpReader($filename)
@@ -160,13 +161,26 @@ class DevhelpReader
 		$book->commit();
 	}
 	
+	function _walk_pages(&$pages, $dirname, $prefix)
+	{
+		$handle = opendir($dirname);
+		while(false !== ($entry = readdir($handle)))
+		{
+			$path = $dirname . '/' . $entry;
+			if(is_dir($path))
+			{
+				if($entry != '.' and $entry != '..')
+					$this->_walk_pages($pages, $path, $prefix . $entry . '/');
+			}
+			else
+				$pages[] = $prefix . $entry;
+		}		
+	}
+	
 	function list_pages()
 	{
-		// FIXME: recurse through the subdirectories 
-		$dir = dir($this->tmpdir . '/book');
 		$pages = array();
-		while(false !== ($page = $dir->read()))
-			$pages[] = $page;
+		$this->_walk_pages($pages, $this->tmpdir . '/book', '');
 		return $pages;
 	}
 	
