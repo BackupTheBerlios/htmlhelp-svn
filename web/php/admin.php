@@ -161,7 +161,7 @@
 				echo '<input type="hidden" name="action" value="add">';
 				echo '<select name="files[]" multiple="yes" size="10">';
 				$dir = dir($admin_directory);
-				$ext = '.sql';
+				$ext = '.tgz';
 				$entries = array();
 				while(false !== ($entry = $dir->read()))
 					if(substr($entry, -strlen($ext)) == $ext)

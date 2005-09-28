@@ -2,13 +2,17 @@
 
 require_once 'include/mysql.inc.php';
 require_once 'include/book_book.inc.php';
+require_once 'include/book_builder.inc.php';
+require_once 'include/devhelp.inc.php';
 
 class Book_Catalog
 {
 	// Import a book into the bookshelf
 	function import_book($filename)
 	{
-		mysql_import_dump($filename);
+		$builder = & new BookBuilder();
+		$reader = & new DevhelpReader($filename);
+		$reader->read($builder);
 		
 		$this->update_aliases();
 	}
