@@ -87,7 +87,7 @@
 			if(isset($book_ids))
 				foreach($book_ids as $book_id)
 				{
-					$book = new Book($book_id);
+					$book = $catalog->get_book_by_id($book_id);
 					$title = $book->title();
 					echo '<p>Indexing ' . htmlspecialchars($title) . '...</p>';
 					$book->index_fulltext();
@@ -99,7 +99,7 @@
 			if(isset($book_ids))
 				foreach($book_ids as $book_id)
 				{
-					$book = new Book($book_id);
+					$book = $catalog->get_book_by_id($book_id);
 					$title = $book->title();
 					echo '<p>Deleting ' . htmlspecialchars($title) . '...</p>';
 					$book->delete();
@@ -112,7 +112,7 @@
 			if(isset($book_ids) and isset($tags))
 				foreach($book_ids as $book_id)
 				{
-					$book = new Book($book_id);
+					$book = $catalog->get_book_by_id($book_id);
 					$book->tag($tags);
 				}
 			break;
@@ -123,7 +123,7 @@
 			if(isset($book_ids) and isset($tags))
 				foreach($book_ids as $book_id)
 				{
-					$book = new Book($book_id);
+					$book = $catalog->get_book_by_id($book_id);
 					$book->untag($tags);
 				}
 			break;
@@ -197,9 +197,9 @@
 			echo '<p>';
 			echo '<input type="hidden" name="what" value="books">';
 			echo '<select name="book">';
-			$entries = $catalog->enumerate_books();	
-			foreach($entries as $title => $book)
-				echo '<option value="' . $book->id . '">' . $title . '</option>';
+			$books = $catalog->enumerate_book_ids();	
+			foreach($books as $book_id => $book_title)
+				echo '<option value="' . $book_id . '">' . htmlspecialchars($book_title) . '</option>';
 			echo '</select>';
 			echo '<br/>';
 			echo '<input type="submit" value="Edit">';
@@ -213,9 +213,9 @@
 			echo '<p>';
 			echo '<input type="hidden" name="action" value="index">';
 			echo '<select name="books[]" multiple="yes" size="20">';
-			$entries = $catalog->enumerate_books();	
-			foreach($entries as $title => $book)
-				echo '<option value="' . $book->id . '">' . htmlspecialchars($title) . '</option>';
+			$books = $catalog->enumerate_book_ids();	
+			foreach($books as $book_id => $book_title)
+				echo '<option value="' . $book_id . '">' . htmlspecialchars($book_title) . '</option>';
 			echo '</select>';
 			echo '<select name="tags[]" multiple="yes" size="20">';
 			$tags = $catalog->enumerate_tags();
@@ -236,7 +236,7 @@
 
 		case 'book':
 			$book_id = intval($_GET['book']);
-			$book = new Book($book_id);
+			$book = $catalog->get_book_by_id($book_id);
 			echo '<form action="admin.php?what=book" method="POST">';
 			echo '<input type="hidden" name="action" value="edit">';
 			echo '<input type="hidden" name="book" value="' . $book_id . '"/>';

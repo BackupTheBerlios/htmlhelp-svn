@@ -27,10 +27,10 @@
 	echo '<span class="title">Tags</span>';
 	echo '<table>';
 	$tags = $catalog->count_tags();
-	foreach($tags as $tag => $count)
+	foreach($tags as $tag => $tag_count)
 	{
 		echo '<tr>';
-		echo  '<td>' . $count . '</td>';
+		echo  '<td>' . $tag_count . '</td>';
 		echo  '<td>';
 		echo   '<a href="?tag=' . htmlspecialchars($tag) . '">';
 		echo    htmlspecialchars($tag, ENT_NOQUOTES);
@@ -49,15 +49,14 @@
 	if(count($books))
 	{
 		echo '<ul class="list">';
-		foreach($books as $title => $book)
+		foreach($books as $book_alias => $book_title)
 		{
-			$alias = $book->alias();
 			echo '<li>';
 			echo  '<a ';
-			echo    'href="book.php?book=' . htmlspecialchars($alias) . '" ';
-			echo    'onclick="return openBook(\'' . htmlspecialchars($alias) . '\');" ';
+			echo    'href="book.php?book=' . htmlspecialchars($book_alias) . '" ';
+			echo    'onclick="return openBook(\'' . htmlspecialchars($book_alias) . '\');" ';
 			echo    'target="_blank">';
-			echo   htmlspecialchars($title, ENT_NOQUOTES);
+			echo   htmlspecialchars($book_title, ENT_NOQUOTES);
 			echo  '</a>';
 			echo '</li>';
 		}

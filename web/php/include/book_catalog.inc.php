@@ -7,20 +7,20 @@ require_once 'include/devhelp.inc.php';
 
 class BookCatalog
 {
-	// Import a book into the bookshelf
+	// Import a book into the catalog (database)
 	function import_book($filename)
 	{
 		$builder = & new BookBuilder();
 		$reader = & new DevhelpReader($filename);
 		$reader->read($builder);
 		
-		$this->update_aliases();
+		$this->_update_aliases();
 	}
 
 	// Update book aliases cache
 	//
 	// It should be called whenever the book metadata table is changed 		
-	function update_aliases()
+	function _update_aliases()
 	{
 		// a book can be identified by its 'name', 'name_version', and 
 		// 'name_version_language'
@@ -92,7 +92,11 @@ EOSQL
 		$result = mysql_query($query);
 		if($result)
 			while(list($book_id, $book_title) = mysql_fetch_row($result))
-				$books[$book_title] = new Book($book_id);
+			{
+				$book = new Book($book_id);
+				$book_alias = $book->alias();
+				$books[$book_alias] = $book_title;
+			}
 		return $books;
 	}
 	
@@ -105,6 +109,20 @@ EOSQL
 		");
 	}
 	
+	// IDs should be used only administrative purposes
+	function enumerate_book_ids()
+	{
+		$books = array();
+		$result = mysql_query("
+			SELECT id, title 
+			FROM book 
+			ORDER BY title
+		");
+		while(list($book_id, $book_title) = mysql_fetch_row($result))
+			$books[$book_id] = $book_title;
+		return $books;
+	}	
+	
 	function enumerate_books_by_tag($tag)
 	{
 		return $this->_enumerate_books_by_query("
@@ -116,6 +134,11 @@ EOSQL
 			WHERE tag.tag = '" . mysql_escape_string($tag) . "'
 			ORDER BY book.title ASC
 		");
+	}
+	
+	function get_book_by_id($book_id)
+	{
+		return new Book($book_id);
 	}
 	
 	function get_book_from_alias($alias)
