@@ -186,9 +186,9 @@ class BookBuilder extends Book
 	
 	function commit()
 	{
-		$this->committed = TRUE;
+		$this->index_fulltext();
 		
-		// TODO: re-indexate book here
+		$this->committed = TRUE;
 	}
 }
 

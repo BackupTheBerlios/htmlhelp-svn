@@ -1,7 +1,9 @@
+build
 c
 csharp
 css
 cxx
+fortran
 gnome
 gnu
 html
@@ -13,8 +15,10 @@ perl
 php
 python
 ruby
+scientific
 shell
 sql
+tex
 unix
 vb
 web

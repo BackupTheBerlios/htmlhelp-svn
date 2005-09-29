@@ -33,6 +33,9 @@ export: \
 
 export-htmlhelp.sql: MYSQLDUMP_FLAGS += --add-drop-table --no-data
 
+export-tags.sql: MYSQLDUMP_FLAGS += --no-create-info
+export-tags.sql: TABLES = tag book_tag
+
 export-tags.txt:
 	$(MYSQL) \
 		$(MYSQL_FLAGS) \
@@ -40,6 +43,13 @@ export-tags.txt:
 		$(DATABASE) \
 	| tail +2 > tags.txt
 
+export-book_tags.txt:
+	$(MYSQL) \
+		$(MYSQL_FLAGS) \
+		-e 'SELECT RPAD(book_name, 20, " "), GROUP_CONCAT(tag SEPARATOR ",") FROM book_tag LEFT JOIN tag ON tag.id = tag_id GROUP BY book_name ORDER BY book_name' \
+		$(DATABASE) \
+	| tail +2 > book_tags.txt
+	
 export-%.sql:
 	$(MYSQLDUMP) \
 		$(MYSQLDUMP_FLAGS) \

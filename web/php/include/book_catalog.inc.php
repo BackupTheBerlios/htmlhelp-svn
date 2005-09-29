@@ -14,7 +14,9 @@ class BookCatalog
 		$reader = & new DevhelpReader($filename);
 		$reader->read($book);
 		
-		// auto metadata
+		// attempt to get book name and version from filename
+		// FIXME: deal with uploads too
+		// TODO: detect language too
 		if(!$book->metadata('name') and preg_match(
 			'/^(.*?)(?:-([0-9]+(?:\.[0-9]+[a-z]?)*))\.tgz$/', 
 			basename($filename), 
@@ -33,7 +35,7 @@ class BookCatalog
 
 		$this->update_aliases();
 				
-		// auto tags
+		// attemp to tag new book based on the title
 		$book_ids = array($book->id);
 		$title = $book->title();
 		preg_match_all('/[\pL\pN]+/u', $title, $matches, PREG_PATTERN_ORDER);
@@ -175,7 +177,7 @@ EOSQL
 	
 	function get_book_by_id($book_id)
 	{
-		return new Book($book_id);
+		return new Book(intval($book_id));
 	}
 	
 	function get_book_from_alias($alias)
@@ -235,18 +237,15 @@ EOSQL
 			$values[] = "'" . mysql_escape_string($tag) . "'";			
 		foreach($book_ids as $book_id)
 		{
-			mysql_query("
-				REPLACE 
-					INTO book_tag (tag_id, book_name)
-				SELECT tag.id, value
-					FROM tag, metadata
-					WHERE book_id = $book_id
-						AND name = 'name'
-						AND tag IN (" . implode(',', $values) . ")
-				UNION SELECT tag.id, $book_id
-					FROM tag
-					WHERE tag IN (" . implode(',', $values) . ")
-			") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+			mysql_query(
+				"REPLACE " .
+					"INTO book_tag (tag_id, book_name) " .
+				"SELECT tag.id, value " .
+					"FROM tag, metadata " .
+					"WHERE book_id = " . intval($book_id) . " " .
+						"AND name = 'name' " .
+						"AND tag IN (" . implode(',', $values) . ")"
+			) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		}
 	}
 	
@@ -258,14 +257,14 @@ EOSQL
 			$values[] = "'" . mysql_escape_string($tag) . "'";
 		foreach($book_ids as $book_id)
 		{
-			mysql_query("
-				DELETE book_tag
-				FROM book_alias
-					LEFT JOIN book_tag ON book_name = alias
-					LEFT JOIN tag ON tag.id = tag_id
-				WHERE book_id=$book_id
-					AND tag IN (" . implode(',', $values) . ")
-			") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+			mysql_query(
+				"DELETE book_tag " .
+				"FROM book_alias " .
+					"LEFT JOIN book_tag ON book_name = alias " .
+					"LEFT JOIN tag ON tag.id = tag_id " .
+				"WHERE book_id = " . intval($book_id) . " " .
+					"AND tag IN (" . implode(',', $values) . ")"
+			) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		}
 	}
 }
