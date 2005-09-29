@@ -2,18 +2,12 @@
 
 for CATEGORY
 do
-	find $CATEGORY -type d -not -name CVS -not -name .svn -mindepth 1 -maxdepth 1 | while read PACKAGE
+	find $CATEGORY -mindepth 1 -maxdepth 1 -type d -not -name CVS -not -name .svn | while read PACKAGE
 	do
-		cat > $PACKAGE/.cvsignore << EOF
-cookies
+		svn ps svn:ignore 'cookies
 download
 work
-EOF
-		
-		if [ -d $PACKAGE/.svn ] 
-		then
-			svn ps -F $PACKAGE/.cvsignore svn:ignore $PACKAGE
-		fi
-		
+' $PACKAGE
+
 	done
 done
