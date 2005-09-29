@@ -142,6 +142,19 @@ class Book extends Searchable
 		}
 	}
 
+	function set_metadata($name, $value)
+	{
+		mysql_query(
+			'REPLACE ' .
+			'INTO metadata ' . 
+			'(book_id, name, value) ' . 
+			'VALUES (' . 
+				$this->id . ', ' .
+				'"' . mysql_escape_string($name) . '", ' .
+				'"' . mysql_escape_string($value) . '")' 
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+	}
+
 	function page($path, $allow_compressed = FALSE)
 	{
 		$result = mysql_query("

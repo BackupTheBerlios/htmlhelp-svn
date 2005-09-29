@@ -202,6 +202,31 @@ EOSQL
 		return NULL;
 	}
 	
+	function add_tags($tags)
+	{
+		$values = array();
+		foreach($tags as $tag)
+			$values[] = "'" . mysql_escape_string($tag) . "'";			
+		mysql_query("
+			REPLACE 
+			INTO tag 
+			(tag)
+			VALUES (" . implode(',', $values) . ")
+		");
+	}
+	
+	function delete_tags($tags)
+	{
+		$values = array();
+		foreach($tags as $tag)
+			$values[] = "'" . mysql_escape_string($tag) . "'";			
+		mysql_query("
+			DELETE 
+			FROM tag 
+			WHERE tag in (" . implode(',', $values) . ")
+		");
+	}
+	
 	// Tag the books with the given tags
 	function tag_books(&$book_ids, &$tags)
 	{

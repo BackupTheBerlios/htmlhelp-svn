@@ -45,19 +45,6 @@ class BookBuilder extends Book
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 	}
 	
-	function set_metadata($name, $value)
-	{
-		mysql_query(
-			'REPLACE ' .
-			'INTO metadata ' . 
-			'(book_id, name, value) ' . 
-			'VALUES (' . 
-				$this->id . ', ' .
-				'"' . mysql_escape_string($name) . '", ' .
-				'"' . mysql_escape_string($value) . '")' 
-		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
-	}
-
 	// Add a book page.
 	//		
 	// All pages should be added before any link can be added, as links 
