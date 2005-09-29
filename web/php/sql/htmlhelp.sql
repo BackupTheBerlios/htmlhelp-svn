@@ -114,7 +114,7 @@ CREATE TABLE `page` (
   `book_id` smallint(5) NOT NULL default '0',
   `no` smallint(5) unsigned NOT NULL default '0',
   `path` varchar(255) binary NOT NULL default '',
-  `compressed` enum('0','1') NOT NULL default '0',
+  `compressed` tinyint(1) NOT NULL default '0',
   `content` mediumblob NOT NULL,
   `title` text,
   PRIMARY KEY  (`book_id`,`no`),
