@@ -34,17 +34,3 @@ Check out this pages and compare:
 -- Wiktor Wandachowicz
 
 
-
-I have been using "gawk-3.1.3.chm" file (The GNU Awk User's Guide) and noticed
-that  characters ">", "<" and "&" are missing. Examples:
-                                                                                
-Part 7.6 (Redirecting Output of print and printf): redirection ">" and
-appending sign ">>" are missing
-
-Part 8.11 (Boolean Expressions): "&&" operator is missing
-
-Part 8.14 (Operator precedence): no <, <, & at all
-
--- Vladimir P. Efimov
-
-
