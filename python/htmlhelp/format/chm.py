@@ -49,10 +49,10 @@ class SystemParser:
 
 	def handle_entry(self, code, data):
 		if code == 0:
-			parser = HHCParser(self)
+			parser = HHCParser(self.book)
 			parser.parse(self.book.archive[data])
 		elif code == 1:
-			parser = HHKParser(self)
+			parser = HHKParser(self.book)
 			parser.parse(self.book.archive[data])
 		elif code == 2:
 			self.book.contents.link = data
