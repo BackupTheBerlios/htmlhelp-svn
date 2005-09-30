@@ -7,7 +7,7 @@ class Fulltext_Index
 {
 
 	// Set page title (should be overriden by derived classes)
-	function set_title($title) {}
+	function set_title(&$title) {}
 
 	// Add lexemes in order (should be overriden by derived classes)
 	function add_lexemes(&$lexemes) {}
@@ -30,7 +30,7 @@ class Fulltext_Index
 	}
 
 	// Index a page
-	function index_page($path, $content)
+	function index_page($path, &$content)
 	{
 		$indexer = & $this->indexer_factory($path);
 		$this->start_page();
@@ -121,21 +121,21 @@ class Fulltext_Indexer
 
 	function Fulltext_Indexer(&$index)
 	{
-		$this->index = &$index;
+		$this->index = & $index;
 	}
 
-	function feed_title($title)
+	function feed_title(&$title)
 	{
 		$this->index->set_title($this->normalize($title));
 	}
 
-	function feed_body($body)
+	function feed_body(&$body_part)
 	{
-		$tokens = & $this->tokenize($body);
+		$tokens = & $this->tokenize($body_part);
 		$this->index->add_lexemes($tokens);
 	}
 
-	function feed($content) {}
+	function feed(&$content) {}
 
 	// Normalize whitespace. Expects and produces a UTF-8 string
 	function normalize($string)
@@ -143,11 +143,11 @@ class Fulltext_Indexer
 		return implode(' ', preg_split('/[\s\pZ]+/u', $string, -1, PREG_SPLIT_NO_EMPTY));
 	}
 
-	function tokenize($string)
+	function tokenize(&$string)
 	{
 		global $tokens_pattern;
 
-		preg_match_all($tokens_pattern,  $string, $matches, PREG_PATTERN_ORDER);
+		preg_match_all($tokens_pattern, $string, $matches, PREG_PATTERN_ORDER);
 		$tokens = & $matches[0];
 		return $tokens;
 	}
@@ -156,7 +156,7 @@ class Fulltext_Indexer
 // Indexes plain-text documents
 class Fulltext_TextIndexer extends Fulltext_Indexer
 {
-	function feed($content)
+	function feed(&$content)
 	{
 		$this->feed_body($content);
 	}
@@ -165,7 +165,7 @@ class Fulltext_TextIndexer extends Fulltext_Indexer
 // Indexes HTML documents
 class Fulltext_HtmlIndexer extends Fulltext_Indexer
 {
-	function feed($content)
+	function feed(&$content)
 	{
 		$encoding = $this->extract_encoding($content);
 
@@ -173,12 +173,12 @@ class Fulltext_HtmlIndexer extends Fulltext_Indexer
 		if($title)
 			$this->feed_title($title);
 
-		$body_parts = $this->extract_body_parts($content, $encoding);
+		$body_parts = & $this->extract_body_parts($content, $encoding);
 		foreach($body_parts as $body_part)
 			$this->feed_body($body_part);
 	}
 
-	function extract_encoding($html, $default_encoding='iso8859-1')
+	function extract_encoding(&$html, $default_encoding='iso8859-1')
 	{
 		// extract encoding from XML header
 		if(preg_match(
@@ -221,7 +221,7 @@ class Fulltext_HtmlIndexer extends Fulltext_Indexer
 	}
 
 	// Decode HTML text into UTF-8
-	function decode($text, $encoding="iso8859-1")
+	function decode(&$text, $encoding="iso8859-1")
 	{
 		if(function_exists('iconv'))
 			$decoded_text = iconv($encoding, "utf-8", $text);
@@ -236,7 +236,7 @@ class Fulltext_HtmlIndexer extends Fulltext_Indexer
 		return html_entity_decode($decoded_text, ENT_COMPAT, 'utf-8');
 	}
 
-	function extract_title($html, $encoding=NULL)
+	function extract_title(&$html, $encoding=NULL)
 	{
 		if(!isset($encoding))
 			$encoding = Fulltext_HtmlIndexer::extract_encoding($html);
@@ -253,7 +253,7 @@ class Fulltext_HtmlIndexer extends Fulltext_Indexer
 			return NULL;
 	}
 
-	function extract_body_parts($html, $encoding=NULL)
+	function extract_body_parts(&$html, $encoding=NULL)
 	{
 		if(!isset($encoding))
 			$encoding = Fulltext_HtmlIndexer::extract_encoding($html);
@@ -272,7 +272,7 @@ class Fulltext_HtmlIndexer extends Fulltext_Indexer
 		return $result;
 	}
 
-	function extract_body($html, $encoding=NULL)
+	function extract_body(&$html, $encoding=NULL)
 	{
 		return implode('', Fulltext_HtmlIndexer::extract_body_parts($html, $encoding));
 	}
