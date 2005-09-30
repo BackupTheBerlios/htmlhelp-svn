@@ -37,7 +37,7 @@ class Book_Fulltext_Index extends Fulltext_Index
 		mysql_query("
 			CREATE TEMPORARY TABLE temp_lexeme (
 				lexeme varchar(31) NOT NULL
-			) TYPE = HEAP"
+			) TYPE=HEAP"
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
 	}
 
@@ -138,11 +138,9 @@ class Book_Fulltext_Index extends Fulltext_Index
 		
 		mysql_query("
 			DELETE lexeme, lexeme_link
-			FROM lexeme, delete_lexeme
-				LEFT JOIN lexeme_link ON lexeme.no = lexeme_link.no
-			WHERE lexeme.book_id = $this->book_id
-				AND lexeme.lexeme IN (delete_lexeme.lexeme)
-				AND lexeme_link.book_id = $this->book_id
+			FROM delete_lexeme
+				LEFT JOIN lexeme ON lexeme.book_id = $this->book_id AND lexeme.lexeme = delete_lexeme.lexeme
+				LEFT JOIN lexeme_link ON lexeme_link.book_id = $this->book_id AND lexeme.no = lexeme_link.no
 		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		
 		mysql_query("

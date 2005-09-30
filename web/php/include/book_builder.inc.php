@@ -16,10 +16,18 @@ class BookBuilder extends Book
 		mysql_query("INSERT INTO book () values ()");
 		$id = mysql_insert_id();
 
+		$this->Book($id);
+
 		$this->commited = FALSE;
 		register_shutdown_function(array(&$this, "_BookBuilder"));
-		
-		$this->Book($id);
+
+		mysql_query(
+			"CREATE TEMPORARY TABLE temp_index_entry (
+			  term varchar(255) NOT NULL,
+			  path varchar(255) NOT NULL,
+			  anchor varchar(255) NOT NULL
+			)"
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
 		
 		$this->last_page_no = 0;	
 		$this->last_toc_entry_no = 0;	
@@ -76,7 +84,7 @@ class BookBuilder extends Book
 	}
 	
 	// Split a link into a page reference plus anchor pair
-	function _split_link($link)
+	function __split_link($link)
 	{
 		$pos = strpos($link, '#');
 		if($pos === FALSE)
@@ -89,6 +97,12 @@ class BookBuilder extends Book
 			$path = substr($link, 0, $pos);
 			$anchor = substr($link, $pos + 1);
 		}
+		
+		return array($path, $anchor);
+	}
+	function _split_link($link)
+	{
+		list($path, $anchor) = $this->__split_link($link);
 		
 		$result = mysql_query(
 			'SELECT no ' .
@@ -139,53 +153,56 @@ class BookBuilder extends Book
 	
 	function add_index_entry($term, &$links)
 	{
-		$result = mysql_query(
-			'SELECT no ' .
-			'FROM index_entry ' .
-			'WHERE book_id = ' . $this->id . ' ' .
-				'AND term = "' . mysql_escape_string($term) . '"'
-		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
-		if(mysql_num_rows($result))
-			list($index_entry_no) = mysql_fetch_row($result);
-		else
-		{
-			$this->last_index_entry_no += 1;
-			mysql_query(
-				'INSERT ' .
-				'INTO index_entry ' .
-				'(book_id, no, term)' .
-				'VALUES (' . 
-					$this->id . ', ' .
-					$this->last_index_entry_no . ', ' .
-					'"' . mysql_escape_string($term) . '")' 
-			) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
-			$index_entry_no = $this->last_index_entry_no;
-		}
-
-		$values = array();
 		foreach($links as $link)
 		{
-			// FIXME: do this with a single query
-			list($page_no, $anchor) = $this->_split_link($link);
+			list($path, $anchor) = $this->__split_link($link);
 			
-			$values[] = '(' . 
-				$this-> id . ', ' . 
-				$index_entry_no . ', ' . 
-				$page_no . ', ' .
-				'"' . mysql_escape_string($anchor) . '"' .
-			')';
+			mysql_query(
+				'INSERT ' .
+				'INTO temp_index_entry ' .
+				'(term, path, anchor) ' .
+				'VALUES (' . 
+					'"' . mysql_escape_string($term) . '", ' .
+					'"' . mysql_escape_string($path) . '", ' .
+					'"' . mysql_escape_string($anchor) . '"' .
+				')'
+			) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		}
-	
-		mysql_query(
-			'REPLACE ' .
-			'INTO index_link ' .
-			'(book_id, no, page_no, anchor) ' .
-			'VALUES ' . implode(', ', $values) 
-		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 	}
 	
 	function commit()
 	{
+		mysql_query(
+			"ALTER " .
+			"TABLE temp_index_entry " .
+			"ADD INDEX term (term(7))"
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+		
+		mysql_query(
+			"SET @index_no := 0"
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
+
+		mysql_query(
+			"INSERT " .
+			"INTO index_entry (book_id, no, term) " .
+			"SELECT $this->id, @index_no := (@index_no + 1), temp_index_entry.term " .
+			"FROM temp_index_entry " .
+			"GROUP BY temp_index_entry.term"
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
+
+		mysql_query(
+			"INSERT " .
+			"INTO index_link (book_id, no, page_no, anchor) " .
+			"SELECT $this->id, index_entry.no, page.no, anchor " .
+			"FROM index_entry " .
+			"LEFT JOIN temp_index_entry ON index_entry.book_id = $this->id AND index_entry.term = temp_index_entry.term " .
+			"LEFT JOIN page ON page.book_id = $this->id AND page.path = temp_index_entry.path"
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
+		
+		mysql_query(
+			"DROP TEMPORARY TABLE temp_index_entry" 
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+		
 		$this->index_fulltext();
 		
 		$this->committed = TRUE;
