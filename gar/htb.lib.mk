@@ -6,13 +6,12 @@
 #   http://www.wxwindows.org/manuals/2.4.0/wx499.htm#helpformat
 
 
-all: htb
+htmlhelp: htb
 
 
-# htb	- Generate Compiled Html Help books.
+# htb	- Generate Html Help books.
 
-HTB_TARGETS = $(addsuffix .htb,$(basename $(BOOKS)))
-HTMLHELP_TARGETS += $(HTB_TARGETS)
+HTB_TARGETS = $(addprefix compile-htb/,$(BOOKS))
 
 htb: build pre-htb $(HTB_TARGETS) post-htb
 	$(DONADA)
@@ -24,13 +23,11 @@ htb-p:
 
 ##################### HTB RULES ###################
 
-%.htb: %.mshh
-	@rm -f $@
-	cd $<d && zip -r ../$(@F) .
-	@$(MAKECOOKIE)
-
-%.htb: empty-%.htb
-	@$(MAKECOOKIE)
-
-
 include $(GARDIR)/mshh.lib.mk
+
+compile-htb/%: post-convert-mshh/%
+	@echo -e " $(WORKCOLOR)==> Compiling $(BOLD)$(WORKDIR)/$(BOOK_FILENAME).zip$(NORMALCOLOR)"
+	cd $(SCRATCHDIR) && zip -qr $(CURDIR)/$(WORKDIR)/$(BOOK_FILENAME).zip .
+	@rm -rf $(SCRATCHDIR)
+	@$(MAKECOOKIE)
+

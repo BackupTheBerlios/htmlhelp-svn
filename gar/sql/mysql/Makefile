@@ -6,12 +6,17 @@ DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
 # See also:
 #
 # http://phlab.net/myman/
-# http://phlab.net/html2hpp/
+# http://phlab.net/html2hhp/
 
 BOOKS = \
-	$(WORKSRC)/Docs/mysql.texi
+	$(WORKSRC)/Docs/manual.texi \
+	$(WORKSRC)/Docs/internals.texi
 
 include ../../gar.mk
-	
-$(WORKSRC)/Docs/mysql.texi: $(WORKSRC)/Docs/manual.texi extract
-	ln -s $(<F) $@
+
+%/$(WORKSRC)/Docs/manual.texi: BOOK_NAME = mysql_manual
+%/$(WORKSRC)/Docs/manual.texi: BOOK_EXTRAS = $(addsuffix :Images,$(wildcard $(WORKSRC)/Docs/Images/*.png))
+%/$(WORKSRC)/Docs/manual.texi: BOOK_PATCH = sed -i -e 's:.././Images:Images:g' *.html
+
+%/$(WORKSRC)/Docs/internals.texi: BOOK_NAME = mysql_internals
+

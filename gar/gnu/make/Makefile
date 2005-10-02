@@ -6,3 +6,4 @@ DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
 BOOKS = $(WORKSRC)/doc/make.texi
 
 include ../../gar.mk
+

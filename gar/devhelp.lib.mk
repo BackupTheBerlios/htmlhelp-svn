@@ -1,12 +1,12 @@
 # DevHelp books generation
 
-all: devhelp
+
+htmlhelp: devhelp
 
 
 # devhelp	- Generate DevHelp books.
 
-DEVHELP_TARGETS = $(addsuffix .tgz,$(basename $(BOOKS)))
-HTMLHELP_TARGETS += $(DEVHELP_TARGETS)
+DEVHELP_TARGETS = $(addprefix compile-devhelp/,$(BOOKS))
 
 devhelp: build pre-devhelp $(DEVHELP_TARGETS) post-devhelp
 	$(DONADA)
@@ -36,13 +36,11 @@ else
 DSSSL_ = $(DEVHELP_DSL)
 endif
 
-%.devhelp: %.sgml $(DSSSL)
-	@rm -rf $@d
-	@mkdir -p $@d
-	cd $@d && $(JADE) -t sgml -i html $(JADE_FLAGS) -d $(DSSSL_) $(DCL) ../$(<F)
-	@mkdir -p $@d/book
-	@mv $@/*.html $@/book
-	$(foreach FIGURE,$(FIGURES), cp -r $(FIGURE) $@d/book;)
+sgml-devhelp/%: %
+	@echo -e " $(WORKCOLOR)==> Converting $(BOLD)$*$(NORMALCOLOR)"
+	@cd $(*D) && $(JADE) -t sgml -i html $(JADE_FLAGS) -d $(DSSSL_) $(DCL) $(*F)
+	@mv $(basename $*)/$(basename $(*F)).devhelp $(SCRATCHDIR)/book.devhelp
+	@mv $(basename $*) $(SCRATCHDIR)/book
 
 
 # DocBook XML (using XSL)
@@ -55,7 +53,7 @@ XSLTPROC_FLAGS_DEVHELP = \
 
 DEVHELP_XSL = $(GARDIR)/stylesheets/docbook/devhelp.xsl
 
-ifdef DSSSL
+ifdef XSL
 XSL_ = $(WORKDIR)/devhelp.xsl
 
 $(XSL_): $(DEVHELP_XSL)
@@ -64,19 +62,54 @@ else
 XSL_ = $(DEVHELP_XSL)
 endif
 
-%.devhelp: %.xml
-	@rm -rf $@d
-	@mkdir -p $@d
-	$(XSLTPROC) $(XSLTPROC_FLAGS) $(XSLTPROC_FLAGS_DEVHELP) -o $@d/ $(XSL_) $<
-	$(foreach FIGURE,$(FIGURES), cp -r $(FIGURE) $@d/book;)
-	@touch $@
-	
-.PRECIOUS: %.devhelp
-	
+xml-devhelp/%: %
+	$(XSLTPROC) $(XSLTPROC_FLAGS) $(XSLTPROC_FLAGS_DEVHELP) -o $(SCRATCHDIR)/ $(XSL_) $*
 
-%.tgz: %.devhelp
-	tar -czf $@ -C $<d book.devhelp book
+
+# Texinfo (using texi2html)
+
+TEXI2HTML = texi2html
+TEXI2HTML_FLAGS = 
+TEXI2HTML_FLAGS_DEVHELP = --init-file devhelp.init
+
+texi-devhelp/%: %
+	@echo -e " $(WORKCOLOR)==> Converting $(BOLD)$*$(NORMALCOLOR)"
+	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(TEXI2HTML_FLAGS_DEVHELP) --out $(SCRATCHDIR)/book $*
+	@mv $(SCRATCHDIR)/book/$(basename $(*F)).devhelp $(SCRATCHDIR)/book.devhelp
+
+
+# Common targets
+
+pre-convert-devhelp/%:
+	rm -rf $(SCRATCHDIR)
+	mkdir -p $(SCRATCHDIR)
+
+convert-devhelp/%: pre-convert-devhelp/% 
+
+convert-devhelp/%.sgml: pre-convert-devhelp/% sgml-devhelp/%.sgml
+	@true
+
+convert-devhelp/%.texi: pre-convert-devhelp/% texi-devhelp/%.texi
+	@true
+
+convert-devhelp/%.texinfo: pre-convert-devhelp/% texi-devhelp/%.texinfo
+	@true
+
+convert-devhelp/%.txi: pre-convert-devhelp/% texi-devhelp/%.txi
+	@true
+
+convert-devhelp/%.xml: pre-convert-devhelp/% xml-devhelp/%.xml
+	@true
+
+post-convert-devhelp/%: convert-devhelp/% 
+	@$(foreach BOOK_EXTRA,$(BOOK_EXTRAS), \
+		mkdir -p $(SCRATCHDIR)/book/$(BOOK_EXTRA_DST); \
+		cp -a $(BOOK_EXTRA_SRC) $(SCRATCHDIR)/book/$(BOOK_EXTRA_DST);)
+	@cd $(SCRATCHDIR)/book/ ; $(BOOK_PATCH)
+
+compile-devhelp/%: post-convert-devhelp/%
+	@echo -e " $(WORKCOLOR)==> Compiling $(BOLD)$(WORKDIR)/$(BOOK_FILENAME).tgz$(NORMALCOLOR)"
+	@tar -czf $(WORKDIR)/$(BOOK_FILENAME).tgz -C $(SCRATCHDIR) book.devhelp book
+	@rm -rf $(SCRATCHDIR)
 	@$(MAKECOOKIE)
 
-%.tgz: empty-%.tgz
-	@$(MAKECOOKIE)

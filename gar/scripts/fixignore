@@ -7,6 +7,7 @@ do
 		svn ps svn:ignore 'cookies
 download
 work
+tmp
 ' $PACKAGE
 
 	done

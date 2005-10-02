@@ -7,8 +7,7 @@ WORKSRC = $(WORKDIR)/$(GARNAME)-20020510/p
 
 BOOKS = $(WORKSRC)/doc/en/gpc.texi
 
-FIGURES = $(WORKSRC)/doc/images/*
-
 include ../../gar.mk
 
-MAKEINFO_FLAGS += -I .. -I ../generated
+%/$(WORKSRC)/doc/en/gpc.texi: BOOK_EXTRAS = $(addsuffix :,$(wildcard $(WORKSRC)/doc/images/*.png))
+

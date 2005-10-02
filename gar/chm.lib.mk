@@ -1,13 +1,12 @@
 # Compiled Html Help books generation
 
 
-all: chm
+htmlhelp: chm
 
 
 # chm	- Generate Compiled Html Help books.
 
-CHM_TARGETS = $(addsuffix .chm,$(basename $(BOOKS)))
-HTMLHELP_TARGETS += $(CHM_TARGETS)
+CHM_TARGETS = $(addprefix compile-chm/,$(BOOKS))
 
 chm: build pre-chm $(CHM_TARGETS) post-chm
 	$(DONADA)
@@ -17,7 +16,9 @@ chm-p:
 	@$(foreach COOKIEFILE,$(CHM_TARGETS), test -e $(COOKIEDIR)/$(COOKIEFILE) ;)
 
 
-################### CHM RULES ####################
+##################### CHM RULES ###################
+
+include $(GARDIR)/mshh.lib.mk
 
 HHC = "C:/Program Files/HTML Help Workshop/hhc.exe"
 HHC_FLAGS =
@@ -28,14 +29,11 @@ ifneq ($(shell which $(WINE)),)
 HHC := $(WINE) $(WINE_FLAGS) $(HHC)
 endif
 
-%.chm: %.mshh
-	#-$(HHC) $(HHC_FLAGS) $(wildcard $<d/*.hhp)
-	-cd $<d && $(HHC) $(HHC_FLAGS) $(notdir $(wildcard $<d/*.hhp))
-	mv -f $<d/$(@F) $@
+compile-chm/%: pre-convert-mshh/% convert-mshh/% post-convert-mshh/%
+	@echo -e " $(WORKCOLOR)==> Compiling $(BOLD)$(WORKDIR)/$(BOOK_FILENAME).chm$(NORMALCOLOR)"
+	@#-$(HHC) $(HHC_FLAGS) $(wildcard $(SCRATCHDIR)/*.hhp)
+	-@cd $(SCRATCHDIR) && $(HHC) $(HHC_FLAGS) $(notdir $(wildcard $(SCRATCHDIR)/*.hhp))
+	@mv $(notdir $(wildcard $(SCRATCHDIR)/*.chm)) $(BOLD)$(WORKDIR)/$(BOOK_FILENAME).chm
+	@rm -rf $(SCRATCHDIR)
 	@$(MAKECOOKIE)
 
-%.chm: empty-%.chm
-	@$(MAKECOOKIE)
-
-
-include $(GARDIR)/mshh.lib.mk

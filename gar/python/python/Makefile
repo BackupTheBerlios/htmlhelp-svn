@@ -1,26 +1,28 @@
-GARNAME = Python
-GARVERSION = 2.4
+GARNAME = python
+GARVERSION = 2.4.2
 MASTER_SITES = http://www.python.org/ftp/python/doc/$(GARVERSION)/
 DISTFILES = html-$(GARVERSION).tar.bz2
 
 WORKSRC = $(WORKDIR)/Python-Docs-$(GARVERSION)
 
-BOOKS = $(WORKDIR)/$(GARNAME).mshh $(WORKDIR)/$(GARNAME).devhelp
+BOOKS = python
 
 
 include ../../gar.mk
 
 
-$(WORKDIR)/$(GARNAME).devhelp: $(FILEDIR)/py2devhelp.py
-	rm -rf $@d
-	mkdir -p $@d
-	cp -a $(WORKSRC) $@d/book
-	cd $@d/book && python ../../$(FILEDIR)/py2devhelp.py ../book
-	touch $@
+PYVERSION = $(basename $(GARVERSION))
+
+convert-devhelp/python: $(FILEDIR)/py2devhelp.py
+	@rm -rf $(SCRATCHDIR)
+	@mkdir -p $(SCRATCHDIR)
+	cp -a $(WORKSRC) $(SCRATCHDIR)/book
+	cd $(SCRATCHDIR)/book && python $(CURDIR)/$(FILEDIR)/py2devhelp.py -v $(PYVERSION) ../book
+	@$(MAKECOOKIE)
 
 # See http://cvs.sourceforge.net/viewcvs.py/*checkout*/python/python/dist/src/Doc/tools/prechm.py
-$(WORKDIR)/$(GARNAME).mshh: $(FILEDIR)/prechm.py
-	rm -rf $@d
-	cp -a $(WORKSRC) $@d
-	cd $@d && python ../../$(FILEDIR)/prechm.py -v $(GARVERSION) $(GARNAME)
-	touch $@
+convert-mshh/python: $(FILEDIR)/prechm.py
+	@rm -rf $(SCRATCHDIR)
+	cp -a $(WORKSRC) $(SCRATCHDIR)
+	cd $(SCRATCHDIR) && python $(CURDIR)/$(FILEDIR)/prechm.py -v $(PYVERSION) $(GARNAME)
+	@$(MAKECOOKIE)

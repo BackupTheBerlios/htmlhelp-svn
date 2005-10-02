@@ -27,34 +27,47 @@ XSLTPROC_FLAGS_HTMLHELP = \
 
 HTMLHELP_XSL = /usr/share/sgml/docbook/stylesheet/xsl/nwalsh/htmlhelp/htmlhelp.xsl
 
-%.mshh: %.xml
-	@rm -rf $@d
-	@mkdir -p $@d
-	$(XSLTPROC) $(XSLTPROC_FLAGS) $(XSLTPROC_FLAGS_HTMLHELP) -o $@d/ $(HTMLHELP_XSL) $<
-	$(foreach FIGURE,$(FIGURES), cp -r $(FIGURE) $@d;)
-	@touch $@
+xml-mshh/%: %
+	@echo -e " $(WORKCOLOR)==> Converting $(BOLD)$*$(NORMALCOLOR)"
+	$(XSLTPROC) $(XSLTPROC_FLAGS) $(XSLTPROC_FLAGS_HTMLHELP) -o $(SCRATCHDIR)/ $(HTMLHELP_XSL) $<
 
 
 # Texinfo (using texi2html)
 
-#TEXI2HTML = ~/projects/htmlhelp/texi2html/cvs/texi2html
 TEXI2HTML = texi2html
 TEXI2HTML_FLAGS = 
 TEXI2HTML_FLAGS_HTMLHELP = --init-file chm.init
 
-%.mshh: %.texi
-	@rm -rf $@d $*
-	cd $(<D) && $(TEXI2HTML) $(TEXI2HTML_FLAGS) $(TEXI2HTML_FLAGS_HTMLHELP) $(<F)
-	mv $* $@d
-	@touch $@
-	
-%.mshh: %.texinfo
-	@rm -rf $@d $*
-	cd $(<D) && $(TEXI2HTML) $(TEXI2HTML_FLAGS) $(TEXI2HTML_FLAGS_HTMLHELP) $(<F)
-	mv $* $@d
-	@touch $@
-	
+texi-mshh/%: %
+	@echo -e " $(WORKCOLOR)==> Converting $(BOLD)$*$(NORMALCOLOR)"
+	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(TEXI2HTML_FLAGS_HTMLHELP) --out $(SCRATCHDIR) $*
 
-.PRECIOUS: %.mshh
+
+# Common targets
+
+pre-convert-mshh/%:
+	@rm -rf $(SCRATCHDIR)
+	@mkdir -p $(SCRATCHDIR)
+
+convert-mshh/%.sgml: pre-convert-mshh/% sgml-mshh/%.sgml
+	@true
+
+convert-mshh/%.texi: pre-convert-mshh/% texi-mshh/%.texi
+	@true
+
+convert-mshh/%.texinfo: pre-convert-mshh/% texi-mshh/%.texinfo
+	@true
+
+convert-mshh/%.txi: pre-convert-mshh/% texi-mshh/%.txi
+	@true
+
+convert-mshh/%.xml: pre-convert-mshh/% xml-mshh/%.xml
+	@true
+
+post-convert-mshh/%: convert-mshh/%
+	@$(foreach BOOK_EXTRA,$(BOOK_EXTRAS), \
+		mkdir -p $(SCRATCHDIR)/$(BOOK_EXTRA_DST); \
+		cp -a $(BOOK_EXTRA_SRC) $(SCRATCHDIR)/$(BOOK_EXTRA_DST);)
+	@cd $(SCRATCHDIR) ; $(BOOK_PATCH)
 
 endif
