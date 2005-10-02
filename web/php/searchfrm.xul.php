@@ -1,9 +1,8 @@
 <?php
-	
 	require_once 'inc/config.inc.php';
 
 	$alias = $_GET['book'];
-	require_once 'lib/get_book_from_alias.lib.php';
+	require 'inc/get_book_from_alias.inc.php';
 	
 	# Enable HTTP compression
 	ob_start("ob_gzhandler");
@@ -15,20 +14,20 @@
 
 	echo '<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">';
 
-	echo '<script src="js/_index.js"/>';
-	
-	$query = $_GET['query'];
+	echo '<script src="js/searchfrm.js"/>';
+
+	$query = $_GET['query'];	
 	
 	echo '<textbox id="query" type="autocomplete" value="' . htmlspecialchars($query) . '" onkeypress="onQueryKeypress(event, \'' . htmlspecialchars($alias) . '\')"/>';
-	
-	echo '<listbox seltype="single" flex="1" onselect="onIndexSelect(event, \'' . htmlspecialchars($alias) . '\')">';
-	if(isset($query))
+
+	echo '<listbox seltype="single" flex="1" onselect="onSearchSelect(event, \'' . htmlspecialchars($alias) . '\')">';
+	if($query)
 	{
-		$entries = $book->index($query);
+		$entries = $book->search($query);
 		foreach($entries as $entry)
 		{
-			list($term, $link) = $entry;
-			echo '<listitem label="' . htmlspecialchars($term) . '" value="' . $link . '"/>';
+			list($title, $path) = $entry;
+			echo '<listitem label="' . htmlspecialchars($title) . '" value="' . $path .'"/>';
 		}
 	}
 	echo '</listbox>';

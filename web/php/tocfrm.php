@@ -21,9 +21,9 @@
 	echo '<body id="toc" class="sideframe">';
 
 	echo '<div class="menubar">';
-	echo  '<a href="../../toc.php?book=' . htmlspecialchars($alias) . '" target="_self">Contents</a> | ';
-	echo  '<a href="../../_index.php?book=' . htmlspecialchars($alias) . '" target="_self">Index</a> | ';
-	echo  '<a href="../../search.php?book=' . htmlspecialchars($alias) . '" target="_self">Search</a>';
+	echo  '<a href="../../tocfrm.php?book=' . htmlspecialchars($alias) . '" target="_self">Contents</a> | ';
+	echo  '<a href="../../indexfrm.php?book=' . htmlspecialchars($alias) . '" target="_self">Index</a> | ';
+	echo  '<a href="../../searchfrm.php?book=' . htmlspecialchars($alias) . '" target="_self">Search</a>';
 	echo '</div>';
 
 	function walk_children($entries, $depth)
@@ -59,7 +59,7 @@
 		if($depth || !$has_children)
 			echo '<a href="' . $link . '">';
 		else
-			echo '<a href="../../toc.php?book=' . htmlspecialchars($alias) . '&amp;toc_no=' . $number . '" target="_self">';
+			echo '<a href="../../tocfrm.php?book=' . htmlspecialchars($alias) . '&amp;toc_no=' . $number . '" target="_self">';
 		echo htmlspecialchars($name, ENT_NOQUOTES) . '</a>';
 			
 		walk_children($children, $depth);
@@ -73,7 +73,7 @@
 	{
 		list($parent_number, $title, $link) = $book->toc_entry($number);
 		
-		echo '<ul class="tree"><li class="collapsed"><a href="../../toc.php?book=' . htmlspecialchars($alias) . '&amp;toc_no=' . $parent_number . '" target="_self">&hellip;</a>'; 
+		echo '<ul class="tree"><li class="collapsed"><a href="../../tocfrm.php?book=' . htmlspecialchars($alias) . '&amp;toc_no=' . $parent_number . '" target="_self">&hellip;</a>'; 
 			
 		echo '<ul class="tree">';
 		echo '<li class="expanded">';

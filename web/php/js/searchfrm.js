@@ -5,11 +5,11 @@ function onQueryKeypress(event, book)
     var text = event.target;
     var query = text.value;
 
-    document.location.href = "_index.xul.php?book=" + book + "&query=" + encodeURIComponent(query);
+    document.location.href = "searchfrm.xul.php?book=" + book + "&query=" + encodeURIComponent(query);
   }
 }
 
-function onIndexSelect(event, book)
+function onSearchSelect(event, book)
 {
   var list = event.target;
   var link = list.value;

@@ -1,4 +1,5 @@
 <?php
+	
 	require_once 'inc/config.inc.php';
 
 	$alias = $_GET['book'];
@@ -14,20 +15,20 @@
 
 	echo '<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">';
 
-	echo '<script src="js/search.js"/>';
-
-	$query = $_GET['query'];	
+	echo '<script src="js/indexfrm.js"/>';
+	
+	$query = $_GET['query'];
 	
 	echo '<textbox id="query" type="autocomplete" value="' . htmlspecialchars($query) . '" onkeypress="onQueryKeypress(event, \'' . htmlspecialchars($alias) . '\')"/>';
-
-	echo '<listbox seltype="single" flex="1" onselect="onSearchSelect(event, \'' . htmlspecialchars($alias) . '\')">';
-	if($query)
+	
+	echo '<listbox seltype="single" flex="1" onselect="onIndexSelect(event, \'' . htmlspecialchars($alias) . '\')">';
+	if(isset($query))
 	{
-		$entries = $book->search($query);
+		$entries = $book->index($query);
 		foreach($entries as $entry)
 		{
-			list($title, $path) = $entry;
-			echo '<listitem label="' . htmlspecialchars($title) . '" value="' . $path .'"/>';
+			list($term, $link) = $entry;
+			echo '<listitem label="' . htmlspecialchars($term) . '" value="' . $link . '"/>';
 		}
 	}
 	echo '</listbox>';

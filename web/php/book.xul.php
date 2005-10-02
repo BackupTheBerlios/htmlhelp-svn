@@ -36,9 +36,9 @@
 	echo   '<tab label="Search"/>';
 	echo  '</tabs>';
 	echo  '<tabpanels flex="1">';
-	echo   '<iframe id="toc" src="toc.xul.php?book=' . htmlspecialchars($alias) .'" flex="1"/>';
-	echo   '<iframe id="index" src="_index.xul.php?book=' . htmlspecialchars($alias) .'" flex="1"/>';
-	echo   '<iframe id="search" src="search.xul.php?book=' . htmlspecialchars($alias) .'" flex="1"/>';
+	echo   '<iframe id="toc" src="tocfrm.xul.php?book=' . htmlspecialchars($alias) .'" flex="1"/>';
+	echo   '<iframe id="index" src="indexfrm.xul.php?book=' . htmlspecialchars($alias) .'" flex="1"/>';
+	echo   '<iframe id="search" src="searchfrm.xul.php?book=' . htmlspecialchars($alias) .'" flex="1"/>';
 	echo  '</tabpanels>';
 	echo '</tabbox>';
 		

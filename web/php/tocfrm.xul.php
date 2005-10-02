@@ -14,7 +14,7 @@
 
 	echo '<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">';
 
-	echo '<script src="js/toc.js"/>';
+	echo '<script src="js/tocfrm.js"/>';
 
 	echo '<button label="Sync" oncommand="onButtonCommand(event)"/>';
 						
