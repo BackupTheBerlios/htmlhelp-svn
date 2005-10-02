@@ -1,6 +1,6 @@
 <?php
 
-require_once 'include/mimetypes.inc.php';
+require_once 'lib/mimetypes.lib.php';
 
 // Index interface
 class Fulltext_Index

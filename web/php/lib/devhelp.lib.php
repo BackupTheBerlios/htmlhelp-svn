@@ -1,6 +1,6 @@
 <?php
 
-require_once 'include/util.inc.php';
+require_once 'lib/util.lib.php';
 
 class XmlParser
 {

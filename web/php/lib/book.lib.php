@@ -1,9 +1,9 @@
 <?php
 
-require_once 'include/mysql.inc.php';
-require_once 'include/book_fulltext_index.inc.php';
-require_once 'include/fulltext_search.inc.php';
-require_once 'include/util.inc.php';
+require_once 'inc/mysql.inc.php';
+require_once 'lib/book_fulltext_index.lib.php';
+require_once 'lib/fulltext_search.lib.php';
+require_once 'lib/util.lib.php';
 
 class Book extends Searchable
 {

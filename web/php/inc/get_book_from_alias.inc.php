@@ -1,6 +1,6 @@
 <?php
 
-require_once 'include/book_catalog.inc.php';
+require_once 'lib/book_catalog.lib.php';
 
 $catalog = new BookCatalog();
 $book = $catalog->get_book_from_alias($alias);

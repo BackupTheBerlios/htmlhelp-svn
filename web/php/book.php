@@ -1,8 +1,8 @@
 <?php
-	require_once 'include/config.inc.php';
+	require_once 'inc/config.inc.php';
 
 	$alias = $_GET['book'];
-	require 'include/get_book_from_alias.inc.php'; 
+	require 'inc/get_book_from_alias.inc.php'; 
 	
 	$title = htmlspecialchars($book->title(), ENT_NOQUOTES);
 	header('Content-Type: text/html; charset=utf-8');

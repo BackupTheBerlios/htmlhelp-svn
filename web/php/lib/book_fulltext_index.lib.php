@@ -1,8 +1,8 @@
 <?php
 
-require_once 'include/mysql.inc.php';
-require_once 'include/fulltext_index.inc.php';
-require_once 'include/util.inc.php';
+require_once 'inc/mysql.inc.php';
+require_once 'lib/fulltext_index.lib.php';
+require_once 'lib/util.lib.php';
 
 class Book_Fulltext_Index extends Fulltext_Index
 {

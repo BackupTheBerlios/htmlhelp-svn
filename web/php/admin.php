@@ -1,7 +1,7 @@
 <?php
 
-require_once 'include/config.inc.php';
-require_once 'include/book_catalog.inc.php';
+require_once 'inc/config.inc.php';
+require_once 'lib/book_catalog.lib.php';
 
 // authentication must be done before any actual output
 $authenticated = FALSE;

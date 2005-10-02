@@ -1,6 +1,6 @@
 <?php
 
-require_once 'include/fulltext_index.inc.php';
+require_once 'lib/fulltext_index.lib.php';
 require_once 'PHPUnit.php';
 
 class IndexTest extends PHPUnit_TestCase

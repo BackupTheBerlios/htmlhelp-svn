@@ -1,6 +1,6 @@
 <?php
 
-require_once 'include/fulltext_search.inc.php';
+require_once 'lib/fulltext_search.lib.php';
 require_once 'PHPUnit.php';
 
 class TestSearchable extends Searchable

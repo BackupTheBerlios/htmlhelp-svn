@@ -1,9 +1,9 @@
 <?php
 	
-	require_once 'include/config.inc.php';
+	require_once 'inc/config.inc.php';
 
 	$alias = $_GET['book'];
-	require_once 'include/get_book_from_alias.inc.php';
+	require_once 'lib/get_book_from_alias.lib.php';
 	
 	# Enable HTTP compression
 	ob_start("ob_gzhandler");

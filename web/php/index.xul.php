@@ -1,6 +1,6 @@
 <?php
 	
-	require_once 'include/config.inc.php';
+	require_once 'inc/config.inc.php';
 
 	// XXX: For link backward compatability
 	if($book = $_GET['book'])
