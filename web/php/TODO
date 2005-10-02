@@ -12,13 +12,7 @@ Things to be done, by no particular order:
 
 - Better error handling (detection- and recovery-wise).
 
-- Work on usability, especially:
-
-  - Facilitate the navigation with lesser clicks.
-
-  - Beautify the stylesheet to ease the reading.
-
-  - Revamp the start page.
+- Improve usability.
 
 - More commenting.
 
@@ -34,3 +28,8 @@ Things to be done, by no particular order:
 - Highlight the search terms in pages.
 
 - SQL database versioning.
+
+- Add a global search.
+
+
+See also the TODOs and FIXMEs scattered in the source files.
