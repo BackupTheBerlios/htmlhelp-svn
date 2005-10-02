@@ -206,6 +206,9 @@ EOSQL
 	
 	function add_tags($tags)
 	{
+		if(!count($tags))
+			return;
+			
 		$values = array();
 		foreach($tags as $tag)
 			$values[] = "'" . mysql_escape_string($tag) . "'";			
@@ -219,6 +222,9 @@ EOSQL
 	
 	function delete_tags($tags)
 	{
+		if(!count($tags))
+			return;
+			
 		$values = array();
 		foreach($tags as $tag)
 			$values[] = "'" . mysql_escape_string($tag) . "'";			
@@ -232,6 +238,9 @@ EOSQL
 	// Tag the books with the given tags
 	function tag_books(&$book_ids, &$tags)
 	{
+		if(!count($book_ids) || !count($tags))
+			return;
+			
 		$values = array();
 		foreach($tags as $tag)
 			$values[] = "'" . mysql_escape_string($tag) . "'";			
@@ -252,6 +261,9 @@ EOSQL
 	// Untag the books with the given tags
 	function untag_books(&$book_ids, &$tags)
 	{
+		if(!count($book_ids) || !count($tags))
+			return;
+			
 		$values = array();
 		foreach($tags as $tag)
 			$values[] = "'" . mysql_escape_string($tag) . "'";
