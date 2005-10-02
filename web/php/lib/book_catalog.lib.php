@@ -96,7 +96,7 @@ EOSQL
 				LEFT JOIN book_tag ON tag.id = tag_id
 				LEFT JOIN book_alias ON book_name = alias
 			GROUP BY tag.id
-			-- HAVING count > 0
+			HAVING count > 0
 			ORDER BY count DESC, tag ASC
 		");
 		while(list($tag, $count) = mysql_fetch_row($result))
