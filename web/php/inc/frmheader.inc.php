@@ -18,11 +18,36 @@
 	echo  '<base href="http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/page.php/' . htmlspecialchars($alias) . '/" target="main"/>';
 	echo  '<link href="../../css/html.css" type="text/css" rel="stylesheet"/>';
 	echo '</head>';
-	echo '<body id="' . $id . '" class="sideframe">';
+	echo '<body id="' . $id . '">';
 
-	echo '<div class="menubar">';
-	echo  '<a href="../../tocfrm.php?book=' . htmlspecialchars($alias) . '" target="_self">Contents</a> | ';
-	echo  '<a href="../../indexfrm.php?book=' . htmlspecialchars($alias) . '" target="_self">Index</a> | ';
-	echo  '<a href="../../searchfrm.php?book=' . htmlspecialchars($alias) . '" target="_self">Search</a>';
+	echo '<div class="header">';
+	$menuitems = array(
+		'toc' => 'Contents',
+		'index' => 'Index',
+		'search' => 'Search',
+	);
+	echo '<ul class="menu">';
+	foreach($menuitems as $menu_id => $menu_title)
+	{
+		echo '<li>';
+		echo  '<a' . ($menu_id == $id ? ' class="current"' : ' href="../../' . $menu_id . 'frm.php?book=' . htmlspecialchars($alias) . '" target="_self"') . '>';
+		echo   htmlspecialchars($menu_title, ENT_NOQUOTES);
+		echo  '</a>';
+		echo '</li>';
+	}
+	echo '</ul>';
+
+	if($id != 'toc') {
+		$query = $_GET['query'];
+		echo '<form id="find" target="navigation" action="../../searchfrm.php">';
+		echo  '<div>';
+		echo   '<input type="hidden" name="book" value="' . htmlspecialchars($alias) .'"/>';
+		echo   '<input id="query" type="text" name="query" value="' . htmlspecialchars($query) . '"/>';
+		echo   '<input id="submit" type="submit" value="Search"/>';
+		echo  '</div>';
+		echo '</form>';
+	}
 	echo '</div>';
+
+	echo '<div class="results">';
 ?>

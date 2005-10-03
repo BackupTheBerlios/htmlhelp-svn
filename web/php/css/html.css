@@ -14,41 +14,110 @@ a {
 	text-decoration: none;
 }
 
-/* Menubar */
+/* Header */
 
-.menubar {
+.header {
+	/*
+	position: absolute;
+	top: 0;
+	*/
+
+	border-bottom: 1px solid #ccc;
+}
+
+/* Menu */
+
+.menu {
+	border-bottom: 4px solid #eee;
+	
+	margin: 0;
+	
 	padding-left: 4px;
 	padding-right: 4px;
-	padding-top: 2px;
-	padding-bottom: 2px;
+	padding-top: 4px;
+	padding-bottom: 0px;
+
+	list-style: none;
 }
 
-.menubar a, .menubar span {
-	font-weight: bold;
+.menu li {
+	display: inline;
 	
+	margin: 0;
+	
+	text-align: center;
+}
+
+.menu>li+li {
+	border-left: 1px solid #ccc;
+}
+
+.menu a {
 	padding-left: 8px;
 	padding-right: 8px;
-}  
 
-.left {
-	float: left;
+	font-weight: bold;
 }
 
-.right {
-	float: right;
+.menu a.current {
+	padding-top: 2px;
 }
 
-/* Sideframe */
+.menu a:hover, .menu a.current {
+	background: #eee;
+	color: #333;
+}
 
-.sideframe {
+/* Form */
+
+form {
+	background: #eee;
+
+	display: block;
+
+	margin: 0px;
+
+	padding: 2px;
+	padding-bottom: 4px;
+	
+	font-size: 11px;
+
+}
+
+input#query {
+	width: 78%;
+	
+	padding: 2px;
+	
+	margin-left: auto;
+	margin-right: auto;
+}
+
+input#submit {
+	width: 18%;
+
+	padding: 2px;
+	
+	/*
+	display: none; 
+	*/
+}
+
+
+/* Content */
+
+.results {
 	font-size: 11px;
 }
 
-.sideframe ul a {
+.results ul a {
 	text-decoration: none;
 	display: block;
 }
 
+.results ul a:hover {
+	background: #eef;
+}
 
 /* Lists */
 
@@ -90,23 +159,4 @@ li.collapsed {
 
 li.single { 
 	list-style-image: url("../icons/none.png") 
-}
-
-.sideframe form {
-	display: block;
-	margin: 0px;
-	padding: 0px;
-	text-align: center;
-}
-
-input#query {
-	width: 98%;
-	margin-top: 2px;
-	margin-bottom: 2px;
-	margin-left: auto;
-	margin-right: auto;
-}
-
-input#submit {
-	display: none;
 }

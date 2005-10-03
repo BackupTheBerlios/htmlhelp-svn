@@ -4,13 +4,6 @@ $title = 'Index';
 $id = 'index';
 require 'inc/frmheader.inc.php';
 
-	$query = $_GET['query'];
-	echo '<form id="find" target="navigation" action="../../indexfrm.php">';
-	echo  '<input type="hidden" name="book" value="' . htmlspecialchars($alias) .'"/>';
-	echo  '<input id="query" type="text" name="query" value="' . htmlspecialchars($query) . '"/>';
-	echo  '<input id="submit" type="submit" value="Find"/>';
-	echo '</form>';
-
 	if(isset($query))
 	{
 		$entries = $book->index($query);
