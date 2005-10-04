@@ -105,6 +105,9 @@ form.search #submit {
 	border-right: 1px solid #ccc;
 	
 	padding: 0;
+
+	background: #eee;
+	
 	font-size: 11px;
 }
 
@@ -167,14 +170,14 @@ ul.tree {
 	padding-right: 2px;
 }
 
+ul.tree li.single { 
+	list-style-image: url("../icons/none.png") 
+}
+
 ul.tree li.expanded { 
 	list-style-image: url("../icons/minus.png") 
 }
 
 ul.tree li.collapsed { 
 	list-style-image: url("../icons/plus.png") 
-}
-
-ul.tree li.single { 
-	list-style-image: url("../icons/none.png") 
 }
