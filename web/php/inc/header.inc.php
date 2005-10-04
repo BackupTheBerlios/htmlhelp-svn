@@ -17,8 +17,6 @@
 
 	echo '<body>';
 	
-	echo '<script src="js/index.js"></script>';
-
 	echo '<div class="header">' . $title . '</div>';
 	
 	$catalog = new BookCatalog();

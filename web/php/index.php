@@ -3,6 +3,8 @@
 	
 	require 'inc/header.inc.php';
 	
+	echo '<script src="js/index.js" type="text/javascript"></script>';
+
 	if($tag = $_GET['tag'])
 		$books = $catalog->enumerate_books_by_tag($tag);
 	else	
