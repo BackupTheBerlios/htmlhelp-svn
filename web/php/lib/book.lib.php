@@ -38,39 +38,30 @@ class Book extends Searchable
 		return $link;
 	}
 
-	function toc($parent_number = 0, $depth = -1)
+	function get_toc_entries($parent_number = 0)
 	{
-		// FIXME: do this non-recursively
 		$entries = array();
-		if($depth)
-		{
-			$result = mysql_query("
-				SELECT toc_entry.no, toc_entry.title, CONCAT_WS('#', path, NULLIF(anchor, '')) 
-				FROM toc_entry
-			 		LEFT JOIN page ON page.no = page_no
-				WHERE toc_entry.book_id = $this->id 
-					AND parent_no = $parent_number 
-					AND page.book_id =  $this->id
-				ORDER BY toc_entry.no
-			");
-			while(list($number, $title, $link) = mysql_fetch_row($result))
-				$entries[$number] = array($title, $link, $this->toc($number, $depth - 1));
-		}
-		return $entries;
-	}
-
-	function toc_entry($number)
-	{
 		$result = mysql_query("
-			SELECT parent_no, toc_entry.title, CONCAT_WS('#', path, NULLIF(anchor, '')) 
+			SELECT 
+				toc_entry.no, 
+				toc_entry.title, 
+				CONCAT_WS('#', page.path, NULLIF(toc_entry.anchor, '')) AS link,
+				COUNT(toc_child_entry.no) AS nchildren
 			FROM toc_entry
-				LEFT JOIN page ON page.no = page_no
-			WHERE toc_entry.book_id = $this->id 
-				AND toc_entry.no = $number 
-				AND page.book_id = $this->id
-		");
-		list($parent_number, $title, $link) = mysql_fetch_row($result);
-		return array($parent_number, $title, $link);
+		 		LEFT JOIN page 
+		 		ON page.book_id = $this->id
+		 			AND page.no = toc_entry.page_no
+		 		LEFT JOIN toc_entry AS toc_child_entry
+		 		ON toc_child_entry.book_id = $this->id
+		 			AND toc_child_entry.parent_no = toc_entry.no
+			WHERE toc_entry.book_id = $this->id
+				AND toc_entry.parent_no = $parent_number
+			GROUP BY toc_entry.no
+			ORDER BY toc_entry.no
+		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+		while(list($number, $title, $link, $nchildren) = mysql_fetch_row($result))
+			$entries[$number] = array($title, $link, $nchildren);
+		return $entries;
 	}
 
 	function index($query = '')

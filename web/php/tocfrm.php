@@ -6,57 +6,54 @@ $id = 'toc';
 //$search_button = 'Filter';
 require 'inc/frmheader.inc.php';
 
-function walk_children($entries, &$linage)
+$toc_nos = array();
+foreach(explode(' ', $_GET['toc_nos']) as $toc_no)
+	$toc_nos[intval($toc_no)] = TRUE;
+
+$linage = array();
+
+function walk_toc_entries($parent_no = 0)
 {
+	global $alias, $book, $toc_nos, $linage;
+	
+	$entries = $book->get_toc_entries($parent_no);
 	if(count($entries))
 	{
 		echo '<ul class="tree">';
 		foreach($entries as $number => $entry)
 		{
-			list($name, $link, $children) = $entry;
-			walk_toc($number, $name, $link, $children, $linage);
+			list($name, $link, $nchildren) = $entry;
+
+			if($nchildren)
+			{
+				if($toc_nos[$number])
+					echo '<li class="expanded">';
+				else
+					echo '<li class="collapsed">';
+			}
+			else
+				echo '<li class="single">';
+		
+			array_push($linage, $number);
+			
+			if($toc_nos[$number] || !$nchildren)
+				echo '<a href="' . $link . '">';
+			else
+				echo '<a href="../../tocfrm.php?book=' . htmlspecialchars($alias) . '&amp;toc_nos=' . implode('+', $linage) . '" target="_self">';
+			echo htmlspecialchars($name, ENT_NOQUOTES) . '</a>';
+			
+			if($toc_nos[$number] && $nchildren)
+				walk_toc_entries($number);
+			
+			array_pop($linage);
+			
+			echo '</li>';
 		}
 		echo '</ul>';
 	}
 }
 
-function walk_toc($number, $name, $link, $children, &$linage)
-{
-	global $book, $alias, $toc_nos;
-	
-	$has_children = count($children);
-
-	if($has_children)
-	{
-		if($toc_nos[$number])
-			echo '<li class="expanded">';
-		else
-			echo '<li class="collapsed">';
-	}
-	else
-		echo '<li class="single">';
-
-	array_push($linage, $number);
-	
-	if($toc_nos[$number] || !$has_children)
-		echo '<a href="' . $link . '">';
-	else
-		echo '<a href="../../tocfrm.php?book=' . htmlspecialchars($alias) . '&amp;toc_nos=' . implode('+', $linage) . '" target="_self">';
-	echo htmlspecialchars($name, ENT_NOQUOTES) . '</a>';
-	
-	if($toc_nos[$number] && $has_children)
-		walk_children($children, $linage);
-	
-	array_pop($linage);
-	
-	echo '</li>';
-}
-
-$toc_nos = array();
-foreach(explode(' ', $_GET['toc_nos']) as $toc_no)
-	$toc_nos[intval($toc_no)] = TRUE;
-$linage = array();
-walk_children($book->toc(), $linage);
+walk_toc_entries(0);
 	
 require 'inc/frmfooter.inc.php';
 ?>

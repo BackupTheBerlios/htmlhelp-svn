@@ -24,40 +24,38 @@
 	echo '<treecol id="name" hideheader="true" primary="true" flex="1"/>';
 	echo '</treecols>';
 
-	function walk_toc_entry($title, $link, $children)
+	function walk_toc_entries($parent_no = 0)
 	{
-		if(count($children))
-			echo '<treeitem container="true">';
-		else
-			echo '<treeitem>';
-			
-		echo '<treerow>';
-		echo '<treecell label="' . htmlspecialchars($title) . '" value="' . htmlspecialchars($link) . '"/>';
-		echo '</treerow>';
-
-		walk_toc_entries($children);
+		global $book;
 		
-		echo '</treeitem>';
-	}
-
-	function walk_toc_entries($entries)
-	{
+		$entries = $book->get_toc_entries($parent_no);
 		if(count($entries))
 		{
 			echo '<treechildren>';
-			foreach($entries as $entry)
+			foreach($entries as $number => $entry)
 			{
-				list($title, $link, $children) = $entry;
-				walk_toc_entry($title, $link, $children);
+				list($title, $link, $nchildren) = $entry;
+				
+				if($nchildren)
+					echo '<treeitem container="true">';
+				else
+					echo '<treeitem>';
+					
+				echo '<treerow>';
+				echo '<treecell label="' . htmlspecialchars($title) . '" value="' . htmlspecialchars($link) . '"/>';
+				echo '</treerow>';
+		
+				walk_toc_entries($number);
+				
+				echo '</treeitem>';
 			}
 			echo '</treechildren>';
 		}
 	}
 
-	$entries = $book->toc();
-	walk_toc_entries($entries);
-	
+	walk_toc_entries(0);
+
 	echo '</tree>';
-	
+
 	echo '</window>';
 ?>
