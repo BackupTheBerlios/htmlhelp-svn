@@ -2,6 +2,7 @@
 
 $title = 'Search';
 $id = 'search';
+$search_button = 'Go';
 require 'inc/frmheader.inc.php';
 
 	if($query)

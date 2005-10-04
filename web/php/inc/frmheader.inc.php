@@ -20,7 +20,6 @@
 	echo '</head>';
 	echo '<body id="' . $id . '">';
 
-	echo '<div class="header">';
 	$menuitems = array(
 		'toc' => 'Contents',
 		'index' => 'Index',
@@ -29,25 +28,24 @@
 	echo '<ul class="menu">';
 	foreach($menuitems as $menu_id => $menu_title)
 	{
-		echo '<li>';
-		echo  '<a' . ($menu_id == $id ? ' class="current"' : ' href="../../' . $menu_id . 'frm.php?book=' . htmlspecialchars($alias) . '" target="_self"') . '>';
+		echo '<li' . ($menu_id == $id ? ' class="current"' : '') . '>';
+		echo  '<a' . ($menu_id == $id ? '' : ' href="../../' . $menu_id . 'frm.php?book=' . htmlspecialchars($alias) . '" target="_self"') . '>';
 		echo   htmlspecialchars($menu_title, ENT_NOQUOTES);
 		echo  '</a>';
 		echo '</li>';
 	}
 	echo '</ul>';
 
-	if($id != 'toc') {
+	if($search_button) {
 		$query = $_GET['query'];
-		echo '<form id="find" target="navigation" action="../../searchfrm.php">';
+		echo '<form class="search" target="navigation" action="../../' . $id . 'frm.php">';
 		echo  '<div>';
 		echo   '<input type="hidden" name="book" value="' . htmlspecialchars($alias) .'"/>';
 		echo   '<input id="query" type="text" name="query" value="' . htmlspecialchars($query) . '"/>';
-		echo   '<input id="submit" type="submit" value="Search"/>';
+		echo   '<input id="submit" type="submit" value="'. $search_button . '"/>';
 		echo  '</div>';
 		echo '</form>';
 	}
-	echo '</div>';
 
 	echo '<div class="results">';
 ?>

@@ -2,6 +2,8 @@
 
 $title = 'Table of Contents';
 $id = 'toc';
+// TODO: Add filtering to TOC
+//$search_button = 'Filter';
 require 'inc/frmheader.inc.php';
 
 	function walk_children($entries, $depth)

@@ -22,10 +22,10 @@
 	if(!intval($_GET['noxul']))
 		echo '<script type="text/javascript">if(navigator.userAgent.indexOf("Gecko") >= 0) document.location.href = "book.xul.php?book=' . htmlspecialchars($alias) . '";</script>';
 	
-	echo '<frameset cols="*,3*">';
+	echo '<frameset cols="256,*">';
 	echo '<frame src="tocfrm.php?book=' . htmlspecialchars($alias) . '" name="navigation"/>';
 	echo '<frame src="page.php/' . htmlspecialchars($alias) . '/' . $book->default_link() . '" name="main"/>';
-	echo '<noframes>A frames-capable web browser is required.</noframes>';
+	echo '<noframes><body>A frames-capable web browser is required.</body></noframes>';
 	echo '</frameset>';
 
 	echo '</html>';
