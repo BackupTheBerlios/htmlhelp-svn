@@ -30,6 +30,3 @@ do-bookarchive/%:
 	@$(foreach FILE,$(wildcard $(WORKDIR)/$(BOOK_FILENAME).*), \
 		echo -e " $(WORKCOLOR)==> Copying $(BOLD)$(FILE)$(NORMALCOLOR)"; \
 		cp -a $(FILE) $(BOOKARCHIVEDIR)/ ;)
-
-empty-%:
-	@echo -e "$(ERRORCOLOR)Don't know how to make $*$(NORMALCOLOR)"

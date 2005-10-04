@@ -113,3 +113,10 @@ compile-devhelp/%: post-convert-devhelp/%
 	@rm -rf $(SCRATCHDIR)
 	@$(MAKECOOKIE)
 
+error-devhelp/%:
+	@echo -e "$(ERRORCOLOR)*** Don't know how build a DevHelp book from $* ***$(NORMALCOLOR)"
+	@$(MAKECOOKIE)
+
+compile-devhelp/%: error-devhelp/%
+	@true
+

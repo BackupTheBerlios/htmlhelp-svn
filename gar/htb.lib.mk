@@ -31,3 +31,8 @@ compile-htb/%: post-convert-mshh/%
 	@rm -rf $(SCRATCHDIR)
 	@$(MAKECOOKIE)
 
+error-htb/%:
+	@echo -e "$(ERRORCOLOR)*** Don't know how to build HTB book from $* ***$(NORMALCOLOR)"
+
+compile-htb/%: error-htb/%
+	@true
