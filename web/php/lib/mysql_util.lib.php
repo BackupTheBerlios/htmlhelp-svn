@@ -56,6 +56,7 @@ function mysql_import_dump($filename, $ignoreerrors = FALSE)
 			$line_no += 1;
 		if(preg_match('/;\s*\n$/', $buffer))
 		{
+			$query = substr($query, 0, strrpos($query, ';'));
 			$result = mysql_query($query);
 			if(!$result && !$ignoreerrors) 
 				die($filename . ':' . $query_line_no . ':' . mysql_error());
