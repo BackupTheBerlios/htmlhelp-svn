@@ -38,6 +38,11 @@
 	}
 	echo '</table>';
 	echo '</div>';
+?>
+	<div id="hosting" class="sidebox">
+		<a href="http://dotsrc.org/"><img src="http://dotsrc.org/images/hostedby.png"/></a>
+	</div>
+<?php
 	
 	echo '<div class="content">';
 ?>
