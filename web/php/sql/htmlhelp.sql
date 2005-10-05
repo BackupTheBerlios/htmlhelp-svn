@@ -2,7 +2,7 @@
 --
 -- Host: localhost    Database: htmlhelp
 -- ------------------------------------------------------
--- Server version	4.1.14-Debian_5
+-- Server version	4.1.14-Debian_6
 
 --
 -- Table structure for table `book`
@@ -156,6 +156,16 @@ CREATE TABLE `toc_entry` (
   `page_no` smallint(5) unsigned NOT NULL default '0',
   `anchor` varchar(255) binary NOT NULL default '',
   PRIMARY KEY  (`book_id`,`parent_no`,`no`)
+) TYPE=MyISAM;
+
+--
+-- Table structure for table `version`
+--
+
+DROP TABLE IF EXISTS `version`;
+CREATE TABLE `version` (
+  `major` tinyint(3) unsigned NOT NULL default '0',
+  `minor` tinyint(3) unsigned NOT NULL default '0'
 ) TYPE=MyISAM;
 
 
