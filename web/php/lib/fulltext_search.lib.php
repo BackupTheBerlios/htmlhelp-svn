@@ -56,7 +56,8 @@ class Searchable
 	function search($query)
 	{
 		$search = & Search_Parser::parse($query);
-		return $search->apply($this)->enumerate();
+		$result = & $search->apply($this);
+		return $result->enumerate();
 	}
 }
 
