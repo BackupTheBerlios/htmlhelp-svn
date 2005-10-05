@@ -3,11 +3,24 @@
 
 = XUL =
 
+- http://www.xulplanet.com
+
+
 - http://lxr.mozilla.org/seamonkey/source/extensions/help/resources/content/
 
-== Skinning ==
+- http://trac.nunatak.com.au/projects/nufox
 
-See:
+== Remote Applications ==
+
+- http://www.mozilla.org/docs/tutorials/sitenav/
+
+- http://books.mozdev.org/chapters/ch12.html
+
+- http://www.oreillynet.com/pub/a/mozilla/2002/12/17/app_dev.html
+
+- http://www.oreillynet.com/pub/a/mozilla/2003/05/02/casestudy2.html
+
+== Skinning ==
 
 - [XULNotes: Skinning XUL Files By Hand http://www.mozilla.org/docs/xul/xulnotes/xulnote_skins.html]
 
@@ -26,7 +39,7 @@ See:
  - http://www.teencoderz.com/forums2/articles.php?action=viewarticle&artid=39
 
 
-= Design Ideas =
+= Web Design Ideas =
 
  - http://msdn.microsoft.com/library/default.asp
  - http://www.php.net/manual/en/
