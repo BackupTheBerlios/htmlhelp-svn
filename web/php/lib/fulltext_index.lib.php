@@ -72,18 +72,21 @@ class Fulltext_SimpleIndex extends Fulltext_Index
 // http://svn.apache.org/repos/asf/lucene/java/trunk/src/java/org/apache/lucene/analysis/standard/StandardTokenizer.jj
 // NOTE: order *does* matter: first match is chosen
 // NOTE: branches '|' should be inside subpatterns '(?: ... )'
+$letter = '\x{0041}-\x{005a}\x{0061}-\x{007a}\x{00c0}-\x{00d6}\x{00d8}-\x{00f6}\x{00f8}-\x{00ff}\x{0100}-\x{1fff}';
+$digit = '\x{0030}-\x{0039}\x{0660}-\x{0669}\x{06f0}-\x{06f9}\x{0966}-\x{096f}\x{09e6}-\x{09ef}\x{0a66}-\x{0a6f}\x{0ae6}-\x{0aef}\x{0b66}-\x{0b6f}\x{0be7}-\x{0bef}\x{0c66}-\x{0c6f}\x{0ce6}-\x{0cef}\x{0d66}-\x{0d6f}\x{0e50}-\x{0e59}\x{0ed0}-\x{0ed9}\x{1040}-\x{1049}';
+$cjk = '\x{3040}-\x{318f}\x{3300}-\x{337f}\x{3400}-\x{3d2d}\x{4e00}-\x{9fff}\x{f900}-\x{faff}';
 $token_patterns = array(
 	// acronyms
-	'\p{Lu}\.(?:\p{Lu}\.)+',
+	"[$letter]\.(?:[$letter]\.)+",
 
 	// email addresses (according to http://www.developer.com/lang/php/article.php/3290141)
 	'[_a-zA-Z0-9-]+(?:\.[_a-zA-Z0-9-]+)*@[_a-zA-Z0-9-]+(?:\.[_a-zA-Z0-9-]+)*\.[a-zA-Z]{2,4}',
 
 	// company names
-	'\pL+[&@]\pL+',
+	"[$letter]+[&@][$letter]+",
 
 	// internal apostrophes
-	'\pL+(?:\'\pL+)+',
+	"[$letter]+(?:\'[$letter]+)+",
 
 	// floating point numbers
 	'(?:\d+|\d+[.,]\d*|\d*[.,]\d+)[eE][-+]?\d+',
@@ -103,10 +106,10 @@ $token_patterns = array(
 	'[_a-zA-Z][_a-zA-Z0-9]+',
 
 	// basic word: a sequence of letters and digits
-	'[\pL\pN]{2,}',
+	"[$letter$digit]{2,}",
 
 	// Chinese, Japanese, and Korean ideographs
-	'[\x{3040}-\x{318f}\x{3300}-\x{337f}\x{3400}-\x{3d2d}\x{4e00}-\x{9fff}\x{f900}-\x{faff}]',
+	"[$cjk]",
 	
 	// integers
 	'\d+',	
@@ -227,7 +230,7 @@ class Fulltext_HtmlIndexer extends Fulltext_Indexer
 			$decoded_text = iconv($encoding, "utf-8", $text);
 		elseif(preg_match('/^iso-?8859-(1|15)$/i', $encoding))
 			// fallback for ISO-8859-1/15 encodings
-			$decoded_text = utf8_encode($encoding, "utf-8", $text);
+			$decoded_text = utf8_encode($text);
 		else
 			// replace higher ASCII code by question mark
 			$decoded_text = preg_replace('/[\x80-\xff]/', '?', $text);
