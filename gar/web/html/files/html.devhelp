@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<book xmlns="http://www.devhelp.net/book" title="HTML 4.01 Specification" link="cover.html" author="" name="html" version="4.01">
+<book xmlns="http://www.devhelp.net/book" title="HTML 4.01 Specification" link="cover.html" author="W3C" name="html" version="4.01">
 	<chapters>
 		<sub link="about.html" name="About the HTML 4 Specification">
 			<sub link="about.html#h-1.1" name="How the specification is organized"/>
@@ -785,7 +785,7 @@
 		<function link="intro/intro.html#accessibility" name="accessibility, features in HTML 4"/>
 		<function link="struct/objects.html#idx-long_image_description" name="accessibility, long image description"/>
 		<function link="struct/objects.html#idx-accessibility-2" name="accessibility, of image maps"/>
-		<function link="struct/objects.html#idx-accessibility-3" name="accessibility, of image maps ,"/>
+		<function link="struct/objects.html#idx-accessibility-3" name="accessibility, of image maps, "/>
 		<function link="present/graphics.html#idx-text" name="alignment, floating text"/>
 		<function link="present/graphics.html#idx-alignment-1" name="alignment, floats"/>
 		<function link="present/graphics.html#alignment" name="alignment, of block-level elements"/>
@@ -795,35 +795,35 @@
 		<function link="present/styles.html#didx-style_sheet" name="alternate style sheets"/>
 		<function link="struct/objects.html#alternate-text" name="alternate text, specifying"/>
 		<function link="struct/links.html#didx-anchor" name="anchor"/>
-		<function link="struct/links.html#idx-anchor-6" name="anchor , ASCII characters in name"/>
-		<function link="struct/links.html#idx-anchor-5" name="anchor , case of name"/>
-		<function link="struct/links.html#idx-anchor-9" name="anchor , character references in name"/>
-		<function link="struct/links.html#idx-anchor-1" name="anchor , creation of with A"/>
-		<function link="struct/links.html#anchors-with-id" name="anchor , creation with id attribute"/>
-		<function link="struct/links.html#idx-anchor-8" name="anchor , name space of"/>
-		<function link="appendix/notes.html#idx-anchor" name="anchor , non-ASCII characters in name"/>
-		<function link="struct/links.html#idx-anchor-2" name="anchor , set by script"/>
-		<function link="struct/links.html#idx-anchor-3" name="anchor , syntax of name"/>
-		<function link="struct/links.html#idx-anchor-4" name="anchor , uniqueness of name"/>
-		<function link="struct/links.html#idx-anchor-10" name="anchor , with A vs. id"/>
+		<function link="struct/links.html#idx-anchor-6" name="anchor, ASCII characters in name"/>
+		<function link="struct/links.html#idx-anchor-5" name="anchor, case of name"/>
+		<function link="struct/links.html#idx-anchor-9" name="anchor, character references in name"/>
+		<function link="struct/links.html#idx-anchor-1" name="anchor, creation of with A"/>
+		<function link="struct/links.html#anchors-with-id" name="anchor, creation with id attribute"/>
+		<function link="struct/links.html#idx-anchor-8" name="anchor, name space of"/>
+		<function link="appendix/notes.html#idx-anchor" name="anchor, non-ASCII characters in name"/>
+		<function link="struct/links.html#idx-anchor-2" name="anchor, set by script"/>
+		<function link="struct/links.html#idx-anchor-3" name="anchor, syntax of name"/>
+		<function link="struct/links.html#idx-anchor-4" name="anchor, uniqueness of name"/>
+		<function link="struct/links.html#idx-anchor-10" name="anchor, with A vs. id"/>
 		<function link="struct/objects.html#idx-applet" name="applet, ways to include"/>
 		<function link="interact/forms.html#didx-applicationx-www-form-urlencoded" name="application/x-www-form-urlencoded"/>
-		<function link="interact/forms.html#idx-applicationx-www-form-urlencoded-1" name="application/x-www-form-urlencoded ,"/>
+		<function link="interact/forms.html#idx-applicationx-www-form-urlencoded-1" name="application/x-www-form-urlencoded, "/>
 		<function link="intro/sgmltut.html#didx-attribute" name="attribute"/>
-		<function link="intro/sgmltut.html#didx-FIXED_attribute_value" name="attribute , #FIXED value of"/>
-		<function link="intro/sgmltut.html#didx-IMPLIED_attribute_value" name="attribute , #IMPLIED value of"/>
-		<function link="intro/sgmltut.html#didx-REQUIRED_attribute_value" name="attribute , #REQUIRED value of"/>
-		<function link="intro/sgmltut.html#didx-boolean_attribute" name="attribute , boolean"/>
-		<function link="intro/sgmltut.html#idx-attribute-9" name="attribute , case of values"/>
-		<function link="intro/sgmltut.html#idx-attribute-7" name="attribute , case-insensitive"/>
-		<function link="intro/sgmltut.html#idx-attribute-8" name="attribute , declaration of in DTD"/>
-		<function link="intro/sgmltut.html#didx-boolean_attribute-1" name="attribute , minimized boolean"/>
-		<function link="intro/sgmltut.html#idx-attribute-6" name="attribute , quotation marks around value"/>
+		<function link="intro/sgmltut.html#didx-FIXED_attribute_value" name="attribute, #FIXED value of"/>
+		<function link="intro/sgmltut.html#didx-IMPLIED_attribute_value" name="attribute, #IMPLIED value of"/>
+		<function link="intro/sgmltut.html#didx-REQUIRED_attribute_value" name="attribute, #REQUIRED value of"/>
+		<function link="intro/sgmltut.html#didx-boolean_attribute" name="attribute, boolean"/>
+		<function link="intro/sgmltut.html#idx-attribute-9" name="attribute, case of values"/>
+		<function link="intro/sgmltut.html#idx-attribute-7" name="attribute, case-insensitive"/>
+		<function link="intro/sgmltut.html#idx-attribute-8" name="attribute, declaration of in DTD"/>
+		<function link="intro/sgmltut.html#didx-boolean_attribute-1" name="attribute, minimized boolean"/>
+		<function link="intro/sgmltut.html#idx-attribute-6" name="attribute, quotation marks around value"/>
 		<function link="intro/sgmltut.html#didx-parameter_entity" name="%attrs;"/>
 		<function link="conform.html#didx-author" name="author"/>
 		<function link="conform.html#didx-authoring_tool" name="authoring tool"/>
-		<function link="struct/text.html#idx-authoring_tool" name="authoring tool ,"/>
-		<function link="present/styles.html#idx-authoring_tool" name="authoring tool , , and default style sheet language"/>
+		<function link="struct/text.html#idx-authoring_tool" name="authoring tool, "/>
+		<function link="present/styles.html#idx-authoring_tool" name="authoring tool, and default style sheet language"/>
 		<function link="present/graphics.html#background-color" name="background color"/>
 		<function link="struct/links.html#idx-base_URI" name="base URI"/>
 		<function link="struct/dirlang.html#idx-bidirection" name="bidirection, Unicode algorithm"/>
@@ -831,13 +831,13 @@
 		<function link="struct/dirlang.html#style-bidi" name="bidirection, and style sheets"/>
 		<function link="struct/dirlang.html#idx-bidirection-1" name="bidirection, override of"/>
 		<function link="struct/dirlang.html#blocklevel-bidi" name="block-level, and bidirection"/>
-		<function link="struct/global.html#idx-block-level-1" name="block-level, and bidirection ,"/>
+		<function link="struct/global.html#idx-block-level-1" name="block-level, and bidirection, "/>
 		<function link="struct/global.html#didx-block-level" name="block-level, element"/>
 		<function link="intro/sgmltut.html#idx-parameter_entity-1" name="%block;"/>
 		<function link="struct/global.html#idx-BODY" name="BODY, none in frameset"/>
 		<function link="appendix/notes.html#sgml-boolean" name="boolean attribute"/>
-		<function link="intro/sgmltut.html#didx-boolean_attribute" name="boolean attribute ,"/>
-		<function link="intro/sgmltut.html#didx-boolean_attribute-1" name="boolean attribute , , minimized"/>
+		<function link="intro/sgmltut.html#didx-boolean_attribute" name="boolean attribute, "/>
+		<function link="intro/sgmltut.html#didx-boolean_attribute-1" name="boolean attribute, minimized"/>
 		<function link="present/frames.html#idx-border" name="border, around a frame"/>
 		<function link="struct/tables.html#borders" name="border, around a table"/>
 		<function link="struct/objects.html#idx-border" name="border, around image"/>
@@ -847,8 +847,8 @@
 		<function link="struct/links.html#idx-anchor-5" name="case, of anchor name"/>
 		<function link="intro/sgmltut.html#idx-attribute-7" name="case, of attribute names"/>
 		<function link="intro/sgmltut.html#idx-case-2" name="case, of attribute values"/>
-		<function link="intro/sgmltut.html#idx-attribute-9" name="case, of attribute values ,"/>
-		<function link="types.html#idx-case" name="case, of attribute values , ,"/>
+		<function link="intro/sgmltut.html#idx-attribute-9" name="case, of attribute values, "/>
+		<function link="types.html#idx-case" name="case, of attribute values, "/>
 		<function link="types.html#idx-case-6" name="case, of character encodings"/>
 		<function link="charset.html#idx-case-1" name="case, of character entity reference"/>
 		<function link="types.html#idx-case-2" name="case, of color names"/>
@@ -863,26 +863,26 @@
 		<function link="types.html#idx-case-10" name="case, of style data"/>
 		<function link="sgml/intro.html#catalog" name="catalog for HTML"/>
 		<function link="intro/sgmltut.html#idx-CDATA" name="CDATA"/>
-		<function link="types.html#type-cdata" name="CDATA ,"/>
-		<function link="types.html#idx-CDATA-1" name="CDATA , , script and style data"/>
+		<function link="types.html#type-cdata" name="CDATA, "/>
+		<function link="types.html#idx-CDATA-1" name="CDATA, script and style data"/>
 		<function link="intro/intro.html#idx-CERN" name="CERN"/>
 		<function link="charset.html#didx-character_encoding" name="character encoding"/>
-		<function link="conform.html#idx-character_encoding" name="character encoding ,"/>
-		<function link="charset.html#idx-character_encoding-4" name="character encoding , , UTF-1"/>
-		<function link="charset.html#idx-character_encoding-3" name="character encoding , , UTF-16"/>
-		<function link="struct/dirlang.html#bidi88598" name="character encoding , , and bidirection"/>
-		<function link="charset.html#idx-character_encoding-1" name="character encoding , , choice of"/>
-		<function link="charset.html#idx-character_encoding-2" name="character encoding , , common examples"/>
-		<function link="charset.html#idx-character_encoding-7" name="character encoding , , default"/>
-		<function link="interact/forms.html#idx-character_encoding" name="character encoding , , for form submission"/>
-		<function link="types.html#idx-character_encoding" name="character encoding , , names of"/>
-		<function link="struct/links.html#idx-link-4" name="character encoding , , of links"/>
-		<function link="charset.html#spec-char-encoding" name="character encoding , , specification of"/>
-		<function link="charset.html#idx-character_encoding-6" name="character encoding , , user agent&apos;s determination of"/>
+		<function link="conform.html#idx-character_encoding" name="character encoding, "/>
+		<function link="charset.html#idx-character_encoding-4" name="character encoding, UTF-1"/>
+		<function link="charset.html#idx-character_encoding-3" name="character encoding, UTF-16"/>
+		<function link="struct/dirlang.html#bidi88598" name="character encoding, and bidirection"/>
+		<function link="charset.html#idx-character_encoding-1" name="character encoding, choice of"/>
+		<function link="charset.html#idx-character_encoding-2" name="character encoding, common examples"/>
+		<function link="charset.html#idx-character_encoding-7" name="character encoding, default"/>
+		<function link="interact/forms.html#idx-character_encoding" name="character encoding, for form submission"/>
+		<function link="types.html#idx-character_encoding" name="character encoding, names of"/>
+		<function link="struct/links.html#idx-link-4" name="character encoding, of links"/>
+		<function link="charset.html#spec-char-encoding" name="character encoding, specification of"/>
+		<function link="charset.html#idx-character_encoding-6" name="character encoding, user agent&apos;s determination of"/>
 		<function link="charset.html#didx-character_entity_references" name="character entity references"/>
 		<function link="charset.html#didx-character_reference" name="character reference"/>
-		<function link="intro/sgmltut.html#idx-character_reference" name="character reference ,"/>
-		<function link="struct/dirlang.html#idx-character_reference" name="character reference , , for directionality"/>
+		<function link="intro/sgmltut.html#idx-character_reference" name="character reference, "/>
+		<function link="struct/dirlang.html#idx-character_reference" name="character reference, for directionality"/>
 		<function link="charset.html#repertoire" name="character repertoire"/>
 		<function link="types.html#didx-parameter_entity-9" name="%Character;"/>
 		<function link="charset.html#idx-characters" name="characters, abstract"/>
@@ -894,7 +894,7 @@
 		<function link="interact/forms.html#checkbox" name="checkbox"/>
 		<function link="struct/global.html#idx-class_attribute" name="class attribute, roles of"/>
 		<function link="struct/objects.html#didx-client-side_image_map" name="client-side image map"/>
-		<function link="struct/objects.html#idx-client-side_image_map-1" name="client-side image map , creation of"/>
+		<function link="struct/objects.html#idx-client-side_image_map-1" name="client-side image map, creation of"/>
 		<function link="struct/tables.html#idx-clipping" name="clipping, table text"/>
 		<function link="charset.html#code-position" name="code position"/>
 		<function link="present/graphics.html#background-color" name="color, background"/>
@@ -912,8 +912,8 @@
 		<function link="present/styles.html#hiding" name="comments, used to hide style sheet data"/>
 		<function link="conform.html#conformance" name="conformance"/>
 		<function link="intro/sgmltut.html#didx-content_model" name="content model"/>
-		<function link="intro/sgmltut.html#idx-content_model-2" name="content model , excluded elements in"/>
-		<function link="intro/sgmltut.html#idx-content_model-1" name="content model , syntax of in DTD"/>
+		<function link="intro/sgmltut.html#idx-content_model-2" name="content model, excluded elements in"/>
+		<function link="intro/sgmltut.html#idx-content_model-1" name="content model, syntax of in DTD"/>
 		<function link="interact/forms.html#didx-applicationx-www-form-urlencoded" name="content type, application/x-www-form-urlencoded"/>
 		<function link="interact/forms.html#didx-multipartform-data" name="content type, multipart/form-data"/>
 		<function link="conform.html#idx-content_type" name="content type, text/html"/>
@@ -924,17 +924,17 @@
 		<function link="charset.html#idx-HTTP" name="Content-Type header"/>
 		<function link="types.html#didx-parameter_entity-6" name="%ContentType;"/>
 		<function link="interact/forms.html#didx-control" name="control"/>
-		<function link="interact/forms.html#access-keys" name="control , access key for"/>
-		<function link="interact/forms.html#control-name" name="control , control name"/>
-		<function link="interact/forms.html#current-value" name="control , control value"/>
-		<function link="interact/forms.html#disabled" name="control , disabled"/>
-		<function link="interact/scripts.html#idx-control" name="control , events for"/>
-		<function link="interact/forms.html#focus" name="control , giving focus to"/>
-		<function link="interact/forms.html#initial-value" name="control , initial value"/>
-		<function link="interact/forms.html#read-only" name="control , read only"/>
-		<function link="interact/forms.html#successful-controls" name="control , successful"/>
-		<function link="interact/forms.html#tabbing-navigation" name="control , tabbing navigation"/>
-		<function link="interact/forms.html#idx-control-7" name="control , types of"/>
+		<function link="interact/forms.html#access-keys" name="control, access key for"/>
+		<function link="interact/forms.html#control-name" name="control, control name"/>
+		<function link="interact/forms.html#current-value" name="control, control value"/>
+		<function link="interact/forms.html#disabled" name="control, disabled"/>
+		<function link="interact/scripts.html#idx-control" name="control, events for"/>
+		<function link="interact/forms.html#focus" name="control, giving focus to"/>
+		<function link="interact/forms.html#initial-value" name="control, initial value"/>
+		<function link="interact/forms.html#read-only" name="control, read only"/>
+		<function link="interact/forms.html#successful-controls" name="control, successful"/>
+		<function link="interact/forms.html#tabbing-navigation" name="control, tabbing navigation"/>
+		<function link="interact/forms.html#idx-control-7" name="control, types of"/>
 		<function link="interact/forms.html#idx-coordinates" name="coordinates, of form submit click"/>
 		<function link="struct/objects.html#idx-coordinates" name="coordinates, of server-side image map"/>
 		<function link="struct/tables.html#idx-table-10" name="data cell, in table"/>
@@ -952,39 +952,39 @@
 		<function link="present/styles.html#default-style" name="default, style sheet language"/>
 		<function link="present/frames.html#idx-target_frame-1" name="default, target frame"/>
 		<function link="conform.html#deprecated" name="deprecated"/>
-		<function link="appendix/changes.html#idx-deprecated" name="deprecated , elements"/>
+		<function link="appendix/changes.html#idx-deprecated" name="deprecated, elements"/>
 		<function link="struct/dirlang.html#blocklevel-bidi" name="direction, inheritance of for nested elements"/>
 		<function link="struct/tables.html#idx-table-2" name="direction, of table information"/>
 		<function link="struct/dirlang.html#idx-text" name="direction, of text"/>
 		<function link="interact/forms.html#disabled" name="disabled controls"/>
-		<function link="interact/forms.html#idx-disabled_controls-1" name="disabled controls , not successful"/>
+		<function link="interact/forms.html#idx-disabled_controls-1" name="disabled controls, not successful"/>
 		<function link="sgml/intro.html#idx-document" name="document, SGML validation"/>
 		<function link="interact/scripts.html#idx-document" name="document, dynamic modification with script"/>
 		<function link="struct/objects.html#idx-document-1" name="document, ways to embed"/>
 		<function link="present/frames.html#idx-frame-7" name="document, ways to include"/>
-		<function link="struct/objects.html#idx-document" name="document, ways to include ,"/>
+		<function link="struct/objects.html#idx-document" name="document, ways to include, "/>
 		<function link="charset.html#didx-document_character_set" name="document character set"/>
-		<function link="charset.html#idx-document_character_set-1" name="document character set , ISO10646"/>
-		<function link="sgml/intro.html#idx-document_character_set" name="document character set , ISO10646 ,"/>
-		<function link="charset.html#idx-document_character_set-2" name="document character set , equivalence of ISO10646 and UNICODE"/>
+		<function link="charset.html#idx-document_character_set-1" name="document character set, ISO10646"/>
+		<function link="sgml/intro.html#idx-document_character_set" name="document character set, ISO10646, "/>
+		<function link="charset.html#idx-document_character_set-2" name="document character set, equivalence of ISO10646 and UNICODE"/>
 		<function link="struct/global.html#idx-document_type_declaration-3" name="document type declaration"/>
-		<function link="struct/global.html#didx-document_type_declaration-2" name="document type declaration , for frameset DTD"/>
-		<function link="struct/global.html#didx-document_type_declaration" name="document type declaration , for strict DTD"/>
-		<function link="struct/global.html#didx-document_type_declaration-1" name="document type declaration , for transitional DTD"/>
+		<function link="struct/global.html#didx-document_type_declaration-2" name="document type declaration, for frameset DTD"/>
+		<function link="struct/global.html#didx-document_type_declaration" name="document type declaration, for strict DTD"/>
+		<function link="struct/global.html#didx-document_type_declaration-1" name="document type declaration, for transitional DTD"/>
 		<function link="intro/sgmltut.html#didx-document_type_definition" name="document type definition"/>
-		<function link="conform.html#idx-document_type_definition-1" name="document type definition , DTD fragments conform to"/>
-		<function link="intro/sgmltut.html#idx-comments-1" name="document type definition , comments in"/>
-		<function link="conform.html#idx-document_type_definition" name="document type definition , examples conform to"/>
-		<function link="sgml/framesetdtd.html#dtd" name="document type definition , frameset"/>
-		<function link="intro/sgmltut.html#idx-document_type_definition-1" name="document type definition , how to read"/>
-		<function link="sgml/dtd.html#dtd" name="document type definition , strict"/>
-		<function link="sgml/loosedtd.html#loosedtd" name="document type definition , transitional"/>
+		<function link="conform.html#idx-document_type_definition-1" name="document type definition, DTD fragments conform to"/>
+		<function link="intro/sgmltut.html#idx-comments-1" name="document type definition, comments in"/>
+		<function link="conform.html#idx-document_type_definition" name="document type definition, examples conform to"/>
+		<function link="sgml/framesetdtd.html#dtd" name="document type definition, frameset"/>
+		<function link="intro/sgmltut.html#idx-document_type_definition-1" name="document type definition, how to read"/>
+		<function link="sgml/dtd.html#dtd" name="document type definition, strict"/>
+		<function link="sgml/loosedtd.html#loosedtd" name="document type definition, transitional"/>
 		<function link="struct/global.html#didx-Dublin_Core" name="Dublin Core"/>
 		<function link="struct/global.html#didx-block-level" name="element, block-level"/>
 		<function link="intro/sgmltut.html#idx-case" name="element, case-insensitive"/>
 		<function link="intro/sgmltut.html#didx-content_model" name="element, content model of"/>
 		<function link="intro/sgmltut.html#didx-element-4" name="element, empty"/>
-		<function link="intro/sgmltut.html#didx-empty_element" name="element, empty ,"/>
+		<function link="intro/sgmltut.html#didx-empty_element" name="element, empty, "/>
 		<function link="intro/sgmltut.html#didx-element-3" name="element, end tag"/>
 		<function link="struct/global.html#didx-inline" name="element, inline"/>
 		<function link="appendix/changes.html#idx-deprecated" name="element, list of deprecated"/>
@@ -996,28 +996,28 @@
 		<function link="conform.html#idx-element" name="element, support for deprecated"/>
 		<function link="conform.html#idx-element-1" name="element, support for obsolete"/>
 		<function link="intro/sgmltut.html#didx-SGML-3" name="element, type declaration"/>
-		<function link="intro/sgmltut.html#didx-element-5" name="element, type declaration ,"/>
+		<function link="intro/sgmltut.html#didx-element-5" name="element, type declaration, "/>
 		<function link="intro/sgmltut.html#didx-element" name="element, types"/>
 		<function link="struct/global.html#idx-element-2" name="element, unique identifier for"/>
 		<function link="intro/sgmltut.html#didx-empty_element" name="empty element"/>
 		<function link="intro/sgmltut.html#didx-element-3" name="end tag"/>
-		<function link="intro/sgmltut.html#idx-end_tag-2" name="end tag , declared as optional"/>
-		<function link="intro/sgmltut.html#idx-element-8" name="end tag , omitted"/>
+		<function link="intro/sgmltut.html#idx-end_tag-2" name="end tag, declared as optional"/>
+		<function link="intro/sgmltut.html#idx-element-8" name="end tag, omitted"/>
 		<function link="struct/global.html#idx-entity_sets" name="entity sets, URIs for HTML 4.01"/>
 		<function link="appendix/notes.html#didx-error" name="error, handling by user agents"/>
-		<function link="conform.html#didx-error" name="error, handling by user agents ,"/>
+		<function link="conform.html#didx-error" name="error, handling by user agents, "/>
 		<function link="interact/forms.html#idx-error" name="error, image map with IMG in BUTTON"/>
 		<function link="present/styles.html#idx-error" name="error, rendering style rules in STYLE"/>
 		<function link="struct/links.html#idx-error" name="error, unavailable resource"/>
 		<function link="interact/scripts.html#events" name="events"/>
 		<function link="interact/forms.html#file-select" name="file select control"/>
-		<function link="interact/forms.html#idx-file_select_control-1" name="file select control , submission of"/>
+		<function link="interact/forms.html#idx-file_select_control-1" name="file select control, submission of"/>
 		<function link="intro/sgmltut.html#didx-FIXED_attribute_value" name="#FIXED attribute value"/>
 		<function link="present/graphics.html#idx-alignment-1" name="floating objects"/>
 		<function link="present/graphics.html#idx-text" name="floating text"/>
 		<function link="interact/forms.html#focus" name="focus"/>
-		<function link="interact/forms.html#idx-focus-2" name="focus , and access key"/>
-		<function link="interact/forms.html#idx-label-2" name="focus , label gives to control"/>
+		<function link="interact/forms.html#idx-focus-2" name="focus, and access key"/>
+		<function link="interact/forms.html#idx-label-2" name="focus, label gives to control"/>
 		<function link="present/graphics.html#graphics-fonts" name="font, style with HTML"/>
 		<function link="interact/forms.html#form-labels" name="form, adding labels to"/>
 		<function link="interact/forms.html#form-content-type" name="form, content types for encoding"/>
@@ -1035,9 +1035,9 @@
 		<function link="interact/forms.html#didx-tabbing_order" name="form, tabbing order of controls"/>
 		<function link="interact/forms.html#successful-controls" name="form, values submitted"/>
 		<function link="interact/forms.html#didx-form_data_set" name="form data set"/>
-		<function link="interact/forms.html#idx-form-11" name="form data set , encoding"/>
+		<function link="interact/forms.html#idx-form-11" name="form data set, encoding"/>
 		<function link="intro/intro.html#didx-fragment_identifier" name="fragment identifier"/>
-		<function link="struct/links.html#idx-fragment_identifier" name="fragment identifier ,"/>
+		<function link="struct/links.html#idx-fragment_identifier" name="fragment identifier, "/>
 		<function link="present/frames.html#idx-frame-5" name="frame, URI problems with"/>
 		<function link="present/frames.html#idx-border" name="frame, border of"/>
 		<function link="present/frames.html#idx-frame-3" name="frame, initial contents of"/>
@@ -1064,7 +1064,7 @@
 		<function link="struct/tables.html#idx-header_cell-1" name="header cell, scope of"/>
 		<function link="struct/global.html#idx-headings" name="headings, properly nested"/>
 		<function link="interact/forms.html#hidden-control" name="hidden control"/>
-		<function link="interact/forms.html#idx-hidden_control-1" name="hidden control ,"/>
+		<function link="interact/forms.html#idx-hidden_control-1" name="hidden control, "/>
 		<function link="conform.html#idx-HTML" name="HTML, as SGML application"/>
 		<function link="intro/intro.html#idx-HTML-5" name="HTML, authoring tips"/>
 		<function link="intro/sgmltut.html#idx-HTML" name="HTML, comments in"/>
@@ -1098,14 +1098,14 @@
 		<function link="struct/objects.html#idx-white_space" name="image, white space around"/>
 		<function link="struct/objects.html#img-wh" name="image, width and height of"/>
 		<function link="struct/objects.html#include-maps" name="image map"/>
-		<function link="struct/objects.html#idx-coordinates" name="image map ,"/>
-		<function link="struct/objects.html#idx-accessibility-3" name="image map , , accessibility of"/>
-		<function link="struct/objects.html#didx-client-side_image_map" name="image map , , client-side"/>
-		<function link="interact/forms.html#idx-error" name="image map , , illegal for IMG in BUTTON"/>
-		<function link="struct/objects.html#idx-image_map-4" name="image map , , overlapping regions of"/>
-		<function link="struct/objects.html#idx-image_map-6" name="image map , , server side"/>
-		<function link="struct/objects.html#didx-server-side_image_map" name="image map , , server-side"/>
-		<function link="struct/objects.html#idx-image_map-3" name="image map , , with OBJECT"/>
+		<function link="struct/objects.html#idx-coordinates" name="image map, "/>
+		<function link="struct/objects.html#idx-accessibility-3" name="image map, accessibility of"/>
+		<function link="struct/objects.html#didx-client-side_image_map" name="image map, client-side"/>
+		<function link="interact/forms.html#idx-error" name="image map, illegal for IMG in BUTTON"/>
+		<function link="struct/objects.html#idx-image_map-4" name="image map, overlapping regions of"/>
+		<function link="struct/objects.html#idx-image_map-6" name="image map, server side"/>
+		<function link="struct/objects.html#didx-server-side_image_map" name="image map, server-side"/>
+		<function link="struct/objects.html#idx-image_map-3" name="image map, with OBJECT"/>
 		<function link="intro/sgmltut.html#didx-IMPLIED_attribute_value" name="#IMPLIED attribute value"/>
 		<function link="struct/objects.html#idx-object" name="including an object"/>
 		<function link="struct/global.html#didx-inline" name="inline, element"/>
@@ -1125,13 +1125,13 @@
 		<function link="types.html#didx-parameter_entity-7" name="%LanguageCode;"/>
 		<function link="types.html#didx-parameter_entity-4" name="%Length;"/>
 		<function link="struct/text.html#didx-line_break" name="line break"/>
-		<function link="struct/text.html#idx-line_break-2" name="line break , and bidirectional text"/>
-		<function link="present/graphics.html#idx-line_break" name="line break , and floating text"/>
-		<function link="struct/text.html#idx-line_break-1" name="line break , forcing"/>
-		<function link="struct/text.html#nbsp" name="line break , prohibiting"/>
+		<function link="struct/text.html#idx-line_break-2" name="line break, and bidirectional text"/>
+		<function link="present/graphics.html#idx-line_break" name="line break, and floating text"/>
+		<function link="struct/text.html#idx-line_break-1" name="line break, forcing"/>
+		<function link="struct/text.html#nbsp" name="line break, prohibiting"/>
 		<function link="struct/links.html#idx-link-4" name="link, and character encoding"/>
 		<function link="present/styles.html#specifying-external" name="link, and external style sheets"/>
-		<function link="struct/links.html#linksandss" name="link, and external style sheets ,"/>
+		<function link="struct/links.html#linksandss" name="link, and external style sheets, "/>
 		<function link="present/styles.html#media-cascades" name="link, and media-dependent style sheets"/>
 		<function link="present/frames.html#idx-target_frame-1" name="link, default target for"/>
 		<function link="struct/links.html#didx-link" name="link, definition of"/>
@@ -1163,18 +1163,18 @@
 		<function link="types.html#idx-media_descriptor-1" name="media descriptor, parsing of"/>
 		<function link="types.html#didx-parameter_entity-11" name="%MediaDesc;"/>
 		<function link="interact/forms.html#menu" name="menu"/>
-		<function link="interact/forms.html#idx-menu-1" name="menu , grouping of choices"/>
-		<function link="interact/forms.html#idx-menu-2" name="menu , preselected options"/>
-		<function link="interact/forms.html#idx-menu-3" name="menu , rendering of choices"/>
-		<function link="interact/forms.html#idx-menu-4" name="menu , visual rendering of grouped options"/>
+		<function link="interact/forms.html#idx-menu-1" name="menu, grouping of choices"/>
+		<function link="interact/forms.html#idx-menu-2" name="menu, preselected options"/>
+		<function link="interact/forms.html#idx-menu-3" name="menu, rendering of choices"/>
+		<function link="interact/forms.html#idx-menu-4" name="menu, visual rendering of grouped options"/>
 		<function link="conform.html#message-entity" name="message entity"/>
 		<function link="struct/global.html#didx-meta_data" name="meta data"/>
-		<function link="struct/global.html#idx-meta_data-2" name="meta data , LINK vs META"/>
-		<function link="struct/global.html#didx-profile" name="meta data , profiles for"/>
-		<function link="struct/global.html#idx-scheme" name="meta data , scheme for"/>
+		<function link="struct/global.html#idx-meta_data-2" name="meta data, LINK vs META"/>
+		<function link="struct/global.html#didx-profile" name="meta data, profiles for"/>
+		<function link="struct/global.html#idx-scheme" name="meta data, scheme for"/>
 		<function link="types.html#didx-parameter_entity-5" name="%MultiLength;"/>
 		<function link="interact/forms.html#didx-multipartform-data" name="multipart/form-data"/>
-		<function link="interact/forms.html#idx-multipartform-data-1" name="multipart/form-data ,"/>
+		<function link="interact/forms.html#idx-multipartform-data-1" name="multipart/form-data, "/>
 		<function link="types.html#type-name" name="NAME"/>
 		<function link="appendix/notes.html#sgml-boolean" name="notes about minimized"/>
 		<function link="types.html#type-number" name="NUMBER"/>
@@ -1185,8 +1185,8 @@
 		<function link="struct/objects.html#idx-object-3" name="object, fallback rendering of"/>
 		<function link="struct/objects.html#idx-object" name="object, generic inclusion"/>
 		<function link="present/frames.html#sharing-frame-data" name="object, in HEAD"/>
-		<function link="struct/objects.html#idx-object-2" name="object, in HEAD ,"/>
-		<function link="struct/objects.html#idx-object-5" name="object, in HEAD , ,"/>
+		<function link="struct/objects.html#idx-object-2" name="object, in HEAD, "/>
+		<function link="struct/objects.html#idx-object-5" name="object, in HEAD, "/>
 		<function link="interact/forms.html#object-control" name="object, in form"/>
 		<function link="struct/objects.html#object-init" name="object, initialization"/>
 		<function link="struct/objects.html#idx-object-1" name="object, locating implementation and data"/>
@@ -1197,9 +1197,9 @@
 		<function link="struct/objects.html#idx-white_space" name="object, white space around"/>
 		<function link="struct/objects.html#img-wh" name="object, width and height of"/>
 		<function link="interact/forms.html#object-control" name="object control"/>
-		<function link="interact/forms.html#idx-object_control-1" name="object control ,"/>
+		<function link="interact/forms.html#idx-object_control-1" name="object control, "/>
 		<function link="conform.html#didx-obsolete" name="obsolete"/>
-		<function link="appendix/changes.html#idx-obsolete" name="obsolete , elements"/>
+		<function link="appendix/changes.html#idx-obsolete" name="obsolete, elements"/>
 		<function link="struct/text.html#idx-paragraph" name="paragraph, visual rendering of"/>
 		<function link="types.html#didx-parameter_entity-9" name="parameter entity, %Character;"/>
 		<function link="types.html#didx-parameter_entity-8" name="parameter entity, %Charset;"/>
@@ -1230,18 +1230,18 @@
 		<function link="struct/global.html#didx-profile" name="profile"/>
 		<function link="interact/forms.html#push-button" name="push button"/>
 		<function link="struct/text.html#idx-quoted_text" name="quoted text"/>
-		<function link="struct/text.html#idx-quoted_text-1" name="quoted text , rendering of"/>
+		<function link="struct/text.html#idx-quoted_text-1" name="quoted text, rendering of"/>
 		<function link="interact/forms.html#radio" name="radio button"/>
 		<function link="interact/forms.html#read-only" name="read only controls"/>
 		<function link="types.html#didx-relative_length" name="relative length"/>
 		<function link="intro/intro.html#didx-relative_URI" name="relative URI"/>
-		<function link="intro/intro.html#idx-relative_URI-1" name="relative URI , resolution of"/>
+		<function link="intro/intro.html#idx-relative_URI-1" name="relative URI, resolution of"/>
 		<function link="intro/sgmltut.html#didx-REQUIRED_attribute_value" name="#REQUIRED attribute value"/>
 		<function link="interact/forms.html#reset-button" name="reset button"/>
 		<function link="interact/forms.html#didx-form-1" name="resetting a form"/>
 		<function link="struct/links.html#resolving-relative-uris" name="resolution of relative URI"/>
 		<function link="intro/intro.html#idx-Resource_Description_Framework_RDF" name="Resource Description Framework (RDF)"/>
-		<function link="struct/global.html#idx-Resource_Description_Framework_RDF" name="Resource Description Framework (RDF) ,"/>
+		<function link="struct/global.html#idx-Resource_Description_Framework_RDF" name="Resource Description Framework (RDF), "/>
 		<function link="struct/tables.html#idx-table" name="row, number of in table"/>
 		<function link="struct/tables.html#idx-row_group" name="row group"/>
 		<function link="present/graphics.html#edef-HR" name="rule, between block-level elements"/>
@@ -1266,13 +1266,13 @@
 		<function link="interact/scripts.html#idx-scripting_language" name="scripting language, specification of"/>
 		<function link="struct/links.html#search" name="search engine, and links"/>
 		<function link="appendix/notes.html#recs" name="search engine, helping"/>
-		<function link="struct/global.html#idx-search_engine" name="search engine, helping ,"/>
+		<function link="struct/global.html#idx-search_engine" name="search engine, helping, "/>
 		<function link="appendix/notes.html#idx-search_robot" name="search robot, helping"/>
 		<function link="appendix/notes.html#notes-security" name="security, notes on"/>
 		<function link="interact/forms.html#idx-security" name="security, of password control"/>
 		<function link="struct/objects.html#didx-server-side_image_map" name="server-side image map"/>
-		<function link="struct/objects.html#idx-image_map-6" name="server-side image map ,"/>
-		<function link="struct/objects.html#idx-coordinates" name="server-side image map , , click coordinates"/>
+		<function link="struct/objects.html#idx-image_map-6" name="server-side image map, "/>
+		<function link="struct/objects.html#idx-coordinates" name="server-side image map, click coordinates"/>
 		<function link="intro/sgmltut.html#didx-SGML" name="SGML, application"/>
 		<function link="sgml/intro.html#catalog" name="SGML, catalog for HTML"/>
 		<function link="intro/sgmltut.html#didx-SGML-1" name="SGML, declaration"/>
@@ -1282,13 +1282,13 @@
 		<function link="sgml/intro.html#idx-document" name="SGML, document validation"/>
 		<function link="intro/sgmltut.html#didx-SGML-3" name="SGML, element type declaration"/>
 		<function link="appendix/notes.html#sgmlfeatures" name="SGML, features with limited support"/>
-		<function link="appendix/notes.html#idx-SGML-3" name="SGML, features with limited support ,"/>
+		<function link="appendix/notes.html#idx-SGML-3" name="SGML, features with limited support, "/>
 		<function link="appendix/notes.html#sgml" name="SGML, implementation notes"/>
 		<function link="intro/sgmltut.html#idx-SGML-4" name="SGML, introduction to"/>
 		<function link="appendix/notes.html#notes-line-breaks" name="SGML, treatment of line breaks"/>
 		<function link="struct/text.html#didx-soft_hyphen" name="soft hyphen"/>
 		<function link="intro/sgmltut.html#didx-element-2" name="start tag"/>
-		<function link="intro/sgmltut.html#idx-element-9" name="start tag , omitted"/>
+		<function link="intro/sgmltut.html#idx-element-9" name="start tag, omitted"/>
 		<function link="struct/global.html#didx-document_type_declaration" name="strict DTD, declaration of"/>
 		<function link="sgml/dtd.html#dtd" name="strict DTD, definition of"/>
 		<function link="present/styles.html#didx-style_sheet" name="style sheet, alternate"/>
@@ -1348,8 +1348,8 @@
 		<function link="struct/text.html#idx-quoted_text" name="text, quoted"/>
 		<function link="struct/text.html#idx-text-2" name="text, wrapping in paragraph"/>
 		<function link="interact/forms.html#text-input" name="text input control"/>
-		<function link="interact/forms.html#idx-text_input_control-2" name="text input control , multi-line"/>
-		<function link="interact/forms.html#idx-text_input_control-1" name="text input control , single-line"/>
+		<function link="interact/forms.html#idx-text_input_control-2" name="text input control, multi-line"/>
+		<function link="interact/forms.html#idx-text_input_control-1" name="text input control, single-line"/>
 		<function link="conform.html#text-html" name="text/html"/>
 		<function link="types.html#didx-parameter_entity" name="%Text;"/>
 		<function link="types.html#type-datetime" name="time, format of"/>
@@ -1365,29 +1365,29 @@
 		<function link="appendix/notes.html#non-ascii-chars" name="URI, non-ASCII characters in attribute values"/>
 		<function link="intro/intro.html#didx-relative_URI" name="URI, relative"/>
 		<function link="intro/intro.html#idx-relative_URI-1" name="URI, resolution of relative"/>
-		<function link="struct/links.html#resolving-relative-uris" name="URI, resolution of relative ,"/>
+		<function link="struct/links.html#resolving-relative-uris" name="URI, resolution of relative, "/>
 		<function link="struct/links.html#idx-base_URI" name="URI, specifying base"/>
 		<function link="intro/intro.html#idx-URI-2" name="URI, uses of in HTML"/>
 		<function link="types.html#didx-parameter_entity-1" name="%URI;"/>
 		<function link="intro/intro.html#idx-URL" name="URL, relationship to URI"/>
 		<function link="conform.html#didx-user" name="user"/>
 		<function link="conform.html#didx-user_agent" name="user agent"/>
-		<function link="appendix/notes.html#didx-error" name="user agent , and error conditions"/>
-		<function link="conform.html#didx-error" name="user agent , and error conditions ,"/>
-		<function link="interact/scripts.html#idx-user_agent" name="user agent , and script data"/>
-		<function link="present/styles.html#hiding" name="user agent , and style data"/>
-		<function link="conform.html#conformance" name="user agent , conforming"/>
-		<function link="struct/objects.html#idx-image_map-3" name="user agent , handling image maps"/>
-		<function link="types.html#idx-CDATA-1" name="user agent , processing script and style data"/>
+		<function link="appendix/notes.html#didx-error" name="user agent, and error conditions"/>
+		<function link="conform.html#didx-error" name="user agent, and error conditions, "/>
+		<function link="interact/scripts.html#idx-user_agent" name="user agent, and script data"/>
+		<function link="present/styles.html#hiding" name="user agent, and style data"/>
+		<function link="conform.html#conformance" name="user agent, conforming"/>
+		<function link="struct/objects.html#idx-image_map-3" name="user agent, handling image maps"/>
+		<function link="types.html#idx-CDATA-1" name="user agent, processing script and style data"/>
 		<function link="charset.html#idx-character_encoding-4" name="UTF-1"/>
 		<function link="charset.html#idx-character_encoding-3" name="UTF-16"/>
 		<function link="struct/text.html#whitespace" name="white space"/>
-		<function link="present/frames.html#idx-white_space" name="white space , around frame"/>
-		<function link="struct/objects.html#idx-white_space" name="white space , around images and objects"/>
-		<function link="struct/tables.html#margins" name="white space , around table contents"/>
-		<function link="struct/text.html#didx-white_space-1" name="white space , character"/>
-		<function link="struct/text.html#idx-white_space-2" name="white space , collapsed"/>
-		<function link="struct/text.html#idx-text-1" name="white space , preserved in PRE"/>
+		<function link="present/frames.html#idx-white_space" name="white space, around frame"/>
+		<function link="struct/objects.html#idx-white_space" name="white space, around images and objects"/>
+		<function link="struct/tables.html#margins" name="white space, around table contents"/>
+		<function link="struct/text.html#didx-white_space-1" name="white space, character"/>
+		<function link="struct/text.html#idx-white_space-2" name="white space, collapsed"/>
+		<function link="struct/text.html#idx-text-1" name="white space, preserved in PRE"/>
 		<function link="intro/intro.html#didx-World_Wide_Web_Web" name="World Wide Web (Web)"/>
 		<function link="struct/text.html#idx-text-2" name="wrapping text"/>
 	</functions>
