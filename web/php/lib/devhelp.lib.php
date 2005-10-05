@@ -1,6 +1,7 @@
 <?php
 
 require_once 'lib/util.lib.php';
+require_once 'lib/tar.class.php';
 
 class XmlParser
 {
@@ -19,7 +20,12 @@ class XmlParser
         xml_parser_set_option($this->parser, XML_OPTION_TARGET_ENCODING, 'UTF-8');
     }
 
-    function parse($filename)
+    function parse_string(&$string)
+    {
+		xml_parse($this->parser, $string);
+    }
+
+    function parse_file($filename)
     {
     	$handle = fopen($filename, 'rt');
 		while(!feof($handle))
@@ -125,22 +131,15 @@ class DevhelpSpecParser extends XmlParser
     }
 }
 
-// XXX: This function requires an Unix-like OS with the 'tar', 'gzip' and 'rm' 
-// executables in the path
 class DevhelpReader
 {
 	function DevhelpReader($filename)
 	{
-		$this->tmpdir = tmpdir('/tmp', 'devhelp');
-		
-		exec("tar -xzf $filename -C $this->tmpdir");
-		
-		register_shutdown_function(array(&$this, '_DevhelpReader'));
-	}
-	
-	function _DevhelpReader()
-	{
-		exec("rm -rf $this->tmpdir");
+		$this->tar = & new tar();
+
+		// FIXME: tar file is uncompressed to memory. 
+		if(!$this->tar->openTar($filename, TRUE))
+			die ($filename . ': Could not open tar file');
 	}
 	
 	function read(&$book)
@@ -149,44 +148,38 @@ class DevhelpReader
 		$pages = $this->list_pages();
 		foreach($pages as $path)
 		{
-			$content = $this->get_page($path);
+			$content = & $this->get_page($path);
 			$book->add_page($path, $content);
 		}
 		
 		// parse spec
-		$parser = & new DevhelpSpecParser($book);	
-		$parser->parse($this->tmpdir . '/book.devhelp');
+		if(!($information = & $this->tar->getFile('book.devhelp')))
+			die('book.devhelp: file not found');
+		$file = $information['file'];
+		$parser = & new DevhelpSpecParser($book);
+		$parser->parse_string($file);
 		
 		// commit changes
 		$book->commit();
 	}
 	
-	function _walk_pages(&$pages, $dirname, $prefix)
-	{
-		$handle = opendir($dirname);
-		while(false !== ($entry = readdir($handle)))
-		{
-			$path = $dirname . '/' . $entry;
-			if(is_dir($path))
-			{
-				if($entry != '.' and $entry != '..')
-					$this->_walk_pages($pages, $path, $prefix . $entry . '/');
-			}
-			else
-				$pages[] = $prefix . $entry;
-		}		
-	}
-	
 	function list_pages()
 	{
+		$basedir = '/book/';
 		$pages = array();
-		$this->_walk_pages($pages, $this->tmpdir . '/book', '');
+		foreach($this->tar->files as $id => $information)
+		{
+			$path = $information['directory'] . '/' . $information['name'];
+			if(substr($path, 0, strlen($basedir)) == $basedir)
+				$pages[] = substr($path, strlen($basedir)); 
+		}
 		return $pages;
 	}
 	
 	function get_page($path)
 	{
-		return file_get_contents($this->tmpdir . '/book/' . $path);
+		$information = & $this->tar->getFile('book/' . $path);
+		return $information['file'];
 	}
 }
 
