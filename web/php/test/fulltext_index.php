@@ -151,7 +151,7 @@ class HtmlIndexerTest extends PHPUnit_TestCase
 			"\xC0" => "\xC3\x80",
 		);
 		foreach($testcases as $html => $title)
-			$this->assertEquals($title, Fulltext_HtmlIndexer::decode($html));
+			$this->assertEquals($title, decode_html($html));
 	}
 
 	function testExtractTitle()

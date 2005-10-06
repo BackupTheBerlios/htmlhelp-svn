@@ -24,15 +24,6 @@ function tmpdir($path, $prefix)
        return false;
 }
 
-// Taken from comments http://pt.php.net/manual/en/function.utf8-decode.php
-function is_valid_utf8($string)
-{
-	if(preg_match('/^([\x00-\x7f]|[\xc0-\xdf][\x80-\xbf]|[\xe0-\xef][\x80-\xbf]{2}|[\xf0-\xf7][\x80-\xbf]{3}|[\xf8-\xfb][\x80-\xbf]{4}|[\xfc-\xfd][\x80-\xbf]{5})*$/', $string))
-		return TRUE;
-	else
-		return FALSE;
-}
-
 function gzdecode($string)
 {
 	# FIXME: verify header here

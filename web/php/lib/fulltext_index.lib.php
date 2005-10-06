@@ -1,6 +1,7 @@
 <?php
 
 require_once 'lib/mimetypes.lib.php';
+require_once 'lib/html_util.lib.php';
 
 // Index interface
 class Fulltext_Index
@@ -143,7 +144,7 @@ class Fulltext_Indexer
 	// Normalize whitespace. Expects and produces a UTF-8 string
 	function normalize($string)
 	{
-		return implode(' ', preg_split('/[\s\pZ]+/u', $string, -1, PREG_SPLIT_NO_EMPTY));
+		return implode(' ', explode_utf8($string));
 	}
 
 	function tokenize(&$string)
@@ -223,22 +224,6 @@ class Fulltext_HtmlIndexer extends Fulltext_Indexer
 		return $default_encoding;
 	}
 
-	// Decode HTML text into UTF-8
-	function decode(&$text, $encoding="iso8859-1")
-	{
-		if(function_exists('iconv'))
-			$decoded_text = iconv($encoding, "utf-8", $text);
-		elseif(preg_match('/^iso-?8859-(1|15)$/i', $encoding))
-			// fallback for ISO-8859-1/15 encodings
-			$decoded_text = utf8_encode($text);
-		else
-			// replace higher ASCII code by question mark
-			$decoded_text = preg_replace('/[\x80-\xff]/', '?', $text);
-
-		// decode HTML entities
-		return html_entity_decode($decoded_text, ENT_COMPAT, 'utf-8');
-	}
-
 	function extract_title(&$html, $encoding=NULL)
 	{
 		if(!isset($encoding))
@@ -251,7 +236,7 @@ class Fulltext_HtmlIndexer extends Fulltext_Indexer
 				'(.*?)' . 
 				// body end tag
 				'<\/TITLE\s*>/is', $html, $matches))
-			return Fulltext_HtmlIndexer::decode($matches[1], $encoding);
+			return decode_html($matches[1], $encoding);
 		else
 			return NULL;
 	}
@@ -271,7 +256,7 @@ class Fulltext_HtmlIndexer extends Fulltext_Indexer
 				
 		$result = array();
 		foreach($parts as $part)
-			$result[] = Fulltext_HtmlIndexer::decode($part, $encoding);
+			$result[] = decode_html($part, $encoding);
 		return $result;
 	}
 
