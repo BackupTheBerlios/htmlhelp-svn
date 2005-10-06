@@ -34,11 +34,11 @@ class BookCatalog
 		}
 
 		$this->update_aliases();
-				
+		
 		// attemp to tag new book based on the title
 		$book_ids = array($book->id);
 		$title = $book->title();
-		preg_match_all('/[\pL\pN]+/u', $title, $matches, PREG_PATTERN_ORDER);
+		preg_match_all('/\w+/', $title, $matches, PREG_PATTERN_ORDER);
 		$tags = & $matches[0];
 		$this->tag_books($book_ids, $tags);
 	}
@@ -71,7 +71,7 @@ class BookCatalog
 					GROUP BY book_id
 					HAVING COUNT(DISTINCT name) = 3
 EOSQL
-		);
+		) or print(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 	}
 	
 	function enumerate_tags()
@@ -81,7 +81,7 @@ EOSQL
 			SELECT tag
 			FROM tag
 			ORDER BY tag ASC
-		");
+		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		while(list($tag) = mysql_fetch_row($result))
 			$tags[] = $tag;			
 		return $tags;
@@ -98,7 +98,7 @@ EOSQL
 			GROUP BY tag.id
 			HAVING count > 0
 			ORDER BY count DESC, tag ASC
-		");
+		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		while(list($tag, $count) = mysql_fetch_row($result))
 			$tags[$tag] = $count;			
 		return $tags;
@@ -112,7 +112,7 @@ EOSQL
 			WHERE book_id = $book_id
 				AND alias != $book_id
 			ORDER BY LENGTH(alias) ASC
-		");
+		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		if(mysql_num_rows($result))
 		{
 			list($alias) = mysql_fetch_row($result);
@@ -156,7 +156,7 @@ EOSQL
 			SELECT id, title 
 			FROM book 
 			ORDER BY title
-		");
+		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		while(list($book_id, $book_title) = mysql_fetch_row($result))
 			$books[$book_id] = $book_title;
 		return $books;
@@ -217,7 +217,7 @@ EOSQL
 			INTO tag 
 			(tag)
 			VALUES (" . implode(',', $values) . ")
-		");
+		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 	}
 	
 	function delete_tags($tags)
@@ -232,7 +232,7 @@ EOSQL
 			DELETE 
 			FROM tag 
 			WHERE tag in (" . implode(',', $values) . ")
-		");
+		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 	}
 	
 	// Tag the books with the given tags

@@ -85,7 +85,7 @@ class Book_Fulltext_Index extends Fulltext_Index
 			"DELETE temp_lexeme " .
 			"FROM stop_word " .
 			"LEFT JOIN temp_lexeme USING(lexeme)"
-		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+		) or print(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 
 		mysql_query(
 			"SELECT @lexeme_no := IFNULL(MAX(lexeme.no), 0) " .
@@ -98,8 +98,8 @@ class Book_Fulltext_Index extends Fulltext_Index
 			"INTO lexeme (book_id, no, lexeme) " .
 			"SELECT $this->book_id, @lexeme_no := (@lexeme_no + 1), temp_lexeme.lexeme " .
 			"FROM temp_lexeme " .
-			"LEFT JOIN lexeme ON lexeme.book_id = $this->book_id AND temp_lexeme.lexeme = lexeme.lexeme " .
-			"WHERE lexeme.no IS NULL " .
+			"LEFT JOIN lexeme AS lexeme0 ON lexeme0.book_id = $this->book_id AND temp_lexeme.lexeme = lexeme0.lexeme " .
+			"WHERE lexeme0.no IS NULL " .
 			"GROUP BY temp_lexeme.lexeme"
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
 		
@@ -115,7 +115,7 @@ class Book_Fulltext_Index extends Fulltext_Index
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
 
 		mysql_query(
-			"DROP TEMPORARY TABLE temp_lexeme" 
+			"DROP /*!40000 TEMPORARY */  TABLE temp_lexeme" 
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 
 		unset($this->page_no);
@@ -144,7 +144,7 @@ class Book_Fulltext_Index extends Fulltext_Index
 		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		
 		mysql_query("
-			DROP TEMPORARY TABLE delete_lexeme 
+			DROP /*!40000 TEMPORARY */  TABLE delete_lexeme 
 		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 	}
 }

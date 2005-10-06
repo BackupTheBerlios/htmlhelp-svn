@@ -200,7 +200,7 @@ class BookBuilder extends Book
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
 		
 		mysql_query(
-			"DROP TEMPORARY TABLE temp_index_entry" 
+			"DROP /*!40000 TEMPORARY */ TABLE temp_index_entry" 
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		
 		$this->index_fulltext();
