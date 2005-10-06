@@ -45,8 +45,10 @@ convert-devhelp/perl:
 	cp -a $(WORKDIR)/html $(SCRATCHDIR)/book
 	$(SHELL) $(FILEDIR)/perl2devhelp.sh $(SCRATCHDIR) $(GARVERSION) 
 	rm -f pod2htmd.tmp pod2htmi.tmp
+	@$(MAKECOOKIE)
 
 convert-mshh/perl:
 	rm -rf $(SCRATCHDIR)
 	cp -a $(WORKDIR)/html $(SCRATCHDIR)
 	$(SHELL) $(FILEDIR)/perl2chm.sh $(WORKSRC) $(SCRATCHDIR)
+	@$(MAKECOOKIE)
