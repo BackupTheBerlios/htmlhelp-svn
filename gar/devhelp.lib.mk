@@ -108,6 +108,8 @@ post-convert-devhelp/%: convert-devhelp/%
 	@cd $(SCRATCHDIR)/book/ ; $(BOOK_PATCH)
 
 compile-devhelp/%: post-convert-devhelp/%
+	@echo -e " $(WORKCOLOR)==> Validating $(BOLD)$(SCRATCHDIR)/book.devhelp$(NORMALCOLOR)"
+	@xmllint --noout --dtdvalid ../../scripts/devhelp-1.dtd $(SCRATCHDIR)/book.devhelp
 	@echo -e " $(WORKCOLOR)==> Compiling $(BOLD)$(WORKDIR)/$(BOOK_FILENAME).tgz$(NORMALCOLOR)"
 	@tar -czf $(WORKDIR)/$(BOOK_FILENAME).tgz -C $(SCRATCHDIR) book.devhelp book
 	@rm -rf $(SCRATCHDIR)
