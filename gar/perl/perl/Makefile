@@ -10,13 +10,19 @@ define BLURB
  - http://search.cpan.org/~pvhp/Pod2WinHlp-0.02/README
 endef
 
-BOOKS = $(WORKDIR)/$(GARNAME).mshh
+BOOKS = perl
 
 include ../../gar.mk
 
-$(WORKDIR)/$(GARNAME).mshh: $(FILEDIR)/perl2chm.sh $(FILEDIR)/perl.css
-	rm -rf $@d
-	$(SHELL) $(FILEDIR)/perl2chm.sh $(WORKSRC) $@d
-	cp $(FILEDIR)/perl.css $@d
-	$(FILEDIR)/addcss.sh perl.css $@d 
-	touch $@
+convert-devhelp/perl:
+	rm -rf $(SCRATCHDIR)
+	mkdir -p $(SCRATCHDIR)
+	$(SHELL) $(FILEDIR)/perl2devhelp.sh $(WORKSRC) $(GARVERSION) $(SCRATCHDIR)
+	cp $(FILEDIR)/perl.css $(SCRATCHDIR)/book
+	$(SHELL) $(FILEDIR)/addcss.sh perl.css $(SCRATCHDIR)/book
+
+convert-mshh/perl:
+	rm -rf $(SCRATCHDIR)
+	$(SHELL) $(FILEDIR)/perl2chm.sh $(WORKSRC) $(SCRATCHDIR)
+	cp $(FILEDIR)/perl.css $(SCRATCHDIR)
+	$(SHELL) $(FILEDIR)/addcss.sh perl.css $(SCRATCHDIR) 

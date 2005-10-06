@@ -51,7 +51,7 @@ echo '<BODY>'
 echo '<UL>'
 echo "<LI> <OBJECT type=\"text/sitemap\"> <param name=\"Name\" value=\"PODs\"> </OBJECT>"
 echo '<UL>'
-find pod -name '*.html' -maxdepth 1 -printf '%p %f\n' | while read LINK NAME
+find pod -maxdepth 1 -name '*.html' -printf '%p %f\n' | while read LINK NAME
 do
 	NAME=`echo $NAME | sed -e 's@\.html$@@'`
 	echo "<LI> <OBJECT type=\"text/sitemap\"> <param name=\"Name\" value=\"$NAME\"> <param name=\"Local\" value=\"$LINK\"> </OBJECT>"
