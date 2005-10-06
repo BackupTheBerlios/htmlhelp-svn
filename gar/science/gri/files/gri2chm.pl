@@ -1,8 +1,13 @@
 #!/usr/bin/perl
 
-open(HHP, "> gri.hhp") || die;
-open(HHC, "> gri.hhc") || die;
-open(HHK, "> gri.hhk") || die;
+$texinfo = $ARGV[0];
+$htmldir = $ARGV[1];
+
+open(TEXINFO, "< $texinfo") || die;
+
+open(HHP, "> $htmldir/gri.hhp") || die;
+open(HHC, "> $htmldir/gri.hhc") || die;
+open(HHK, "> $htmldir/gri.hhk") || die;
 
 print HHP 
 "[OPTIONS]
@@ -36,15 +41,15 @@ print HHK
 <UL>
 ";
 
-while(<>) {
+while(<TEXINFO>) {
 
 	if (/^\@c\s*HTML\s*<!--\s*$/) {
-		while(<>) {
+		while(<TEXINFO>) {
 			if (/^\@c\s*HTML\s*-->\s*$/) {
 				last;
 			}
 		}
-		<>;
+		<TEXINFO>;
 	}
 	
 	if (/^\@c\s*HTML\s*<!-- newfile\s+([^ ]*)\s+"(.*)"\s+"(.*)"\s*-->\s*$/) {

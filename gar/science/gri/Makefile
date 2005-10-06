@@ -6,14 +6,14 @@ DISTFILES = $(GARNAME)-$(GARVERSION).tgz
 CONFIGURE_SCRIPTS = $(WORKSRC)/configure
 
 BUILD_SCRIPTS = $(WORKSRC)/doc/Makefile
-BUILD_ARGS = html html-install DOC_DIR=./tmp
+BUILD_ARGS = DOC_DIR=$(CURDIR)/$(WORKDIR)/doc html html-install
 
 BOOKS = gri
 
 include ../../gar.mk
 
-convert-mshh/gri:
+convert-mshh/gri: $(CURDIR)/$(FILEDIR)/gri2chm.pl
 	rm -rf $(SCRATCHDIR)
-	cp -a $(WORKSRC)/doc/tmp $(SCRATCHDIR)
-	cd $(SCRATCHDIR) && $(CURDIR)/$(FILEDIR)/gri2chm.pl < $(CURDIR)/$(WORKSRC)/doc/gri.texi
+	cp -a $(WORKDIR)/doc/html $(SCRATCHDIR)
+	perl $(FILEDIR)/gri2chm.pl $(WORKSRC)/doc/gri.texi $(SCRATCHDIR)
 	@$(MAKECOOKIE)
