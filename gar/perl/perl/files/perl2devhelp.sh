@@ -2,31 +2,12 @@
 
 set -e 
 
-PERL="$1"
+OUTPUT="$1"
 VERSION="$2"
-OUTPUT="$3"
-
-HTML="$OUTPUT/book"
-
-for FILE in `grep -l '^=[a-z]' $PERL/README.* | sed -e 's/.*\///'` 
-do
-	NAME=`echo $FILE | sed -e "s/README\.//"`
-	rm -f $PERL/pod/perl$NAME.pod
-	ln -s ../$FILE $PERL/pod/perl$NAME.pod
-done
-
-perl $PERL/installhtml \
-      --podroot=$PERL --podpath=. --recurse \
-      --htmldir=$HTML \
-      --htmlroot=/ \
-      --splithead=pod/perlipc \
-      --splititem=pod/perlfunc \
-      --libpods=perlfunc:perlguts:perlvar:perlrun:perlop \
-      --verbose
 
 # Spec file
 exec 1> $OUTPUT/book.devhelp
-cd $HTML
+cd $OUTPUT/book
 echo '<?xml version="1.0" encoding="utf-8" standalone="no"?>'
 echo "<book xmlns=\"http://www.devhelp.net/book\" title=\"Perl Documentation\" link=\"pod/perl.html\" name=\"perl\" version=\"$VERSION\">"
 echo '<chapters>'

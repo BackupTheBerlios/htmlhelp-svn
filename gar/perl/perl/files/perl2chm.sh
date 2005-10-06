@@ -2,26 +2,9 @@
 
 set -e 
 
-PERL="$1"
-HTML="$2"
+OUTPUT="$1"
 
-for FILE in `grep -l '^=[a-z]' $PERL/README.* | sed -e 's/.*\///'` 
-do
-	NAME=`echo $FILE | sed -e "s/README\.//"`
-	rm -f $PERL/pod/perl$NAME.pod
-	ln -s ../$FILE $PERL/pod/perl$NAME.pod
-done
-
-perl $PERL/installhtml \
-      --podroot=$PERL --podpath=. --recurse \
-      --htmldir=$HTML \
-      --htmlroot=/ \
-      --splithead=pod/perlipc \
-      --splititem=pod/perlfunc \
-      --libpods=perlfunc:perlguts:perlvar:perlrun:perlop \
-      --verbose
-
-cd $HTML
+cd $OUTPUT
 
 # Project file
 exec 1>perl.hhp

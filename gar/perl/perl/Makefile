@@ -1,5 +1,5 @@
 GARNAME = perl
-GARVERSION = 5.8.6
+GARVERSION = 5.8.7
 MASTER_SITES = http://www.cpan.org/src/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
 
@@ -10,19 +10,43 @@ define BLURB
  - http://search.cpan.org/~pvhp/Pod2WinHlp-0.02/README
 endef
 
+BUILD_SCRIPTS = perldoc
 BOOKS = perl
 
 include ../../gar.mk
 
+build-perldoc:
+	rm -rf $(WORKDIR)/html
+	rm -f pod2htmd.tmp pod2htmi.tmp
+	for FILE in `grep -l '^=[a-z]' $(WORKSRC)/README.* | sed -e 's/.*\///'`; \
+	do \
+		NAME=`echo $$FILE | sed -e "s/README\.//"`; \
+		rm -f $(WORKSRC)/pod/perl$$NAME.pod; \
+		ln -s ../$$FILE $(WORKSRC)/pod/perl$$NAME.pod; \
+	done
+	perl $(WORKSRC)/installhtml \
+		--podroot=$(WORKSRC) \
+		--podpath=. \
+		--htmldir=$(WORKDIR)/html \
+		--htmlroot=/ \
+		--splithead=pod/perlipc \
+		--splititem=pod/perlfunc \
+		--libpods=perlfunc:perlguts:perlvar:perlrun:perlop \
+		--recurse \
+		--verbose
+	rm -f pod2htmd.tmp pod2htmi.tmp
+	cp $(FILEDIR)/perl.css $(WORKDIR)/html
+	$(SHELL) $(FILEDIR)/addcss.sh perl.css $(WORKDIR)/html
+	@$(MAKECOOKIE)
+
 convert-devhelp/perl:
 	rm -rf $(SCRATCHDIR)
 	mkdir -p $(SCRATCHDIR)
-	$(SHELL) $(FILEDIR)/perl2devhelp.sh $(WORKSRC) $(GARVERSION) $(SCRATCHDIR)
-	cp $(FILEDIR)/perl.css $(SCRATCHDIR)/book
-	$(SHELL) $(FILEDIR)/addcss.sh perl.css $(SCRATCHDIR)/book
+	cp -a $(WORKDIR)/html $(SCRATCHDIR)/book
+	$(SHELL) $(FILEDIR)/perl2devhelp.sh $(SCRATCHDIR) $(GARVERSION) 
+	rm -f pod2htmd.tmp pod2htmi.tmp
 
 convert-mshh/perl:
 	rm -rf $(SCRATCHDIR)
+	cp -a $(WORKDIR)/html $(SCRATCHDIR)
 	$(SHELL) $(FILEDIR)/perl2chm.sh $(WORKSRC) $(SCRATCHDIR)
-	cp $(FILEDIR)/perl.css $(SCRATCHDIR)
-	$(SHELL) $(FILEDIR)/addcss.sh perl.css $(SCRATCHDIR) 
