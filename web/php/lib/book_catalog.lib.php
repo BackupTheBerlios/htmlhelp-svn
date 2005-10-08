@@ -50,28 +50,41 @@ class BookCatalog
 	{
 		// a book can be identified by its 'name', 'name_version', and 
 		// 'name_version_language'
-		mysql_query(<<<EOSQL
-			REPLACE INTO book_alias
-			SELECT book.id AS book_id, book.id
-				FROM book
-			UNION
-				SELECT value AS alias, book_id
-				FROM metadata
-				WHERE name = 'name'
-			UNION
-				SELECT GROUP_CONCAT(value ORDER BY name SEPARATOR '-') AS alias, book_id
-				FROM metadata
-				WHERE name in ('name', 'version')
-				GROUP BY book_id
-				HAVING COUNT(DISTINCT name) = 2
-			UNION
-				SELECT GROUP_CONCAT(value ORDER BY name SEPARATOR '-') AS alias, book_id
-				FROM metadata
-				WHERE name in ('name', 'version', 'language')
-					GROUP BY book_id
-					HAVING COUNT(DISTINCT name) = 3
-EOSQL
-		) or print(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+		mysql_query(
+			"REPLACE INTO book_alias
+			SELECT book.id AS alias, book.id AS book_id
+			FROM book"
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+		mysql_query(
+			"REPLACE INTO book_alias
+			SELECT book_name.value AS alias, id as book_id
+			FROM book
+				LEFT JOIN metadata AS book_name ON book_name.book_id = book.id
+			WHERE 
+				book_name.name = 'name'"
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+		mysql_query(
+			"REPLACE INTO book_alias
+			SELECT CONCAT(book_name.value, '-', book_version.value) AS alias, id as book_id
+			FROM book
+				LEFT JOIN metadata AS book_name ON book_name.book_id = book.id
+				LEFT JOIN metadata AS book_version ON book_version.book_id = book.id
+			WHERE 
+				book_name.name = 'name' 
+				AND book_version.name = 'version'"
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+		mysql_query(
+			"REPLACE INTO book_alias
+			SELECT CONCAT(book_name.value, '-', book_version.value, '-', book_language.value) AS alias, id as book_id
+			FROM book
+				LEFT JOIN metadata AS book_name ON book_name.book_id = book.id
+				LEFT JOIN metadata AS book_version ON book_version.book_id = book.id
+				LEFT JOIN metadata AS book_language ON book_language.book_id = book.id
+			WHERE 
+				book_name.name = 'name' 
+				AND book_version.name = 'version'
+				AND book_language.name = 'language'"
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 	}
 	
 	function enumerate_tags()
