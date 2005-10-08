@@ -1,5 +1,16 @@
 <?php
 
+// Stop words
+$stop_words = array();
+# From http://en.wikipedia.org/wiki/Stop_words
+$handle = fopen("misc/stop_words.txt", "rt");
+while(!feof($handle))
+{
+	 $word = trim(fgets($handle, 4096));
+	 $stop_words[$word] = TRUE;
+}
+fclose($handle);
+
 // Based on Lucene's standard tokenizer
 // http://svn.apache.org/repos/asf/lucene/java/trunk/src/java/org/apache/lucene/analysis/standard/StandardTokenizer.jj
 
@@ -65,18 +76,9 @@ class Fulltext_Tokenizer
 		
 			// Chinese, Japanese, and Korean ideographs
 			$cjk ? "[$cjk]" : "",
-			
-			// integers
-			'\d+',	
 		);
 		
 		$this->token_pattern = '/' . implode('|',  $tokens) . '/' . $this->modifiers;
-	}
-	
-	function filter($token)
-	{
-		// TODO: do more filtering, such as eliminating possesives, plurals, etc.
-		return $this->tolower($token);
 	}
 	
 	// find tokens in a string
@@ -86,6 +88,33 @@ class Fulltext_Tokenizer
 		$tokens = & $matches[0];
 		return $tokens;
 	}
+
+	function tolower($string)
+	{
+		return strtr($string, $this->upper, $this->lower);
+	}
+	
+	function filter1($token)
+	{
+		// TODO: do more filtering, such as eliminating possesives, plurals, etc.
+		$token = $this->tolower($token);
+		
+		// Stop word elimination
+		global $stop_words;		
+		if($stop_words[$token])
+			return NULL;
+
+		return $token;
+	}
+	
+	function filter(&$tokens)
+	{
+		foreach($tokens as $key => $token)
+			if($token = $this->filter1($token))
+				$tokens[$key] = $token;
+			else
+				unset($tokens[$key]);
+	}
 	
 	// split a tring in whitespace
 	function split($string)
@@ -93,9 +122,10 @@ class Fulltext_Tokenizer
 		return preg_split('/[' . $this->space . ']+/' . $this->modifiers, $string, -1, PREG_SPLIT_NO_EMPTY);
 	}
 
-	function tolower($string)
+	// normalize whitespace
+	function normalize($string)
 	{
-		return strtr($string, $this->upper, $this->lower);
+		return implode(' ', $this->split($string));
 	}
 }
 

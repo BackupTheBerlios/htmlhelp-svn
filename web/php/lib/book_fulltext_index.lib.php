@@ -6,13 +6,14 @@ require_once 'lib/fulltext_index.lib.php';
 class Book_Fulltext_Index extends Fulltext_Index
 {
 	var $book_id;
+	
+	// lexemes of the current page
 	var $page_no;
-
-	var $last_lexeme_no;
-
-	// The lexemes of the current page
 	var $page_lexemes;
 
+	// whole index
+	var $lexemes;
+	
 	function Book_Fulltext_Index($book_id)
 	{
 		global $internal_encoding;
@@ -27,20 +28,9 @@ class Book_Fulltext_Index extends Fulltext_Index
 	
 	function setup()
 	{
-		$this->last_lexeme_no = 0;
-
 		mysql_query("DELETE FROM lexeme_link WHERE book_id = $this->book_id");
 		mysql_query("DELETE FROM lexeme WHERE book_id = $this->book_id");
 		mysql_query("UPDATE page SET title='' WHERE book_id = $this->book_id");
-		
-		// get stop words from index
-		$result = mysql_query(
-			"SELECT lexeme " .
-			"FROM stop_word"
-		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
-		$this->stop_words = array();
-		while(list($stop_word) = mysql_fetch_row($result))
-			$this->stop_words[$stop_word] = TRUE;
 	}
 	
 	function set_page_no($page_no)
@@ -68,20 +58,13 @@ class Book_Fulltext_Index extends Fulltext_Index
 	function add_lexemes(&$lexemes)
 	{
 		foreach($lexemes as $lexeme)
-		{
-			if($this->stop_words[$lexeme] !== TRUE)
-				$this->page_lexemes[$lexeme] += 1;
-		}
+			$this->page_lexemes[$lexeme] += 1;
 	}
 
 	function finish_page()
 	{
 		foreach($this->page_lexemes as $lexeme => $count)
-		{
-			/*if(!isset($this->lexemes[$lexeme]))
-				$this->lexemes[$lexeme] = array();*/
 			$this->lexemes[$lexeme][$this->page_no] = $count;
-		}
 
 		unset($this->page_no);
 		unset($this->page_lexemes);
@@ -119,28 +102,6 @@ class Book_Fulltext_Index extends Fulltext_Index
 			"INTO lexeme_link (book_id, no, page_no, count) " .
 			"VALUES " . implode(',', $values)
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
-		
-		// drop lexemes which start with a digit and appear only once
-		mysql_query("
-			CREATE TEMPORARY TABLE delete_lexeme
-			SELECT lexeme 
-			FROM lexeme
-				LEFT JOIN lexeme_link ON lexeme.no = lexeme_link.no
-			WHERE lexeme.book_id = $this->book_id
-				AND lexeme >= '0' AND lexeme < 'A'
-				AND lexeme_link.book_id = $this->book_id
-			GROUP BY lexeme.book_id, lexeme
-			HAVING SUM(count) = 1
-		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
-		mysql_query("
-			DELETE lexeme, lexeme_link
-			FROM delete_lexeme
-				LEFT JOIN lexeme ON lexeme.book_id = $this->book_id AND lexeme.lexeme = delete_lexeme.lexeme
-				LEFT JOIN lexeme_link ON lexeme_link.book_id = $this->book_id AND lexeme.no = lexeme_link.no
-		") or print(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
-		mysql_query("
-			DROP /*!40000 TEMPORARY */  TABLE delete_lexeme 
-		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 	}
 }
 

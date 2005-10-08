@@ -19,7 +19,6 @@ if($major == $db_version_major && $minor == $db_version_minor)
 require_once('lib/mysql_util.lib.php');
 
 mysql_import_dump('sql/htmlhelp.sql');
-mysql_import_dump('sql/stop_words.sql');
 mysql_import_dump('sql/tags.sql');
 
 mysql_query(

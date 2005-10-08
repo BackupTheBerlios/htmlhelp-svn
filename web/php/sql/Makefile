@@ -63,7 +63,6 @@ export-%.sql:
 
 import: \
 	import-htmlhelp.sql \
-	import-stop_words.sql \
 	import-tags.sql
 
 import-%: %

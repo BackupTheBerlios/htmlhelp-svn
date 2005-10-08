@@ -86,19 +86,14 @@ class Fulltext_Indexer
 
 	function set_title($title)
 	{
-		// normalize title's white space
-		$title = implode(' ', $this->tokenizer->split($title));
-		
+		$title = $this->tokenizer->normalize($title);
 		$this->index->set_title($title);
 	}
 
 	function feed_body($body_part)
 	{
 		$tokens = & $this->tokenizer->tokenize($body_part);
-		
-		foreach($tokens as $key => $token)
-			$tokens[$key] = $this->tokenizer->filter($token);
-		
+		$this->tokenizer->filter($tokens);		
 		$this->index->add_lexemes($tokens);
 	}
 

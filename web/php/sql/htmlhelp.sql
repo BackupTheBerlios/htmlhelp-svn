@@ -122,16 +122,6 @@ CREATE TABLE `page` (
 ) TYPE=MyISAM;
 
 --
--- Table structure for table `stop_word`
---
-
-DROP TABLE IF EXISTS `stop_word`;
-CREATE TABLE `stop_word` (
-  `lexeme` varchar(31) NOT NULL default '',
-  PRIMARY KEY  (`lexeme`)
-) TYPE=MyISAM;
-
---
 -- Table structure for table `tag`
 --
 
