@@ -20,7 +20,7 @@ class Book extends Searchable
 			SELECT title 
 			FROM book 
 			WHERE id = $this->id
-		");
+		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		list($title) = mysql_fetch_row($result);
 		return $title;
 	}
@@ -33,7 +33,7 @@ class Book extends Searchable
 				LEFT JOIN page ON page.no = page_no
 			WHERE id = $this->id 
 				AND book_id = $this->id
-		");
+		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		list($link) = mysql_fetch_row($result);
 		return $link;
 	}
@@ -76,7 +76,7 @@ class Book extends Searchable
 				AND page.book_id = $this->id 
 				" . ($query ? "AND LOCATE('" . mysql_escape_string($query) . "', term)" : "")  . "
 			ORDER BY index_entry.no
-		");
+		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
 		$entries = array();
 		while(list($term, $link) = mysql_fetch_row($result))
 			$entries[] = array($term, $link);
@@ -95,7 +95,7 @@ class Book extends Searchable
 				AND lexeme_link.book_id = $this->id 
 				AND page.book_id = $this->id
 			ORDER BY count DESC
-		");
+		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
 		$entries = array();
 		while(list($path, $title) = mysql_fetch_row($result))
 			$entries[] = array($title, $path);
@@ -110,7 +110,7 @@ class Book extends Searchable
 				SELECT value 
 				FROM metadata 
 				WHERE book_id = $this->id
-			");
+			") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
 			if(mysql_num_rows($result))
 			{
 				list($value) = mysql_fetch_row($result);
@@ -125,7 +125,7 @@ class Book extends Searchable
 				SELECT name, value 
 				FROM metadata 
 				WHERE book_id = $this->id
-			");
+			") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
 			$entries = array();
 			while(list($name, $value) = mysql_fetch_row($result))
 				$entries[$name] = $value;
@@ -188,7 +188,7 @@ class Book extends Searchable
 			SELECT no, path, compressed, content
 			FROM page 
 			WHERE book_id = $this->id
-		");
+		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
 		while(list($page_no, $path, $compressed, $content) = mysql_fetch_row($result))
 		{
 			if($compressed)

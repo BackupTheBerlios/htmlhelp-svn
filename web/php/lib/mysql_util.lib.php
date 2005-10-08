@@ -66,4 +66,37 @@ function mysql_import_dump($filename, $ignoreerrors = FALSE)
 	}
 }
 
+// Escape a array into comma separated values
+function mysql_escape_array(&$values)
+{
+	$escaped_values = array();
+	foreach($values as $value)
+	{
+		if(is_int($value) || is_float($value))
+			$escaped_values[] = $value;
+		elseif(is_string($value))
+			$escaped_values[] = '"' . mysql_escape_string($value) . '"';
+		elseif(is_array($value))
+			$escaped_values[] = '(' . mysql_escape_array($value) . ')';
+		else
+			die("Don't know how to escape '$value'");
+	}
+	return implode(',', $escaped_values);
+}
+
+function mysql_fetch_rows($result)
+{
+	$rows = array();
+	while($row = mysql_fetch_row($result))
+		$rows[] = $row;
+	return $rows;
+}
+
+function mysql_fetch_fields($result)
+{
+	$fields = array();
+	while(list($field) = mysql_fetch_row($result))
+		$fields[] = $field;
+	return $fields;
+}
 ?>

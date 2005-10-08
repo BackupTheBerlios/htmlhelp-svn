@@ -33,11 +33,11 @@ class Book_Fulltext_Index extends Fulltext_Index
 		mysql_query("DELETE FROM lexeme WHERE book_id = $this->book_id");
 		mysql_query("UPDATE page SET title='' WHERE book_id = $this->book_id");
 		
-		// eliminate stop words from index
+		// get stop words from index
 		$result = mysql_query(
 			"SELECT lexeme " .
 			"FROM stop_word"
-		) or print(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		$this->stop_words = array();
 		while(list($stop_word) = mysql_fetch_row($result))
 			$this->stop_words[$stop_word] = TRUE;
@@ -62,7 +62,7 @@ class Book_Fulltext_Index extends Fulltext_Index
 			SET title='" . mysql_escape_string($title) . "'
 			WHERE book_id = $this->book_id 
 				AND no = $this->page_no
-		");
+		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
 	}
 
 	function add_lexemes(&$lexemes)
@@ -89,6 +89,9 @@ class Book_Fulltext_Index extends Fulltext_Index
 
 	function cleanup()
 	{
+		if(!count($this->lexemes))
+			return;
+		
 		$lexeme_no = 0;
 		$values = array();
 		foreach($this->lexemes as $lexeme => $pages)
