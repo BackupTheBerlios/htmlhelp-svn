@@ -29,81 +29,14 @@ class IndexTest extends PHPUnit_TestCase
 	}
 }
 
-class IndexerTest extends PHPUnit_TestCase
-{
-	function testNormalize()
-	{
-		$testcases = array(
-			"" => "",
-
-			// white space
-			" \t\r\n" => "",
-			
-			// U+00A0 NO-BREAK SPACE
-			"\xC2\xA0" => "",
-
-			"  a house" => "a house",
-			" a   house " => "a house",
-			"a  house" => "a house",
-		);
-		foreach($testcases as $string => $result)
-			$this->assertEquals($result, Fulltext_TextIndexer::normalize($string));
-	}
-
-	function testTokenize()
-	{
-		$testcases = array(
-			// empty
-			"" => array(),
-
-			// words
-			"pre post" => array("pre", "post"),
-			"pre/post" => array("pre", "post"),
-			"pre,post" => array("pre", "post"),
-			"pre. post" => array("pre", "post"),
-			" pre  post " => array("pre", "post"),
-
-			// acronyms
-			"pre A.B. post" => array("pre", "A.B.", "post"),
-			"pre C.D.E., post" => array("pre", "C.D.E.", "post"),
-			"pre X.Y.Z.. post" => array("pre", "X.Y.Z.", "post"),
-
-			// emails
-			"pre simple@email.com post" => array("pre", "simple@email.com", "post"), 
-			"pre strange_email.address@somewhere1.com post" => array("pre", "strange_email.address@somewhere1.com", "post"), 
-
-			// versions
-			"package-1.2.3.4a.ext" => array("package", "1.2.3.4a", "ext"),
-
-			// ip numbers
-			"pre 127.0.0.1 post" => array("pre", "127.0.0.1", "post"),
-			"pre 196.168.0.1. post" => array("pre", "196.168.0.1", "post"),
-
-			// numbers
-			"pre 1 post" => array("pre", "1", "post"),
-			"pre 1, 2, 3 post" => array("pre", "1", "2", "3", "post"),
-			"pre .2 post" => array("pre", ".2", "post"),
-			"pre 3.456789E-123 post" => array("pre", "3.456789E-123", "post"),
-			"pre 1+2 post" => array("pre", "1", "2", "post"),
-			"pre 3*4 post" => array("pre", "3", "4", "post"),
-			"pre 5/6 post" => array("pre", "5", "6", "post"),
-			"pre 0x1234 post" => array("pre", "0x1234", "post"),
-			"pre 10101010b post" => array("pre", "10101010b", "post"),
-
-			// dates
-			"pre 1234-12-23 post" => array("pre", "1234-12-23", "post"),
-			"pre 07/06/00 post" => array("pre", "07/06/00", "post"),
-
-			// Latin-1 characters
-			"Eagle \xC3\x80guia" => array("Eagle", "\xC3\x80guia"),
-		);
-		foreach($testcases as $string => $result)
-			$this->assertEquals($result, Fulltext_TextIndexer::Tokenize($string));
-	}
-}
-
 class HtmlIndexerTest extends PHPUnit_TestCase
 {
+	function setUP()
+	{
+		$this->index = new Fulltext_Index();
+		$this->indexer = new Fulltext_HtmlIndexer($this->index);
+	}
+	
 	function testExtractEncoding()
 	{
 		$testcases = array(
@@ -132,7 +65,7 @@ class HtmlIndexerTest extends PHPUnit_TestCase
 
 		);
 		foreach($testcases as $html => $title)
-			$this->assertEquals($title, Fulltext_HtmlIndexer::extract_encoding($html, NULL), $html);
+			$this->assertEquals($title, $this->indexer->extract_encoding($html, NULL), $html);
 	}
 
 	function testDecode()
@@ -151,7 +84,7 @@ class HtmlIndexerTest extends PHPUnit_TestCase
 			"\xC0" => "\xC3\x80",
 		);
 		foreach($testcases as $html => $title)
-			$this->assertEquals($title, decode_html($html));
+			$this->assertEquals($title, $this->indexer->decode_html($html));
 	}
 
 	function testExtractTitle()
@@ -165,7 +98,7 @@ class HtmlIndexerTest extends PHPUnit_TestCase
 			"<title\n\n>\nNewlines\n</title\n\n>" => "\nNewlines\n",
 		);
 		foreach($testcases as $html => $title)
-			$this->assertEquals($title, Fulltext_HtmlIndexer::extract_title($html));
+			$this->assertEquals($title, $this->indexer->extract_title($html));
 	}
 
 	function testExtractBody()
@@ -180,13 +113,12 @@ class HtmlIndexerTest extends PHPUnit_TestCase
 			"<body\n\n>\nNewlines\n</body\n\n>" => "\nNewlines\n",
 		);
 		foreach($testcases as $html => $body)
-			$this->assertEquals($body, Fulltext_HtmlIndexer::extract_body($html));
+			$this->assertEquals($body, $this->indexer->extract_body($html));
 	}
 }
 
 $cases = array(
 	'IndexTest',
-	'IndexerTest',
 	'HtmlIndexerTest',
 );
 foreach($cases as $case)

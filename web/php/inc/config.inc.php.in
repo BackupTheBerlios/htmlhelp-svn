@@ -6,6 +6,9 @@ $db_username = 'www';
 $db_password = '';
 $db_database = 'htmlhelp';
 
+// Internal encoding (either UTF-8 or ISO-8859-1)
+$internal_encoding = 'UTF-8';
+
 // Administrative settings
 $admin_password = '';
 $admin_directory = '';

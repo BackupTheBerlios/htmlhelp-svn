@@ -1,5 +1,7 @@
 <?php
 
+require_once 'lib/mbstring.lib.php';
+
 class Search_Result
 {
 	// TODO: write another version of this class which compiles SQL statements; 

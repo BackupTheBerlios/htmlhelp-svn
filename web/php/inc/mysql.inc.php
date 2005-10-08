@@ -1,11 +1,11 @@
 <?php
 
 $db_version_major = 1;
-$db_version_minor = 0;
+$db_version_minor = 1;
 
 mysql_connect($db_server, $db_username, $db_password);
 mysql_select_db($db_database);
-mysql_query('SET NAMES "utf8"');
+mysql_query("SET NAMES '$internal_encoding'");
 
 $result = mysql_query('SELECT major, minor FROM version');
 if($result && mysql_num_rows($result))
