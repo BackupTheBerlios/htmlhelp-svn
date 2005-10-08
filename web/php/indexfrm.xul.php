@@ -10,7 +10,7 @@
 	
 	header('Content-type: application/vnd.mozilla.xul+xml');
 
-	echo '<?xml version="1.0" encoding="UTF-8"?>';
+	echo '<?xml version="1.0" encoding="' . $internal_encoding . '"?>';
 	echo '<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>';
 
 	echo '<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">';
@@ -19,16 +19,16 @@
 	
 	$query = $_GET['query'];
 	
-	echo '<textbox id="query" type="autocomplete" value="' . htmlspecialchars($query) . '" onkeypress="onQueryKeypress(event, \'' . htmlspecialchars($alias) . '\')"/>';
+	echo '<textbox id="query" type="autocomplete" value="' . htmlspecialchars($query, ENT_QUOTES) . '" onkeypress="onQueryKeypress(event, \'' . htmlspecialchars($alias, ENT_QUOTES) . '\')"/>';
 	
-	echo '<listbox seltype="single" flex="1" onselect="onIndexSelect(event, \'' . htmlspecialchars($alias) . '\')">';
+	echo '<listbox seltype="single" flex="1" onselect="onIndexSelect(event, \'' . htmlspecialchars($alias, ENT_QUOTES) . '\')">';
 	if(isset($query))
 	{
 		$entries = $book->index($query);
 		foreach($entries as $entry)
 		{
 			list($term, $link) = $entry;
-			echo '<listitem label="' . htmlspecialchars($term) . '" value="' . $link . '"/>';
+			echo '<listitem label="' . htmlspecialchars($term, ENT_QUOTES) . '" value="' . $link . '"/>';
 		}
 	}
 	echo '</listbox>';

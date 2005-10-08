@@ -14,7 +14,7 @@ require 'inc/frmheader.inc.php';
 			foreach($entries as $entry)
 			{
 				list($title, $path) = $entry;
-				echo '<li><a href="' . $path .'">' . htmlspecialchars($title, ENT_NOQUOTES) . '</a></li>';
+				echo '<li><a href="' . htmlspecialchars($path, ENT_QUOTES) .'">' . htmlspecialchars($title, ENT_NOQUOTES) . '</a></li>';
 			}
 			echo '</ul>';
 		}

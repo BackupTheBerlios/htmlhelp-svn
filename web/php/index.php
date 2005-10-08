@@ -16,8 +16,8 @@
 		{
 			echo '<li>';
 			echo  '<a ';
-			echo    'href="book.php?book=' . htmlspecialchars($book_alias) . '" ';
-			echo    'onclick="return openBook(\'' . htmlspecialchars($book_alias) . '\');" ';
+			echo    'href="book.php?book=' . htmlspecialchars($book_alias, ENT_QUOTES) . '" ';
+			echo    'onclick="return openBook(\'' . htmlspecialchars($book_alias, ENT_QUOTES) . '\');" ';
 			echo    'target="_blank">';
 			echo   htmlspecialchars($book_title, ENT_NOQUOTES);
 			echo  '</a>';

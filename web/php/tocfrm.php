@@ -39,7 +39,7 @@ function walk_toc_entries($parent_no = 0)
 			if($toc_nos[$number] || !$nchildren)
 				echo '<a href="' . $link . '">';
 			else
-				echo '<a href="../../tocfrm.php?book=' . htmlspecialchars($alias) . '&amp;toc_nos=' . implode('+', $linage) . '" target="_self">';
+				echo '<a href="../../tocfrm.php?book=' . htmlspecialchars($alias, ENT_QUOTES) . '&amp;toc_nos=' . implode('+', $linage) . '" target="_self">';
 			echo htmlspecialchars($name, ENT_NOQUOTES) . '</a>';
 			
 			if($toc_nos[$number] && $nchildren)

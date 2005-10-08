@@ -1,5 +1,6 @@
 <?php
 
+require_once 'inc/config.inc.php';
 require_once 'lib/util.lib.php';
 require_once 'lib/tar.class.php';
 
@@ -7,7 +8,7 @@ class XmlParser
 {
     var $parser;
 
-    function XmlParser()
+    function XmlParser($encoding = 'UTF-8')
     {
         $this->parser = & xml_parser_create();
 
@@ -17,7 +18,7 @@ class XmlParser
         xml_set_character_data_handler($this->parser, '_cdata');
         
         xml_parser_set_option($this->parser, XML_OPTION_CASE_FOLDING, 0);
-        xml_parser_set_option($this->parser, XML_OPTION_TARGET_ENCODING, 'UTF-8');
+        xml_parser_set_option($this->parser, XML_OPTION_TARGET_ENCODING, $encoding);
     }
 
     function parse_string(&$string)
@@ -66,9 +67,9 @@ class DevhelpSpecParser extends XmlParser
     var $toc_parent_no;
     var $toc_parent_no_stack;
 
-    function DevhelpSpecParser(&$book)
+    function DevhelpSpecParser(&$book, $encoding = 'UTF-8')
     {
-    	$this->XmlParser();
+    	$this->XmlParser($encoding);
     	
     	$this->book = &$book;
 
@@ -156,7 +157,8 @@ class DevhelpReader
 		if(!($information = & $this->tar->getFile('book.devhelp')))
 			die('book.devhelp: file not found');
 		$file = $information['file'];
-		$parser = & new DevhelpSpecParser($book);
+		global $internal_encoding;
+		$parser = & new DevhelpSpecParser($book, $internal_encoding);
 		$parser->parse_string($file);
 		
 		// commit changes

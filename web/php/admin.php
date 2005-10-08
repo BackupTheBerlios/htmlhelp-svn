@@ -28,15 +28,15 @@ else
 	if(!authenticated)
 		$action = NULL;
 
-header('Content-Type: text/html; charset=utf-8');
+header('Content-Type: text/html; charset=' . $internal_encoding);
 
-echo '<?xml version="1.0" encoding="UTF-8"?>';	
+echo '<?xml version="1.0" encoding="' . $internal_encoding . '"?>';	
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<meta http-equiv="Content-Type" content="text/html; charset=' . $internal_encoding . '"/>
 		<title>Administration</title>
 		<link href="css/default.css" type="text/css" rel="stylesheet"/>
 	</head>
@@ -76,7 +76,7 @@ if(isset($action))
 			if(isset($files))
 				foreach($files as $file)
 				{
-					echo '<p>importing ' . htmlspecialchars($file) . '...</p>';
+					echo '<p>importing ' . htmlspecialchars($file, ENT_NOQUOTES) . '...</p>';
 					$catalog->import_book($admin_directory . '/' .$file);
 				}
 			break;
@@ -85,7 +85,7 @@ if(isset($action))
 			$file = $_FILES['file']['tmp_name'];
 			if(isset($file) and is_uploaded_file($file))
 			{
-				echo '<p>Importing ' . htmlspecialchars($_FILES['file']['name']) . '...</p>';
+				echo '<p>Importing ' . htmlspecialchars($_FILES['file']['name'], ENT_NOQUOTES) . '...</p>';
 				$catalog->import_book($file);
 			}
 			break;
@@ -97,7 +97,7 @@ if(isset($action))
 				{
 					$book = $catalog->get_book_by_id($book_id);
 					$title = $book->title();
-					echo '<p>Indexing ' . htmlspecialchars($title) . '...</p>';
+					echo '<p>Indexing ' . htmlspecialchars($title, ENT_NOQUOTES) . '...</p>';
 					$book->index_fulltext();
 				}
 			break;
@@ -109,7 +109,7 @@ if(isset($action))
 				{
 					$book = $catalog->get_book_by_id($book_id);
 					$title = $book->title();
-					echo '<p>Deleting ' . htmlspecialchars($title) . '...</p>';
+					echo '<p>Deleting ' . htmlspecialchars($title, ENT_NOQUOTES) . '...</p>';
 					$book->delete();
 				}
 			break;
@@ -123,7 +123,7 @@ if(isset($action))
 				{
 					$book = $catalog->get_book_by_id($book_id);
 					$title = $book->title();
-					echo '<p>Setting ' . htmlspecialchars($title) . ' metadata...</p>';
+					echo '<p>Setting ' . htmlspecialchars($title, ENT_NOQUOTES) . ' metadata...</p>';
 					$book->set_metadata($name, $value);
 				}
 			break;	
@@ -134,7 +134,7 @@ if(isset($action))
 			{
 				$tags = array($tag);
 				$catalog->add_tags($tags);
-				echo '<p>Tag \'' . htmlspecialchars($tag) . '\' added.</p>';
+				echo '<p>Tag \'' . htmlspecialchars($tag, ENT_NOQUOTES) . '\' added.</p>';
 			}
 			break;
 			
@@ -202,7 +202,7 @@ if(isset($action))
 						<?php
 						$tags = $catalog->enumerate_tags();
 						foreach($tags as $tag)
-							echo '<option value="' . htmlspecialchars($tag) . '">' . htmlspecialchars($tag, ENT_NOQUOTES) . '</option>';
+							echo '<option value="' . htmlspecialchars($tag, ENT_QUOTES) . '">' . htmlspecialchars($tag, ENT_NOQUOTES) . '</option>';
 						?>
 					</select>
 					<select name="books[]" multiple="yes" size="20">
@@ -268,7 +268,7 @@ if(isset($action))
 						<?php
 						$books = $catalog->enumerate_book_ids();	
 						foreach($books as $book_id => $book_title)
-							echo '<option value="' . $book_id . '">' . htmlspecialchars($book_title) . '</option>';
+							echo '<option value="' . $book_id . '">' . htmlspecialchars($book_title, ENT_NOQUOTES) . '</option>';
 						?>
 					</select>
 					<br/>

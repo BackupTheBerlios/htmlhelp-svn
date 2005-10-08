@@ -16,7 +16,7 @@ require 'inc/get_book_from_alias.inc.php';
 // If the 'path' param is not given then redirect to the book's front page.
 if(!$path)
 {
-	header('Location: http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/' . htmlspecialchars($alias) . '/' . $book->default_link());
+	header('Location: http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/' . $alias . '/' . $book->default_link());
 	exit;
 }
 

@@ -10,9 +10,7 @@
 	
 	header('Content-type: application/vnd.mozilla.xul+xml');
 
-	$title = htmlspecialchars($book->title());
-	
-	echo '<?xml version="1.0" encoding="UTF-8"?>';
+	echo '<?xml version="1.0" encoding="' . $internal_encoding . '"?>';
 	echo '<?xml-stylesheet href="css/xul.css" type="text/css"?>';
 
 	echo '
@@ -21,6 +19,7 @@
 -->
 ';
 	
+	$title = htmlspecialchars($book->title(), ENT_QUOTES);	
 	echo '<window id="wnd" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" title="' . $title . '" width="640" height="420" persist="width height screenX screenY sizemode">';
 	echo '<script type="text/javascript">document.title = "' . $title . '";</script>';
 	
@@ -36,9 +35,9 @@
 	echo   '<tab label="Search"/>';
 	echo  '</tabs>';
 	echo  '<tabpanels flex="1">';
-	echo   '<iframe id="toc" src="tocfrm.xul.php?book=' . htmlspecialchars($alias) .'" flex="1"/>';
-	echo   '<iframe id="index" src="indexfrm.xul.php?book=' . htmlspecialchars($alias) .'" flex="1"/>';
-	echo   '<iframe id="search" src="searchfrm.xul.php?book=' . htmlspecialchars($alias) .'" flex="1"/>';
+	echo   '<iframe id="toc" src="tocfrm.xul.php?book=' . htmlspecialchars($alias, ENT_QUOTES) .'" flex="1"/>';
+	echo   '<iframe id="index" src="indexfrm.xul.php?book=' . htmlspecialchars($alias, ENT_QUOTES) .'" flex="1"/>';
+	echo   '<iframe id="search" src="searchfrm.xul.php?book=' . htmlspecialchars($alias, ENT_QUOTES) .'" flex="1"/>';
 	echo  '</tabpanels>';
 	echo '</tabbox>';
 		
@@ -50,13 +49,13 @@
 	echo '<toolbar>';
 	echo   '<toolbarbutton id="back-button" label="Back" oncommand="goBack(event);"/>';
 	echo   '<toolbarbutton id="forward-button" label="Forward" oncommand="goForward(event);"/>';
-	echo   '<toolbarbutton id="home-button" label="Home" oncommand="goHome(event, \'' . htmlspecialchars($alias) . '\');"/>';
+	echo   '<toolbarbutton id="home-button" label="Home" oncommand="goHome(event, \'' . htmlspecialchars($alias, ENT_QUOTES) . '\');"/>';
 	echo   '<spacer flex="1" />';
 	echo   '<toolbarbutton id="print-button" label="Print" oncommand="print();"/>';
 	echo '</toolbar>';
 	
 	// Browser window
-	echo '<browser name="content" type="content-primary" src="page.php/' . htmlspecialchars($alias) . '/" flex="1"/>';
+	echo '<browser name="content" type="content-primary" src="page.php/' . htmlspecialchars($alias, ENT_QUOTES) . '/" flex="1"/>';
 
 	echo '</vbox>';
 

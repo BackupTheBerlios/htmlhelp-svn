@@ -9,7 +9,7 @@
 	
 	header('Content-type: application/vnd.mozilla.xul+xml');
 
-	echo '<?xml version="1.0" encoding="UTF-8"?>';
+	echo '<?xml version="1.0" encoding="' . $internal_encoding . '"?>';
 	echo '<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>';
 
 	echo '<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">';
@@ -18,7 +18,7 @@
 
 	echo '<button label="Sync" oncommand="onButtonCommand(event)"/>';
 						
-	echo '<tree id="tree" flex="1" seltype="single" hidecolumnpicker="true" onselect="onTocSelect(event, \'' . htmlspecialchars($alias) . '\')">';
+	echo '<tree id="tree" flex="1" seltype="single" hidecolumnpicker="true" onselect="onTocSelect(event, \'' . htmlspecialchars($alias, ENT_QUOTES) . '\')">';
 
 	echo '<treecols>';
 	echo '<treecol id="name" hideheader="true" primary="true" flex="1"/>';
@@ -42,7 +42,7 @@
 					echo '<treeitem>';
 					
 				echo '<treerow>';
-				echo '<treecell label="' . htmlspecialchars($title) . '" value="' . htmlspecialchars($link) . '"/>';
+				echo '<treecell label="' . htmlspecialchars($title, ENT_QUOTES) . '" value="' . htmlspecialchars($link, ENT_QUOTES) . '"/>';
 				echo '</treerow>';
 		
 				walk_toc_entries($number);

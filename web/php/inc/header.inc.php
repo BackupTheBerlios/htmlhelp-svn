@@ -2,15 +2,15 @@
 	require_once 'inc/config.inc.php';
 	require_once 'lib/book_catalog.lib.php';
 
-	header('Content-Type: text/html; charset=utf-8');
+	header('Content-Type: text/html; charset=' . $internal_encoding);
 
-	echo '<?xml version="1.0" encoding="UTF-8"?>';
+	echo '<?xml version="1.0" encoding="' . $internal_encoding . '"?>';
 	echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
 	
 	echo '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">';
 	
 	echo '<head>';
-	echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>';
+	echo '<meta http-equiv="Content-Type" content="text/html; charset=' . $internal_encoding . '"/>';
 	echo '<title>' . $title . '</title>';
 	echo '<link href="css/default.css" type="text/css" rel="stylesheet"/>';
 	echo '</head>';
@@ -30,7 +30,7 @@
 		echo '<tr>';
 		echo  '<td>' . $tag_count . '</td>';
 		echo  '<td>';
-		echo   '<a href="index.php?tag=' . htmlspecialchars($tag) . '">';
+		echo   '<a href="index.php?tag=' . htmlspecialchars($tag, ENT_QUOTES) . '">';
 		echo    htmlspecialchars($tag, ENT_NOQUOTES);
 		echo   '</a>';
 		echo  '</td>';
