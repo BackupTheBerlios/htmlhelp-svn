@@ -146,3 +146,8 @@ CREATE TABLE `version` (
 ) TYPE=MyISAM;
 
 
+
+
+INSERT INTO `version` (`major`, `minor`) VALUES (1,1);
+
+

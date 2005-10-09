@@ -17,7 +17,7 @@ if($major < $db_version_major)
 {
 	require_once('lib/mysql_util.lib.php');
 	
-	mysql_import_dump('sql/htmlhelp.sql');
+	mysql_import_dump('sql/create.sql');
 	mysql_import_dump('sql/tags.sql');
 	
 	mysql_query(
@@ -29,9 +29,7 @@ if($major < $db_version_major)
 elseif($minor < $db_version_minor)
 {
 	require_once('lib/mysql_util.lib.php');
-	
-	for($i = $minor + 1; $i <=  $db_version_minor; $i += 1)
-		mysql_import_dump("sql/htmlhelp_$i.sql");
+	mysql_import_dump('sql/update.sql');
 }
 
 ?>

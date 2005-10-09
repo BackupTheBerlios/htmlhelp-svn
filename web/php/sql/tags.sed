@@ -7,7 +7,7 @@ s/.*/	('&'),/
 # insert statement
 1i\
 REPLACE\
-INTO tag\
+INTO IGNORE tag\
 	(tag)\
 VALUES
 

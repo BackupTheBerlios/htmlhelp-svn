@@ -15,7 +15,8 @@ MYSQLDUMP = mysqldump
 MYSQLDUMP_FLAGS = \
 	$(MYSQL_FLAGS) \
 	--skip-lock-tables \
-	--compatible=mysql323
+	--compatible=mysql323 \
+	--complete-insert
 
 
 # Default targets
@@ -28,13 +29,18 @@ default: $(patsubst %.txt,%.sql,$(wildcard *.txt))
 # Export database
 
 export: \
-	export-htmlhelp.sql \
-	export-tags.txt
+	export-create.sql export-tags.sql
 
-export-htmlhelp.sql: MYSQLDUMP_FLAGS += --add-drop-table --no-data
+export-structure.sql: MYSQLDUMP_FLAGS += --add-drop-table --no-data
 
-export-tags.sql: MYSQLDUMP_FLAGS += --no-create-info
+export-tags.sql: MYSQLDUMP_FLAGS += --skip-comments --skip-quote-names --no-create-info --skip-add-locks --insert-ignore
 export-tags.sql: TABLES = tag book_tag
+
+export-version.sql: MYSQLDUMP_FLAGS += --skip-comments --no-create-info --complete-insert --skip-add-locks
+export-version.sql: TABLES = version
+
+export-create.sql: export-structure.sql export-version.sql
+	cat $(patsubst export-%,%,$^) > $(patsubst export-%,%,$@)
 
 export-tags.txt:
 	$(MYSQL) \
@@ -46,7 +52,7 @@ export-tags.txt:
 export-book_tags.txt:
 	$(MYSQL) \
 		$(MYSQL_FLAGS) \
-		-e 'SELECT RPAD(book_name, 20, " "), GROUP_CONCAT(tag SEPARATOR ",") FROM book_tag LEFT JOIN tag ON tag.id = tag_id GROUP BY book_name ORDER BY book_name' \
+		-e 'SELECT RPAD(book_name, 20, " "), GROUP_CONCAT(DISTINCT tag SEPARATOR ",") FROM book_tag LEFT JOIN tag ON tag.id = tag_id GROUP BY book_name ORDER BY book_name' \
 		$(DATABASE) \
 	| tail +2 > book_tags.txt
 	
