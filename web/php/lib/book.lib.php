@@ -183,21 +183,7 @@ class Book extends Searchable
 	function index_fulltext()
 	{
 		$index = new Book_Fulltext_Index($this->id);
-
-		$result = mysql_query("
-			SELECT no, path, compressed, content
-			FROM page 
-			WHERE book_id = $this->id
-		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
-		while(list($page_no, $path, $compressed, $content) = mysql_fetch_row($result))
-		{
-			if($compressed)
-				$content = gzdecode($content);
-			$index->set_page_no($page_no);
-			$indexer = $index->index_page($path, $content);
-		}
-
-		$index->cleanup();
+		$index->index();
 	}
 }
 

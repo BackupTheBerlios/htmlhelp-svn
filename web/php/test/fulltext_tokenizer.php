@@ -41,13 +41,13 @@ class TokenizerTest extends PHPUnit_TestCase
 			"pre 196.168.0.1. post" => array("pre", "196.168.0.1", "post"),
 
 			// numbers
-			"pre 1 post" => array("pre", "1", "post"),
-			"pre 1, 2, 3 post" => array("pre", "1", "2", "3", "post"),
+			"pre 10 post" => array("pre", "10", "post"),
+			"pre 10, 20, 30 post" => array("pre", "10", "20", "30", "post"),
 			"pre .2 post" => array("pre", ".2", "post"),
 			"pre 3.456789E-123 post" => array("pre", "3.456789E-123", "post"),
-			"pre 1+2 post" => array("pre", "1", "2", "post"),
-			"pre 3*4 post" => array("pre", "3", "4", "post"),
-			"pre 5/6 post" => array("pre", "5", "6", "post"),
+			"pre 10+20 post" => array("pre", "10", "20", "post"),
+			"pre 30*40 post" => array("pre", "30", "40", "post"),
+			"pre 50/60 post" => array("pre", "50", "60", "post"),
 			"pre 0x1234 post" => array("pre", "0x1234", "post"),
 			"pre 10101010b post" => array("pre", "10101010b", "post"),
 

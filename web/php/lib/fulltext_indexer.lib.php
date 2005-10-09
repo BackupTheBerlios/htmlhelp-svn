@@ -1,7 +1,7 @@
 <?php
 
 require_once 'lib/mbstring.lib.php';
-require_once 'lib/fulltext_tokenizer.lib.php';
+require_once 'lib/mimetypes.lib.php';
 
 // Extracts title and lexemes from documents
 class Fulltext_Indexer
@@ -12,20 +12,20 @@ class Fulltext_Indexer
 	function Fulltext_Indexer(& $index)
 	{
 		$this->index = & $index;
-		$this->tokenizer = & Fulltext_tokenizer_factory($index->encoding);	
+		$this->tokenizer = & $index->tokenizer;
 	}
 
 	function set_title($title)
 	{
 		$title = $this->tokenizer->normalize($title);
-		$this->index->set_title($title);
+		$this->index->handle_item_title($title);
 	}
 
 	function feed_body($body_part)
 	{
 		$tokens = & $this->tokenizer->tokenize($body_part);
-		$this->tokenizer->filter($tokens);		
-		$this->index->add_lexemes($tokens);
+		$tokens = $this->tokenizer->filter($tokens);		
+		$this->index->handle_item_lexemes($tokens);
 	}
 
 	function feed(&$content) {}
@@ -51,9 +51,13 @@ class Fulltext_HtmlIndexer extends Fulltext_Indexer
 		if($title)
 			$this->set_title($title);
 
+		/*
 		$body_parts = & $this->extract_body_parts($content, $encoding);
 		foreach($body_parts as $body_part)
 			$this->feed_body($body_part);
+		*/
+		$body = $this->extract_body($content, $encoding);
+		$this->feed_body($body);		
 	}
 	
 	function decode_html($html, $encoding = 'ISO-8859-1')
@@ -107,7 +111,7 @@ class Fulltext_HtmlIndexer extends Fulltext_Indexer
 	function extract_title(&$html, $encoding=NULL)
 	{
 		if(!isset($encoding))
-			$encoding = Fulltext_HtmlIndexer::extract_encoding($html);
+			$encoding = $this->extract_encoding($html);
 
 		if(preg_match(
 				// body start tag
@@ -121,29 +125,37 @@ class Fulltext_HtmlIndexer extends Fulltext_Indexer
 			return NULL;
 	}
 
-	function extract_body_parts(&$html, $encoding=NULL)
-	{
-		if(!isset($encoding))
-			$encoding = Fulltext_HtmlIndexer::extract_encoding($html);
-
-		$parts = preg_split(
-				// everything till body start tag
-				'/^.*<BODY(?:\s+[^>]*)?>' . 
-				// everything after body end tag
-				'|<\/BODY\s*>.*$' .
-				// any tag
-				'|<[^>]*>/is', $html, -1, PREG_SPLIT_NO_EMPTY);
-				
-		$result = array();
-		foreach($parts as $part)
-			$result[] = $this->decode_html($part, $encoding);
-		return $result;
-	}
-
 	function extract_body(&$html, $encoding=NULL)
 	{
-		return implode('', Fulltext_HtmlIndexer::extract_body_parts($html, $encoding));
+		if(!isset($encoding))
+			$encoding = $this->extract_encoding($html);
+
+		$body = preg_replace(
+			array(
+				// everything till body start tag
+				'/^.*<BODY(?:\s+[^>]*)?>/is', 
+				// everything after body end tag
+				'/<\/BODY\s*>.*$/is',
+				// any tag
+				'/<[^>]*>/'),
+			array(
+				'',
+				'',
+				' '),
+			$html
+		);
+		return $this->decode_html($body, $encoding); 
 	}
 }
 
+// Fulltext_Indexer Factory Method
+function Fulltext_indexer_factory($path, &$index)
+{
+	$content_type = guess_type($path);
+	if($content_type == "text/plain")
+		return new Fulltext_TextIndexer($index);
+	elseif($content_type == "text/html")
+		return new Fulltext_HtmlIndexer($index);
+	return NULL;
+}
 ?>

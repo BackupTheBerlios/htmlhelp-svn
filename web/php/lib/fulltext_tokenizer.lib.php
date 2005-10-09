@@ -5,10 +5,8 @@ $stop_words = array();
 # From http://en.wikipedia.org/wiki/Stop_words
 $handle = fopen("misc/stop_words.txt", "rt");
 while(!feof($handle))
-{
-	 $word = trim(fgets($handle, 4096));
-	 $stop_words[$word] = TRUE;
-}
+	 if($word = trim(fgets($handle, 4096)))
+	 	$stop_words[$word] = TRUE;
 fclose($handle);
 
 // Based on Lucene's standard tokenizer
@@ -73,12 +71,17 @@ class Fulltext_Tokenizer
 		
 			// basic word: a sequence of letters and digits
 			"[$letter$digit]{2,}",
-		
-			// Chinese, Japanese, and Korean ideographs
-			$cjk ? "[$cjk]" : "",
 		);
 		
+		if($cjk)
+			$tokens[] = "[$cjk]";
+		
 		$this->token_pattern = '/' . implode('|',  $tokens) . '/' . $this->modifiers;
+		
+		global $stop_words;
+		$this->stop_word_tr = array();
+		foreach($stop_words as $stop_word => $flag)
+			$this->stop_word_tr[" " . $stop_word . " "] = "";
 	}
 	
 	// find tokens in a string
@@ -93,27 +96,20 @@ class Fulltext_Tokenizer
 	{
 		return strtr($string, $this->upper, $this->lower);
 	}
-	
-	function filter1($token)
-	{
-		// TODO: do more filtering, such as eliminating possesives, plurals, etc.
-		$token = $this->tolower($token);
-		
-		// Stop word elimination
-		global $stop_words;		
-		if($stop_words[$token])
-			return NULL;
 
-		return $token;
-	}
-	
 	function filter(&$tokens)
 	{
-		foreach($tokens as $key => $token)
-			if($token = $this->filter1($token))
-				$tokens[$key] = $token;
-			else
-				unset($tokens[$key]);
+		// glue tokens together to speed processing
+		$string = " " . implode("  ", $tokens) . " ";
+		
+		// change to lower case
+		$string = $this->tolower($string);
+		
+		// eliminate stopwords
+		$string = strtr($string, $this->stop_word_tr);
+
+		// breaks tokens again
+		return explode("  ", substr($string, 1, strlen($string) - 2));
 	}
 	
 	// split a tring in whitespace
@@ -174,10 +170,7 @@ class Fulltext_Utf8_Tokenizer extends Fulltext_Ascii_Tokenizer
 
 	function tolower($string)
 	{
-		if(function_exists('mb_strtolower'))
-			return mb_strtolower($string, 'UTF-8');
-		else
-			return strtr($string, $this->upper, $this->lower);
+		return mb_strtolower($string, 'UTF-8');
 	}
 }
 

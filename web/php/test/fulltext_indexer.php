@@ -1,39 +1,18 @@
 <?php
 
 require_once 'lib/fulltext_index.lib.php';
+require_once 'lib/fulltext_indexer.lib.php';
 require_once 'PHPUnit.php';
 
-class IndexTest extends PHPUnit_TestCase
+class IndexStub extends Fulltext_Index
 {
-	var $index;
-
-	function setUp()
-	{
-		$this->index = new Fulltext_Index();
-	}
-
-	function tearDown()
-	{
-		unset($this->index);
-	}
-
-	function testIndexer()
-	{
-		$testcases = array(
-			'abc.txt' => 'Fulltext_TextIndexer',
-			'abc.htm' => 'Fulltext_HtmlIndexer',
-			'abc.html' => 'Fulltext_HtmlIndexer',
-		);
-		foreach($testcases as $path => $class)
-			$this->assertTrue(is_a($this->index->indexer_factory($path), $class), $class);
-	}
 }
 
 class HtmlIndexerTest extends PHPUnit_TestCase
 {
 	function setUP()
 	{
-		$this->index = new Fulltext_Index();
+		$this->index = new IndexStub();
 		$this->indexer = new Fulltext_HtmlIndexer($this->index);
 	}
 	
@@ -109,7 +88,7 @@ class HtmlIndexerTest extends PHPUnit_TestCase
 			"<Body>Ignore case</BODY>" => "Ignore case",
 			"<body id=\"id123\">Attributes</body>" => "Attributes",
 			"<body id=\"id123\">Html entities: &amp;&lt;&gt;</body >" => "Html entities: &<>",
-			"<body><b class=\"bold\">Tags</b></body\n\n>" => "Tags",
+			"<body><b class=\"bold\">Tags</b></body\n\n>" => " Tags ",
 			"<body\n\n>\nNewlines\n</body\n\n>" => "\nNewlines\n",
 		);
 		foreach($testcases as $html => $body)
@@ -117,11 +96,37 @@ class HtmlIndexerTest extends PHPUnit_TestCase
 	}
 }
 
-$cases = array(
-	'IndexTest',
+class IndexerFactoryTest extends PHPUnit_TestCase
+{
+	var $index;
+
+	function setUp()
+	{
+		$this->index = new IndexStub();
+	}
+
+	function tearDown()
+	{
+		unset($this->index);
+	}
+
+	function testIndexer()
+	{
+		$testcases = array(
+			'abc.txt' => 'Fulltext_TextIndexer',
+			'abc.htm' => 'Fulltext_HtmlIndexer',
+			'abc.html' => 'Fulltext_HtmlIndexer',
+		);
+		foreach($testcases as $path => $class)
+			$this->assertTrue(is_a(Fulltext_indexer_factory($path, $this->index), $class), $class);
+	}
+}
+
+$testcases = array(
 	'HtmlIndexerTest',
+	'IndexerFactoryTest',
 );
-foreach($cases as $case)
-	echo PHPUnit::run(new PHPUnit_TestSuite($case))->toString();
+foreach($testcases as $testcase)
+	echo PHPUnit::run(new PHPUnit_TestSuite($testcase))->toString();
 
 ?>

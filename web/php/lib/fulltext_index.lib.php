@@ -1,73 +1,55 @@
 <?php
 
-require_once 'lib/mimetypes.lib.php';
-require_once 'lib/fulltext_indexer.lib.php';
+require_once 'lib/fulltext_tokenizer.lib.php';
 
 // Index interface
 class Fulltext_Index
 {
-	// Internal encoding
-	var $encoding = 'UTF-8';
+	var $encoding;
+	var $tokenizer;
 
-	// Set page title (should be overriden by derived classes)
-	function set_title(&$title) {}
-
-	// Add lexemes in order (should be overriden by derived classes)
-	function add_lexemes(&$lexemes) {}
-
-	// Begin a new page
-	function new_page() {}
-
-	// Finished with the page
-	function finish_page() {}
-
-	// Fulltext_Indexer Factory Method
-	function indexer_factory($path)
+	function Fulltext_Index($encoding = 'UTF-8')
 	{
-		$content_type = guess_type($path);
-		if($content_type == "text/plain")
-			return new Fulltext_TextIndexer($this);
-		elseif($content_type == "text/html")
-			return new Fulltext_HtmlIndexer($this);
-		return NULL;
+		$this->encoding = $encoding;
+		$this->tokenizer = & Fulltext_tokenizer_factory($index->encoding);
 	}
 
-	// Index a page
-	function index_page($path, &$content)
-	{
-		$indexer = & $this->indexer_factory($path);
-		$this->start_page();
-		if(!is_null($indexer))
-			$indexer->feed($content);
-		$this->finish_page();
-	}
-}
+	// Enumerate items to be indexed
+	function enumerate_items() {}
+	
+	// Index a item
+	function index_item(&$item) {}
+	
+	// Indexing start callback
+	function handle_start() {}	
+	
+	// Item (e.g., a new page) begin callback
+	function handle_item_start(&$item) {}
 
-// Simple in-memory index
-class Fulltext_SimpleIndex extends Fulltext_Index
-{
-	var $titles;
-	var $lexemes;
+	// Set item title callback
+	function handle_item_title($title) {}
 
-	function Fulltext_SimpleIndex()
-	{
-		$this->titles = array();
-		$this->lexemes = array();
-	}
+	// Lexemes callback
+	function handle_item_lexemes(&$lexemes) {}
 
-	function set_title($title) 
-	{
-		$this->titles[$this->page] = $title;
-	}
+	// Item finish callback
+	function handle_item_end() {}
+	
+	// Indexing finish callback
+	function handle_end() {}
 
-	function add_lexemes(&$lexemes)
+	// Reindex
+	function index()
 	{
-		foreach($lexemes as $lexeme)
+		$this->handle_start();
+		$items = $this->enumerate_items();
+		foreach($items as $item)
 		{
-			if(!isset($this->lexemes[$lexeme]))
-				$this->lexemes[$lexeme] = array();
-			$this->lexemes[$lexeme][$this->page] += 1;
+			$this->handle_item_start($item);
+			$this->index_item($item);
+			$this->handle_item_end();
 		}
+		$this->handle_end();
 	}
 }
 

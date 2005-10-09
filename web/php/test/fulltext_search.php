@@ -3,9 +3,9 @@
 require_once 'lib/fulltext_search.lib.php';
 require_once 'PHPUnit.php';
 
-class TestSearchable extends Searchable
+class SearchableStub extends Searchable
 {
-	function TestSearchable($pages)
+	function TestSearchableStub($pages)
 	{
 		foreach($pages as $page => $lexemes)
 		{
@@ -34,7 +34,7 @@ class SearchTest extends PHPUnit_TestCase
 
 	function setUp()
 	{
-		$this->searchable = new TestSearchable(array(
+		$this->searchable = new SearchableStub(array(
 			'felines' => array('cat', 'lion'),
 			'domestic' => array('cat', 'dog'),
 		));
@@ -76,7 +76,6 @@ class SearchTest extends PHPUnit_TestCase
 
 $suite  = new PHPUnit_TestSuite("SearchTest");
 $result = PHPUnit::run($suite);
-
 echo $result -> toString();
 
 ?>
