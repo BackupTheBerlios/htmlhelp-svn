@@ -119,6 +119,27 @@ class Book_Fulltext_Index extends Fulltext_Index
 			"INTO lexeme_link (book_id, no, page_no, count) " .
 			"VALUES " . implode(',', $values)
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
+		
+		$this->lexemes = NULL;
+	}
+	
+	function search_lexeme($lexeme)
+	{
+		$result = mysql_query("
+			SELECT path, title 
+			FROM lexeme
+				LEFT JOIN lexeme_link ON lexeme_link.no = lexeme.no 
+				LEFT JOIN page ON page.no = lexeme_link.page_no 
+			WHERE lexeme='" . mysql_escape_string($lexeme) . "'
+				AND lexeme.book_id = $this->book_id 
+				AND lexeme_link.book_id = $this->book_id 
+				AND page.book_id = $this->book_id
+			ORDER BY count DESC
+		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
+		$entries = array();
+		while(list($path, $title) = mysql_fetch_row($result))
+			$entries[] = array($title, $path);
+		return new Fulltext_SearchResult($entries);
 	}
 }
 

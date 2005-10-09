@@ -2,10 +2,9 @@
 
 require_once 'inc/mysql.inc.php';
 require_once 'lib/book_fulltext_index.lib.php';
-require_once 'lib/fulltext_search.lib.php';
 require_once 'lib/util.lib.php';
 
-class Book extends Searchable
+class Book
 {
 	var $id;
 
@@ -83,23 +82,10 @@ class Book extends Searchable
 		return $entries;
 	}
 
-	function search_lexeme($lexeme)
+	function search($query)
 	{
-		$result = mysql_query("
-			SELECT path, title 
-			FROM lexeme
-				LEFT JOIN lexeme_link ON lexeme_link.no = lexeme.no 
-				LEFT JOIN page ON page.no = lexeme_link.page_no 
-			WHERE lexeme='" . mysql_escape_string($lexeme) . "'
-				AND lexeme.book_id = $this->id 
-				AND lexeme_link.book_id = $this->id 
-				AND page.book_id = $this->id
-			ORDER BY count DESC
-		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
-		$entries = array();
-		while(list($path, $title) = mysql_fetch_row($result))
-			$entries[] = array($title, $path);
-		return new Search_Result($entries);
+		$index = & new Book_Fulltext_Index($this->id);
+		return $index->search($query);
 	}
 
 	function metadata($name = NULL)

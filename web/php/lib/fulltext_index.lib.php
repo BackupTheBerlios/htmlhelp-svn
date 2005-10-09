@@ -1,6 +1,7 @@
 <?php
 
 require_once 'lib/fulltext_tokenizer.lib.php';
+require_once 'lib/fulltext_search.lib.php';
 
 // Index interface
 class Fulltext_Index
@@ -50,6 +51,16 @@ class Fulltext_Index
 			$this->handle_item_end();
 		}
 		$this->handle_end();
+	}
+	
+	// Return items containing this lexeme
+	function search_lexeme($lexeme) {}
+	
+	function search($query)
+	{
+		$search = & Fulltext_Search_parse($query, $this->tokenizer);
+		$result = & $search->apply($this);
+		return $result->enumerate();
 	}
 }
 

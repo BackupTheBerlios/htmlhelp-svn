@@ -21,11 +21,11 @@ class Fulltext_Indexer
 		$this->index->handle_item_title($title);
 	}
 
-	function feed_body($body_part)
+	function feed_body($body)
 	{
-		$tokens = & $this->tokenizer->tokenize($body_part);
-		$tokens = $this->tokenizer->filter($tokens);		
-		$this->index->handle_item_lexemes($tokens);
+		$lexemes = & $this->tokenizer->tokenize($body);
+		$lexemes = & $this->tokenizer->filter($lexemes);		
+		$this->index->handle_item_lexemes($lexemes);
 	}
 
 	function feed(&$content) {}

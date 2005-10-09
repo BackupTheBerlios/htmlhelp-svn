@@ -1,7 +1,8 @@
 <?php
 
-require_once 'lib/fulltext_tokenizer.lib.php';
 require_once 'PHPUnit.php';
+
+require_once 'lib/fulltext_tokenizer.lib.php';
 
 
 class TokenizerTest extends PHPUnit_TestCase

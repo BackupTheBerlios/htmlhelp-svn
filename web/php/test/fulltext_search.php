@@ -1,21 +1,24 @@
 <?php
 
-require_once 'lib/fulltext_search.lib.php';
 require_once 'PHPUnit.php';
 
-class SearchableStub extends Searchable
+require_once 'lib/fulltext_index.lib.php';
+require_once 'lib/fulltext_search.lib.php';
+
+
+class IndexStub extends Fulltext_Index
 {
-	function TestSearchableStub($pages)
+	function IndexStub($pages)
 	{
+		parent::Fulltext_Index('ASCII');
+		
 		foreach($pages as $page => $lexemes)
-		{
 			foreach($lexemes as $lexeme)
 			{
 				if(!isset($this->lexemes[$lexeme]))
 					$this->lexemes[$lexeme] = array();
 				$this->lexemes[$lexeme][] = $page;
 			}
-		}
 	}
 
 	function search_lexeme($lexeme)
@@ -24,7 +27,7 @@ class SearchableStub extends Searchable
 		if(isset($this->lexemes[$lexeme]))
 			foreach($this->lexemes[$lexeme] as $page)
 				$entries[] = array($page);
-		return new Search_Result($entries);
+		return new Fulltext_SearchResult($entries);
 	}
 }
 
@@ -34,7 +37,7 @@ class SearchTest extends PHPUnit_TestCase
 
 	function setUp()
 	{
-		$this->searchable = new SearchableStub(array(
+		$this->searchable = new IndexStub(array(
 			'felines' => array('cat', 'lion'),
 			'domestic' => array('cat', 'dog'),
 		));
@@ -71,11 +74,13 @@ class SearchTest extends PHPUnit_TestCase
 			array(), 
 			$this->searchable->search('lion dog'));
 	}
-
 }
 
-$suite  = new PHPUnit_TestSuite("SearchTest");
-$result = PHPUnit::run($suite);
-echo $result -> toString();
+
+$testcases = array(
+	'SearchTest',
+);
+foreach($testcases as $testcase)
+	echo PHPUnit::run(new PHPUnit_TestSuite($testcase))->toString();
 
 ?>

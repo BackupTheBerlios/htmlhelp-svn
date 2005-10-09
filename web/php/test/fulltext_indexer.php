@@ -1,8 +1,10 @@
 <?php
 
+require_once 'PHPUnit.php';
+
 require_once 'lib/fulltext_index.lib.php';
 require_once 'lib/fulltext_indexer.lib.php';
-require_once 'PHPUnit.php';
+
 
 class IndexStub extends Fulltext_Index
 {

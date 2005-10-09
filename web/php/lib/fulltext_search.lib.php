@@ -1,15 +1,13 @@
 <?php
 
-require_once 'lib/mbstring.lib.php';
-
-class Search_Result
+class Fulltext_SearchResult
 {
-	// TODO: write another version of this class which compiles SQL statements; 
-	// however it will be difficult not to resort to subselects...
+	// TODO: It may be possible to write another version of this class which 
+	// compiles SQL statements, resorting to subselects or temporary tables...
 
 	var $entries;
 
-	function Search_Result(&$entries) 
+	function Fulltext_SearchResult(&$entries) 
 	{
 		$this->entries = &$entries;
 	}
@@ -33,7 +31,7 @@ class Search_Result
 				}
 			}
 		}
-		return new Search_Result($entries);
+		return new Fulltext_SearchResult($entries);
 	}
 
 	function subtraction(&$other)
@@ -47,23 +45,7 @@ class Search_Result
 	}
 }
 
-class Searchable
-{
-	// Should be overriden by derived classes
-	function search_lexeme($lexeme)
-	{
-		return new Search_Result(array());
-	}
-	
-	function search($query)
-	{
-		$search = & Search_Parser::parse($query);
-		$result = & $search->apply($this);
-		return $result->enumerate();
-	}
-}
-
-class Search_Node
+class Fulltext_SearchNode
 {
 	// Should be overriden by derived classes
 	function apply(&$searchable)
@@ -73,11 +55,11 @@ class Search_Node
 	}
 }
 
-class Search_TermNode extends Search_Node
+class Fulltext_TermSearchNode extends Fulltext_SearchNode
 {
 	var $term;
 
-	function Search_TermNode($term)
+	function Fulltext_TermSearchNode($term)
 	{
 		$this->term = $term;
 	}
@@ -88,12 +70,12 @@ class Search_TermNode extends Search_Node
 	}
 }
 
-class Search_AndNode extends Search_Node
+class Fulltext_AndSearchNode extends Fulltext_SearchNode
 {
 	var $left_node;
 	var $right_node;
 
-	function Search_AndNode(&$left_node, &$right_node)
+	function Fulltext_AndSearchNode(&$left_node, &$right_node)
 	{
 		$this->left_node = &$left_node;
 		$this->right_node = &$right_node;
@@ -107,23 +89,18 @@ class Search_AndNode extends Search_Node
 	}
 }
 
-class Search_Parser
+// parse a search query string
+function Fulltext_Search_parse($query, &$tokenizer)
 {
-	// Class method to parse query
-	function parse($query)
-	{
-		// FIXME: tokenize terms
-		// TODO: implement more complex searches
-		$terms = explode(' ', $query);
+	// TODO: implement more complex searches
+	$lexemes = & $tokenizer->tokenize($query);
+	$lexemes = & $tokenizer->filter($lexemes);
 
-		$search = & new Search_TermNode($terms[0]);
-		unset($terms[0]);
-		foreach($terms as $term)
-		{
-			$search = & new Search_AndNode($search, new Search_TermNode($term));
-		}
-		return $search;
-	}
+	$search = & new Fulltext_TermSearchNode($lexemes[0]);
+	unset($lexemes[0]);
+	foreach($lexemes as $lexeme)
+		$search = & new Fulltext_AndSearchNode($search, new Fulltext_TermSearchNode($lexeme));
+	return $search;
 }
 
 ?>
