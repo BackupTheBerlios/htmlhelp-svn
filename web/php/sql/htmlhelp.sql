@@ -76,7 +76,7 @@ CREATE TABLE `lexeme` (
   `book_id` smallint(5) unsigned NOT NULL default '0',
   `no` smallint(5) unsigned NOT NULL default '0',
   `lexeme` varchar(31) binary NOT NULL default '',
-  PRIMARY KEY  (`book_id`,`lexeme`)
+  KEY `lexeme` (`book_id`,`lexeme`(6))
 ) TYPE=MyISAM;
 
 --

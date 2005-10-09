@@ -79,7 +79,7 @@ class Book_Fulltext_Index extends Fulltext_Index
 	function handle_item_lexemes(&$lexemes)
 	{
 		foreach($lexemes as $lexeme)
-			$this->lexemes[$lexeme][$this->page_no] += 1;
+			$this->lexemes[substr($lexeme, 0, 31)][$this->page_no] += 1;
 	}
 
 	function handle_item_end()
@@ -130,7 +130,7 @@ class Book_Fulltext_Index extends Fulltext_Index
 			FROM lexeme
 				LEFT JOIN lexeme_link ON lexeme_link.no = lexeme.no 
 				LEFT JOIN page ON page.no = lexeme_link.page_no 
-			WHERE lexeme='" . mysql_escape_string($lexeme) . "'
+			WHERE lexeme='" . mysql_escape_string(substr($lexeme, 0, 31)) . "'
 				AND lexeme.book_id = $this->book_id 
 				AND lexeme_link.book_id = $this->book_id 
 				AND page.book_id = $this->book_id
