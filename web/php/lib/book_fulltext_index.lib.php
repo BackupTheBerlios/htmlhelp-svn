@@ -5,6 +5,14 @@ require_once 'lib/mysql_util.lib.php';
 require_once 'lib/fulltext_index.lib.php';
 require_once 'lib/fulltext_indexer.lib.php';
 
+class Book_Fulltext_SearchResult extends Fulltext_SearchResult
+{
+	function enumerate()
+	{
+		return $this->entries;
+	}	
+}
+
 class Book_Fulltext_Index extends Fulltext_Index
 {
 	var $book_id;
@@ -54,8 +62,7 @@ class Book_Fulltext_Index extends Fulltext_Index
 	{
 		parent::handle_start();
 		
-		mysql_query("DELETE FROM lexeme_link WHERE book_id = $this->book_id");
-		mysql_query("DELETE FROM lexeme WHERE book_id = $this->book_id");
+		mysql_query("DELETE FROM lexeme_page WHERE book_id = $this->book_id");
 		mysql_query("UPDATE page SET title='' WHERE book_id = $this->book_id");
 
 		$this->lexemes = array();
@@ -92,31 +99,19 @@ class Book_Fulltext_Index extends Fulltext_Index
 		if(!count($this->lexemes))
 			return;
 		
-		$lexeme_no = 0;
-		$values = array();
-		foreach($this->lexemes as $lexeme => $pages)
-		{
-			$values[] = '(' . $this->book_id . ',"' . mysql_escape_string($lexeme) . '",' . $lexeme_no . ')';
-			$lexeme_no += 1;
-		}
-		mysql_query(
-			"INSERT " .
-			"INTO lexeme (book_id, lexeme, no) " .
-			"VALUES " . implode(',', $values)
-		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
-		
 		// TODO: store lexeme positions instead of lexeme counts
-		$lexeme_no = 0;
 		$values = array();
 		foreach($this->lexemes as $lexeme => $pages)
 		{
+			arsort($pages, SORT_NUMERIC);
+			$pages_blob = '';
 			foreach($pages as $page_no => $count)
-				$values[] = '(' . $this->book_id . ',' . $lexeme_no . ',' . $page_no . ',' . $count . ')';
-			$lexeme_no += 1;
+				$pages_blob .= pack("vC", $page_no, min($count, 255));
+			$values[] = '(' . $this->book_id . ',"' . mysql_escape_string($lexeme) . '","' . mysql_escape_string($pages_blob) . '")';
 		}
 		mysql_query(
 			"INSERT " .
-			"INTO lexeme_link (book_id, no, page_no, count) " .
+			"INTO lexeme_page (book_id, lexeme, pages) " .
 			"VALUES " . implode(',', $values)
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
 		
@@ -125,21 +120,45 @@ class Book_Fulltext_Index extends Fulltext_Index
 	
 	function search_lexeme($lexeme)
 	{
-		$result = mysql_query("
-			SELECT path, title 
-			FROM lexeme
-				LEFT JOIN lexeme_link ON lexeme_link.no = lexeme.no 
-				LEFT JOIN page ON page.no = lexeme_link.page_no 
-			WHERE lexeme='" . mysql_escape_string(substr($lexeme, 0, 31)) . "'
-				AND lexeme.book_id = $this->book_id 
-				AND lexeme_link.book_id = $this->book_id 
-				AND page.book_id = $this->book_id
-			ORDER BY count DESC
-		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
-		$entries = array();
-		while(list($path, $title) = mysql_fetch_row($result))
-			$entries[] = array($title, $path);
-		return new Fulltext_SearchResult($entries);
+		$result = mysql_query(
+			"SELECT pages " . 
+			"FROM lexeme_page " .
+			"WHERE book_id = $this->book_id " .
+				"AND lexeme='" . mysql_escape_string(substr($lexeme, 0, 31)) . "'" 
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
+		list($pages_blob) = mysql_fetch_row($result);
+		
+		$pages = array();
+		$pos = 0;
+		$len = strlen($pages_blob);
+		while($pos < $len)
+		{
+			$data = unpack("vpage_no/Ccount", substr($pages_blob, $pos, 3));
+			$pages[$data['page_no']] = $data['count'];
+			$pos += 3;
+		}
+		
+		return new Fulltext_SearchResult($pages);
+	}
+	
+	function search($query)
+	{
+		$entries = parent::search($query);
+		
+		// TODO: optimize this using temporary tables
+		$pages = array();
+		foreach($entries as $page_no => $score)
+		{
+			$result = mysql_query(
+				"SELECT title, path " . 
+				"FROM page " .
+				"WHERE book_id = $this->book_id " .
+					"AND no = $page_no" 
+			) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
+			$pages[] = mysql_fetch_row($result);
+		}
+		
+		return $pages;
 	}
 }
 

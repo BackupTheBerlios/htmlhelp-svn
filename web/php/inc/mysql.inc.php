@@ -13,18 +13,25 @@ if($result && mysql_num_rows($result))
 else
 	list($major, $minor) = array(0, 0);
 
-if($major == $db_version_major && $minor == $db_version_minor)
-		return;
-
-require_once('lib/mysql_util.lib.php');
-
-mysql_import_dump('sql/htmlhelp.sql');
-mysql_import_dump('sql/tags.sql');
-
-mysql_query(
-	"INSERT " .
-	"INTO version (major, minor) " .
-	"VALUES ($db_version_major, $db_version_minor)"
-);
+if($major < $db_version_major)
+{
+	require_once('lib/mysql_util.lib.php');
+	
+	mysql_import_dump('sql/htmlhelp.sql');
+	mysql_import_dump('sql/tags.sql');
+	
+	mysql_query(
+		"INSERT " .
+		"INTO version (major, minor) " .
+		"VALUES ($db_version_major, $db_version_minor)"
+	) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
+}
+elseif($minor < $db_version_minor)
+{
+	require_once('lib/mysql_util.lib.php');
+	
+	for($i = $minor + 1; $i <=  $db_version_minor; $i += 1)
+		mysql_import_dump("sql/htmlhelp_$i.sql");
+}
 
 ?>

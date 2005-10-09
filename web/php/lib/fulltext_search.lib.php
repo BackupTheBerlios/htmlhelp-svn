@@ -20,17 +20,9 @@ class Fulltext_SearchResult
 	function intersection(&$other)
 	{
 		$entries = array();
-		foreach($this->entries as $lentry)
-		{
-			foreach($other->entries as $rentry)
-			{
-				if($lentry[0] == $rentry[0])
-				{
-					$entries[] = $lentry;
-					break;
-				}
-			}
-		}
+		foreach($this->entries as $item => $score)
+			if(isset($other->entries[$item]))
+				$entries[$item] = $score * $other->entries[$item];
 		return new Fulltext_SearchResult($entries);
 	}
 
@@ -41,6 +33,7 @@ class Fulltext_SearchResult
 
 	function enumerate()
 	{
+		arsort($this->entries, SORT_NUMERIC);
 		return $this->entries;
 	}
 }

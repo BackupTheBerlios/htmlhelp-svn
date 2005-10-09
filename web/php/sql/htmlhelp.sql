@@ -68,28 +68,15 @@ CREATE TABLE `index_link` (
 ) TYPE=MyISAM;
 
 --
--- Table structure for table `lexeme`
+-- Table structure for table `lexeme_page`
 --
 
-DROP TABLE IF EXISTS `lexeme`;
-CREATE TABLE `lexeme` (
+DROP TABLE IF EXISTS `lexeme_page`;
+CREATE TABLE `lexeme_page` (
   `book_id` smallint(5) unsigned NOT NULL default '0',
-  `no` smallint(5) unsigned NOT NULL default '0',
   `lexeme` varchar(31) binary NOT NULL default '',
+  `pages` blob NOT NULL,
   KEY `lexeme` (`book_id`,`lexeme`(6))
-) TYPE=MyISAM;
-
---
--- Table structure for table `lexeme_link`
---
-
-DROP TABLE IF EXISTS `lexeme_link`;
-CREATE TABLE `lexeme_link` (
-  `book_id` smallint(5) unsigned NOT NULL default '0',
-  `no` smallint(5) unsigned NOT NULL default '0',
-  `page_no` smallint(5) unsigned NOT NULL default '0',
-  `count` tinyint(3) unsigned NOT NULL default '0',
-  KEY `lexeme_id` (`book_id`,`no`)
 ) TYPE=MyISAM;
 
 --
