@@ -18,7 +18,8 @@ class BookCatalog
 		// attempt to get book name and version from filename
 		// FIXME: deal with uploads too
 		// TODO: detect language too
-		if(!$book->metadata('name') and preg_match(
+		$name = $book->metadata('name');
+		if(!$name and preg_match(
 			'/^(.*?)(?:-([0-9]+(?:\.[0-9]+[a-z]?)*))\.tgz$/', 
 			basename($filename), 
 			$matches)
@@ -42,6 +43,34 @@ class BookCatalog
 		preg_match_all('/\w+/', $title, $matches, PREG_PATTERN_ORDER);
 		$tags = & $matches[0];
 		$this->tag_books($book_ids, $tags);
+		
+		// migrate tags from old books into new ones
+		mysql_query(
+			"CREATE TEMPORARY TABLE `temp_tag` (
+				`tag_id` tinyint(3) unsigned NOT NULL,
+				`book_id` smallint(5) unsigned NOT NULL
+			) TYPE=HEAP"
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+		mysql_query(
+			"INSERT
+			INTO temp_tag (tag_id, book_id)
+			SELECT tag_id, old_metadata.book_id
+			FROM book_tag
+				LEFT JOIN metadata USING(book_id)
+				LEFT JOIN metadata AS old_metadata USING(value)
+			WHERE old_metadata.name = 'name'
+				AND metadata.name = 'name'
+				AND old_metadata.book_id != metadata.book_id"
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+		mysql_query(
+			"INSERT IGNORE
+			INTO book_tag (tag_id, book_id)
+			SELECT tag_id, book_id
+			FROM temp_tag"
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+		mysql_query(
+			"DROP /*!40000 TEMPORARY */ TABLE temp_tag"
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 	}
 
 	// Update book aliases cache
@@ -51,11 +80,6 @@ class BookCatalog
 	{
 		// a book can be identified by its 'name', 'name_version', and 
 		// 'name_version_language'
-		mysql_query(
-			"REPLACE INTO book_alias
-			SELECT book.id AS alias, book.id AS book_id
-			FROM book"
-		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		mysql_query(
 			"REPLACE INTO book_alias
 			SELECT book_name.value AS alias, id as book_id
@@ -103,10 +127,10 @@ class BookCatalog
 	{
 		$tags = array();
 		$result = mysql_query("
-			SELECT tag, COUNT(DISTINCT book_id) AS count
+			SELECT tag, COUNT(DISTINCT book.id) AS count
 			FROM tag
-				LEFT JOIN book_tag ON tag.id = tag_id
-				LEFT JOIN book_alias ON book_name = alias
+				LEFT JOIN book_tag ON tag_id = tag.id
+				LEFT JOIN book ON book.id = book_id
 			GROUP BY tag.id
 			HAVING count > 0
 			ORDER BY count DESC, tag ASC
@@ -122,8 +146,8 @@ class BookCatalog
 			SELECT alias
 			FROM book_alias
 			WHERE book_id = $book_id
-				AND alias != $book_id
-			ORDER BY LENGTH(alias) ASC
+			ORDER BY LENGTH(alias)
+			LIMIT 1
 		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		if(mysql_num_rows($result))
 		{
@@ -178,10 +202,9 @@ class BookCatalog
 	{
 		return $this->_enumerate_books_by_query("
 			SELECT book.id, book.title
-			FROM book
-				LEFT JOIN book_alias ON book_id = book.id
-				LEFT JOIN book_tag ON book_name = alias 
-				LEFT JOIN tag ON tag.id = tag_id
+			FROM tag
+				LEFT JOIN book_tag ON tag_id = tag.id
+				LEFT JOIN book ON book.id = book_id
 			WHERE tag.tag = '" . mysql_escape_string($tag) . "'
 			ORDER BY book.title ASC
 		");
@@ -247,14 +270,21 @@ class BookCatalog
 		if(!count($book_ids) || !count($tags))
 			return;
 		
+		$result = mysql_query(
+			"SELECT id " .
+			"FROM tag " .
+			"WHERE tag in (" . mysql_escape_array($tags) . ")"
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+		$tag_ids = mysql_fetch_fields($result);
+
+		$values = array();
+		foreach($tag_ids as $tag_id)
+			foreach($book_ids as $book_id)
+				$values[] = '(' . intval($tag_id) . ',' . intval($book_id) . ')';
 		mysql_query(
 			"REPLACE " .
-				"INTO book_tag (tag_id, book_name) " .
-			"SELECT tag.id, value " .
-				"FROM tag, metadata " .
-				"WHERE name = 'name' " .
-					"AND book_id IN (" . mysql_escape_array($book_ids) . ") " .
-					"AND tag IN (" . mysql_escape_array($tags) . ")"
+			"INTO book_tag (tag_id, book_id) " .
+			"VALUES " . implode(',', $values)
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 	}
 	
@@ -271,20 +301,12 @@ class BookCatalog
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		$tag_ids = mysql_fetch_fields($result);
 
-		$result = mysql_query(
-			"SELECT value " .
-			"FROM metadata " .
-			"WHERE name = 'name' " .
-				"AND book_id IN (" . mysql_escape_array($book_ids) . ")"
-		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
-		$book_names = mysql_fetch_fields($result);
-
 		mysql_query(
 			"DELETE " .
 			"FROM book_tag " .
 			"WHERE " .
 				"tag_id IN (" . mysql_escape_array($tag_ids) . ") AND " .
-				"book_name IN (" . mysql_escape_array($book_names) . ")"
+				"book_id IN (" . mysql_escape_array($book_ids) . ")"
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 	}
 }

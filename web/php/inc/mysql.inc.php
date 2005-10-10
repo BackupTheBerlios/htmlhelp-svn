@@ -1,6 +1,6 @@
 <?php
 
-$db_version_major = 1; $db_version_minor = 1;
+$db_version_major = 1; $db_version_minor = 2;
 
 mysql_connect($db_server, $db_username, $db_password);
 mysql_select_db($db_database);
@@ -24,7 +24,7 @@ if($major != $db_version_major)
 }
 elseif($minor < $db_version_minor)
 {
-	mysql_import_dump('sql/update.sql');
+	mysql_import_dump('sql/update.sql', TRUE);
 }
 
 ?>

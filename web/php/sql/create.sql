@@ -37,9 +37,8 @@ CREATE TABLE `book_alias` (
 DROP TABLE IF EXISTS `book_tag`;
 CREATE TABLE `book_tag` (
   `tag_id` tinyint(3) unsigned NOT NULL default '0',
-  `book_name` varchar(31) binary NOT NULL default '',
-  KEY `tag_id` (`tag_id`),
-  KEY `book_name` (`book_name`)
+  `book_id` smallint(5) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`tag_id`,`book_id`)
 ) TYPE=MyISAM;
 
 --
@@ -88,8 +87,8 @@ CREATE TABLE `metadata` (
   `book_id` smallint(5) unsigned NOT NULL default '0',
   `name` enum('name','version','language','date','author','url') NOT NULL default 'name',
   `value` varchar(255) binary NOT NULL default '',
-  PRIMARY KEY  (`name`,`book_id`),
-  KEY `name` (`name`,`value`)
+  PRIMARY KEY  (`book_id`,`name`),
+  KEY `name` (`name`,`value`(5))
 ) TYPE=MyISAM;
 
 --
@@ -148,6 +147,6 @@ CREATE TABLE `version` (
 
 
 
-INSERT INTO `version` (`major`, `minor`) VALUES (1,1);
+INSERT INTO `version` (`major`, `minor`) VALUES (1,2);
 
 

@@ -157,7 +157,8 @@ class Book
 	{
 		mysql_query("DELETE FROM book WHERE id = $this->id");
 		mysql_query("DELETE FROM book_alias WHERE book_id = $this->id");
-		mysql_query("DELETE FROM metadata WHERE book_id = $this->id");
+		// old book names are kept for history purposes
+		mysql_query("DELETE FROM metadata WHERE book_id = $this->id AND name != 'name'");
 		mysql_query("DELETE FROM toc_entry WHERE book_id = $this->id");
 		mysql_query("DELETE FROM index_entry WHERE book_id = $this->id");
 		mysql_query("DELETE FROM index_link WHERE book_id = $this->id");
