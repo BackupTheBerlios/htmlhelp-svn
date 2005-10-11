@@ -1,3 +1,4 @@
+assembly
 build
 c
 csharp
@@ -5,7 +6,6 @@ css
 cxx
 fortran
 gnome
-gnu
 html
 java
 javascript

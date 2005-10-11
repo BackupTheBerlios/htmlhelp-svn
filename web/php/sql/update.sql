@@ -1,3 +1,5 @@
+-- Version 1.0 => 1.1 --
+
 CREATE TABLE IF NOT EXISTS `lexeme_page` (
   `book_id` smallint(5) unsigned NOT NULL default '0',
   `lexeme` varchar(31) binary NOT NULL default '',
@@ -12,9 +14,8 @@ UPDATE `version`
 SET `minor`=1 
 WHERE `major`=1 AND `minor`=0;
 
---
---
---
+
+-- Version 1.1 => 1.2 --
 
 ALTER TABLE `metadata` 
 DROP PRIMARY KEY ,
@@ -45,3 +46,5 @@ ADD PRIMARY KEY ( `tag_id` , `book_id` );
 UPDATE `version` 
 SET `minor`=2 
 WHERE `major`=1 AND `minor`=1;
+
+
