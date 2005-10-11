@@ -13,6 +13,7 @@ class BookBuilder extends Book
 	// Constructor
 	function BookBuilder()
 	{
+		// TODO: allow to upgrade books
 		mysql_query("INSERT INTO book () values ()");
 		$id = mysql_insert_id();
 
@@ -195,8 +196,10 @@ class BookBuilder extends Book
 			"INTO index_link (book_id, no, page_no, anchor) " .
 			"SELECT $this->id, index_entry.no, page.no, anchor " .
 			"FROM index_entry " .
-			"LEFT JOIN temp_index_entry ON index_entry.book_id = $this->id AND index_entry.term = temp_index_entry.term " .
-			"LEFT JOIN page ON page.book_id = $this->id AND page.path = temp_index_entry.path"
+				"LEFT JOIN temp_index_entry USING(term) " .
+				"LEFT JOIN page USING(path) " .
+			"WHERE index_entry.book_id = $this->id " .
+				"AND page.book_id = $this->id"
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
 		
 		mysql_query(

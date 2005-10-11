@@ -142,6 +142,7 @@ class BookCatalog
 
 	function _get_book_alias($book_id)
 	{
+		$book_id = intval($book_id);
 		$result = mysql_query("
 			SELECT alias
 			FROM book_alias
@@ -276,6 +277,9 @@ class BookCatalog
 			"WHERE tag in (" . mysql_escape_array($tags) . ")"
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		$tag_ids = mysql_fetch_fields($result);
+		
+		if(!count($tag_ids))
+			return;
 
 		$values = array();
 		foreach($tag_ids as $tag_id)
@@ -300,6 +304,9 @@ class BookCatalog
 			"WHERE tag in (" . mysql_escape_array($tags) . ")"
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		$tag_ids = mysql_fetch_fields($result);
+
+		if(!count($tag_ids))
+			return;
 
 		mysql_query(
 			"DELETE " .
