@@ -57,6 +57,14 @@ a {
 	text-align: center;	
 }
 
+#hosting {
+	text-align: center;
+}
+
+#hosting a img {
+	border: 0px;
+}
+
 /* Main content */
 
 .content {
