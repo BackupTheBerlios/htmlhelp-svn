@@ -85,3 +85,24 @@ a {
 .content ul li {
 	list-style-type: none;
 }
+
+/* Footer */
+
+.footer {
+	font-size: 14px;
+
+	text-align: right;
+	
+	padding-top: 4px;
+	padding-bottom: 4px;
+	padding-left: 8px;
+	padding-right: 8px;
+
+	border-top: 1px solid #999999;
+	
+	margin: 0px;
+	
+	clear: left;
+}
+
+

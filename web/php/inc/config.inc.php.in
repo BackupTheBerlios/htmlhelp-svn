@@ -13,5 +13,6 @@ $internal_encoding = 'UTF-8';
 // Administrative settings
 $admin_password = '';
 $admin_directory = '';
+$admin_email = '';
 
 ?>
