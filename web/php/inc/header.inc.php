@@ -40,7 +40,8 @@
 	echo '</div>';
 ?>
 	<div id="hosting" class="sidebox">
-		<a href="http://dotsrc.org/"><img src="http://dotsrc.org/images/hostedby.png"/></a>
+		<p><a href="http://dotsrc.org/"><img src="http://dotsrc.org/images/hostedby.png"/></a></p>
+		<p><a href="http://htmlhelp.berlios.de/"><img src="http://developer.berlios.de/bslogo.php?group_id=918" width="124" height="32" alt="BerliOS Developer Logo"/></a></p>
 	</div>
 <?php
 	
