@@ -59,7 +59,8 @@ if(isset($action))
 
 	// disable memory and time limits, necessary for some administration tasks
 	ini_set('memory_limit','-1');
-	set_time_limit(0);
+	if(!intval(ini_get('safe_mode')))
+		set_time_limit(0);
 
 	$start_time = time();
 	switch($action)
