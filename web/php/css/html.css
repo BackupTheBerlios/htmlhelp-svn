@@ -173,13 +173,13 @@ ul.tree {
 }
 
 ul.tree li.single { 
-	list-style-image: url("../icons/none.png") 
+	list-style-image: url("../img/none.png") 
 }
 
 ul.tree li.expanded { 
-	list-style-image: url("../icons/minus.png") 
+	list-style-image: url("../img/minus.png") 
 }
 
 ul.tree li.collapsed { 
-	list-style-image: url("../icons/plus.png") 
+	list-style-image: url("../img/plus.png") 
 }
