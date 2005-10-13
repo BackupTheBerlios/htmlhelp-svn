@@ -1,7 +1,10 @@
 <?php
 
 require_once 'inc/config.inc.php';
-require_once 'lib/book_catalog.lib.php';
+
+// Disable caching
+header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 
 // authentication must be done before any actual output
 $authenticated = FALSE;
@@ -27,6 +30,8 @@ if($action == 'login')
 else
 	if(!authenticated)
 		$action = NULL;
+
+require_once 'lib/book_catalog.lib.php';
 
 header('Content-Type: text/html; charset=' . $internal_encoding);
 
