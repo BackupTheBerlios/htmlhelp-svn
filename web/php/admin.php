@@ -36,7 +36,7 @@ echo '<?xml version="1.0" encoding="' . $internal_encoding . '"?>';
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=' . $internal_encoding . '"/>
+		<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $internal_encoding; ?>"/>
 		<title>Administration</title>
 		<link href="css/default.css" type="text/css" rel="stylesheet"/>
 	</head>
@@ -62,14 +62,15 @@ if(isset($action))
 	if(!intval(ini_get('safe_mode')))
 		set_time_limit(0);
 
+	echo "<pre>\n";
 	$start_time = time();
 	switch($action)
 	{
 		case 'login':
 			if($authenticated)
-				echo '<p>Logged in successfully</p>';
+				echo "Logged in successfully.\n";
 			else
-				echo '<p>Could not login.</p>';
+				echo "Could not login.\n";
 			break;
 			
 		case 'import_books':
@@ -77,8 +78,10 @@ if(isset($action))
 			if(isset($files))
 				foreach($files as $file)
 				{
-					echo '<p>importing ' . htmlspecialchars($file, ENT_NOQUOTES) . '...</p>';
-					$catalog->import_book($admin_directory . '/' .$file);
+					echo "Importing " . htmlspecialchars($file, ENT_NOQUOTES) . "\n";
+					ob_flush();
+					flush();
+					$catalog->import_book($admin_directory . "/" .$file);
 				}
 			break;
 		
@@ -86,7 +89,9 @@ if(isset($action))
 			$file = $_FILES['file']['tmp_name'];
 			if(isset($file) and is_uploaded_file($file))
 			{
-				echo '<p>Importing ' . htmlspecialchars($_FILES['file']['name'], ENT_NOQUOTES) . '...</p>';
+				echo "Importing " . htmlspecialchars($_FILES["file"]["name"], ENT_NOQUOTES) . "\n";
+				ob_flush();
+				flush();
 				$catalog->import_book($file);
 			}
 			break;
@@ -98,7 +103,9 @@ if(isset($action))
 				{
 					$book = $catalog->get_book_by_id($book_id);
 					$title = $book->title();
-					echo '<p>Indexing ' . htmlspecialchars($title, ENT_NOQUOTES) . '...</p>';
+					echo "Indexing " . htmlspecialchars($title, ENT_NOQUOTES) . "\n";
+					ob_flush();
+					flush();
 					$book->index_fulltext();
 				}
 			break;
@@ -110,7 +117,7 @@ if(isset($action))
 				{
 					$book = $catalog->get_book_by_id($book_id);
 					$title = $book->title();
-					echo '<p>Deleting ' . htmlspecialchars($title, ENT_NOQUOTES) . '...</p>';
+					echo "Deleting " . htmlspecialchars($title, ENT_NOQUOTES) . "\n";
 					$book->delete();
 				}
 			break;
@@ -124,7 +131,7 @@ if(isset($action))
 				{
 					$book = $catalog->get_book_by_id($book_id);
 					$title = $book->title();
-					echo '<p>Setting ' . htmlspecialchars($title, ENT_NOQUOTES) . ' metadata...</p>';
+					echo "Setting " . htmlspecialchars($title, ENT_NOQUOTES) . " metadata...\n";
 					$book->set_metadata($name, $value);
 				}
 			break;	
@@ -135,7 +142,7 @@ if(isset($action))
 			{
 				$tags = array($tag);
 				$catalog->add_tags($tags);
-				echo '<p>Tag \'' . htmlspecialchars($tag, ENT_NOQUOTES) . '\' added.</p>';
+				echo "Tag " . htmlspecialchars($tag, ENT_NOQUOTES) . " added.\n";
 			}
 			break;
 			
@@ -144,7 +151,7 @@ if(isset($action))
 			if(isset($tags))
 			{
 				$catalog->delete_tags($tags);
-				echo '<p>Tags deleted.</p>';
+				echo "Tags deleted.\n";
 			}
 			break;			
 			
@@ -166,8 +173,9 @@ if(isset($action))
 	$finish_time = time();
 	$ellapsed_time = $finish_time - $start_time;
 	if($ellapsed_time)
-		echo "<p>Ellapsed time: $ellapsed_time sec</p>\n";
+		echo "Ellapsed time: $ellapsed_time sec\n";
 
+	echo "</pre>";
 	echo '</div>';
 }
 

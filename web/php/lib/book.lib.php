@@ -29,9 +29,8 @@ class Book
 		$result = mysql_query("
 			SELECT CONCAT_WS('#', path, NULLIF(anchor, '')) 
 			FROM book
-				LEFT JOIN page ON page.no = page_no
-			WHERE id = $this->id 
-				AND book_id = $this->id
+				LEFT JOIN page ON book_id = book.id AND page.no = page_no
+			WHERE id = $this->id
 		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		list($link) = mysql_fetch_row($result);
 		return $link;
@@ -48,15 +47,15 @@ class Book
 				COUNT(toc_child_entry.no) AS nchildren
 			FROM toc_entry
 		 		LEFT JOIN page 
-		 		ON page.book_id = $this->id
+		 		ON page.book_id = toc_entry.book_id
 		 			AND page.no = toc_entry.page_no
 		 		LEFT JOIN toc_entry AS toc_child_entry
-		 		ON toc_child_entry.book_id = $this->id
+		 		ON toc_child_entry.book_id = toc_entry.book_id
 		 			AND toc_child_entry.parent_no = toc_entry.no
 			WHERE toc_entry.book_id = $this->id
 				AND toc_entry.parent_no = $parent_number
-			GROUP BY toc_entry.no
-			ORDER BY toc_entry.no
+			GROUP BY toc_entry.book_id, toc_entry.no
+			ORDER BY toc_entry.book_id, toc_entry.no
 		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		while(list($number, $title, $link, $nchildren) = mysql_fetch_row($result))
 			$entries[$number] = array($title, $link, $nchildren);
@@ -68,13 +67,11 @@ class Book
 		$result = mysql_query("
 			SELECT term, CONCAT_WS('#', path, NULLIF(anchor, ''))
 			FROM index_entry
-				LEFT JOIN index_link ON index_link.no = index_entry.no
-				LEFT JOIN page ON page.no = index_link.page_no
+				LEFT JOIN index_link USING(book_id, no)
+				LEFT JOIN page ON page.book_id = index_link.book_id	AND page.no = index_link.page_no
 			WHERE index_entry.book_id = $this->id
-				AND index_link.book_id = $this->id 
-				AND page.book_id = $this->id 
 				" . ($query ? "AND LOCATE('" . mysql_escape_string($query) . "', term)" : "")  . "
-			ORDER BY index_entry.no
+			ORDER BY index_entry.book_id, index_entry.no
 		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
 		$entries = array();
 		while(list($term, $link) = mysql_fetch_row($result))
@@ -123,8 +120,7 @@ class Book
 	{
 		mysql_query(
 			'REPLACE ' .
-			'INTO metadata ' . 
-			'(book_id, name, value) ' . 
+			'INTO metadata (book_id, name, value) ' . 
 			'VALUES (' . 
 				$this->id . ', ' .
 				'"' . mysql_escape_string($name) . '", ' .

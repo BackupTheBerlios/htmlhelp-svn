@@ -51,6 +51,11 @@ class Book_Fulltext_Index extends Fulltext_Index
 		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
 		list($path, $compressed, $content) = mysql_fetch_row($result);
 		
+		// Heartbeat
+		echo "  indexing $path\n";
+		ob_flush();
+		flush();	
+		
 		if($compressed)
 			$content = gzdecode($content);
 		

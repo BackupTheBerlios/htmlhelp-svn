@@ -60,6 +60,11 @@ class BookBuilder extends Book
 	// are internally stored as a page reference plus an anchor.
 	function add_page($path, $content)
 	{
+		// Heartbeat
+		echo "  adding $path\n";
+		ob_flush();
+		flush();	
+
 		// gzip content
 		$gzcontent = gzencode($content);
 		if(strlen($gzcontent) < strlen($content))
@@ -173,10 +178,14 @@ class BookBuilder extends Book
 	
 	function commit()
 	{
+		echo "  commiting index\n";
+		ob_flush();
+		flush();	
+		
 		mysql_query(
-			"ALTER " .
-			"TABLE temp_index_entry " .
-			"ADD INDEX term (term(7))"
+			"ALTER 
+			TABLE temp_index_entry
+			ADD INDEX term (term(7))"
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		
 		mysql_query(
@@ -197,15 +206,15 @@ class BookBuilder extends Book
 			"SELECT $this->id, index_entry.no, page.no, anchor " .
 			"FROM index_entry " .
 				"LEFT JOIN temp_index_entry USING(term) " .
-				"LEFT JOIN page USING(path) " .
-			"WHERE index_entry.book_id = $this->id " .
-				"AND page.book_id = $this->id"
+				"LEFT JOIN page ON page.book_id = $this->id AND page.path = temp_index_entry.path " .
+			"WHERE index_entry.book_id = $this->id"
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
 		
 		mysql_query(
 			"DROP /*!40000 TEMPORARY */ TABLE temp_index_entry" 
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		
+		echo "  commencing fulltext index\n";
 		$this->index_fulltext();
 		
 		$this->committed = TRUE;
