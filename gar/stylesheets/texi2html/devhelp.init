@@ -1,12 +1,14 @@
 # -*-perl-*-
 
-main::load_init_file('', 'noheaders.init');
-
 $SHOW_MENU = 0;
 $SPLIT = 'node';
 $DO_CONTENT = 1;
 $SPLIT_INDEX = undef;
 $IDX_SUMMARY = 1;
+
+$TOP_FILE = 'index.html';
+$TOC_FILE = 'contents.html';
+$NODE_FILES = 1;
 
 $SMALL_RULE = '';
 $DEFAULT_RULE = '';
@@ -29,6 +31,11 @@ $finish_out = \&devhelp_finish_out;
 my $default_init_out = $init_out;
 
 $init_out = \&devhelp_init_out;
+
+$node_file_name = \&devhelp_node_file_name;
+$element_file_name = \&devhelp_element_file_name;
+
+$css_lines = \&devhelp_css_lines;
 
 # We prepare a environment for conversion of texi to unicode (maybe this 
 # could be in utf8.init ?)
@@ -77,6 +84,7 @@ sub devhelp_init_out()
     my $encoding = &$default_init_out();
     return $encoding;
 }
+
 sub devhelp_print_page_foot($)
 {
     my $fh = shift;
@@ -88,6 +96,51 @@ $PRE_BODY_CLOSE
 </html>
 EOT
 }
+
+sub devhelp_css_lines ($$)
+{
+    my $import_lines = shift;
+    my $rule_lines = shift;
+
+    $CSS_LINES = "";
+    foreach my $file (@Texi2HTML::Config::CSS_FILES)
+    {
+	$CSS_LINES .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"" . $file . "\">\n";
+    }
+}
+
+sub devhelp_element_file_name($$$)
+{
+    my $element = shift;
+    my $is_top = shift;
+    my $docu_name = shift;
+   
+    my $name = main::remove_texi($element->{'texi'});
+    $name =~ s/[^\w\.\-]/-/g;
+    $name =~ tr/[A-Z]/[a-z]/;
+    $name = "${name}.$NODE_FILE_EXTENSION";
+    $file = $name ;
+    return $file;
+}
+
+sub devhelp_node_file_name($)
+{
+    my $node = shift;
+    my $file;
+    my $node_file;
+   
+    return (undef, undef) if ($node->{'external_node'} or $node->{'index_page'});
+    return (undef, undef) if (defined($node->{'file'}));
+
+    my $name = main::remove_texi($node->{'texi'});
+    $name =~ s/[^\w\.\-]/-/g;
+    $name =~ tr/[A-Z]/[a-z]/;
+    $name = "${name}.$NODE_FILE_EXTENSION";
+    $file = $name;
+    $node_file = $name;
+    return ($file, $node_file);
+}
+
 
 # Convert texi to string with utf8
 sub to_utf8($)

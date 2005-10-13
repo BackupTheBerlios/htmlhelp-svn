@@ -8,9 +8,10 @@ all: htmlhelp
 
 BOOKS ?=
 
+BOOK_NAME ?= $(basename $(*F))
 BOOK_VERSION ?= $(GARVERSION)
 
-BOOK_FILENAME ?= $(if $(BOOK_NAME),$(BOOK_NAME),$(basename $(*F)))$(if $(BOOK_VERSION),-$(BOOK_VERSION),)
+BOOK_FILENAME ?= $(BOOK_NAME)$(if $(BOOK_VERSION),-$(BOOK_VERSION),)
 
 BOOK_EXTRA_SRC = $(word 1,$(subst :, ,$(BOOK_EXTRA)))
 BOOK_EXTRA_DST = $(word 2,$(subst :, ,$(BOOK_EXTRA)))
