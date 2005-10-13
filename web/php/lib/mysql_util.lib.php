@@ -99,4 +99,23 @@ function mysql_fetch_fields($result)
 		$fields[] = $field;
 	return $fields;
 }
+
+function mysql_write_html_result($result)
+{
+	echo '<table>';	
+	$rows = array();
+	while($row = mysql_fetch_assoc($result))
+	{
+		echo '<tr>';
+		foreach($row as $field)
+		{
+			echo '<td>';
+			echo htmlspecialchars($field, ENT_NOQUOTES);
+			echo '</td>';
+		}
+		echo '</tr>';
+	}
+	echo '</table>';	
+}
+
 ?>
