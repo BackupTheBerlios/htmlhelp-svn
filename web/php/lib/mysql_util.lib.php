@@ -100,6 +100,50 @@ function mysql_fetch_fields($result)
 	return $fields;
 }
 
+// Extended inserts, just like the ones performed by mysqldump 
+function mysql_extended_insert($table, $fields, $values, $net_buffer_length = 1047551)
+{
+	if(!count($values))
+		return TRUE;
+
+	mysql_query("/*!40000 ALTER TABLE `$table` DISABLE KEYS */");
+	mysql_query("LOCK TABLES `$table` WRITE");
+	
+	// construct query prefix
+	$query_prefix = "INSERT INTO `$table`";
+	if($fields)
+		$query_prefix .= ' ' . $fields;
+	$query_prefix .= "VALUES ";
+	
+	$query = $query_prefix;
+	$nvalues = 0;
+	foreach($values as $value)
+	{
+		// flush values
+		if($nvalues && strlen($query) + strlen($value) > $net_buffer_length)
+		{
+			if(!mysql_query($query))
+				return FALSE;
+			$query = $query_prefix;
+			$nvalues = 0;
+		}
+		
+		// append a value
+		if($nvalues)
+			$query .= ',' . $value;
+		else
+			$query .= $value;
+		$nvalues += 1;
+	}
+	if($nvalues)
+		if(!mysql_query($query))
+			return FALSE;
+	
+	mysql_query("UNLOCK TABLES");
+	mysql_query("/*!40000 ALTER TABLE `$table` ENABLE KEYS */");
+	return TRUE;
+}
+
 function mysql_write_html_result($result)
 {
 	echo '<table>';	

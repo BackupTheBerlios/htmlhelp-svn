@@ -14,7 +14,7 @@ class BookBuilder extends Book
 	function BookBuilder()
 	{
 		// TODO: allow to upgrade books
-		mysql_query("INSERT INTO book () values ()");
+		mysql_query("INSERT INTO book () VALUES ()");
 		$id = mysql_insert_id();
 
 		$this->Book($id);

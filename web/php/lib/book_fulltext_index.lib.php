@@ -114,11 +114,9 @@ class Book_Fulltext_Index extends Fulltext_Index
 				$pages_blob .= pack("vC", $page_no, min($count, 255));
 			$values[] = '(' . $this->book_id . ',"' . mysql_escape_string($lexeme) . '","' . mysql_escape_string($pages_blob) . '")';
 		}
-		mysql_query(
-			"INSERT " .
-			"INTO lexeme_page (book_id, lexeme, pages) " .
-			"VALUES " . implode(',', $values)
-		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
+	
+		mysql_extended_insert('lexeme_page', '(book_id, lexeme, pages)', $values)		
+		or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 		
 		$this->lexemes = NULL;
 	}
