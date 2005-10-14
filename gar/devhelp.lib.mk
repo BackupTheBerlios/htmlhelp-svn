@@ -74,7 +74,7 @@ TEXI2HTML_FLAGS_DEVHELP = --init-file devhelp.init
 
 texi-devhelp/%: %
 	@echo -e " $(WORKCOLOR)==> Converting $(BOLD)$*$(NORMALCOLOR)"
-	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(TEXI2HTML_FLAGS_DEVHELP) --prefix $(BOOK_NAME) --out $(SCRATCHDIR)/book --css-include texinfo.css $*
+	$(TEXI2HTML) $(TEXI2HTML_FLAGS) $(TEXI2HTML_FLAGS_DEVHELP) --prefix $(BOOK_NAME) --out $(SCRATCHDIR)/book --css-include $(GARDIR)/stylesheets/import_texinfo.css $*
 	@cp -a $(GARDIR)/stylesheets/texinfo.css $(SCRATCHDIR)/book
 	@mv $(SCRATCHDIR)/book/$(BOOK_NAME).devhelp $(SCRATCHDIR)/book.devhelp
 

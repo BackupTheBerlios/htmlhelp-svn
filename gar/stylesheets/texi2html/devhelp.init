@@ -32,11 +32,6 @@ my $default_init_out = $init_out;
 
 $init_out = \&devhelp_init_out;
 
-$node_file_name = \&devhelp_node_file_name;
-$element_file_name = \&devhelp_element_file_name;
-
-$css_lines = \&devhelp_css_lines;
-
 # We prepare a environment for conversion of texi to unicode (maybe this 
 # could be in utf8.init ?)
 my %devhelp_texi_map = %texi_map;
@@ -132,51 +127,6 @@ $complex_format_map =
  }
 };
 
-sub devhelp_css_lines ($$)
-{
-    my $import_lines = shift;
-    my $rule_lines = shift;
-
-    $CSS_LINES = "";
-    foreach my $file (@Texi2HTML::Config::CSS_FILES)
-    {
-	$CSS_LINES .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"" . $file . "\">\n";
-    }
-}
-
-sub devhelp_element_file_name($$$)
-{
-    my $element = shift;
-    my $is_top = shift;
-    my $docu_name = shift;
-   
-    my $name = main::remove_texi($element->{'texi'});
-    $name =~ s/[^\w\.\-]/-/g;
-    $name =~ tr/[A-Z]/[a-z]/;
-    $name = "${name}.$NODE_FILE_EXTENSION";
-    $file = $name ;
-    return $file;
-}
-
-sub devhelp_node_file_name($)
-{
-    my $node = shift;
-    my $file;
-    my $node_file;
-   
-    return (undef, undef) if ($node->{'external_node'} or $node->{'index_page'});
-    return (undef, undef) if (defined($node->{'file'}));
-
-    my $name = main::remove_texi($node->{'texi'});
-    $name =~ s/[^\w\.\-]/-/g;
-    $name =~ tr/[A-Z]/[a-z]/;
-    $name = "${name}.$NODE_FILE_EXTENSION";
-    $file = $name;
-    $node_file = $name;
-    return ($file, $node_file);
-}
-
-
 # Convert texi to string with utf8
 sub to_utf8($)
 {
@@ -207,14 +157,11 @@ sub devhelp_toc_body($)
     my $level = 0;
     foreach my $element (@$elements_ref)
     {
-        if ($level >= $element->{'toc_level'})
-	{
-             push (@chapter_lines, "</sub>\n");
-	}
         while ($level != $element->{'toc_level'})
         {
             if ($level < $element->{'toc_level'})
             {
+                 push (@chapter_lines, "<sub name=\"\" link=\"\">\n");
                  $level++;
             }
             elsif ($level > $element->{'toc_level'})
@@ -233,6 +180,7 @@ sub devhelp_toc_body($)
         $text =~ s/^\s*//;
 	$text = xml_protect_text($text);
         push (@chapter_lines, "<sub name=\"$text\" link=\"$element->{'file'}#$element->{'id'}\">\n");
+	$level++;
     }
     while ($level > 0)
     {
