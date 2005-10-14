@@ -85,6 +85,17 @@ sub devhelp_init_out()
     return $encoding;
 }
 
+$print_navigation	      = \&devhelp_print_navigation;
+sub devhelp_print_navigation
+{
+    my $fh = shift;
+    my $buttons = shift;
+    my $vertical = shift;
+   
+    print $fh '<div class="node">';
+    T2H_DEFAULT_print_navigation($fh, $buttons, $vertical);
+    print $fh '</div>';
+}
 sub devhelp_print_page_foot($)
 {
     my $fh = shift;
@@ -96,6 +107,30 @@ $PRE_BODY_CLOSE
 </html>
 EOT
 }
+
+$complex_format_map =
+{
+ 'example' =>
+ {
+  'begin' => q{'<div class="example">'},
+  'end' => q{'</div>'},
+ },
+ 'smallexample' =>
+ {
+  'begin' => q{'<div class="smallexample">'},
+  'end' => q{'</div>'},
+ },
+ 'display' =>
+ {
+  'begin' => q{'<div class="display">'},
+  'end' => q{'</div>'},
+ },
+ 'smalldisplay' =>
+ {
+  'begin' => q{'<div class="smalldisplay">'},
+  'end' => q{'</div>'},
+ }
+};
 
 sub devhelp_css_lines ($$)
 {
