@@ -4,14 +4,23 @@ body {
 	color: black;
 	background-color: white;
 
-	font-family: verdana, tahoma, helvetica, arial, sans-serif;
+	font-family: sans-serif;
 	font-size: 14px;
 
-	margin: 0px;
+	margin: 0 5%;
 }
 
-a {
+a, a:active, a:visited
+{
+	color: #930F09;
 	text-decoration: none;
+}
+
+h2 {
+	font-size: 16px;
+	color: #666;
+	margin: 20px 0px 5px 0px;
+	border-bottom: 1px dotted #cccccc;
 }
 
 /* Header */
@@ -24,37 +33,48 @@ a {
 	padding-left: 8px;
 	padding-right: 8px;
 
-	border-bottom: 1px solid #999999;
-	
-	margin: 0px;
+	border-bottom: 1px solid #000;
+
+	margin: 1ex;
 }
 
 /* Sideboxes */
 
 .sidebox {
-	background-color: #f0f0f0;
-
 	font-size: 12px;
 	
-	width: 200px;
-
-	padding-top: 1em;
-	padding-bottom: 1em;
+	margin-top: 2em;
+	margin-left: 5%;
+	margin-bottom: 2em;
 	
-	border-bottom: 1px solid #999999;
-	border-right: 1px solid #999999;
+	width: 20%;
+
+	padding: 0px;
+	
+	border: 1px solid #333;
 	
 	float: left;
 	clear: left;
 }
 
 .sidebox .title {
+	color: #fff;
+	background-color: #333;
+	
 	display: block;
 
 	font-size: 14px;
 	font-weight: bold;
 	
 	text-align: center;	
+}
+
+#tags table {
+	margin: 5%;
+}
+
+#tags a {
+	font-weight: bold;
 }
 
 #hosting {
@@ -76,9 +96,9 @@ a {
 	padding: 5mm 5mm 2mm 5mm;
 	padding: 1.5ex 1ex;
 	
-	border-left: 1px solid #999999;
+	border: 1px dashed #999;
 	
-	margin: 0 0 0 200px;
+	margin: 5em 5% 5em 30%;
 }
 
 .content ul {
@@ -97,19 +117,14 @@ a {
 /* Footer */
 
 .footer {
-	font-size: 14px;
-
-	text-align: right;
+	text-align: center;
 	
+	font-size: 11px;
+	color: #666666;
 	padding-top: 4px;
-	padding-bottom: 4px;
-	padding-left: 8px;
-	padding-right: 8px;
-
-	border-top: 1px solid #999999;
-	
-	margin: 0px;
-	
+	margin: 0px 20px 0px 20px;  
+	border-top: 1px dotted #cccccc;
+  	
 	clear: left;
 }
 

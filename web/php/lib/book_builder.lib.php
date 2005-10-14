@@ -70,7 +70,7 @@ class BookBuilder extends Book
 		if(strlen($gzcontent) < strlen($content))
 		{
 			$compressed = 1;
-			$content = $gzcontent;
+			$content = & $gzcontent;
 		}
 		else
 			$compressed = 0;

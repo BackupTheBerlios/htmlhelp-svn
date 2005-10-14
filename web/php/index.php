@@ -1,32 +1,30 @@
 <?php
-	$title = 'HTML Help Books';
-	
-	require 'inc/header.inc.php';
-	
-	echo '<script src="js/index.js" type="text/javascript"></script>';
-
-	if($tag = $_GET['tag'])
-		$books = $catalog->enumerate_books_by_tag($tag);
-	else	
-		$books = $catalog->enumerate_books();	
-	if(count($books))
-	{
-		echo '<ul class="list">';
-		foreach($books as $book_alias => $book_title)
-		{
-			echo '<li>';
-			echo  '<a ';
-			echo    'href="book.php?book=' . htmlspecialchars($book_alias, ENT_QUOTES) . '" ';
-			echo    'onclick="return openBook(\'' . htmlspecialchars($book_alias, ENT_QUOTES) . '\');" ';
-			echo    'target="_blank">';
-			echo   htmlspecialchars($book_title, ENT_NOQUOTES);
-			echo  '</a>';
-			echo '</li>';
-		}
-		echo '</ul>';
-	}
-	else
-		echo '<p>No book found.</p>';
-
-	require 'inc/footer.inc.php';
+require 'inc/header.inc.php';
+?>
+	<div class="content">
+		<h2>Welcome to HTML Help Books</h2>
+		
+		<p>
+		HTML Help Books aims to be <em>the</em> web site for
+		online developer reference documentation. It provides reference manuals for
+		open-source software, programming languages, web design specifications, and
+		more. 
+		</p>
+		
+		<p>
+		Each book includes a navigatable table of contents, a searchable index, and
+		allows full-text search of its pages.  The book catalog is organized by
+		tags for easy lookup.
+		</p>
+		
+		<p>
+		Two interfaces are available for browsing books. One is uses plain HTML
+		with frames, and only requires a frame-enabled web browser.  The other uses
+		remote <a href="http://xulplanet.com/">XUL</a> for a richer interaction, but requires a <a href="http://www.mozilla.org/products/firefox/">Gecko-based web browser</a>,
+		with JavaScript enabled.  The appropriate interface is deduced
+		automatically from the browser capabilities.
+		</p>
+	</div>
+<?php
+require 'inc/footer.inc.php';
 ?>
