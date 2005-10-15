@@ -70,6 +70,12 @@ FROM book
 	LEFT JOIN metadata AS book_name ON book_name.book_id = book.id
 WHERE book_name.name = 'name';
 
+CREATE TABLE alias_tag (
+  alias_id smallint(5) unsigned NOT NULL default '0',
+  tag_id smallint(5) unsigned NOT NULL default '0',
+  PRIMARY KEY  (tag_id,alias_id)
+) TYPE=MyISAM;
+
 INSERT IGNORE
 INTO alias_tag (tag_id, alias_id)
 SELECT tag_id, alias.id

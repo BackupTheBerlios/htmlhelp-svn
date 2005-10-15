@@ -16,7 +16,6 @@ $book_id = $_POST['book'];
 $action = $_POST['action'];
 if(isset($book_id) && isset($action))
 {
-	echo '<div class="content result">';
 	$book = & new BookBuilder(intval($book_id));
 	switch($action)
 	{
@@ -36,12 +35,8 @@ if(isset($book_id) && isset($action))
 			$book->set_metadata($name, $value);
 			break;
 	}
-	echo '</div>';
 }
-
-
 ?>
-
 	<div class="content">
 
 <?php

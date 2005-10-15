@@ -20,7 +20,7 @@ echo '<?xml version="1.0" encoding="' . $internal_encoding . '"?>';
 		<span class="title">Tags</span>
 		<table>
 			<tr>
-				<th class="count">#</<th>
+				<th class="count">#</th>
 				<th class="tag">Tag</th>
 			</tr>
 <?php
