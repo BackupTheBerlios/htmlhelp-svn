@@ -12,12 +12,12 @@ BUILD_ARGS = clean gdb.info
 	
 BOOKS = \
 	$(WORKSRC)/gdb/doc/gdb.texinfo \
-	$(WORKSRC)/gdb/doc/gdbint.texinfo
 
 NOINST_BOOKS = \
+	$(WORKSRC)/gdb/doc/gdbint.texinfo \
 	$(WORKSRC)/gdb/doc/stabs.texinfo
 
 include ../../gar.mk
 
-MAKEINFO_FLAGS += -I ../mi -I ../../readline/doc
+TEXI2HTML_FLAGS = -I $(WORKSRC)/gdb/mi -I $(WORKSRC)/readline/doc
 
