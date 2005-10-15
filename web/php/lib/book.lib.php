@@ -93,6 +93,7 @@ class Book
 				SELECT value 
 				FROM metadata 
 				WHERE book_id = $this->id
+				AND name = '" . mysql_escape_string($name) . "'
 			") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error() . "\n");
 			if(mysql_num_rows($result))
 			{

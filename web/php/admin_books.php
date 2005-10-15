@@ -72,20 +72,6 @@ if(isset($action))
 					$book->delete();
 				}
 			break;
-			
-		case 'set_metadata':
-			$book_ids = $_POST['books'];
-			$name = $_POST['name'];
-			$value = $_POST['value'];
-			if(isset($book_ids) && isset($name) && isset($value))
-				foreach($book_ids as $book_id)
-				{
-					$book = $catalog->get_book_by_id($book_id);
-					$title = $book->title();
-					echo "Setting " . htmlspecialchars($title, ENT_NOQUOTES) . " metadata...\n";
-					$book->set_metadata($name, $value);
-				}
-			break;	
 	}
 
 	$finish_time = time();
@@ -151,24 +137,18 @@ if(isset($action))
 			<p>
 				<select name="books[]" multiple="multiple" size="20">
 <?php
-						$books = $catalog->enumerate_book_ids();	
-						foreach($books as $book_id => $book_title)
-							echo '<option value="' . $book_id . '">' . htmlspecialchars($book_title, ENT_NOQUOTES) . '</option>';
+$books = $catalog->enumerate_book_ids();	
+foreach($books as $book_id => $book_title)
+{
+?>
+					<option value="<?php echo $book_id; ?>"><?php echo htmlspecialchars($book_title, ENT_NOQUOTES); ?></option>';
+<?php
+}
 ?>
 				</select>
 				<br/>
 				<button type="submit" name="action" value="delete">Delete books</button>
 				<button type="submit" name="action" value="index">Index books</button>
-			</p>
-			<p>
-				<select name="name">
-					<option value="name">Name</option>
-					<option value="version">Version</option>
-					<option value="language">Language</option>
-					<option value="date">Date</option>
-				</select>
-				<input type="text" name="value"/>
-				<button type="submit" name="action" value="set_metadata">Set book metadata</button>
 			</p>
 		</form>
 	</div>

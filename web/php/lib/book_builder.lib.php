@@ -11,16 +11,19 @@ class BookBuilder extends Book
 	var $last_index_entry_no;
 	
 	// Constructor
-	function BookBuilder()
+	function BookBuilder($id = NULL)
 	{
-		// TODO: allow to upgrade books
-		mysql_query("INSERT INTO book () VALUES ()");
-		$id = mysql_insert_id();
+		if(is_null($id))
+		{
+			// TODO: allow to upgrade books
+			mysql_query("INSERT INTO book () VALUES ()");
+			$id = mysql_insert_id();
+
+			$this->commited = FALSE;
+			register_shutdown_function(array(&$this, "_BookBuilder"));
+		}
 
 		$this->Book($id);
-
-		$this->commited = FALSE;
-		register_shutdown_function(array(&$this, "_BookBuilder"));
 
 		mysql_query(
 			"CREATE TEMPORARY TABLE temp_index_entry (
