@@ -10,6 +10,7 @@ require 'inc/header.inc.php';
 
 $catalog = new BookCatalog();
 
+$action = $_POST['action'];
 if(isset($action))
 {
 	echo '<div class="content result">';
@@ -85,39 +86,6 @@ if(isset($action))
 					$book->set_metadata($name, $value);
 				}
 			break;	
-		
-		case 'add_tag':
-			$tag = $_POST['tag'];
-			if(isset($tag))
-			{
-				$tags = array($tag);
-				$catalog->add_tags($tags);
-				echo "Tag " . htmlspecialchars($tag, ENT_NOQUOTES) . " added.\n";
-			}
-			break;
-			
-		case 'delete_tags':
-			$tags = $_POST['tags'];
-			if(isset($tags))
-			{
-				$catalog->delete_tags($tags);
-				echo "Tags deleted.\n";
-			}
-			break;			
-			
-		case 'tag_books';
-			$book_ids = $_POST['books'];
-			$tags = $_POST['tags'];
-			if(isset($book_ids) and isset($tags))
-				$catalog->tag_books($book_ids, $tags);
-			break;
-			
-		case 'untag_books';
-			$book_ids = $_POST['books'];
-			$tags = $_POST['tags'];
-			if(isset($book_ids) and isset($tags))
-				$catalog->untag_books($book_ids, $tags);
-			break;
 	}
 
 	$finish_time = time();
@@ -131,39 +99,7 @@ if(isset($action))
 
 ?>
 
-	<div class="content">		
-
-		<h2>Tags</h2>
-		
-		<form action="admin.php" method="post">
-			<p>
-				<input type="text" name="tag"/>
-				<button type="submit" name="action" value="add_tag">Add tag</button>
-			</p>
-		</form>
-		<form action="admin.php" method="post">
-			<p>
-				<select name="tags[]" multiple="multiple" size="20">
-<?php
-	$tags = $catalog->enumerate_tags();
-	foreach($tags as $tag)
-		echo '<option value="' . htmlspecialchars($tag, ENT_QUOTES) . '">' . htmlspecialchars($tag, ENT_NOQUOTES) . '</option>';
-?>
-				</select>
-				<select name="books[]" multiple="multiple" size="20">
-<?php
-	$books = $catalog->enumerate_book_ids();	
-	foreach($books as $book_id => $book_title)
-		echo '<option value="' . $book_id . '">' . htmlspecialchars($book_title, ENT_NOQUOTES) . '</option>';
-?>
-				</select>
-				<br/>
-				<button type="submit" name="action" value="delete_tags">Delete tags</button>
-				<button type="submit" name="action" value="tag_books">Tag books</button>
-				<button type="submit" name="action" value="untag_books">Untag books</button>
-				<br/>
-			</p>
-		</form>
+	<div class="content">
 
 		<h2>Books</h2>
 

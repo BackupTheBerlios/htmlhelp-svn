@@ -93,7 +93,19 @@ class BookCatalog
 			ORDER BY title
 		");
 	}
-	
+
+	// IDs should be used only administrative purposes
+	function enumerate_aliases()
+	{
+		$result = mysql_query("
+			SELECT alias 
+			FROM alias 
+			ORDER BY alias
+		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+		$aliases = mysql_fetch_fields($result);
+		return $aliases;
+	}	
+		
 	// IDs should be used only administrative purposes
 	function enumerate_book_ids()
 	{
@@ -160,6 +172,8 @@ class BookCatalog
 			INTO tag (tag)
 			VALUES (" . mysql_escape_array($tags) . ")
 		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+		
+		return mysql_affected_rows();
 	}
 	
 	function delete_tags(&$tags)
@@ -172,41 +186,35 @@ class BookCatalog
 			FROM tag 
 			WHERE tag in (" . mysql_escape_array($tags) . ")
 		") or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+		
+		return mysql_affected_rows();
 	}
 	
 	// Tag the books with the given tags
-	function tag_books(&$book_ids, &$tags)
+	function tag_books(&$aliases, &$tags)
 	{
-		if(!count($book_ids) || !count($tags))
-			return;
-		
-		$result = mysql_query(
-			"SELECT id " .
-			"FROM tag " .
-			"WHERE tag in (" . mysql_escape_array($tags) . ")"
-		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
-		$tag_ids = mysql_fetch_fields($result);
-		
-		if(!count($tag_ids))
-			return;
+		if(!count($tags) || !count($aliases))
+			return 0;
 
-		$values = array();
-		foreach($tag_ids as $tag_id)
-			foreach($book_ids as $book_id)
-				$values[] = '(' . intval($tag_id) . ',' . intval($book_id) . ')';
 		mysql_query(
-			"REPLACE " .
-			"INTO alias_tag (tag_id, book_id) " .
-			"VALUES " . implode(',', $values)
+			"INSERT IGNORE " .
+			"INTO alias_tag (tag_id, alias_id) " .
+			"SELECT tag.id, alias.id " .
+			"FROM tag, alias " .
+			"WHERE " .
+				"tag IN (" . mysql_escape_array($tags) . ") AND " .
+				"alias IN (" . mysql_escape_array($aliases) . ")"
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+				
+		return mysql_affected_rows();
 	}
 	
 	// Untag the books with the given tags
-	function untag_books(&$book_ids, &$tags)
+	function untag_books(&$aliases, &$tags)
 	{
-		if(!count($book_ids) || !count($tags))
-			return;
-
+		if(!count($tags) || !count($aliases))
+			return 0;
+		
 		$result = mysql_query(
 			"SELECT id " .
 			"FROM tag " .
@@ -215,15 +223,27 @@ class BookCatalog
 		$tag_ids = mysql_fetch_fields($result);
 
 		if(!count($tag_ids))
-			return;
-
+			return 0;
+		
+		$result = mysql_query(
+			"SELECT id " .
+			"FROM alias " .
+			"WHERE alias in (" . mysql_escape_array($aliases) . ")"
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+		$alias_ids = mysql_fetch_fields($result);
+		
+		if(!count($alias_ids))
+			return 0;
+		
 		mysql_query(
 			"DELETE " .
 			"FROM alias_tag " .
 			"WHERE " .
 				"tag_id IN (" . mysql_escape_array($tag_ids) . ") AND " .
-				"book_id IN (" . mysql_escape_array($book_ids) . ")"
+				"alias_id IN (" . mysql_escape_array($alias_ids) . ")"
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+				
+		return mysql_affected_rows();
 	}
 }
 
