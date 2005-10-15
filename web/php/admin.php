@@ -33,28 +33,7 @@ else
 
 require_once 'lib/book_catalog.lib.php';
 
-header('Content-Type: text/html; charset=' . $internal_encoding);
-
-echo '<?xml version="1.0" encoding="' . $internal_encoding . '"?>';	
-
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $internal_encoding; ?>"/>
-		<title>Administration</title>
-		<link href="css/default.css" type="text/css" rel="stylesheet"/>
-	</head>
-	<body>
-		<div class="header">Administration</div>
-		<div class="sidebox">
-			<ul>
-				<li><a href="#tags">Tags</a></li>
-				<li><a href="#books">Books</a></li>
-			<ul>
-		</div>
-
-<?php
+require 'inc/header.inc.php';
 
 $catalog = new BookCatalog();
 
@@ -186,123 +165,129 @@ if(isset($action))
 
 ?>
 
-		<div class="content">
+	<div class="content">		
+<?php
+if(!$authenticated) { 
+?>
+		<h2>Login</h2>
+		<form action="admin.php" method="post">
+			<p>
+				<input type="hidden" name="action" value="login"/>
+				<input type="password" name="password"/>
+				<br/>
+				<input type="submit" value="Login">
+			</p>
+		</form>
+<?php 
+} else { 
+?>
+
+		<h2>Tags</h2>
 		
-			<?php if(!$authenticated) { ?>
+		<form action="admin.php" method="post">
+			<p>
+				<input type="text" name="tag"/>
+				<button type="submit" name="action" value="add_tag">Add tag</button>
+			</p>
+		</form>
+		<form action="admin.php" method="post">
+			<p>
+				<select name="tags[]" multiple="multiple" size="20">
+<?php
+	$tags = $catalog->enumerate_tags();
+	foreach($tags as $tag)
+		echo '<option value="' . htmlspecialchars($tag, ENT_QUOTES) . '">' . htmlspecialchars($tag, ENT_NOQUOTES) . '</option>';
+?>
+				</select>
+				<select name="books[]" multiple="multiple" size="20">
+<?php
+	$books = $catalog->enumerate_book_ids();	
+	foreach($books as $book_id => $book_title)
+		echo '<option value="' . $book_id . '">' . htmlspecialchars($book_title, ENT_NOQUOTES) . '</option>';
+?>
+				</select>
+				<br/>
+				<button type="submit" name="action" value="delete_tags">Delete tags</button>
+				<button type="submit" name="action" value="tag_books">Tag books</button>
+				<button type="submit" name="action" value="untag_books">Untag books</button>
+				<br/>
+			</p>
+		</form>
 
-			<h1 name="login">Login</h1>
-			<form action="admin.php" method="POST">
-				<p>
-					<input type="hidden" name="action" value="login"/>
-					<input type="password" name="password"/>
-					<br/>
-					<input type="submit" value="Login">
-				</p>
-			</form>
-			
-			<?php } else { ?>
-				
-			<h1 id="tags">Tags</h1>
-			
-			<form action="admin.php" method="POST">
-				<p>
-					<input type="text" name="tag"/>
-					<button type="submit" name="action" value="add_tag">Add tag</button>
-				<p>
-			</form>
-			<form action="admin.php" method="POST">
-				<p>
-					<select name="tags[]" multiple="yes" size="20">
-						<?php
-						$tags = $catalog->enumerate_tags();
-						foreach($tags as $tag)
-							echo '<option value="' . htmlspecialchars($tag, ENT_QUOTES) . '">' . htmlspecialchars($tag, ENT_NOQUOTES) . '</option>';
-						?>
-					</select>
-					<select name="books[]" multiple="yes" size="20">
-						<?php
+		<h2>Books</h2>
+
+<?php 
+	if($admin_directory) { 
+?>
+		<h3>Import</h3>
+		<form action="admin.php" method="post">
+			<p>
+				<select name="files[]" multiple="multiple" size="20">
+<?php
+		$dir = dir($admin_directory);
+		$ext = '.tgz';
+		$entries = array();
+		while(false !== ($entry = $dir->read()))
+			if(substr($entry, -strlen($ext)) == $ext)
+				$entries[] = $entry;
+		natcasesort($entries);
+		foreach($entries as $entry)
+			echo '<option value="' . $entry . '">' . substr($entry, 0, -strlen($ext)) . '</option>';
+?>
+				</select>
+				<br/>
+				<button type="submit" name="action" value="import_books">Import books</button>
+			</p>
+		</form>
+
+<?php
+	} 
+?>
+		<h3>Upload</h3>
+		<form enctype="multipart/form-data" action="admin.php" method="post">
+			<p>
+<?php
+				$MAX_FILE_SIZE = ini_get('upload_max_filesize');
+				if(substr($MAX_FILE_SIZE, -1) == 'M')
+					$MAX_FILE_SIZE = intval(substr($MAX_FILE_SIZE, 0, -1))*1024*1024;
+				if($MAX_FILE_SIZE)
+					echo '<input type="hidden" name="MAX_FILE_SIZE" value="' . $MAX_FILE_SIZE . '"/>';
+?>
+				<input type="file" name="file"/>
+				<button type="submit" name="action" value="upload_book">Upload book</button>
+			</p>
+		</form>
+
+		<h3>Edit</h3>
+		
+		<form action="admin.php" method="post">
+			<p>
+				<select name="books[]" multiple="multiple" size="20">
+<?php
 						$books = $catalog->enumerate_book_ids();	
 						foreach($books as $book_id => $book_title)
 							echo '<option value="' . $book_id . '">' . htmlspecialchars($book_title, ENT_NOQUOTES) . '</option>';
-						?>
-					</select>
-					<br/>
-					<button type="submit" name="action" value="delete_tags">Delete tags</button>
-					<button type="submit" name="action" value="tag_books">Tag books</button>
-					<button type="submit" name="action" value="untag_books">Untag books</button>
-					<br/>
-				</p>
-			</form>
-
-			<h1 id="books">Books</h1>
-
-			<?php if($admin_directory) { ?>
-			<h2>Import</h2>
-			<form action="admin.php" method="POST">
-				<p>
-					<select name="files[]" multiple="yes" size="20">
-						<?php
-						$dir = dir($admin_directory);
-						$ext = '.tgz';
-						$entries = array();
-						while(false !== ($entry = $dir->read()))
-							if(substr($entry, -strlen($ext)) == $ext)
-								$entries[] = $entry;
-						natcasesort($entries);
-						foreach($entries as $entry)
-							echo '<option value="' . $entry . '">' . substr($entry, 0, -strlen($ext)) . '</option>';
-						?>
-					</select>
-					<br/>
-					<button type="submit" name="action" value="import_books">Import books</button>
-				</p>
-			</form>
-			<?php } ?>
-
-			<h2>Upload</h2>
-			<form enctype="multipart/form-data" action="admin.php" method="POST">
-				<p>
-					<?php
-					$MAX_FILE_SIZE = ini_get('upload_max_filesize');
-					if(substr($MAX_FILE_SIZE, -1) == 'M')
-						$MAX_FILE_SIZE = intval(substr($MAX_FILE_SIZE, 0, -1))*1024*1024;
-					if($MAX_FILE_SIZE)
-						echo '<input type="hidden" name="MAX_FILE_SIZE" value="' . $MAX_FILE_SIZE . '"/>';
-					?>
-					<input type="file" name="file"/>
-					<button type="submit" name="action" value="upload_book">Upload book</button>
-				</p>
-			</form>
-
-			<h2>Edit</h2>
-			
-			<form action="admin.php" method="POST">
-				<p>
-					<select name="books[]" multiple="yes" size="20">
-						<?php
-						$books = $catalog->enumerate_book_ids();	
-						foreach($books as $book_id => $book_title)
-							echo '<option value="' . $book_id . '">' . htmlspecialchars($book_title, ENT_NOQUOTES) . '</option>';
-						?>
-					</select>
-					<br/>
-					<button type="submit" name="action" value="delete_books">Delete books</button>
-					<button type="submit" name="action" value="index_books">Index books</button>
-				</p>
-				<p>
-					<select name="name">
-						<option value="name">Name</option>
-						<option value="version">Version</option>
-						<option value="language">Language</option>
-						<option value="date">Date</option>
-					</select>
-					<input type="text" name="value"/>
-					<button type="submit" name="action" value="set_book_metadata">Set book metadata</button>
-				</p>
-			</form>
-
-			<?php } ?>
-
-		</div>
-	</body>
-</html>
+?>
+				</select>
+				<br/>
+				<button type="submit" name="action" value="delete_books">Delete books</button>
+				<button type="submit" name="action" value="index_books">Index books</button>
+			</p>
+			<p>
+				<select name="name">
+					<option value="name">Name</option>
+					<option value="version">Version</option>
+					<option value="language">Language</option>
+					<option value="date">Date</option>
+				</select>
+				<input type="text" name="value"/>
+				<button type="submit" name="action" value="set_book_metadata">Set book metadata</button>
+			</p>
+		</form>
+<?php 
+}
+?>
+	</div>
+<?php
+require_once 'inc/footer.inc.php';
+?>

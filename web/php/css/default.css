@@ -69,20 +69,27 @@ h2 {
 	text-align: center;	
 }
 
+/* Tag list */
+
 #tags table {
 	margin: 5%;
+	
+	width: 90%;
+	
 }
 
-#tags a {
+table th {
+	color: #999;
+}
+
+table .count {
+	width: 2ex;
+	text-align: right;
+}
+
+table .tag {
 	font-weight: bold;
-}
-
-#hosting {
-	text-align: center;
-}
-
-#hosting a img {
-	border: 0px;
+	text-align: left;
 }
 
 /* Main content */
@@ -93,7 +100,6 @@ h2 {
 	text-align: justify;
 	line-height: 1.5em;
 	
-	padding: 5mm 5mm 2mm 5mm;
 	padding: 1.5ex 1ex;
 	
 	border: 1px dashed #999;
@@ -112,6 +118,32 @@ h2 {
 
 .content ul li {
 	list-style-type: none;
+}
+
+.result pre {
+	width: 100%;
+	height: 20em;
+	overflow: scroll;
+}
+
+/* Logos */
+
+.logos {
+	text-align: right;
+	
+	vertical-align: middle;
+
+	clear: left;
+	
+	padding: 1ex;
+}
+
+.logos a {
+	padding: 1ex;
+}
+
+.logos img {
+	border: 0;
 }
 
 /* Footer */

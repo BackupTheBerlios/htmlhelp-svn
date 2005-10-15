@@ -16,12 +16,9 @@ require 'inc/header.inc.php';
 		{
 ?>
 			<li>
-				<a
-				 href="book.php?book=<?php echo htmlspecialchars($book_alias, ENT_QUOTES); ?>"
-				 onclick="return openBook('<?php echo htmlspecialchars($book_alias, ENT_QUOTES); ?>');"
-				 target="_blank">
-					<?php echo htmlspecialchars($book_title, ENT_NOQUOTES);?>
-				</a>
+				<a href="book.php?book=<?php echo htmlspecialchars($book_alias, ENT_QUOTES); ?>"
+				onclick="return openBook('<?php echo htmlspecialchars($book_alias, ENT_QUOTES); ?>');"
+				target="_blank"><?php echo htmlspecialchars($book_title, ENT_NOQUOTES);?></a>
 			</li>
 <?php
 		}
@@ -32,7 +29,7 @@ require 'inc/header.inc.php';
 	else
 	{
 ?>
-		<p>No book found.</p>
+		<p class="warning">No book found.</p>
 <?php
 	}
 ?>
