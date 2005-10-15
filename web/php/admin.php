@@ -2,36 +2,9 @@
 
 require_once 'inc/config.inc.php';
 
-// Disable caching
-header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
-
-// authentication must be done before any actual output
-$authenticated = FALSE;
-$password = $_COOKIE['Password'];
-if(isset($password))
-{
-	if($password == $admin_password)
-		$authenticated = TRUE;
-	else
-		setcookie("Password", "", time() - 3600);
-}
-
-$action = $_POST['action'];
-if($action == 'login')
-{
-	$password = $_POST['password'];
-	if($password == $admin_password)
-	{
-		$authenticated = TRUE;
-		setcookie('Password', $password);
-	}
-}
-else
-	if(!authenticated)
-		$action = NULL;
-
 require_once 'lib/book_catalog.lib.php';
+
+require 'inc/admin_auth.inc.php';
 
 require 'inc/header.inc.php';
 
@@ -50,13 +23,6 @@ if(isset($action))
 	$start_time = time();
 	switch($action)
 	{
-		case 'login':
-			if($authenticated)
-				echo "Logged in successfully.\n";
-			else
-				echo "Could not login.\n";
-			break;
-			
 		case 'import_books':
 			$files = $_POST['files'];
 			if(isset($files))
@@ -166,21 +132,6 @@ if(isset($action))
 ?>
 
 	<div class="content">		
-<?php
-if(!$authenticated) { 
-?>
-		<h2>Login</h2>
-		<form action="admin.php" method="post">
-			<p>
-				<input type="hidden" name="action" value="login"/>
-				<input type="password" name="password"/>
-				<br/>
-				<input type="submit" value="Login">
-			</p>
-		</form>
-<?php 
-} else { 
-?>
 
 		<h2>Tags</h2>
 		
@@ -284,9 +235,6 @@ if(!$authenticated) {
 				<button type="submit" name="action" value="set_book_metadata">Set book metadata</button>
 			</p>
 		</form>
-<?php 
-}
-?>
 	</div>
 <?php
 require_once 'inc/footer.inc.php';
