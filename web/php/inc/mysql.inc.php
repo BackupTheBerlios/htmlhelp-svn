@@ -1,12 +1,14 @@
 <?php
 
-$db_version_major = 1; $db_version_minor = 2;
+$db_version_major = 1; 
+$db_version_minor = 3;
 
 mysql_connect($db_server, $db_username, $db_password);
 mysql_select_db($db_database);
 mysql_query("SET NAMES '$internal_encoding'");
 
-$major = 0; $minor = 0;
+$major = 0; 
+$minor = 0;
 if(
 	($result = mysql_query('SELECT major, minor FROM version')) && 
 	mysql_num_rows($result) && 

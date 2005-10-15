@@ -1,9 +1,8 @@
-SELECT 
-	metadata.value AS name,
+SELECT
+	alias AS name,
 	GROUP_CONCAT(DISTINCT tag SEPARATOR ",") AS tags
 FROM tag 
-	LEFT JOIN book_tag ON tag.id = tag_id 
-	LEFT JOIN metadata USING (book_id) 
-WHERE metadata.name='name' 
-GROUP BY metadata.value 
-ORDER BY metadata.value
+	INNER JOIN alias_tag ON tag_id = tag.id
+	INNER JOIN alias ON alias.id = alias_id
+GROUP BY alias
+ORDER BY alias

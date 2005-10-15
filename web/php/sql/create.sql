@@ -5,6 +5,31 @@
 -- Server version	4.1.14-Debian_6
 
 --
+-- Table structure for table `alias`
+--
+
+DROP TABLE IF EXISTS `alias`;
+CREATE TABLE `alias` (
+  `id` smallint(5) unsigned NOT NULL auto_increment,
+  `alias` varchar(31) NOT NULL default '',
+  `book_id` smallint(5) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `alias` (`alias`),
+  UNIQUE KEY `book_id` (`book_id`)
+) TYPE=MyISAM;
+
+--
+-- Table structure for table `alias_tag`
+--
+
+DROP TABLE IF EXISTS `alias_tag`;
+CREATE TABLE `alias_tag` (
+  `alias_id` smallint(5) unsigned NOT NULL default '0',
+  `tag_id` smallint(5) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`tag_id`,`alias_id`)
+) TYPE=MyISAM;
+
+--
 -- Table structure for table `book`
 --
 
@@ -14,31 +39,7 @@ CREATE TABLE `book` (
   `title` varchar(255) NOT NULL default '',
   `page_no` smallint(5) unsigned NOT NULL default '0',
   `anchor` varchar(255) binary NOT NULL default '',
-  PRIMARY KEY  (`id`),
-  KEY `title` (`title`(7))
-) TYPE=MyISAM;
-
---
--- Table structure for table `book_alias`
---
-
-DROP TABLE IF EXISTS `book_alias`;
-CREATE TABLE `book_alias` (
-  `alias` varchar(31) NOT NULL default '',
-  `book_id` tinyint(3) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`alias`),
-  KEY `book_id` (`book_id`)
-) TYPE=MyISAM;
-
---
--- Table structure for table `book_tag`
---
-
-DROP TABLE IF EXISTS `book_tag`;
-CREATE TABLE `book_tag` (
-  `tag_id` tinyint(3) unsigned NOT NULL default '0',
-  `book_id` smallint(5) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`tag_id`,`book_id`)
+  PRIMARY KEY  (`id`)
 ) TYPE=MyISAM;
 
 --
@@ -147,6 +148,6 @@ CREATE TABLE `version` (
 
 
 
-INSERT INTO `version` (`major`, `minor`) VALUES (1,2);
+INSERT INTO `version` (`major`, `minor`) VALUES (1,3);
 
 

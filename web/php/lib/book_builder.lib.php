@@ -52,6 +52,11 @@ class BookBuilder extends Book
 			'SET title = "' . mysql_escape_string($title) . '" ' .
 			'WHERE id = ' . $this->id 
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+		
+		// keep book table sorted by title to speed up frequent ordering
+		mysql_query(
+			'ALTER TABLE book ORDER BY title'
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 	}
 	
 	// Add a book page.

@@ -126,6 +126,17 @@ class Book
 				'"' . mysql_escape_string($name) . '", ' .
 				'"' . mysql_escape_string($value) . '")' 
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+
+		// update alias
+		mysql_query(
+			"REPLACE
+			INTO alias (alias, book_id)
+			SELECT book_name.value, book.id
+			FROM book 
+				LEFT JOIN metadata AS book_name ON book_name.book_id = book.id
+			WHERE book.id = $this->id 
+				AND book_name.name = 'name'"
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 	}
 
 	function page($path, $allow_compressed = FALSE)
@@ -157,9 +168,7 @@ class Book
 		mysql_query("DELETE FROM index_entry WHERE book_id = $this->id");
 		mysql_query("DELETE FROM toc_entry WHERE book_id = $this->id");
 		mysql_query("DELETE FROM page WHERE book_id = $this->id");
-		
-		// old book names are kept for history purposes
-		mysql_query("DELETE FROM metadata WHERE book_id = $this->id AND name != 'name'");	
+		mysql_query("DELETE FROM metadata WHERE book_id = $this->id");	
 		
 		// should be the last to avoid dangling rows in previous tables
 		mysql_query("DELETE FROM book WHERE id = $this->id");

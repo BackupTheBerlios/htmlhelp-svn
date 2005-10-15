@@ -48,3 +48,38 @@ SET `minor`=2
 WHERE `major`=1 AND `minor`=1;
 
 
+-- Version 1.2 => 1.3 --
+
+ALTER TABLE `book` DROP INDEX `title` 
+
+DROP TABLE book_alias;
+
+CREATE TABLE `alias` (
+  `id` smallint(5) unsigned NOT NULL auto_increment,
+  `alias` varchar(31) NOT NULL default '',
+  `book_id` smallint(5) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `alias` (`alias`),
+  UNIQUE KEY `book_id` (`book_id`)
+) TYPE=MyISAM;
+
+REPLACE
+INTO alias (alias, book_id)
+SELECT book_name.value, book.id
+FROM book 
+	LEFT JOIN metadata AS book_name ON book_name.book_id = book.id
+WHERE book_name.name = 'name';
+
+INSERT IGNORE
+INTO alias_tag (tag_id, alias_id)
+SELECT tag_id, alias.id
+FROM book_tag
+	INNER JOIN alias USING(book_id);
+	
+DROP TABLE book_tag;
+
+
+UPDATE `version` 
+SET `minor`=3 
+WHERE `major`=1 AND `minor`=2;
+
