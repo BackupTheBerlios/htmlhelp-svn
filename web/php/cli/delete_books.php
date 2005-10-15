@@ -19,14 +19,12 @@ foreach($books as $book_id => $book_title)
 
 $tables = array(
 	"book",
-	//"metadata",
+	"metadata",
 	"toc_entry",
 	"index_entry",
 	"index_link",
-	"book_alias",
 	"page",
-	"lexeme",
-	"lexeme_link",
+	"lexeme_page",
 );
 
 foreach($tables as $table)
