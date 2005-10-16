@@ -4,6 +4,8 @@ require_once 'lib/book_catalog.lib.php';
 
 header('Content-Type: text/html; charset=' . $internal_encoding);
 
+// FIXME: deal with browser chaching
+
 echo '<?xml version="1.0" encoding="' . $internal_encoding . '"?>';	
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

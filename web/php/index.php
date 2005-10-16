@@ -7,7 +7,7 @@ require 'inc/header.inc.php';
 		<p>
 		HTML Help Books aims to be <em>the</em> web site for
 		online developer reference documentation. It provides reference manuals for
-		open-source software, programming languages, web design specifications, and
+		open-source software, programming languages, web specifications, and
 		more. 
 		</p>
 		

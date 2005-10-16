@@ -23,6 +23,7 @@ if($major != $db_version_major)
 {
 	mysql_import_dump('sql/create.sql');
 	mysql_import_dump('sql/tags.sql');	
+	mysql_import_dump('sql/book_tags.sql');	
 }
 elseif($minor < $db_version_minor)
 {

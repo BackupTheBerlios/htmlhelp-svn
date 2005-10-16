@@ -128,16 +128,25 @@ class Book
 				'"' . mysql_escape_string($value) . '")' 
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 
-		// update alias
-		mysql_query(
-			"REPLACE
-			INTO alias (alias, book_id)
-			SELECT book_name.value, book.id
-			FROM book 
-				LEFT JOIN metadata AS book_name ON book_name.book_id = book.id
-			WHERE book.id = $this->id 
-				AND book_name.name = 'name'"
-		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+		if($name = 'name')
+		{
+			// update alias
+			mysql_query(
+				"UPDATE alias
+				SET book_id = 0
+				WHERE book_id = $this->id"
+			) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+			mysql_query(
+				"INSERT IGNORE
+				INTO alias (alias)
+				VALUES ('" . mysql_escape_string($value) . "')"
+			) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+			mysql_query(
+				"UPDATE alias
+				SET book_id = $this->id
+				WHERE alias = '" . mysql_escape_string($value) . "'"
+			) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+		}
 	}
 
 	function page($path, $allow_compressed = FALSE)

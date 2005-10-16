@@ -36,11 +36,11 @@ class BookCatalog
 		}
 
 		// attemp to tag new book based on the title
-		$book_ids = array($book->id);
+		$aliases = array($name);
 		$title = $book->title();
 		preg_match_all('/\w+/', $title, $matches, PREG_PATTERN_ORDER);
 		$tags = & $matches[0];
-		$this->tag_books($book_ids, $tags);
+		$this->tag_books($aliases, $tags);
 	}
 
 	function enumerate_tags()
