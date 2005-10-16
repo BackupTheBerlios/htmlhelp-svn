@@ -1,42 +1,69 @@
 as	assembly
-atk-docs	gnome
+at-spi-cspi	gnome
+atk	gnome,gtk
 autoconf	build
 automake	build
 bashref	shell
-binutils	c
+bfd	
+binutils	c,cxx
 bison	c
-coreutils	unix
+bonobo-activation	gnome
+coreutils	shell,unix
 cpp	c,cxx
-cppinternals	c,cxx
-css	web,css
-find	unix
+css	css,web
+cvs	
+diff	
+elisp	
+find	shell,unix
 flex	c
 g77	fortran
-gcc	cxx,c
-gccint	c,cxx
+gail-libgail-util	gnome
+gawk	awk
+gawkinet	awk
+gcc	c
 gcj	java
+gconf	gnome
 gdb	c,cxx
+gdk	gnome,gtk
+gdk-pixbuf	gnome,gtk
 gfortran	fortran
-ggad	gnome
-glib-docs	gnome
-gnat_ug_unx	unix
+glib	gnome,gtk
+gnat-style	
+gnat_rm	
+gnat_ug_unx	
+gnome-vfs-2.0	gnome
 gnuplot	scientific
-gobject-docs	gnome
-grep	unix
-gtk-docs	gnome
-gtk-faq	gnome
-gtk-tut	gnome
-html	web,html
+gobject	gnome,gtk
+gpc	
+gperf	
+grep	shell,unix
+gtk	gnome,gtk
+hist	
+html	html,web
+info	
+ld	c,cxx
+libbonobo	gnome
+libbonoboui	gnome
 libc	c
+libglade	gnome
+libgnome	gnome
+libgnomecanvas	gnome
+libgnomeui	gnome
 libtool	build
-make	build,unix
+m4	build
+make	build
+mysql_internals	sql
+mysql_manual	sql
 Numeric	python
-pango-docs	gnome
+ORBit2	gnome
+pango	gnome,gtk
 perl	perl
 Python	python
-sed	unix
-tar	unix
+rlman	
+rluserman	
+sed	shell,unix
+tar	shell,unix
 texinfo	tex
-which	unix
-xhtml	web,html,xml
+which	shell,unix
+xhtml	html,web,xml
 xml	xml

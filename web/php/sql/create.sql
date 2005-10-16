@@ -15,7 +15,7 @@ CREATE TABLE `alias` (
   `book_id` smallint(5) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `alias` (`alias`),
-  UNIQUE KEY `book_id` (`book_id`)
+  KEY `book_id` (`book_id`)
 ) TYPE=MyISAM;
 
 --

@@ -36,6 +36,9 @@ export-structure.sql: MYSQLDUMP_FLAGS += --add-drop-table --no-data
 export-version.sql: MYSQLDUMP_FLAGS += --skip-comments --no-create-info --complete-insert --skip-add-locks
 export-version.sql: TABLES = version
 
+export-tags.sql: MYSQLDUMP_FLAGS += --skip-comments --no-create-info --complete-insert --skip-add-locks
+export-tags.sql: TABLES = tag alias_tag alias
+
 export-create.sql: export-structure.sql export-version.sql
 	cat $(patsubst export-%,%,$^) > $(patsubst export-%,%,$@)
 	rm -f $(patsubst export-%,%,$^)
@@ -55,7 +58,7 @@ export-%.sql:
 # Import initial database
 
 import: \
-	import-htmlhelp.sql \
+	import-create.sql \
 	import-tags.sql \
 	import-book_tags.sql
 
