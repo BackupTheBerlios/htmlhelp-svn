@@ -172,7 +172,13 @@ class Book
 	
 	function delete()
 	{
-		mysql_query("DELETE FROM book_alias WHERE book_id = $this->id");
+		// unbind alias
+		mysql_query(
+			"UPDATE alias
+			SET book_id = 0
+			WHERE book_id = $this->id"
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+
 		mysql_query("DELETE FROM lexeme_page WHERE book_id = $this->id");
 		mysql_query("DELETE FROM index_link WHERE book_id = $this->id");
 		mysql_query("DELETE FROM index_entry WHERE book_id = $this->id");
