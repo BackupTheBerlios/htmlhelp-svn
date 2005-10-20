@@ -12,6 +12,7 @@ require 'inc/header.inc.php';
 			<li><a href="admin_tags.php">Tags</a></li>
 			<li><a href="admin_books.php">Books</a></li>
 			<li><a href="admin_book.php">Book</a></li>
+			<li><a href="admin_stats.php">Statistics</a></li>
 		</ul>
 	</div>
 <?php

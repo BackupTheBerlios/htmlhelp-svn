@@ -265,6 +265,14 @@ class BookCatalog
 			"WHERE alias = '" . mysql_escape_string($alias) . "'"
 		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
 	}
+	
+	function get_hit_stats()
+	{
+		$result = mysql_query(
+			"SELECT alias, book_hits, page_hits FROM alias ORDER BY book_hits DESC, page_hits DESC"
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+		return mysql_fetch_rows($result);
+	}
 }
 
 ?>
