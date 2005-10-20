@@ -1,4 +1,4 @@
-				     Readme
+				     Read-me
 
 = About =
 
@@ -40,21 +40,4 @@ Other projects spawn local HTTP servers to provide user documentation:
 
   - platform independent
   - fulltext search
-
-
-= Requirements =
-
-Minimum server requirements:
-
-  - PHP 4.3
-
-  - MYSQL 3.23+
-  
-  - web server
-
-Client requirements:
-
-  - a frame-capable web browser
-
-  - or a Gecko-based web browser with Javascript enabled for the XUL interface
 
