@@ -33,6 +33,8 @@ if(!list($compressed, $content) = $book->page($path, TRUE))
 	exit;
 }
 
+$catalog->page_hit($alias);
+
 $content_type = guess_type($path);
 $accept_compressed = strpos($_SERVER["HTTP_ACCEPT_ENCODING"], 'gzip') !== false;
 

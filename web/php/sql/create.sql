@@ -13,6 +13,8 @@ CREATE TABLE `alias` (
   `id` smallint(5) unsigned NOT NULL auto_increment,
   `alias` varchar(31) NOT NULL default '',
   `book_id` smallint(5) unsigned NOT NULL default '0',
+  `book_hits` int(10) unsigned NOT NULL default '0',
+  `page_hits` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `alias` (`alias`),
   KEY `book_id` (`book_id`)
@@ -148,6 +150,6 @@ CREATE TABLE `version` (
 
 
 
-INSERT INTO `version` (`major`, `minor`) VALUES (1,3);
+INSERT INTO `version` (`major`, `minor`) VALUES (1,4);
 
 

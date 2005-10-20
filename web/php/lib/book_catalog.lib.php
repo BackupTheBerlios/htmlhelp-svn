@@ -245,6 +245,26 @@ class BookCatalog
 				
 		return mysql_affected_rows();
 	}
+	
+	// log a book hit
+	function book_hit($alias)
+	{
+		mysql_query(
+			"UPDATE LOW_PRIORITY alias " .
+			"SET book_hits = book_hits + 1 " .
+			"WHERE alias = '" . mysql_escape_string($alias) . "'"
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+	}
+	
+	// log a page hit
+	function page_hit($alias)
+	{
+		mysql_query(
+			"UPDATE LOW_PRIORITY alias " .
+			"SET page_hits = page_hits + 1 " .
+			"WHERE alias = '" . mysql_escape_string($alias) . "'"
+		) or die(__FILE__ . ':' . __LINE__ . ':' . mysql_error());
+	}
 }
 
 ?>

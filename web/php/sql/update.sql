@@ -50,9 +50,7 @@ WHERE `major`=1 AND `minor`=1;
 
 -- Version 1.2 => 1.3 --
 
-ALTER TABLE `book` DROP INDEX `title` 
-
-DROP TABLE book_alias;
+ALTER TABLE `book` DROP INDEX `title`;
 
 CREATE TABLE `alias` (
   `id` smallint(5) unsigned NOT NULL auto_increment,
@@ -65,30 +63,11 @@ CREATE TABLE `alias` (
 
 INSERT IGNORE
 INTO alias (alias, book_id)
-SELECT book_name.value, book.id
-FROM book 
-	LEFT JOIN metadata AS book_name ON book_name.book_id = book.id
-WHERE book_name.name = 'name';
+SELECT value, book_id
+FROM metadata
+WHERE name = 'name';
 
-CREATE TEMPORARY TABLE `temp_alias` (
-  `id` smallint(5) unsigned NOT NULL,
-  `alias` varchar(31) NOT NULL default '',
-  `book_id` smallint(5) unsigned NOT NULL default '0'
-) TYPE=MyISAM;
-
-INSERT 
-INTO temp_alias (id, alias, book_id)
-SELECT alias.id, alias.alias, metadata.book_id
-FROM alias
-	INNER JOIN metadata ON metadata.value = alias.alias
-WHERE metadata.name = 'name';
-
-REPLACE
-INTO alias (id, alias, book_id)
-SELECT id, alias, book_id
-FROM temp_alias;
-
-DROP TABLE temp_alias;
+DROP TABLE book_alias;
 
 CREATE TABLE alias_tag (
   alias_id smallint(5) unsigned NOT NULL default '0',
@@ -107,3 +86,13 @@ DROP TABLE book_tag;
 UPDATE `version` 
 SET `minor`=3 
 WHERE `major`=1 AND `minor`=2;
+
+
+-- Version 1.3 => 1.4 --
+
+ALTER TABLE `alias` ADD `book_hits` INT UNSIGNED DEFAULT '0' NOT NULL ,
+ADD `page_hits` INT UNSIGNED DEFAULT '0' NOT NULL ;
+
+UPDATE `version` 
+SET `minor`=4 
+WHERE `major`=1 AND `minor`=3;

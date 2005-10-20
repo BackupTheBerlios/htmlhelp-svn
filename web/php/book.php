@@ -3,7 +3,9 @@
 
 	$alias = $_GET['book'];
 	require 'inc/get_book_from_alias.inc.php'; 
-	
+
+	$catalog->book_hit($alias);
+
 	header('Content-Type: text/html; charset=' . $internal_encoding);
 		
 	echo '<?xml version="1.0" encoding="' . $internal_encoding . '"?>';
