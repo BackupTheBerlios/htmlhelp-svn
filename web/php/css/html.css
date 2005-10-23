@@ -16,6 +16,8 @@ a {
 
 /* Menu */
 
+/* See http://www.alistapart.com/articles/taminglists/ */
+
 ul.menu {
 	margin: 0;
 	
@@ -24,7 +26,7 @@ ul.menu {
 	padding-top: 4px;
 	padding-bottom: 0px;
 
-	border-bottom: 4px solid #eee;
+	border-bottom: 1px solid #fff;
 	
 	list-style: none;
 }
@@ -33,6 +35,9 @@ ul.menu li {
 	display: inline;
 	
 	margin: 0;
+	
+	margin-left: 1px;
+	margin-right: 1px;
 	
 	border-top: 1px solid #fff;
 	border-left: 1px solid #fff;
@@ -49,10 +54,6 @@ ul.menu li.current {
 	border-bottom: 1px solid #eee;
 }
 
-ul.menu li:hover, ul.menu li.current {
-	background: #eee;
-}
-
 ul.menu a {
 	padding-left: 8px;
 	padding-right: 8px;
@@ -60,6 +61,10 @@ ul.menu a {
 	color: #333;
 	
 	font-weight: bold;
+}
+
+ul.menu li a:hover, ul.menu li.current a {
+	background: #eee;
 }
 
 ul.menu li.current a {
