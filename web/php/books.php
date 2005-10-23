@@ -15,11 +15,7 @@ require 'inc/header.inc.php';
 		foreach($books as $book_alias => $book_title)
 		{
 ?>
-			<li>
-				<a href="book.php?book=<?php echo htmlspecialchars($book_alias, ENT_QUOTES); ?>"
-				onclick="return openBook('<?php echo htmlspecialchars($book_alias, ENT_QUOTES); ?>');"
-				target="_blank"><?php echo htmlspecialchars($book_title, ENT_NOQUOTES);?></a>
-			</li>
+			<li><a href="book.php?book=<?php echo htmlspecialchars($book_alias, ENT_QUOTES); ?>"><?php echo htmlspecialchars($book_title, ENT_NOQUOTES);?></a></li>
 <?php
 		}
 ?>
