@@ -3,7 +3,12 @@ var noSelect = 0;
 function onTocSelect(event, book)
 {
 	var tree = event.target;
-	var link = tree.view.getCellValue(tree.currentIndex, "name");
+	var column = "name";
+
+	/* See http://developer.mozilla.org/en/docs/Tree_Widget_Changes */
+	try { column = tree.columns[column]; } catch(er) {}
+	
+	var link = tree.view.getCellValue(tree.currentIndex, column);
 
 	if(!noSelect && link)
 		parent.content.location.href = "page.php/" + book + "/" + link;
