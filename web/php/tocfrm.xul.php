@@ -16,9 +16,9 @@
 
 	echo '<script src="js/tocfrm.js"/>';
 
-	echo '<button label="Sync" oncommand="onButtonCommand(event)"/>';
+	echo '<button label="Sync" oncommand="onButtonCommand(event);"/>';
 						
-	echo '<tree id="tree" flex="1" seltype="single" hidecolumnpicker="true" onselect="onTocSelect(event, \'' . htmlspecialchars($alias, ENT_QUOTES) . '\')">';
+	echo '<tree id="tree" flex="1" seltype="single" hidecolumnpicker="true" onselect="onTocSelect(event, \'' . htmlspecialchars($alias, ENT_QUOTES) . '\');">';
 
 	echo '<treecols>';
 	echo '<treecol id="name" hideheader="true" primary="true" flex="1"/>';

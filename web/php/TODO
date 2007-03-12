@@ -35,5 +35,14 @@ Things to be done, by no particular order:
 
   - Comments
 
+- Add better site statistics, per:
 
+  - http://www.zend.com/zend/tut/statistics.php
+
+  - http://www.zend.com/zend/tut/gen-adv-web-stats.php
+
+  - http://www.php-stats.com/
+
+  - http://statcounter.com/
+  
 See also the TODOs and FIXMEs scattered in the source files.
