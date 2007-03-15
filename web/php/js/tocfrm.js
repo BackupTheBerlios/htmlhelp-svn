@@ -49,11 +49,12 @@ function onButtonCommand(event)
 	var tree = document.getElementById("tree");
 
 	var href = parent.content.location.href;
-	var base = document.location.href.replace(/\/tocfrm\.xul\.php\?book=(.*)$/,'/page.php/$1/')
+	var base = document.location.href.replace(/\/tocfrm\.xul\.php\?book=(.*)$/,'/page.php/$1/');
 
 	if(href.substr(0, base.length) == base)
 	{
 		var link = href.substr(base.length);
+		//var elements = document.getElementsByTagName('treecell');
 		var elements = tree.contentView.root.getElementsByTagName('treecell');
 
 		for(var i = 0; i < elements.length; ++i)
