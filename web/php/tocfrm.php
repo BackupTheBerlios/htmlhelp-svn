@@ -39,7 +39,8 @@ function walk_toc_entries($parent_no = 0)
 			if($toc_nos[$number] || !$nchildren)
 				echo '<a href="' . $link . '">';
 			else
-				echo '<a href="../../tocfrm.php?book=' . htmlspecialchars($alias, ENT_QUOTES) . '&amp;toc_nos=' . implode('+', $linage) . '" target="_self">';
+				// See also http://htmlhelp.com/faq/html/frames.html#frame-update2 
+				echo '<a href="../../tocfrm.php?book=' . htmlspecialchars($alias, ENT_QUOTES) . '&amp;toc_nos=' . implode('+', $linage) . '" target="_self" onclick="top.main.location=\'' . htmlspecialchars($base . $link, ENT_QUOTES) . '\';">';
 			echo htmlspecialchars($name, ENT_NOQUOTES) . '</a>';
 			
 			if($toc_nos[$number] && $nchildren)
