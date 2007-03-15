@@ -1,6 +1,6 @@
 GARNAME = autoconf
-GARVERSION = 2.59
-MASTER_SITES = ftp://ftp.gnu.org/pub/gnu/$(GARNAME)/
+GARVERSION = 2.61
+MASTER_SITES = http://ftp.gnu.org/pub/gnu/$(GARNAME)/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
 
 BOOKS = $(WORKSRC)/doc/autoconf.texi

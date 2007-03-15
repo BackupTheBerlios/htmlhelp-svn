@@ -1,6 +1,6 @@
 GARNAME = glibc
-GARVERSION = 2.3.5
-MASTER_SITES = ftp://ftp.gnu.org/pub/gnu/$(GARNAME)/
+GARVERSION = 2.5
+MASTER_SITES = http://ftp.gnu.org/pub/gnu/$(GARNAME)/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
 PATCHFILES = gar-base.diff
 

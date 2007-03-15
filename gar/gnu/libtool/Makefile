@@ -1,6 +1,6 @@
 GARNAME = libtool
-GARVERSION = 1.5.20
-MASTER_SITES = ftp://ftp.gnu.org/pub/gnu/$(GARNAME)/
+GARVERSION = 1.5.22
+MASTER_SITES = http://ftp.gnu.org/pub/gnu/$(GARNAME)/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
 
 BOOKS = $(WORKSRC)/doc/libtool.texi

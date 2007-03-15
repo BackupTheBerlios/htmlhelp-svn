@@ -39,6 +39,23 @@ Usage: py2devhelp.py [-c] [-f] [-v 1.5[.x]] filename
 # each 'book' : ( Dir, Title, First page, Content page, Index page)
 #
 supported_libraries = {
+    # j_r_fonseca@yahoo.co.uk Mar 15/07: library for 2.5 version:
+    '2.5':
+    [
+        Book('.', 'Main page', 'index'),
+        Book('.', 'Global Module Index', 'modindex'),
+        Book('whatsnew', "What's New", 'index', 'contents'),
+        Book('tut','Tutorial','tut','node2'),
+        Book('lib','Library Reference','lib','contents','genindex'),
+        Book('ref','Language Reference','ref','contents','genindex'),
+        Book('mac','Macintosh Reference','mac','contents','genindex'),
+        Book('ext','Extending and Embedding','ext','contents'),
+        Book('api','Python/C API','api','contents','genindex'),
+        Book('doc','Documenting Python','doc','contents'),
+        Book('inst','Installing Python Modules', 'inst', 'index'),
+        Book('dist','Distributing Python Modules', 'dist', 'index', 'genindex'),
+    ],
+
     # j_r_fonseca@yahoo.co.uk Sep 29/05: library for 2.4 version:
     '2.4':
     [

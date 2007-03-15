@@ -1,8 +1,12 @@
 GARNAME = texinfo
-GARVERSION = 4.8
-MASTER_SITES = ftp://ftp.gnu.org/pub/gnu/$(GARNAME)/
+GARVERSION = 4.8a
+MASTER_SITES = http://ftp.gnu.org/pub/gnu/$(GARNAME)/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
 
-BOOKS = $(WORKSRC)/doc/texinfo.txi $(WORKSRC)/doc/info.texi
+WORKSRC = $(WORKDIR)/$(GARNAME)-4.8
+
+BOOKS = \
+	$(WORKSRC)/doc/texinfo.txi \
+	$(WORKSRC)/doc/info.texi
 
 include ../../gar.mk

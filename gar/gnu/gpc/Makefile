@@ -1,6 +1,6 @@
 GARNAME = gpc
 GARVERSION = 2.1
-MASTER_SITES = http://www.gnu-pascal.de/current/
+MASTER_SITES = http://www.gnu-pascal.de/stable/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
 
 WORKSRC = $(WORKDIR)/$(GARNAME)-20020510/p

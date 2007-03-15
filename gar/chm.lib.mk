@@ -23,17 +23,17 @@ include $(GARDIR)/mshh.lib.mk
 HHC = "C:/Program Files/HTML Help Workshop/hhc.exe"
 HHC_FLAGS =
 
+ifeq ($(WINDIR),)
 WINE = wine
 WINE_FLAGS = 
-ifneq ($(shell which $(WINE)),)
-HHC := $(WINE) $(WINE_FLAGS) $(HHC)
+HHC := $(WINE) $(WINE_FLAGS) -- $(HHC)
 endif
 
-compile-chm/%: pre-convert-mshh/% convert-mshh/% post-convert-mshh/%
+compile-chm/%: post-convert-mshh/%
 	@echo -e " $(WORKCOLOR)==> Compiling $(BOLD)$(WORKDIR)/$(BOOK_FILENAME).chm$(NORMALCOLOR)"
-	@#-$(HHC) $(HHC_FLAGS) $(wildcard $(SCRATCHDIR)/*.hhp)
-	-@cd $(SCRATCHDIR) && $(HHC) $(HHC_FLAGS) $(notdir $(wildcard $(SCRATCHDIR)/*.hhp))
-	@mv $(notdir $(wildcard $(SCRATCHDIR)/*.chm)) $(BOLD)$(WORKDIR)/$(BOOK_FILENAME).chm
+	-@$(HHC) $(HHC_FLAGS) $(SCRATCHDIR)/*.hhp
+#	-@cd $(SCRATCHDIR) && $(HHC) $(HHC_FLAGS) *.hhp
+	@mv $(SCRATCHDIR)/*.chm $(WORKDIR)/$(BOOK_FILENAME).chm
 	@rm -rf $(SCRATCHDIR)
 	@$(MAKECOOKIE)
 

@@ -1,5 +1,5 @@
 GARNAME = mysql
-GARVERSION = 4.1.10a
+GARVERSION = 4.1.22
 MASTER_SITES = http://mirrors.sunsite.dk/mysql/Downloads/MySQL-4.1/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
 

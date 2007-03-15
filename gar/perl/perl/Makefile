@@ -1,5 +1,5 @@
 GARNAME = perl
-GARVERSION = 5.8.7
+GARVERSION = 5.8.8
 MASTER_SITES = http://www.cpan.org/src/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
 
@@ -40,7 +40,7 @@ build-perldoc:
 	@$(MAKECOOKIE)
 
 convert-devhelp/perl:
-	rm -rf $(SCRATCHDIR)
+	@rm -rf $(SCRATCHDIR)
 	mkdir -p $(SCRATCHDIR)
 	cp -a $(WORKDIR)/html $(SCRATCHDIR)/book
 	$(SHELL) $(FILEDIR)/perl2devhelp.sh $(SCRATCHDIR) $(GARVERSION) 
@@ -48,7 +48,7 @@ convert-devhelp/perl:
 	@$(MAKECOOKIE)
 
 convert-mshh/perl:
-	rm -rf $(SCRATCHDIR)
+	@rm -rf $(SCRATCHDIR)
 	cp -a $(WORKDIR)/html $(SCRATCHDIR)
-	$(SHELL) $(FILEDIR)/perl2chm.sh $(WORKSRC) $(SCRATCHDIR)
+	$(SHELL) $(FILEDIR)/perl2chm.sh $(SCRATCHDIR)
 	@$(MAKECOOKIE)

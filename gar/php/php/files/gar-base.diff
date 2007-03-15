@@ -1,6 +1,6 @@
-diff -u -ur phpdoc.orig/xsl/htmlhelp.xsl.in phpdoc/xsl/htmlhelp.xsl.in
---- tmp/phpdoc/xsl/htmlhelp.xsl.in	2002-08-11 19:02:57.000000000 +0100
-+++ work/main.d/phpdoc/xsl/htmlhelp.xsl.in	2003-11-03 18:34:03.000000000 +0000
+diff -u -ur phpdoc.orig/xsl/htmlhelp.xsl phpdoc/xsl/htmlhelp.xsl
+--- tmp/phpdoc/xsl/htmlhelp.xsl		2002-08-11 19:02:57.000000000 +0100
++++ work/phpdoc/xsl/htmlhelp.xsl	2003-11-03 18:34:03.000000000 +0000
 @@ -38,14 +38,11 @@
    <title>
      <xsl:apply-templates select="$node" mode="object.title.markup.textonly"/>
@@ -85,7 +85,7 @@ diff -u -ur phpdoc.orig/xsl/htmlhelp.xsl.in phpdoc/xsl/htmlhelp.xsl.in
  <!-- Try to figure out the path to this page from the main page -->
 diff -u -ur phpdoc.orig/xsl/htmlhelp-db.xsl phpdoc/xsl/htmlhelp.xsl
 --- tmp/phpdoc/xsl/htmlhelp-db.xsl	2003-04-19 18:52:17.000000000 +0100
-+++ work/main.d/phpdoc/xsl/htmlhelp.xsl	2003-11-03 18:39:01.000000000 +0000
++++ work/phpdoc/xsl/htmlhelp.xsl	2003-11-03 18:39:01.000000000 +0000
 @@ -1,573 +1,385 @@
 -<?xml version="1.0"?>
 -<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"

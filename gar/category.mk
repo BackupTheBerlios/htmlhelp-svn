@@ -10,7 +10,7 @@ paranoid-%:
 		$(MAKE) -C $$i $* || exit 2; \
 	done
 
-export BUILDLOG ?= $(shell pwd)/buildlog.txt
+export BUILDLOG ?= $(PWD)/buildlog.txt
 
 report-%:
 	@for i in $(filter-out CVS/,$(wildcard */)) ; do \

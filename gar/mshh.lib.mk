@@ -8,14 +8,16 @@ MSHH_LIB_MK := 1
 # DocBook XML (using XSL)
 
 XSLTPROC = xsltproc 
-XSLTPROC_FLAGS = 
+XSLTPROC_FLAGS = \
+	--nonet \
+	--xinclude
 
 XSLTPROC_FLAGS_HTMLHELP = \
 	--stringparam "generate.toc" "" \
-	--stringparam "htmlhelp.chm" "$(*F).chm" \
-	--stringparam "htmlhelp.hhp" "$(*F).hhp" \
-	--stringparam "htmlhelp.hhc" "$(*F).hhc" \
-	--stringparam "htmlhelp.hhk" "$(*F).hhk" \
+	--stringparam "htmlhelp.chm" "$(BOOK_NAME).chm" \
+	--stringparam "htmlhelp.hhp" "$(BOOK_NAME).hhp" \
+	--stringparam "htmlhelp.hhc" "$(BOOK_NAME).hhc" \
+	--stringparam "htmlhelp.hhk" "$(BOOK_NAME).hhk" \
 	--param htmlhelp.hhc.show.root 0 \
 	--param htmlhelp.use.hhk 1 \
 	--param htmlhelp.autolabel 1 \
@@ -25,7 +27,8 @@ XSLTPROC_FLAGS_HTMLHELP = \
 	--param section.label.includes.component.label 1 \
 	--param chunk.first.sections 1
 
-HTMLHELP_XSL = /usr/share/sgml/docbook/stylesheet/xsl/nwalsh/htmlhelp/htmlhelp.xsl
+#HTMLHELP_XSL = /usr/share/sgml/docbook/stylesheet/xsl/nwalsh/htmlhelp/htmlhelp.xsl
+HTMLHELP_XSL = /usr/share/docbook-xsl/htmlhelp/htmlhelp.xsl
 
 xml-mshh/%: %
 	@echo -e " $(WORKCOLOR)==> Converting $(BOLD)$*$(NORMALCOLOR)"
@@ -48,6 +51,8 @@ texi-mshh/%: %
 pre-convert-mshh/%:
 	@rm -rf $(SCRATCHDIR)
 	@mkdir -p $(SCRATCHDIR)
+
+convert-mshh/%: pre-convert-mshh/%
 
 convert-mshh/%.sgml: pre-convert-mshh/% sgml-mshh/%.sgml
 	@true

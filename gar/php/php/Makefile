@@ -2,7 +2,7 @@ GARNAME = php
 #GARVERSION = 
 MASTER_SITES = cvs://cvsread@cvs.php.net/repository/
 DISTFILES = phpdoc
-PATCHFILES = gar-base.diff
+#PATCHFILES = gar-base.diff
 
 # See also:
 #   http://www.php.net/manual/howto/
@@ -25,6 +25,6 @@ pre-configure:
 	cd $(WORKDIR)/phpdoc && autoconf
 	$(MAKECOOKIE)
 
-$(WORKDIR)/phpdoc/htmlhelp/php_manual_en.mshh:
-	ln -sf html $@d
-	@touch $@
+convert-mshh/phpdoc:
+	rm -rf $(SCRATCHDIR)
+	ln -sf html $(SCRATCHDIR)

@@ -1,6 +1,6 @@
 GARNAME = findutils
-GARVERSION = 4.2.18
-MASTER_SITES = ftp://ftp.gnu.org/pub/gnu/$(GARNAME)/
+GARVERSION = 4.2.30
+MASTER_SITES = http://ftp.gnu.org/pub/gnu/$(GARNAME)/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
 
 BOOKS = $(WORKSRC)/doc/find.texi

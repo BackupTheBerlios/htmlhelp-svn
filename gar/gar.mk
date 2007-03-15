@@ -22,12 +22,13 @@ GARDIR ?= ../..
 # GARBUILD is the platform on which you're running GAR.  If you want to
 # override it with a value other than what GCC thinks it's running on that's
 # ok, but the results will be very... VERY ...strange.
-GARBUILD ?= $(shell $(build_CC) -dumpmachine)
+#GARBUILD ?= $(shell $(build_CC) -dumpmachine)
+GARBUILD ?= none
 
 # include the configuration file to override any of these variables
 # no variable expansions or targets are allowed in these files.
 include $(GARDIR)/gar.conf.mk
--include $(addprefix $(GARDIR)/,$(GAR_EXTRA_CONF)) package-api.mk
+-include $(addprefix $(GARDIR)/,$(GAR_EXTRA_CONF))
 
 # Give us color, if defined in gar.conf.mk
 ifeq ($(COLOR_GAR),yes)
@@ -185,7 +186,7 @@ INSTALL_DIRS = $(addprefix $(DESTDIR),$(prefix) $(exec_prefix) $(bindir) $(sbind
 # For rules that do nothing, display what dependencies they
 # successfully completed
 #DONADA = @echo "	[$@] complete.  Finished rules: $+"
-DONADA = @touch $(COOKIEDIR)/$@; echo -e "	$(ANNOUNCECOLOR)[$(STAGECOLOR)$@$(ANNOUNCECOLOR)] complete for $(NAMECOLOR)$(GARNAME)$(ANNOUNCECOLOR).$(NORMALCOLOR)"; which xtermset > /dev/null && xtermset -T "[$@] complete for $(GARNAME)" || true
+DONADA = @touch $(COOKIEDIR)/$@; echo -e "	$(ANNOUNCECOLOR)[$(STAGECOLOR)$@$(ANNOUNCECOLOR)] complete for $(NAMECOLOR)$(GARNAME)$(ANNOUNCECOLOR).$(NORMALCOLOR)"
 
 # TODO: write a stub rule to print out the name of a rule when it
 # *does* do something, and handle indentation intelligently.
@@ -196,7 +197,6 @@ all: build
 
 
 include $(GARDIR)/gar.lib.mk
-include $(GARDIR)/gar.bugs.mk
 
 #################### DIRECTORY MAKERS ####################
 
@@ -220,9 +220,6 @@ pre-%:
 
 post-%:
 	@true
-
-xtermset-%:
-	-@which xtermset > /dev/null && xtermset -T "$(GARNAME): $*" || true
 
 # Call any arbitrary rule recursively
 deep-%: %
@@ -268,7 +265,7 @@ showdeps:
 #				  into $(DOWNLOADDIR) as necessary.
 FETCH_TARGETS =  $(addprefix $(DOWNLOADDIR)/,$(ALLFILES))
 
-fetch: announce xtermset-fetch pre-everything $(COOKIEDIR) $(DOWNLOADDIR) $(PARTIALDIR) $(addprefix dep-$(GARDIR)/,$(FETCHDEPS)) pre-fetch $(FETCH_TARGETS) post-fetch 
+fetch: announce pre-everything $(COOKIEDIR) $(DOWNLOADDIR) $(PARTIALDIR) $(addprefix dep-$(GARDIR)/,$(FETCHDEPS)) pre-fetch $(FETCH_TARGETS) post-fetch 
 	$(DONADA)
 
 # returns true if fetch has completed successfully, false
@@ -280,7 +277,7 @@ fetch-p:
 # 				  distfiles are valid.
 CHECKSUM_TARGETS = $(addprefix checksum-,$(filter-out $(NOCHECKSUM),$(ALLFILES)))
 
-checksum: fetch xtermset-checksum $(COOKIEDIR) pre-checksum $(CHECKSUM_TARGETS) post-checksum
+checksum: fetch $(COOKIEDIR) pre-checksum $(CHECKSUM_TARGETS) post-checksum
 	$(DONADA)
 
 # returns true if checksum has completed successfully, false
@@ -310,7 +307,7 @@ garchive: checksum $(GARCHIVE_TARGETS) ;
 EXTRACT_TARGETS = $(addprefix extract-,$(filter-out $(NOEXTRACT),$(DISTFILES)))
 EXTRACT_SOURCEPKG = $(addprefix $(COOKIEDIR)/sourcepkg-,$(addsuffix /patch,$(SOURCEPKG)))
 
-extract: checksum xtermset-extract $(EXTRACTDIR) $(COOKIEDIR) $(EXTRACT_SOURCEPKG) $(addprefix dep-$(GARDIR)/,$(EXTRACTDEPS)) pre-extract $(EXTRACT_TARGETS) post-extract
+extract: checksum $(EXTRACTDIR) $(COOKIEDIR) $(EXTRACT_SOURCEPKG) $(addprefix dep-$(GARDIR)/,$(EXTRACTDEPS)) pre-extract $(EXTRACT_TARGETS) post-extract
 	$(DONADA)
 
 # returns true if extract has completed successfully, false
@@ -328,7 +325,7 @@ checkpatch: extract
 # patch			- Apply any provided patches to the source.
 PATCH_TARGETS = $(addprefix patch-,$(PATCHFILES))
 
-patch: extract xtermset-patch $(WORKSRC) pre-patch $(PATCH_TARGETS) post-patch
+patch: extract $(WORKSRC) pre-patch $(PATCH_TARGETS) post-patch
 	$(DONADA)
 
 # returns true if patch has completed successfully, false
@@ -355,7 +352,7 @@ beaujolais: makepatch makesum clean build
 CONFIGURE_TARGETS = $(addprefix configure-,$(CONFIGURE_SCRIPTS))
 CONFIGURE_IMGDEPS = $(addprefix imgdep-,$(IMGDEPS))
 
-configure: patch xtermset-configure $(CONFIGURE_IMGDEPS) $(addprefix srcdep-$(GARDIR)/,$(SOURCEDEPS)) pre-configure $(CONFIGURE_TARGETS) post-configure
+configure: patch $(CONFIGURE_IMGDEPS) $(addprefix srcdep-$(GARDIR)/,$(SOURCEDEPS)) pre-configure $(CONFIGURE_TARGETS) post-configure
 	$(DONADA)
 
 # returns true if configure has completed successfully, false
@@ -366,7 +363,7 @@ configure-p:
 # build			- Actually compile the sources.
 BUILD_TARGETS = $(addprefix build-,$(BUILD_SCRIPTS))
 
-build: configure xtermset-build pre-build $(BUILD_TARGETS) post-build
+build: configure pre-build $(BUILD_TARGETS) post-build
 	$(DONADA)
 
 # returns true if build has completed successfully, false
@@ -381,7 +378,7 @@ strip: build pre-strip $(addprefix strip-,$(STRIP_SCRIPTS)) post-strip
 # install		- Install the results of a build.
 INSTALL_TARGETS = $(addprefix install-,$(INSTALL_SCRIPTS)) $(addprefix install-license-,$(subst /, ,$(LICENSE)))
 
-install: build xtermset-install $(addprefix dep-$(GARDIR)/,$(INSTALLDEPS)) $(INSTALL_DIRS) pre-install $(INSTALL_TARGETS) post-install $(DO_BUILD_CLEAN) $(if $(filter $(USE_STOW),yes),stow)
+install: build $(addprefix dep-$(GARDIR)/,$(INSTALLDEPS)) $(INSTALL_DIRS) pre-install $(INSTALL_TARGETS) post-install $(DO_BUILD_CLEAN) $(if $(filter $(USE_STOW),yes),stow)
 	$(DONADA)
 
 # returns true if install has completed successfully, false
@@ -407,7 +404,7 @@ uninstall:
 
 
 # stow			- merge stow-installed packages into the system.
-stow: install xtermset-stow pre-stow stow-$(DISTNAME) post-stow
+stow: install pre-stow stow-$(DISTNAME) post-stow
 	$(DONADA)
 
 unstow: unstow-$(DISTNAME)

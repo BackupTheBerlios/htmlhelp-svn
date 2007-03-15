@@ -1,7 +1,7 @@
 GARNAME = cvs
-GARVERSION = 1.11.5
-MASTER_SITES = ftp://ftp.gnu.org/pub/non-gnu/$(GARNAME)/
-DISTFILES = $(GARNAME)-$(GARVERSION).tar.gz
+GARVERSION = 1.11.22
+MASTER_SITES = http://ftp.gnu.org/pub/non-gnu/$(GARNAME)/source/stable/$(GARVERSION)/
+DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
 
 BOOKS = $(WORKSRC)/doc/cvs.texinfo
 

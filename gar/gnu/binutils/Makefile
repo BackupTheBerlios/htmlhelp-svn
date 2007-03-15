@@ -1,7 +1,7 @@
 GARNAME = binutils
-GARVERSION = 2.16
+GARVERSION = 2.17
 MASTER_SITES = \
-	ftp://ftp.gnu.org/gnu/$(GARNAME)/ \
+	http://ftp.gnu.org/pub/gnu/$(GARNAME)/ \
 	ftp://ftp.kernel.org/pub/linux/devel/$(GARNAME)/
 DISTFILES = $(GARNAME)-$(GARVERSION).tar.bz2
 
@@ -31,7 +31,9 @@ NODIST_BOOKS = \
 
 include ../../gar.mk
 
-TEXI2HTML_FLAGS += -I $(WORKSRC)/bfd/doc
+TEXI2HTML_FLAGS += \
+	-I $(WORKSRC)/libiberty \
+	-I $(WORKSRC)/bfd/doc
 
 build-$(WORKSRC)/bfd/doc/Makefile: BUILD_ARGS = bfd.info
 build-$(WORKSRC)/binutils/doc/Makefile: BUILD_ARGS = binutils.info

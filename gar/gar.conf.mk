@@ -118,25 +118,29 @@ build_AS ?= as
 build_AR ?= ar
 
 # GARCH and GARHOST for main.  Override these for cross-compilation
-main_GARCH ?= $(shell arch)
-main_GARHOST ?= $(shell gcc -dumpmachine)
+#main_GARCH ?= $(shell arch)
+#main_GARHOST ?= $(shell gcc -dumpmachine)
+main_GARCH ?= none
+main_GARHOST ?= none
 
 # GARCH and GARHOST for build.  Do not change these.
-build_GARCH := $(shell arch)
-build_GARHOST := $(GARBUILD)
+#build_GARCH := $(shell arch)
+#build_GARHOST := $(GARBUILD)
+build_GARCH := none
+build_GARHOST := none
 
 # Assume that the build system has support for the C and C++ languages and test
 # for perl.  Would check for python, too, but python needs to builddep itself.
-build_NODEPEND += lang/c lang/c++
-build_NODEPEND += $(if $(shell which perl),lang/perl,)
+#build_NODEPEND += lang/c lang/c++
+#build_NODEPEND += $(if $(shell which perl),lang/perl,)
 
 # Assume the same of main, also check for python
-main_NODEPEND += lang/c lang/c++
-main_NODEPEND += $(if $(shell which perl),lang/perl,)
-main_NODEPEND += $(if $(shell which python),lang/python,)
+#main_NODEPEND += lang/c lang/c++
+#main_NODEPEND += $(if $(shell which perl),lang/perl,)
+#main_NODEPEND += $(if $(shell which python),lang/python,)
 
 # Most stuff is written in C, so SOURCE_LANGUAGES will default to that
-SOURCE_LANGUAGES ?= c
+#SOURCE_LANGUAGES ?= c
 
 # Profiles other than LNX-BBC should override this in the environment
 LNX_FLAVOR ?= bbc
