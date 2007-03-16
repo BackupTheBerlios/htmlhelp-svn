@@ -13,7 +13,7 @@ from ctypes import *
 from comtypes import *
 from comtypes.client import *
 
-from _itss import *
+from htmlhelp.archive._itss import *
 
 from htmlhelp.archive import Archive
 
