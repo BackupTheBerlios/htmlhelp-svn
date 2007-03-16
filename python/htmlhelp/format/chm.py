@@ -25,7 +25,7 @@ class SystemParser:
 	def __init__(self, book):
 		self.book = book
 	
-		self.parse(self.book.archive['/#SYSTEM'])
+		self.parse(self.book.archive['#SYSTEM'])
 		
 	def read(self, fp, fmt):
 		fmt = '<' + fmt
@@ -67,13 +67,9 @@ class SystemParser:
 class ChmFilterArchive(FilterArchive):
 
 	def filter(self, path):
-		if path[:1] == '/' and not (path.lower().endswith('.hhc') or path.lower().endswith('.hhk')):
-			return path[1:]
-		else:
+		if path[:1] in "$#" or path.lower().endswith('.hhc') or path.lower().endswith('.hhk'):
 			return None
-
-	def translate(self, path):
-		return '/' + path
+		return path
 
 
 #######################################################################

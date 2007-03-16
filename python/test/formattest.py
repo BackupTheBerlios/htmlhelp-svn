@@ -1,6 +1,8 @@
 """Base test case for formats."""
 
 
+import sys
+import os
 import unittest
 
 
@@ -40,22 +42,26 @@ class FormatTestCase(unittest.TestCase):
 class SampleFormatTestCase(FormatTestCase):
 
 	def setUp(self):
-		"""Get the expected sample book from the automatically generated 
-		Python code."""
-		sample_book = __import__("data/sample_book")
+		# Get the expected sample book from the automatically generated 
+		# Python code.
+		from data import sample_book
 		self.sample_book = sample_book.book
 	
 	def testRead(self):
-		"""Read the books in the several format variants and tests whether they 
-		match agains the expected one."""
+		# Read the books in the several format variants and tests whether they 
+		# match agains the expected one.
 		for book in [self.format.read(path) for path in self.paths]:
 			self.failUnlessEqualBook(book, self.sample_book)
 	
 	def testWrite(self):
-		"""Write the sample book to a temporary file, read it back, and test if
-		it matches with the source."""
+		# Write the sample book to a temporary file, read it back, and test if
+		# it matches with the source.
 		for ext in self.exts:
-			path = '/tmp/test.' + ext
+			if sys.platform == "win32":
+				tmpdir = os.environ["TEMP"]
+			else:
+				tmpdir = "/tmp"
+			path = os.path.join(tmpdir, 'test.' + ext)
 			self.format.write(self.sample_book, path)
 			book = self.format.read(path)
 			self.failUnlessEqualBook(book, self.sample_book)

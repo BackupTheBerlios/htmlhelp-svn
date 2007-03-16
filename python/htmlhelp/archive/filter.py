@@ -30,7 +30,7 @@ class FilterArchive(Archive):
 		"""It should return the path under which this file should be seen by the
 		client, or None if should be hidden.
 
-        It should be overriden by inherited classes."""
+		It should be overriden by inherited classes."""
 
 		return path
 
@@ -38,6 +38,6 @@ class FilterArchive(Archive):
 		"""It should return the real path of the file, or None if access should
 		be denied.
 
-        It should be overriden by inherited classes."""
+		It should be overriden by inherited classes."""
 
 		return path

@@ -1,4 +1,10 @@
-HHC = @echo "C:\\Program Files\\HTML Help Workshop\\hhc.exe"
+HHC = "C:/Program Files/HTML Help Workshop/hhc.exe"
+
+ifeq ($(WINDIR),)
+WINE = wine
+WINE_FLAGS = 
+HHC := $(WINE) $(WINE_FLAGS) -- $(HHC)
+endif
 
 all: \
 	sample_archive \
@@ -26,6 +32,8 @@ empty:
 file dir/file dir/subdir/file:
 	mkdir -p $(@D)
 	echo "Sample..." > $@
+
+#.INTERMEDIATE: $(SAMPLE_ARCHIVE_FILES)
 
 sample_archive: $(SAMPLE_ARCHIVE_FILES)
 	@rm -rf $@
@@ -55,6 +63,8 @@ SAMPLE_BOOK_FILES = $(shell xsltproc files.xsl sample_book.xml)
 page%.html:
 	mkdir -p $(@D)
 	echo '<html><head><title>Title</title></head><body><p>Paragraph.</p></body></html>' > $@
+
+#.INTERMEDIATE: $(SAMPLE_BOOK_FILES) page%.html
 
 sample_book: $(SAMPLE_BOOK_FILES)
 	@rm -rf $@
@@ -90,7 +100,7 @@ sample_book: $(SAMPLE_BOOK_FILES)
 	zip -r $@ $^
 
 %.chm: %.hhp %.hhc %.hhk
-	$(HHC) $<
+	-$(HHC) $<
 
 .PRECIOUS: %.hhp %.hhc %.hhk
 

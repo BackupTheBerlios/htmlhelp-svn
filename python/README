@@ -2,4 +2,12 @@ Requirements:
 
 - python 2.3 or greater
 
-- PyCHM python bindings for chmlib, from http://gnochm.sourceforge.net/pychm.html
+- On Unix:
+
+  - PyCHM python bindings for chmlib, from http://gnochm.sourceforge.net/pychm.html
+
+- On Windows:
+
+  - ctypes, from http://cheeseshop.python.org/pypi/ctypes 
+
+  - comtypes, from http://cheeseshop.python.org/pypi/comtypes

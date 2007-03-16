@@ -1,14 +1,13 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 import sys
 from distutils.core import setup
 
 setup(
 	name = "PyHTMLHelp",
-	version = "0.3",
+	version = "0.4",
 	description = 'HTML Help Books Python API',
-	author = 'José Fonseca',
+	author = 'Jose Fonseca',
 	author_email = 'jrfonseca@users.berlios.de',
 	url = 'http://htmlhelp.berlios.de/',
 	packages = [

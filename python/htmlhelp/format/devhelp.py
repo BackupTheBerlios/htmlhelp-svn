@@ -255,7 +255,7 @@ class DevhelpFormat(Format):
 	
 	def write(self, book, path, name=None):
 		if not path.endswith('.tgz'):
-			raise NotImplemented
+			raise NotImplementedError
 		self.write_tgz(book, path, name=None)
 
 	def list(self, **options):

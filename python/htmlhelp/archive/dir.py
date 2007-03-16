@@ -33,10 +33,10 @@ class DirArchive(Archive):
 	def _iterdir(self, head = ''):
 		abshead = os.path.join(self.dir, head)
 		for tail in os.listdir(abshead):
-			path = os.path.join(head, tail)
-			abspath = os.path.join(abshead,tail)
+			path = head + tail
+			abspath = os.path.join(abshead, tail)
 			if os.path.isdir(abspath):
-				for path in self._iterdir(path):
+				for path in self._iterdir(path + '/'):
 					yield path
 			elif os.path.isfile(abspath):
 				yield path
