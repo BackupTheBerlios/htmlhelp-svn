@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(
-	name = "PyHTMLHelp",
+	name = "pyhtmlhelp",
 	version = "0.4",
 	description = 'HTML Help Books Python API',
 	author = 'Jose Fonseca',
