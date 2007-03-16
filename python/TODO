@@ -1,13 +1,11 @@
+TODO:
 
-- import book metadata
+- import more book metadata
 
 - present an interface to full-text indexing
 
-  - http://www.zope.org/Members/Kaivo/pysearch
-
 - finish/write GUI examples
 
-  - http://www.anthemion.co.uk/wxwin/newhelp.jpg
-  - http://www.anthemion.co.uk/wxwin/newhelp.zip
-
 - finish/write the HTTP daemon example
+
+- support more formats

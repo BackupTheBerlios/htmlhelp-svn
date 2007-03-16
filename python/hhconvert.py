@@ -1,19 +1,22 @@
-#!/usr/bin/python
-
+#!/usr/bin/env python
 """Export a HTML Help book into another format."""
 
 
-import sys
-import os.path
+import optparse
 
 from htmlhelp.format.generic import GenericFormat
 
 
 def main():
+	parser = optparse.OptionParser(usage="\n\t%prog [options] src dst", version="%prog 1.0")
+	(options, args) = parser.parse_args()
+	if len(args) != 2:
+		parser.error("incorrect number of arguments")
+
 	format = GenericFormat()
 
-	input = sys.argv[1]
-	output = sys.argv[2]
+	input = args[0]
+	output = args[1]
 	
 	book = format.read(input)
 

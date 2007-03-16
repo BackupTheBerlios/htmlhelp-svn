@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-import sys
 from distutils.core import setup
 
 setup(
@@ -18,6 +17,6 @@ setup(
 	],
 	scripts = [
 		'hhconvert.py',
-		'hhsqldump.py',
+		#'hhsqldump.py',
 	],
 )
