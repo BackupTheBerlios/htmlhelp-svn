@@ -17,6 +17,5 @@ setup(
 	],
 	scripts = [
 		'hhconvert.py',
-		#'hhsqldump.py',
 	],
 )

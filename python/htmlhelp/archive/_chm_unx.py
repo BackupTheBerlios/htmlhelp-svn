@@ -1,21 +1,23 @@
-"""Microsoft Compiled HTML Help (CHM) archives support using
-the Python bindings for CHMLIB.
-
-http://gnochm.sourceforge.net/pychm.html
+"""Microsoft Compiled HTML Help (CHM) archives support using CHMLIB and
+ctypes.
 """
-
 
 try:
 	from cStringIO import StringIO
 except ImportError:
 	from StringIO import StringIO
 
+import ctypes
+
+import htmlhelp.archive._chmlib as chmlib
+
 from htmlhelp.archive import Archive
 
-from chm import chmlib
 
 
 def _enumerate(chm, ui, result):
+	ui = ui.contents
+
 	assert ui.path.find('\0') == -1
 
 	if ui.path.startswith('/'):
@@ -29,7 +31,7 @@ class ChmArchive(Archive):
 
 	def __init__(self, path):
 		Archive.__init__(self)
-		
+
 		self.chm = chmlib.chm_open(path)
 
 	def __del__(self):
@@ -39,23 +41,26 @@ class ChmArchive(Archive):
 		return path in self.keys()
 
 	def __getitem__(self, path):
-		result, ui = chmlib.chm_resolve_object(self.chm, '/' + path)
+		ui = chmlib.chmUnitInfo()
+		result = chmlib.chm_resolve_object(self.chm, '/' + path, ui)
 		if result != chmlib.CHM_RESOLVE_SUCCESS:
 			raise KeyError, "missing file: %s" % path
 
-		size, buffer = chmlib.chm_retrieve_object(self.chm, ui, 0L, ui.length)
+		buffer = (ctypes.c_ubyte * ui.length)()
+		size = chmlib.chm_retrieve_object(self.chm, ui, buffer, 0L, ui.length)
 		
 		if size != ui.length:
 			raise IOError, "incomplete file: %s\n" % ui.path
 
 		fp = StringIO()
-		fp.write(buffer)	
+		for c in buffer:
+			fp.write(chr(c))
 		fp.seek(0)
 		return fp
 
 	def keys(self):
 		result = []
-		chmlib.chm_enumerate(self.chm, chmlib.CHM_ENUMERATE_NORMAL | chmlib.CHM_ENUMERATE_FILES, _enumerate, result)
+		chmlib.chm_enumerate(self.chm, chmlib.CHM_ENUMERATE_NORMAL | chmlib.CHM_ENUMERATE_FILES, chmlib.CHM_ENUMERATOR(_enumerate), result)
 		return result
 	
 
